@@ -1,3 +1,4 @@
+# This sample needs a true type font file `sample.ttf'.
 require 'sdl'
 
 SDL.init( SDL::INIT_VIDEO )
@@ -7,7 +8,7 @@ SDL::WM::setCaption($0,$0)
 
 SDL::TTF.init
 
-font = SDL::TTF.open('nihongo.ttf',24)
+font = SDL::TTF.open('sample.ttf',24)
 font.style = SDL::TTF::STYLE_NORMAL
 
 font.drawSolidUTF8(screen,'test SDL_ttf',300,150,255,255,255)

@@ -1,5 +1,6 @@
+# This sample needs a mod file `sample.it'.
+#
 require 'sdl'
-
 SDL::init(SDL::INIT_AUDIO)
 
 SDL::Mixer.open(22050)

@@ -1,3 +1,4 @@
+# This sample needs a MPEG file `sample.mpg'.
 require 'sdl'
 
 SDL.init( SDL::INIT_VIDEO|SDL::INIT_AUDIO )

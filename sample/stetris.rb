@@ -1,5 +1,5 @@
 # This sample need ruby 1.8 or 1.6 with shim
-#
+# Thanks to Simon Strandgaard
 require 'sdl'
 if RUBY_VERSION < "1.7" then
   require 'features/ruby18'

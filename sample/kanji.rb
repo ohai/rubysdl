@@ -1,5 +1,9 @@
 #!/usr/local/bin/ruby -Ke
-
+#
+# This sample needs following two bdf files
+#   8x16.bdf     : alphabets
+#   jiskan16.bdf : chinese characters and kana
+# 
 require 'sdl'
 
 SDL.init( SDL::INIT_VIDEO )
