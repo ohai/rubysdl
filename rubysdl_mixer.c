@@ -1,5 +1,5 @@
 /*
-  Ruby/SDL   Ruby extention library for SDL
+  Ruby/SDL   Ruby extension library for SDL
 
   Copyright (C) 2001 Ohbayashi Ippei
   
