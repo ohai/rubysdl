@@ -1024,7 +1024,11 @@ SDL::Event2.poll,SDL::Event2.waitはSDL::Event2のサブクラスのインスタンスを返しま
 --- SDL::Key.disableKeyRepeat
 --- SDL::Key.disable_key_repeat
       キーリピートを無効にする。
-    
+      
+--- SDL::Key.getKeyName(key)
+--- SDL::Key.get_key_name(key)
+      与えたキーに対する名前を表わす文字列を返します。
+      
 == SDL::Mouse
 
 マウス関連の定数と関数を定義しているモジュール

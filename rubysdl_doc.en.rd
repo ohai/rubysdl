@@ -1008,6 +1008,10 @@ This module has some functions to get the key state.
 --- SDL::Key.disable_key_repeat
       Disables key repeat.
 
+--- SDL::Key.getKeyName(key)
+--- SDL::Key.get_key_name(key)
+      Return the string of key name.
+      
 == SDL::Mouse
 
 The module mouse constants and mouse functions.
