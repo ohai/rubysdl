@@ -48,3 +48,4 @@ sample/cursor.bmp
 sample/transformblit.rb
 sample/randrect.rb
 sample/sdlskk.rb
+sample/ellipses.rb
