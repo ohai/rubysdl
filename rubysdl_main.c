@@ -66,7 +66,7 @@ static void defineConst()
 }
 
 
-void Init_rubysdl()
+void Init_sdl()
 {
   mSDL = rb_define_module("SDL");
   eSDLError = rb_define_class_under(mSDL,"Error",rb_eStandardError);
