@@ -43,3 +43,4 @@ sample/event2.rb
 sample/joy2.rb
 sample/plaympeg.rb
 sample/cursor.bmp
+sample/transformblit.rb
