@@ -92,6 +92,8 @@ static VALUE sdl_getVideoInfo(VALUE mod)
   const SDL_VideoInfo *info;
   VALUE obj;
   info = SDL_GetVideoInfo();
+  if(info==NULL)
+    rb_raise(eSDLError,"Couldn't get video information");
   obj=rb_obj_alloc(cVideoInfo);
   rb_iv_set(obj,"@hw_available",BOOL(info->hw_available));
   rb_iv_set(obj,"@wm_available",BOOL(info->wm_available));
