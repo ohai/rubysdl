@@ -1,5 +1,29 @@
 #include "rubysdl.h"
 
+static VALUE sdl_checkVideoMode(VALUE mod,VALUE w,VALUE h,VALUE bpp,
+				VALUE flags)
+{
+  return INT2FIX( SDL_VideoModeOK(NUM2INT(w),NUM2INT(h),NUM2INT(bpp),
+				  NUM2UINT(flags)) );
+}
+static VALUE sdl_getVideoInfo(VALUE mod)
+{
+  SDL_VideoInfo *info;
+  info = SDL_GetVideoInfo();
+  return rb_ary_new3(11,
+		     TORF(info->hw_available),
+		     TORF(info->wm_available),
+		     TORF(info->blit_hw),
+		     TORF(info->blit_hw_CC),
+		     TORF(info->blit_hw_A),
+		     TORF(info->blit_sw),
+		     TORF(info->blit_sw_CC),
+		     TORF(info->blit_sw_A),
+		     TORF(info->blit_fill),
+		     UINT2NUM(info->video_mem),
+		     Data_Wrap_Struct(cPixelFormat,0,0,info->vfmt)
+		     );
+}
 static VALUE sdl_warpMouse(VALUE mod,VALUE x,VALUE y)
 {
   SDL_WarpMouse( NUM2UINT(x),NUM2UINT(y) );
@@ -199,6 +223,12 @@ static VALUE sdl_format_getRGBA(VALUE obj,VALUE pixel)
   SDL_GetRGBA(NUM2UINT(pixel),format,&r,&g,&b,&a);
   return rb_ary_new3( 4,UINT2NUM(r),UINT2NUM(g),UINT2NUM(b),UINT2NUM(a) );
 }
+static VALUE sdl_format_getBpp(VALUE obj)
+{
+  SDL_PixelFormat *format;
+  Data_Get_Struct(obj,SDL_PixelFormat,format);
+  return INT2FIX(format->BitsPerPixel);
+}
 static void defineConstForVideo()
 {
   /* Available for Screen.setVideoMode */
@@ -229,7 +259,9 @@ void init_video()
   rb_define_module_function(mSDL,"blitSurface",sdl_blitSurface,8);
   rb_define_module_function(mSDL,"warpMouse",sdl_warpMouse,2);
   rb_define_module_function(mSDL,"setVideoMode",sdl_setVideoMode,4);
-
+  rb_define_module_function(mSDL,"checkVideoMode",sdl_checkVideoMode,4);
+  rb_define_module_function(mSDL,"videoInfo",sdl_getVideoInfo,0);
+  
   cSurface = rb_define_class_under(mSDL,"Surface",rb_cObject);
 
   rb_define_singleton_method(cSurface,"new",sdl_createSurface,4);
@@ -253,6 +285,7 @@ void init_video()
   rb_define_method(cPixelFormat,"mapRGBA",sdl_format_mapRGBA,4);
   rb_define_method(cPixelFormat,"getRGB",sdl_format_getRGB,3);
   rb_define_method(cPixelFormat,"getRGBA",sdl_format_getRGBA,4);
+  rb_define_method(cPixelFormat,"bpp",sdl_format_getBpp,0);
   
   defineConstForVideo();
   return;
