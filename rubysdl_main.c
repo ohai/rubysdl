@@ -57,6 +57,9 @@ void init_ttf();
 #ifdef HAVE_SDL_MIXER
 void  init_mixer();
 #endif
+#ifdef HAVE_SMPEG
+void init_smpeg();
+#endif
 
 static void sdl_quit();
 static VALUE sdl_init(VALUE obj,VALUE flags)
@@ -141,7 +144,10 @@ void Init_sdl()
 #ifdef HAVE_SDL_MIXER
   init_mixer();
 #endif
-
+#ifdef HAVE_SMPEG
+  init_smpeg();
+#endif
+  
 }
 
 

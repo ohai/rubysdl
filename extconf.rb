@@ -21,6 +21,9 @@ end
 if have_library("SDL_ttf","TTF_Init") then
   $CFLAGS+= " -D HAVE_SDL_TTF "
 end
+if have_library("smpeg","SMPEG_new") then
+  $CFLAGS+= " -D HAVE_SMPEG "
+end
 if enable_config("opengl",false) then
   dir_config('x11','/usr/X11R6')
   
