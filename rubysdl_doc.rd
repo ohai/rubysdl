@@ -25,6 +25,9 @@
 * ((<SDL::Joystick>))
 * ((<SDL::TTF>))
 * ((<SDL::MPEG>))
+* ((<SDL::SKK::Context>))
+* ((<SDL::SKK::Dictionary>))
+* ((<SDL::SKK::RomKanaRuleTable>))
 
 == SDL::Error
 
@@ -1506,5 +1509,77 @@ Object
 --- SDL.delay(ms)
       ミリ秒で指定された時間だけ待つ。
       OSのスケジューリングのため指定した時間よりも長く待つ可能性がある。
+
+== SDLSKKによる日本語入力機能
+
+SDLSKKによる日本語入力機能を実現するための機能。
+SDLSKKライブラリが必要である。
+
+これに関するすべてのクラスはSDL::SKKの下にある。
+
+=== SDL::SKK::Context
+
+入力の状態を保持するクラス。
+
+==== スーパークラス
+
+Object
+
+==== クラスメソッド
+
+--- SDL::SKK::Context.new(dict,romkana_table)
+      ((<SDL::SKK::Context>))のインスタンスを生成し、それを返す。
+      dict、romkana_tableとして利用する辞書とローマ仮名変換の規則の情報
+      を与える。
+      
+==== メソッド
+
+--- SDL::SKK::Context#input(event)
+      キーボードからの入力をするメソッド。
+      
+--- SDL::SKK::Context#str
+      入力された文字列を返すメソッド。
+      
+--- SDL::SKK::Context#render_str(font,r,g,b)
+      入力文字列が描かれた((<SDL::Surface>))のインスタンスを返すメソッド。
+      
+=== SDL::SKK::Dictionary
+
+辞書を示すクラス。
+
+==== スーパークラス
+
+Object
+
+==== クラスメソッド
+
+--- SDL::SKK::Dictionary.new
+      辞書オブジェクトを返す。
+      最初の状態では辞書の内容は空である。
+      
+==== メソッド
+
+--- SDL::SKK::Dictionary#load(dictfile,users)
+      ファイルから辞書にデータを読みこむ。
+      usersを真にすると読みこむ辞書はユーザ辞書として扱われる。
+
+--- SDL::SKK::Dictionary#save(filename)
+      ユーザ辞書をファイルに書きだす。
+      
+=== SDL::SKK::RomKanaRuleTable
+
+ローマ字からかなへの変換の規則をあらわしたクラス。
+
+==== スーパークラス
+
+Object
+
+==== クラスメソッド
+
+--- SDL::SKK::RomKanaRuleTable.new(table_file)
+      ファイルからデータを読みこみ((<SDL::SKK::RomKanaRuleTable>))の
+      インスタンスを生成する。
+      
+==== メソッド
 
 =end

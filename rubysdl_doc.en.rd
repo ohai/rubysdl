@@ -24,6 +24,9 @@ In this module number starts 0,not 1.
 * ((<SDL::Joystick>))
 * ((<SDL::TTF>))
 * ((<SDL::MPEG>))
+* ((<SDL::SKK::Context>))
+* ((<SDL::SKK::Dictionary>))
+* ((<SDL::SKK::RomKanaRuleTable>))
 
 == SDL::Error
 
@@ -1454,11 +1457,11 @@ Object
 The instance of this class has the information of ((<SDL::MPEG>)).
 Get that with ((<SDL:MPEG#info>)).
 
-==== スーパークラス
+==== super class
 
 Object
 
-==== メソッド
+==== method
 
 --- SDL::MPEG::Info#has_audio
 --- SDL::MPEG::Info#has_video
@@ -1485,5 +1488,70 @@ Object
       Wait a specified number of milliseconds before returning. this
       function will wait at least the specified time, but possible
       longer due to OS scheduling.
+      
+== Japanese input method with SDLSKK
+      
+Needs SDLSKK library.
+
+=== SDL::SKK::Context
+
+This class represents the state of input.
+
+==== super class
+
+Object
+
+==== class method
+
+--- SDL::SKK::Context.new(dict,romkana_table)
+      Create an instance of ((<SDL::SKK::Context>)) from the dictionary
+      and the RomKanaRuleTable.
+      
+==== method
+
+--- SDL::SKK::Context#input(event)
+      Inputs from keyboard thorough event object.
+      
+--- SDL::SKK::Context#str
+      Returns input (Japanese) string.
+      
+--- SDL::SKK::Context#render_str(font,r,g,b)
+      Render the text.
+      
+=== SDL::SKK::Dictionary
+
+==== super class
+
+Object
+
+==== class method
+
+--- SDL::SKK::Dictionary.new
+      Creates the instance of ((<SDL::SKK::Dictionary>)).
+      The content of that is empty just after creating.
+      
+==== method
+
+--- SDL::SKK::Dictionary#load(dictfile,users)
+      Load dictionary from file.
+      If users is true, then this method regards it as user's dictionary.
+      
+--- SDL::SKK::Dictionary#save(filename)
+      Save user's dictionary.
+      
+=== SDL::SKK::RomKanaRuleTable
+
+This class represents the rule of conversion from Alphabet to Japanese kana.
+
+==== super class
+
+Object
+
+==== class method
+
+--- SDL::SKK::RomKanaRuleTable.new(table_file)
+      Create the instance of ((<SDL::SKK::RomKanaRuleTable>)) from rule file.
+      
+==== method
 
 =end
