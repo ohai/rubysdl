@@ -30,7 +30,7 @@ static VALUE sdl_get_autoLocking(VALUE mod)
 
 static VALUE  sdl_set_autoLocking(VALUE mod,VALUE bool)
 {
-  if(bool)
+  if(RTEST(bool))
     sge_Lock_ON();
   else
     sge_Lock_OFF();
