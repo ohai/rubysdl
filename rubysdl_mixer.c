@@ -63,11 +63,18 @@ static VALUE mix_querySpec(VALUE mod)
 static VALUE mix_playChannel(VALUE mod,VALUE channel,VALUE wave,VALUE loops)
 {
   Mix_Chunk *chunk;
+  int playing_channel;
+  
   if( ! rb_obj_is_kind_of(wave,cWave) )
     rb_raise(rb_eArgError,"type mismatch");
   Data_Get_Struct(wave,Mix_Chunk,chunk);
-  playing_wave[NUM2INT(channel)]=wave; /* to avoid gc problem */
-  return INT2FIX( Mix_PlayChannel(NUM2INT(channel),chunk,NUM2INT(loops) ) );
+  
+  playing_channel = Mix_PlayChannel(NUM2INT(channel),chunk,NUM2INT(loops) );
+  if( playing_channel == -1 ){
+    rb_raise( eSDLError, "couldn't play wave" );
+  }
+  playing_wave[playing_channel]=wave; /* to avoid gc problem */
+  return INT2FIX(playing_channel);
 }
 
 static VALUE mix_playing(VALUE mod,VALUE channel)
