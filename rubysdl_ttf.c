@@ -26,7 +26,7 @@ typedef SDL_Surface* (*RenderFunc)(TTF_Font *,const char *,SDL_Color,SDL_Color);
 static int ttf_initialized=0;
 static int ttf_finalized=0;
 
-static VALUE ttf_closeFont(TTF_Font *font)
+static void ttf_closeFont(TTF_Font *font)
 {
   if( !ttf_finalized )
     TTF_CloseFont(font);
@@ -51,6 +51,8 @@ static VALUE sdl_ttf_open(int argc, VALUE *argv, VALUE class)
 #else
     if( index != 0)
       rb_raise(rb_eRuntimeError,"Not supported for selecting indivisual font face by SDL_ttf. The feature is in SDL_ttf 2.0.4 or later.");
+    else
+      font=TTF_OpenFont( GETCSTR(filename),NUM2INT(size) );
 #endif
   if( font==NULL )
     rb_raise(eSDLError,"Couldn't open font %s: %s",GETCSTR(filename),
@@ -121,6 +123,35 @@ static VALUE sdl_ttf_sizeText(VALUE obj,VALUE text)
   TTF_SizeUTF8(font,GETCSTR(text),&w,&h);
   return rb_ary_new3(2,INT2FIX(w),INT2FIX(h));
 }
+
+static VALUE sdl_ttf_fontHeight(VALUE obj)
+{
+  TTF_Font *font;
+  Data_Get_Struct(obj,TTF_Font,font);
+  return INT2FIX(TTF_FontHeight(font));
+}
+
+static VALUE sdl_ttf_fontAscent(VALUE obj)
+{
+  TTF_Font *font;
+  Data_Get_Struct(obj,TTF_Font,font);
+  return INT2FIX(TTF_FontAscent(font));
+}
+
+static VALUE sdl_ttf_fontDescent(VALUE obj)
+{
+  TTF_Font *font;
+  Data_Get_Struct(obj,TTF_Font,font);
+  return INT2FIX(TTF_FontDescent(font));
+}
+
+static VALUE sdl_ttf_fontLineSkip(VALUE obj)
+{
+  TTF_Font *font;
+  Data_Get_Struct(obj,TTF_Font,font);
+  return INT2FIX(TTF_FontLineSkip(font));
+}
+
 static VALUE ttf_draw(VALUE obj,VALUE dest,VALUE text,VALUE x,
 		      VALUE y,VALUE fgr,VALUE fgg,VALUE fgb,
 		      VALUE bgr,VALUE bgg,VALUE bgb,RenderFunc render)
@@ -153,6 +184,7 @@ static VALUE ttf_draw(VALUE obj,VALUE dest,VALUE text,VALUE x,
   }
   return INT2NUM(result);
 }
+
 
 static SDL_Surface* ttf_wrap_RenderUTF8_Solid(TTF_Font *font,
 					      const char *text,
@@ -248,6 +280,11 @@ void init_ttf()
   rb_define_method(cTTF,"familyName",sdl_ttf_FontFaceFamilyName,0);
   rb_define_method(cTTF,"styleName",sdl_ttf_FontFaceStyleName,0);
 
+  rb_define_method(cTTF,"height",sdl_ttf_fontHeight,0);
+  rb_define_method(cTTF,"ascent",sdl_ttf_fontAscent,0);
+  rb_define_method(cTTF,"descent",sdl_ttf_fontDescent,0);
+  rb_define_method(cTTF,"lineSkip",sdl_ttf_fontLineSkip,0);
+  
   rb_define_method(cTTF,"drawSolidUTF8",sdl_ttf_drawSolidUTF8,7);
   rb_define_method(cTTF,"drawBlendedUTF8",sdl_ttf_drawBlendedUTF8,7);
   rb_define_method(cTTF,"drawShadedUTF8",sdl_ttf_drawShadedUTF8,10);
