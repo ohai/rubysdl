@@ -47,22 +47,26 @@ static VALUE skk_get_encoding(VALUE mod)
 
 
 static VALUE skk_Context_new(VALUE class,VALUE dict,VALUE rule_table,
-			     VALUE use_minibuffer )
+			     VALUE keybind, VALUE use_minibuffer )
 {
   SDLSKK_Context* c_context;
   SDLSKK_RomKanaRuleTable* c_table;
   SDLSKK_Dictionary* c_dict;
+  SDLSKK_Keybind* c_bind;
   VALUE context;
   
   if( !rb_obj_is_kind_of(dict,cDictionary) )
     rb_raise(rb_eArgError,"type mismatch(expect SDL::SKK::Dictionary)");
   if( !rb_obj_is_kind_of(rule_table,cRomKanaRuleTable) )
     rb_raise(rb_eArgError,"type mismatch(expect SDL::SKK::RomKanaRuleTable)");
-
+  if( !rb_obj_is_kind_of(keybind,cKeybind) )
+    rb_raise(rb_eArgError,"type mismatch(expect SDL::SKK::Keybind)");
+  
   Data_Get_Struct(dict,SDLSKK_Dictionary,c_dict);
   Data_Get_Struct(rule_table,SDLSKK_RomKanaRuleTable,c_table);
-
-  c_context = SDLSKK_Context_new( c_dict, c_table, RTEST(use_minibuffer) );
+  Data_Get_Struct(keybind,SDLSKK_Keybind,c_bind);
+  
+  c_context = SDLSKK_Context_new( c_dict, c_table, c_bind, RTEST(use_minibuffer) );
   if( c_context == NULL )
     rb_raise(eSDLError,"Couldn't create Context");
 
@@ -172,6 +176,15 @@ static VALUE skk_Context_clear(VALUE obj)
   return Qnil;
 }
 
+static VALUE skk_Context_clear_text(VALUE obj)
+{
+  SDLSKK_Context* context;
+  
+  Data_Get_Struct(obj,SDLSKK_Context,context);
+  SDLSKK_Context_clear_text(context);
+  return Qnil;
+}
+
 static VALUE skk_Dictionary_new(VALUE class)
 {
   SDLSKK_Dictionary* dict;
@@ -219,6 +232,37 @@ static VALUE skk_RomKanaRuleTable_new(VALUE class,VALUE table_file)
   return Data_Wrap_Struct(class,0,SDLSKK_RomKanaRuleTable_delete,rule_table);
 }
 
+static VALUE skk_Keybind_new(VALUE class)
+{
+  return Data_Wrap_Struct(class,0,SDLSKK_Keybind_delete,SDLSKK_Keybind_new());
+}
+
+static VALUE skk_Keybind_set_key(VALUE obj,VALUE key_str,VALUE cmd_str)
+{
+  SDLSKK_Keybind* keybind;
+  
+  Data_Get_Struct(obj,SDLSKK_Keybind,keybind);
+  SDLSKK_Keybind_set_key(keybind,STR2CSTR(key_str),STR2CSTR(cmd_str));
+  return Qnil;
+}
+
+static VALUE skk_Keybind_set_default_key(VALUE obj)
+{
+  SDLSKK_Keybind* keybind;
+  
+  Data_Get_Struct(obj,SDLSKK_Keybind,keybind);
+  SDLSKK_Keybind_set_default_key(keybind);
+}
+
+static VALUE skk_Keybind_unset_key(VALUE obj,VALUE key_str)
+{
+  SDLSKK_Keybind* keybind;
+  
+  Data_Get_Struct(obj,SDLSKK_Keybind,keybind);
+  SDLSKK_Keybind_unset_key(keybind,STR2CSTR(key_str));
+  return Qnil;
+}
+
 static void defineConstForSDLSKK(void)
 {
   rb_define_const(mSDLSKK,"EUCJP",INT2NUM(SDLSKK_EUCJP));
@@ -233,17 +277,19 @@ void init_sdlskk(void)
   cDictionary = rb_define_class_under(mSDLSKK,"Dictionary",rb_cObject);
   cRomKanaRuleTable = rb_define_class_under(mSDLSKK,"RomKanaRuleTable",
 					    rb_cObject);
-
+  cKeybind = rb_define_class_under(mSDLSKK,"Keybind",rb_cObject);
+  
   rb_define_module_function(mSDLSKK,"encoding=",skk_set_encoding,1);
   rb_define_module_function(mSDLSKK,"encoding",skk_get_encoding,0);
   
-  rb_define_singleton_method(cContext,"new",skk_Context_new,3);
+  rb_define_singleton_method(cContext,"new",skk_Context_new,4);
   rb_define_method(cContext,"input",skk_Context_input_event,1);
   rb_define_method(cContext,"str",skk_Context_get_str,0);
   rb_define_method(cContext,"render_str",skk_Context_render_str,4);
   rb_define_method(cContext,"render_minibuffer_str",skk_Context_render_minibuffer_str,4);
   rb_define_method(cContext,"get_basic_mode",skk_Context_get_basic_mode,0);
   rb_define_method(cContext,"clear",skk_Context_clear,0);
+  rb_define_method(cContext,"clear_text",skk_Context_clear_text,0);
   
   rb_define_singleton_method(cDictionary,"new",skk_Dictionary_new,0);
   rb_define_method(cDictionary,"load",skk_Dict_load,2);
@@ -252,6 +298,11 @@ void init_sdlskk(void)
   rb_define_singleton_method(cRomKanaRuleTable,"new",
 			     skk_RomKanaRuleTable_new,1);
 
+  rb_define_singleton_method(cKeybind,"new",skk_Keybind_new,0);
+  rb_define_method(cKeybind,"set_key",skk_Keybind_set_key,2);
+  rb_define_method(cKeybind,"set_default_key",skk_Keybind_set_default_key,0);
+  rb_define_method(cKeybind,"unset_key",skk_Keybind_unset_key,1);
+  
   SDLSKK_set_error_func(skk_error_handler);
   
   defineConstForSDLSKK();

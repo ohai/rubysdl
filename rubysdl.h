@@ -52,6 +52,7 @@ GLOBAL VALUE mSDLSKK;
 GLOBAL VALUE cContext;
 GLOBAL VALUE cDictionary;
 GLOBAL VALUE cRomKanaRuleTable;
+GLOBAL VALUE cKeybind;
 
 #ifdef HAVE_SGE
 GLOBAL VALUE cCollisionMap;
