@@ -1325,6 +1325,19 @@ Object
       This method is defferent from drawSolidUTF8 in that this method
       fills the background of text with specified color.
 
+--- SDL::TTF#renderSolidUTF8(text,r,g,b)
+      Draws text on the new surface and returns it.
+      If this method fails to render, you'll get nil.
+      This method draws text like drawSolidUTF8.
+      
+--- SDL::TTF#renderBlendedUTF8(text,r,g,b)
+      Same as ((<SDL::TTF#renderSolidUTF8>)), but this method draws
+      like ((<SDL::TTF#drawBlendedUTF8>)).
+      
+--- SDL::TTF#renderShadedUTF8(text,fg_r,fg_g,fg_b,bg_r,bg_g,bg_b)
+      Same as ((<SDL::TTF#renderSolidUTF8>)), but this method draws
+      like ((<SDL::TTF#drawShadedUTF8>)).
+      
 == MPEG stream
 
 Needs SMPEG library.

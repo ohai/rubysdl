@@ -1341,6 +1341,18 @@ Object
       drawSolidUTF8と同様。字を書いた部分の後側がbg_r,bg_g,bg_bで指定した
       色で塗り潰されることがdrawSolidUTF8と異なる。
 
+--- SDL::TTF#renderSolidUTF8(text,r,g,b)
+      drawSolidUTF8で描画される文字が描かれたサーフェスを生成する。
+      失敗時にはnilを返す。
+            
+--- SDL::TTF#renderBlendedUTF8(text,r,g,b)
+      ((<SDL::TTF#renderSolidUTF8>))と同様、drawSolidUTF8が
+      drawBlendedUTF8になる。
+      
+--- SDL::TTF#renderShadedUTF8(text,fg_r,fg_g,fg_b,bg_r,bg_g,bg_b)
+      ((<SDL::TTF#renderSolidUTF8>))と同様、drawSolidUTF8が
+      drawShadedUTF8になる。
+      
 == MPEG再生処理
 
 この機能はsmpegというライブラリによって提供されている。
