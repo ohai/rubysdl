@@ -24,6 +24,38 @@
 #include "rubysdl.h"
 #include <signal.h>
 #include <stdio.h>
+
+/* declaration of initialize functions */
+void init_video();
+#ifdef HAVE_SGE
+void init_sge_video();
+#endif
+#ifdef DEF_OPENGL
+void init_opengl();
+#ifdef INIT_OGLMODULE_FROM_SDL
+void Init_opengl();
+#endif
+#endif
+#ifdef HAVE_SDL_IMAGE
+void init_sdl_image();
+#endif
+void init_event();
+#ifdef DEF_EVENT2
+void init_event2();
+#endif
+void init_keyEvent();
+void init_mouse();
+void init_joystick();
+void init_cdrom();
+void init_time();
+void init_wm();
+#ifdef HAVE_SDL_TTF
+void init_ttf();
+#endif
+#ifdef HAVE_SDL_MIXER
+  init_mixer();
+#endif
+
 static void sdl_quit();
 static VALUE sdl_init(VALUE obj,VALUE flags)
 {
