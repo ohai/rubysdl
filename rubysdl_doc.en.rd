@@ -542,6 +542,14 @@ Object
 ==== class method
 
 --- SDL::Event.new
+      Create a new ((<SDL::Event>)) Object. 
+
+--- SDL::Event.appState
+      Returns the current state of the application. The value returned
+      is a bitwise combination of:
+        SDL::Event::APPMOUSEFOCUS
+        SDL::Event::APPINPUTFOCUS
+        SDL::Event::APPACTIVE
 
 ==== method
 
@@ -930,10 +938,12 @@ Object
 === class method
 
 --- SDL::Joystick.pall
-      Return whether Joystick.updateAll are called automatically.
+      Return whether Joystick.updateAll is called automatically.
       
 --- SDL::JoyStick.pall=(polling)
-      Set whether Joystick.updateAll are called automatically.
+      Set whether Joystick.updateAll is called automatically and
+      whether joystick events are processed.
+      Default is true, and you shouldn't change.
 
 --- SDL::Joystick.num
       Returns the number of attached joysticks.

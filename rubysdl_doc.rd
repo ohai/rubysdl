@@ -567,6 +567,13 @@ Object
 ==== クラスメソッド
 
 --- SDL::Event.new
+      新しい((<SDL::Event>))のオブジェクトを生成する。
+
+--- SDL::Event.appState
+      現在のアプリケーションの状態を返す。返値は以下の値のORをとったもの。
+        SDL::Event::APPMOUSEFOCUS
+        SDL::Event::APPINPUTFOCUS
+        SDL::Event::APPACTIVE
 
 ==== メソッド
 
@@ -969,7 +976,10 @@ Object
       
 --- SDL::Joystick.pall=(polling)
       イベントのpollingに合わせて、((<SDL::Joystick.updateAll>))を呼びだす
-      かどうかを設定する。
+      かどうかを設定する。またこれをfalseにすると((<SDL::Event#poll>))
+      などからジョイスティックの情報を得ることができなくなる。
+      これはデフォルトではtrueに設定されている。これは変更しないことを
+      推奨する。
 
 --- SDL::Joystick.num
       利用可能なジョイスティックの数を返す。
