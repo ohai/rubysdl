@@ -10,11 +10,13 @@
   * ((<Screen>))
 * ((<PixelFormat>))
 * ((<Event>))
+* ((<Key>)) (module)
+* ((<Mouse>)) (module)
 * ((<Mixer>)) (module)
 * ((<Mixer::Wave>))
 * ((<WM>)) (module)
-* ((<Key>)) (module)
-* ((<Mouse>)) (module)
+* ((<CD>))
+* ((<JoyStick>))
 * ((<TTF>))
 
 == Error
@@ -39,7 +41,7 @@ StandardError
 
 == video関連
 
-一部の機能は、SGEライブラリが必要です。
+一部の機能は、SGEライブラリが必要である。
 
 === SDL内のモジュール関数
 
@@ -53,10 +55,17 @@ StandardError
       注意するように。下の2つの関数も同様である。
       これは、blitSurfaceに合わせたためである。
       また、この仕様は変更する可能性がある。
+      また、ColorKeyは無視される。
 
 --- rotateScaled(src,dst,x,y,angle,scale)
 
 --- rotate(src,dst,x,y,angle)
+
+--- rotateScaledBlit(src,dst,x,y,angle,scale)
+      SGEが必要
+      ColorKeyは有効となる。
+
+--- rotateBlit(src,dst,x,y,angle)
 
 === Surface
 
@@ -71,6 +80,9 @@ Object
 --- Surface.new(flag,w,h,format)
 
 --- Surface.loadBMP(filename)
+
+--- Surface.load(filename)
+      SDL_imageが必要
 
 ==== メソッド
 
@@ -121,7 +133,7 @@ Object
       
 === Screen
 
-ここにかきこまれた画像が画面に表示されます。
+ここにかきこまれた画像が画面に表示される。
 このクラスはただ一つしか生成できないようになっていて、
 SDL::setVideoModeによってのみ生成される。
 実際には、このようなクラスは存在せず、Surfaceに以下の特異メソッドを追加した
@@ -302,6 +314,87 @@ Window関連の処理をまとめたモジュール
 
 --- iconify
 
+== CDROM関係
+
+=== CD
+
+CDROMドライブを表すクラス
+CD#numTrack等の情報はCD#statusを呼びだすことによって更新される。
+
+=== スーパークラス
+
+Object
+
+=== クラスメソッド
+
+--- CD.numDrive
+
+--- CD.name(drive)
+
+--- CD.open(drive)
+
+=== メソッド
+
+--- CD#status
+
+--- CD#play(start,length)
+
+--- CD#playTrack(start_track,start_frame,ntracks,nframes)
+
+--- CD#pause
+
+--- CD#resume
+
+--- CD#stop
+
+--- CD#eject
+
+--- CD#numTracks
+
+--- CD#currentTrack
+
+--- CD#currentFrame
+
+== ジョイスティック関連
+
+=== JoyStick
+
+一つのジョイスティックを表すクラス
+
+=== スーパークラス
+
+Object
+
+=== クラスメソッド
+
+--- JoyStick.num
+
+--- JoyStick.name(index)
+
+--- JoyStick.open(index)
+
+--- JoyStick.open?(index)
+
+--- JoyStick.updateAll
+
+=== メソッド
+
+--- JoyStick#index
+
+--- JoyStick#numAxes
+
+--- JoyStick#numBalls
+
+--- JoyStick#numButtons
+
+--- JoyStick#axis(axis)
+
+--- JoyStick#hat(hat)
+
+--- JoyStick#button(button)
+
+--- JoyStick#ball(ball)
+
 == フォント関係
 
 === TTF
@@ -328,4 +421,8 @@ Object
       selfのフォント設定でdest(Surfaceのインスタンス)にString textを
       destの位置(x,y)の所に書きこむ。色はr,g,bで決められる。
       透明色(ColorKey)は有効である。textはUTF-8を使う。
+
+--- TTF#drawBlendedUTF8(dest,text,x,y,r,g,b)
+      drawSolidUTF8と同様。drawSolidUTF8よりも高品質な描画ができる。
+
 =end
