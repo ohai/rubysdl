@@ -21,7 +21,7 @@
 
 static VALUE sdl_getJoyPolling(VALUE class)
 {
-  return TORF(SDL_JoystickEventState(SDL_QUERY)==SDL_ENABLE);
+  return BOOL(SDL_JoystickEventState(SDL_QUERY)==SDL_ENABLE);
 }
 static VALUE sdl_setJoyPolling(VALUE class,VALUE poll)
 {
