@@ -1550,11 +1550,43 @@ Object
 
 == Font handling
 
-This needs SDL_ttf.
+=== SDL::BMFont
 
+The class handles BitMap Font. This needs SGE.
+
+==== super class
+
+Object
+
+==== class method
+
+--- SDL::BMFont.open(filename,flags)
+      Open a font file and create a bitmap font object.
+      * SDL::BMFont::TRANSPARENT
+          Transparent(Should usually be set)
+      * SDL::BMFont::NOCONVERT
+      * SDL::BMFont::SFONT
+      * SDL::BMFont::PALETTE
+
+==== method
+--- SDL::BMFont#setColor(r,g,b)
+--- SDL::BMFont#set_color
+      Changes the color of the font.
+      This doesn't work on 'color font' or sfont.
+
+--- SDL::BMFont#height
+      Get the height of the font.
+      
+--- SDL::BMFont#width
+      Get the width of the font.
+      
+--- SDL::BMFont#textout(surface,string,x,y)
+      Render the given string on surface. (x,y) is the position
+      of the left top corner.
+      
 === SDL::TTF
 
-The class handles True Type Font.
+The class handles True Type Font. This needs SDL_ttf.
 
 ==== super class
 

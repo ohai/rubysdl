@@ -1559,6 +1559,40 @@ Object
 
 == フォント関係
 
+=== SDL::BMFont
+ビットマップフォントを表すクラス
+
+==== スーパークラス
+
+Object
+
+==== クラスメソッド
+
+--- SDL::BMFont.open(filename,flags)
+      ビットマップフォントをファイルから読み出す。
+      flagsは以下のもののORを与える
+      * SDL::BMFont::TRANSPARENT
+          setColorKeyで透明色を適当に設定する
+      * SDL::BMFont::NOCONVERT
+      * SDL::BMFont::SFONT
+          sfontを使う
+      * SDL::BMFont::PALETTE
+
+==== メソッド
+--- SDL::BMFont#setColor
+--- SDL::BMFont#set_color
+      フォントの色を設定する。sfontや色付きフォントには使えない。
+      
+--- SDL::BMFont#height
+      文字の高さを得る
+      
+--- SDL::BMFont#width
+      文字の幅を得る
+      
+--- SDL::BMFont#textout(surface,string,x,y)
+      ((|string|))を((|surface|))に描画する。
+      ((|x|)),((|y|))は描画位置の左上となる。
+      
 === SDL::TTF
 
 ＴｒｕｅＴｙｐｅフォントを表すクラス
