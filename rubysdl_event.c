@@ -309,20 +309,6 @@ static void defineConstForEvent()
 
 }
 
-static VALUE sdl_event2_enableUNICODE(VALUE class)
-{
-  SDL_EnableUNICODE(1);
-  return Qnil;
-}
-static VALUE sdl_event2_disableUNICODE(VALUE class)
-{
-  SDL_EnableUNICODE(0);
-  return Qnil;
-}
-static VALUE sdl_event2_is_enableUNICODE(VALUE class)
-{
-  return BOOL(SDL_EnableUNICODE(-1));
-}
 
 void init_event()
 {
