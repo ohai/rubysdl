@@ -2,10 +2,15 @@
 #include "rubysdl.h"
 #include <SDL_ttf.h>
 
+typedef SDL_Surface* (*RenderFunc)(TTF_Font *,const char *,SDL_Color);
+
+static int ttf_initialized=0;
+
 static VALUE sdl_ttf_init(VALUE class)
 {
   if( TTF_Init()== -1 )
     rb_raise(eSDLError,"Couldn't initialize TTF engine: %s",TTF_GetError());
+  ttf_initialized=1;
   return Qnil;
 }
 static VALUE sdl_ttf_open(VALUE class,VALUE filename,VALUE size)
@@ -30,8 +35,8 @@ static VALUE sdl_ttf_setFontStyle(VALUE obj,VALUE style)
   TTF_SetFontStyle(font,NUM2UINT(style));
   return Qnil;
 }
-static VALUE sdl_ttf_drawSolidUTF8(VALUE obj,VALUE dest,VALUE text,VALUE x,
-				   VALUE y,VALUE r,VALUE g,VALUE b)
+static VALUE ttf_draw(VALUE obj,VALUE dest,VALUE text,VALUE x,
+		      VALUE y,VALUE r,VALUE g,VALUE b,RenderFunc render)
 {
   TTF_Font *font;
   SDL_Surface *destSurface, *tmpSurface;
@@ -39,7 +44,7 @@ static VALUE sdl_ttf_drawSolidUTF8(VALUE obj,VALUE dest,VALUE text,VALUE x,
   SDL_Rect destRect;
   int result;
   char *ctext=STR2CSTR(text);
-  /* If text=="" , TTF_RenderUTF8_Solid() fail to render */
+  /* If text=="" , TTF_RenderUTF8_Solid() and etc fail to render */
   if( ctext[0]=='\0' )return INT2FIX(0);
   
   if( !rb_obj_is_kind_of( dest,cSurface ) )
@@ -49,7 +54,7 @@ static VALUE sdl_ttf_drawSolidUTF8(VALUE obj,VALUE dest,VALUE text,VALUE x,
   fg.r=NUM2UINT(r); fg.g=NUM2UINT(g); fg.b=NUM2UINT(b);
   SetRect(destRect,x,y,1,1);
   
-  tmpSurface=TTF_RenderUTF8_Solid(font,ctext,fg);
+  tmpSurface=render(font,ctext,fg);
   if( tmpSurface==NULL )
     rb_raise(eSDLError,"Text Render fail: %s",TTF_GetError());
   
@@ -59,6 +64,17 @@ static VALUE sdl_ttf_drawSolidUTF8(VALUE obj,VALUE dest,VALUE text,VALUE x,
     rb_raise(eSDLError,"SDL_BlitSurface fail: %s",SDL_GetError());
   }
   return INT2NUM(result);
+}
+
+static VALUE sdl_ttf_drawSolidUTF8(VALUE obj,VALUE dest,VALUE text,VALUE x,
+				   VALUE y,VALUE r,VALUE g,VALUE b)
+{
+  return ttf_draw(obj,dest,text,x,y,r,g,b,TTF_RenderUTF8_Solid);
+}
+static VALUE sdl_ttf_drawBlendedUTF8(VALUE obj,VALUE dest,VALUE text,VALUE x,
+				   VALUE y,VALUE r,VALUE g,VALUE b)
+{
+  return ttf_draw(obj,dest,text,x,y,r,g,b,TTF_RenderUTF8_Blended);
 }
 
 static void defineConstForTTF()
@@ -77,8 +93,14 @@ void init_ttf()
   rb_define_method(cTTF,"style=",sdl_ttf_setFontStyle,1);
   
   rb_define_method(cTTF,"drawSolidUTF8",sdl_ttf_drawSolidUTF8,7);
+  rb_define_method(cTTF,"drawBlendedUTF8",sdl_ttf_drawBlendedUTF8,7);
   
   defineConstForTTF();
+}
+void quit_ttf()
+{
+  if(ttf_initialized)
+    TTF_Quit();
 }
 
 #endif /* HAVE_SDL_TTF */
