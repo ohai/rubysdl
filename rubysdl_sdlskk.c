@@ -118,7 +118,7 @@ static VALUE skk_Context_render_str(VALUE obj,VALUE font,VALUE r,VALUE g,
   return Data_Wrap_Struct(cSurface,0,SDL_FreeSurface,surface);  
 }
 
-static VALUE skk_Dictionary_new(VALUE class,VALUE dict_file)
+static VALUE skk_Dictionary_new(VALUE class)
 {
   SDLSKK_Dictionary* dict;
 
