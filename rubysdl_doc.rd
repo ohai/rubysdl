@@ -631,7 +631,8 @@ Object
 
 === Mixer::Music
 
-音楽(.mod .s3m .it .xm)を表す。
+音楽(.mod .s3m .it .xm .mid .mp3)を表す。
+ただしmidiファイルやMP3を演奏するためにはそのための設定が必要。
 
 ==== スーパークラス
 
