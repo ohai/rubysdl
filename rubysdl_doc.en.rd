@@ -411,7 +411,8 @@ singleton methods.
 
 === SDL::PixelFormat
 
-((<SDL::Surface>)) has all methods of ((<SDL::PixelFormat>)),
+((<SDL::Surface>)) has all methods of ((<SDL::PixelFormat>)).
+This class is obsolete,
 and you should use ((<SDL::Surface>)) instead of ((<SDL::PixelFormat>)).
 
 In SDL you can use some type surface,for example 32bit color surface and
@@ -419,8 +420,8 @@ In SDL you can use some type surface,for example 32bit color surface and
 object of PixelFormat represents this information.
 
 In this lib,you use one integer to specify color.To change from r,g,b value
-to this integer you use ((<PixelFormat#mapRGB>)) and to change this integer
-to r,g,b value ((<PixelFormat#getRGB>))
+to this integer you use ((<SDL::PixelFormat#mapRGB>)) and to change this integer
+to r,g,b value ((<SDL::PixelFormat#getRGB>))
 
 ==== super class
 

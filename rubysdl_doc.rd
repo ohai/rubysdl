@@ -287,7 +287,7 @@ Object
 
 --- SDL::Surface#format
       selfのpixel formatを返す。
-      詳しくは((<PixelFormat>))を参照。
+      詳しくは((<SDL::PixelFormat>))を参照。
 
 --- SDL::Surface#put(image,x,y)
       selfの位置(x,y)にimageを描画する。
@@ -425,7 +425,7 @@ Object
 === SDL::PixelFormat
 
 このクラスの機能はすべて((<SDL::Surface>))にうつされた。そちらを使用したほうが
-よい。
+よい。このクラスは互換性のために残してある。
 
 SDL_PixelFormatのラッパークラス。
 ((<SDL::Surface#format>))で取得できる。
@@ -457,14 +457,14 @@ Object
       pixelの値を返す。
 
 --- SDL::PixelFormat#mapRGBA(r,g,b,a)
-      ((<PixelFormat#mapRGB>))と同様。ただしアルファ値も含めることができる。
+      ((<SDL::PixelFormat#mapRGB>))と同様。ただしアルファ値も含めることができる。
 
 --- SDL::PixelFormat#getRGB(pixel)
-      ((<PixelFormat#mapRGB>))と逆の変換をする。返り値は [r,g,b]
+      ((<SDL::PixelFormat#mapRGB>))と逆の変換をする。返り値は [r,g,b]
       という内容の配列を返す。
 
 --- SDL::PixelFormat#getRGBA(pixel)
-      ((<PixelFormat#getRGB>))と同様。ただし返り値にアルファも含んでいる。
+      ((<SDL::PixelFormat#getRGB>))と同様。ただし返り値にアルファも含んでいる。
       返り値は[r,g,b,a]という内容の配列である。
 
 --- SDL::PixelFormat#bpp
