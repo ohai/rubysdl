@@ -1,0 +1,32 @@
+module SDL
+	init
+
+	blitSurface
+
+	class Surface
+		loadBMP
+		displayFormat
+		setColorKey
+		fillRect
+	class Screen
+		setVideoMode
+		updateRect
+
+
+	正しくないmethodが呼ばれたときは例外を発生させる。	
+	class Event
+		new
+		pollEvent
+		type
+		
+		scancode
+		keysym
+		mod
+
+		gain?
+		state
+
+		
+		
+		
+		
