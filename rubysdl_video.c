@@ -46,7 +46,7 @@ static VALUE sdl_createSurface(VALUE class,VALUE flags,VALUE w,VALUE h,
   if( newSurface==NULL ){
     rb_raise( eSDLError,"Couldn't Create Surface: %s",SDL_GetError() );
   }
-  return Data_Wrap_Struct( class,0,SDL_FreeSurface,newSurface );
+  return Data_Wrap_Struct(class,0,SDL_FreeSurface,newSurface);
 }
 				    
 static VALUE sdl_loadBMP(VALUE class,VALUE filename)
@@ -194,7 +194,7 @@ void init_video()
   
   cSurface = rb_define_class_under(mSDL,"Surface",rb_cObject);
 
-  rb_define_singleton_method(cSurface,"initialize",sdl_createSurface,4);
+  rb_define_singleton_method(cSurface,"new",sdl_createSurface,4);
   rb_define_singleton_method(cSurface,"loadBMP",sdl_loadBMP,1);
   rb_define_method(cSurface,"displayFormat",sdl_displayFormat,0);
   rb_define_method(cSurface,"setColorKey",sdl_setColorKey,2);
