@@ -58,12 +58,55 @@ static VALUE sdl_drawLine(VALUE obj,VALUE x1,VALUE y1,VALUE x2,VALUE y2,VALUE co
 	    VALUE2COLOR(color,surface->format) );
   return Qnil;
 }
+static VALUE sdl_drawAALine(VALUE obj,VALUE x1,VALUE y1,VALUE x2,VALUE y2,VALUE color)
+{
+  SDL_Surface *surface;
+  Data_Get_Struct(obj,SDL_Surface,surface);
+  sge_AALine( surface,NUM2INT(x1),NUM2INT(y1),NUM2INT(x2),NUM2INT(y2),
+	    VALUE2COLOR(color,surface->format) );
+  return Qnil;
+}
+static VALUE sdl_drawLineAlpha(VALUE obj,VALUE x1,VALUE y1,VALUE x2,VALUE y2,VALUE color,VALUE alpha)
+{
+  SDL_Surface *surface;
+  Data_Get_Struct(obj,SDL_Surface,surface);
+  sge_LineAlpha( surface,NUM2INT(x1),NUM2INT(y1),NUM2INT(x2),NUM2INT(y2),
+                 VALUE2COLOR(color,surface->format), NUM2UINT(alpha) );
+  return Qnil;
+}
+static VALUE sdl_drawAALineAlpha(VALUE obj,VALUE x1,VALUE y1,VALUE x2,VALUE y2,VALUE color,VALUE alpha)
+{
+  SDL_Surface *surface;
+  Data_Get_Struct(obj,SDL_Surface,surface);
+  sge_AALineAlpha( surface,NUM2INT(x1),NUM2INT(y1),NUM2INT(x2),NUM2INT(y2),
+                   VALUE2COLOR(color,surface->format),NUM2UINT(alpha) );
+  return Qnil;
+}
+
 static VALUE sdl_drawRect(VALUE obj,VALUE x,VALUE y,VALUE w,VALUE h,VALUE color)
 {
   SDL_Surface *surface;
   Data_Get_Struct(obj,SDL_Surface,surface);
   sge_Rect( surface,NUM2INT(x),NUM2INT(y),NUM2INT(x)+NUM2INT(w),
 	    NUM2INT(y)+NUM2INT(h),VALUE2COLOR(color,surface->format) );
+  return Qnil;
+}
+static VALUE sdl_drawRectAlpha(VALUE obj,VALUE x,VALUE y,VALUE w,VALUE h,VALUE color,VALUE alpha)
+{
+  SDL_Surface *surface;
+  Data_Get_Struct(obj,SDL_Surface,surface);
+  sge_RectAlpha( surface,NUM2INT(x),NUM2INT(y),NUM2INT(x)+NUM2INT(w),
+                 NUM2INT(y)+NUM2INT(h),VALUE2COLOR(color,surface->format),
+                 NUM2UINT(alpha) );
+  return Qnil;
+}
+static VALUE sdl_drawFilledRectAlpha(VALUE obj,VALUE x,VALUE y,VALUE w,VALUE h,VALUE color,VALUE alpha)
+{
+  SDL_Surface *surface;
+  Data_Get_Struct(obj,SDL_Surface,surface);
+  sge_FilledRectAlpha( surface,NUM2INT(x),NUM2INT(y),NUM2INT(x)+NUM2INT(w),
+                       NUM2INT(y)+NUM2INT(h),VALUE2COLOR(color,surface->format),
+                       NUM2UINT(alpha) );
   return Qnil;
 }
 static VALUE sdl_drawCircle(VALUE obj,VALUE x,VALUE y,VALUE r,VALUE color)
@@ -74,12 +117,53 @@ static VALUE sdl_drawCircle(VALUE obj,VALUE x,VALUE y,VALUE r,VALUE color)
 	      VALUE2COLOR(color,surface->format) );
   return Qnil;
 }
+static VALUE sdl_drawAACircle(VALUE obj,VALUE x,VALUE y,VALUE r,VALUE color)
+{
+  SDL_Surface *surface;
+  Data_Get_Struct(obj,SDL_Surface,surface);
+  sge_AACircle( surface,NUM2INT(x),NUM2INT(y),NUM2INT(r),
+	      VALUE2COLOR(color,surface->format) );
+  return Qnil;
+}
+static VALUE sdl_drawCircleAlpha(VALUE obj,VALUE x,VALUE y,VALUE r,VALUE color,VALUE alpha)
+{
+  SDL_Surface *surface;
+  Data_Get_Struct(obj,SDL_Surface,surface);
+  sge_CircleAlpha( surface,NUM2INT(x),NUM2INT(y),NUM2INT(r),
+                   VALUE2COLOR(color,surface->format),NUM2UINT(alpha) );
+  return Qnil;
+}
+static VALUE sdl_drawAACircleAlpha(VALUE obj,VALUE x,VALUE y,VALUE r,VALUE color,
+                                   VALUE alpha)
+{
+  SDL_Surface *surface;
+  Data_Get_Struct(obj,SDL_Surface,surface);
+  sge_AACircleAlpha( surface,NUM2INT(x),NUM2INT(y),NUM2INT(r),
+                     VALUE2COLOR(color,surface->format),NUM2UINT(alpha) );
+  return Qnil;
+}
 static VALUE sdl_drawFilledCircle(VALUE obj,VALUE x,VALUE y,VALUE r,VALUE color)
 {
   SDL_Surface *surface;
   Data_Get_Struct(obj,SDL_Surface,surface);
   sge_FilledCircle( surface,NUM2INT(x),NUM2INT(y),NUM2INT(r),
 		    VALUE2COLOR(color,surface->format) );
+  return Qnil;
+}
+static VALUE sdl_drawAAFilledCircle(VALUE obj,VALUE x,VALUE y,VALUE r,VALUE color)
+{
+  SDL_Surface *surface;
+  Data_Get_Struct(obj,SDL_Surface,surface);
+  sge_AAFilledCircle( surface,NUM2INT(x),NUM2INT(y),NUM2INT(r),
+		    VALUE2COLOR(color,surface->format) );
+  return Qnil;
+}
+static VALUE sdl_drawFilledCircleAlpha(VALUE obj,VALUE x,VALUE y,VALUE r,VALUE color,VALUE alpha)
+{
+  SDL_Surface *surface;
+  Data_Get_Struct(obj,SDL_Surface,surface);
+  sge_FilledCircleAlpha( surface,NUM2INT(x),NUM2INT(y),NUM2INT(r),
+                         VALUE2COLOR(color,surface->format),NUM2UINT(alpha) );
   return Qnil;
 }
 static VALUE sdl_drawEllipse(VALUE obj,VALUE x,VALUE y,VALUE rx,VALUE ry,
@@ -91,6 +175,33 @@ static VALUE sdl_drawEllipse(VALUE obj,VALUE x,VALUE y,VALUE rx,VALUE ry,
 	       VALUE2COLOR(color,surface->format) );
   return Qnil;
 }
+static VALUE sdl_drawAAEllipse(VALUE obj,VALUE x,VALUE y,VALUE rx,VALUE ry,
+			     VALUE color)
+{
+  SDL_Surface *surface;
+  Data_Get_Struct(obj,SDL_Surface,surface);
+  sge_AAEllipse( surface,NUM2INT(x),NUM2INT(y),NUM2INT(rx),NUM2INT(ry),
+	       VALUE2COLOR(color,surface->format) );
+  return Qnil;
+}
+static VALUE sdl_drawEllipseAlpha(VALUE obj,VALUE x,VALUE y,VALUE rx,VALUE ry,
+                                  VALUE color,VALUE alpha)
+{
+  SDL_Surface *surface;
+  Data_Get_Struct(obj,SDL_Surface,surface);
+  sge_EllipseAlpha( surface,NUM2INT(x),NUM2INT(y),NUM2INT(rx),NUM2INT(ry),
+                    VALUE2COLOR(color,surface->format),NUM2UINT(alpha) );
+  return Qnil;
+}
+static VALUE sdl_drawAAEllipseAlpha(VALUE obj,VALUE x,VALUE y,VALUE rx,VALUE ry,
+                                    VALUE color,VALUE alpha)
+{
+  SDL_Surface *surface;
+  Data_Get_Struct(obj,SDL_Surface,surface);
+  sge_AAEllipseAlpha( surface,NUM2INT(x),NUM2INT(y),NUM2INT(rx),NUM2INT(ry),
+                      VALUE2COLOR(color,surface->format),NUM2UINT(alpha) );
+  return Qnil;
+}
 static VALUE sdl_drawFilledEllipse(VALUE obj,VALUE x,VALUE y,VALUE rx,VALUE ry,
 				   VALUE color)
 {
@@ -100,6 +211,25 @@ static VALUE sdl_drawFilledEllipse(VALUE obj,VALUE x,VALUE y,VALUE rx,VALUE ry,
 		     VALUE2COLOR(color,surface->format) );
   return Qnil;
 }
+static VALUE sdl_drawAAFilledEllipse(VALUE obj,VALUE x,VALUE y,VALUE rx,VALUE ry,
+				   VALUE color)
+{
+  SDL_Surface *surface;
+  Data_Get_Struct(obj,SDL_Surface,surface);
+  sge_AAFilledEllipse( surface,NUM2INT(x),NUM2INT(y),NUM2INT(rx),NUM2INT(ry),
+		     VALUE2COLOR(color,surface->format) );
+  return Qnil;
+}
+static VALUE sdl_drawFilledEllipseAlpha(VALUE obj,VALUE x,VALUE y,VALUE rx,VALUE ry,
+                                        VALUE color,VALUE alpha)
+{
+  SDL_Surface *surface;
+  Data_Get_Struct(obj,SDL_Surface,surface);
+  sge_FilledEllipseAlpha( surface,NUM2INT(x),NUM2INT(y),NUM2INT(rx),NUM2INT(ry),
+                          VALUE2COLOR(color,surface->format),NUM2UINT(alpha) );
+  return Qnil;
+}
+
 static VALUE sdl_rotateScaledSurface(VALUE obj,VALUE angle,VALUE scale,VALUE bgcolor)
 {
   SDL_Surface *surface,*result;
@@ -292,6 +422,7 @@ void init_sge_video()
   rb_define_method(cSurface,"[]",sdl_getPixel,2);
   rb_define_method(cSurface,"[]=",sdl_putPixel,3);
 
+  /* primitive drawing */
   rb_define_method(cSurface,"drawLine",sdl_drawLine,5);
   rb_define_method(cSurface,"drawRect",sdl_drawRect,5);
   rb_define_method(cSurface,"drawCircle",sdl_drawCircle,4);
@@ -300,7 +431,29 @@ void init_sge_video()
   rb_define_method(cSurface,"drawFilledEllispe",sdl_drawFilledEllipse,5);
   rb_define_method(cSurface,"drawEllipse",sdl_drawEllipse,5);
   rb_define_method(cSurface,"drawFilledEllipse",sdl_drawFilledEllipse,5);
-  
+
+  /* antialiased primitive drawing */
+  rb_define_method(cSurface,"drawAALine",sdl_drawAALine,5);
+  rb_define_method(cSurface,"drawAACircle",sdl_drawAACircle,4);
+  rb_define_method(cSurface,"drawAAFilledCircle",sdl_drawAAFilledCircle,4);
+  rb_define_method(cSurface,"drawAAEllipse",sdl_drawAAEllipse,5);
+  rb_define_method(cSurface,"drawAAFilledEllipse",sdl_drawAAFilledEllipse,5);
+
+  /* primitive drawing with alpha */
+  rb_define_method(cSurface,"drawLineAlpha",sdl_drawLineAlpha,6);
+  rb_define_method(cSurface,"drawRectAlpha",sdl_drawRectAlpha,6);
+  rb_define_method(cSurface,"drawFilledRectAlpha",sdl_drawFilledRectAlpha,6);
+  rb_define_method(cSurface,"drawCircleAlpha",sdl_drawCircleAlpha,5);
+  rb_define_method(cSurface,"drawFilledCircleAlpha",sdl_drawFilledCircleAlpha,5);
+  rb_define_method(cSurface,"drawEllipseAlpha",sdl_drawEllipseAlpha,6);
+  rb_define_method(cSurface,"drawFilledEllipseAlpha",sdl_drawFilledEllipseAlpha,6);
+
+  /* antialiased primitive drawing with alpha */
+  rb_define_method(cSurface,"drawAALineAlpha",sdl_drawAALineAlpha,6);
+  rb_define_method(cSurface,"drawAACircleAlpha",sdl_drawAACircleAlpha,5);
+  rb_define_method(cSurface,"drawAAEllipseAlpha",sdl_drawAAEllipseAlpha,6);
+
+  /* rotation and scaling */
   rb_define_method(cSurface,"rotateScaledSurface",sdl_rotateScaledSurface,3);
   rb_define_module_function(mSDL,"rotateScaledBlit",sdl_rotateScaledBlit,6);
   rb_define_module_function(mSDL,"rotateXYScaled",sdl_rotateXYScaled,7);
@@ -308,6 +461,7 @@ void init_sge_video()
   rb_define_module_function(mSDL,"transform",sdl_transform,10);
   rb_define_method(cSurface,"transformSurface",sdl_transformSurface,5);
 
+  /* collision detection */
   rb_define_method(cSurface,"makeCollisionMap", sdl_makeCollisionMap, 0);
 
   cCollisionMap = rb_define_class_under(mSDL,"CollisionMap",cSurface);
