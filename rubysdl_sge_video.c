@@ -108,7 +108,7 @@ static VALUE sdl_rotateScaledSurface(VALUE obj,VALUE angle,VALUE scale,VALUE bgc
 				   VALUE2COLOR(bgcolor,surface->format) );
   if( result==NULL )
     rb_raise( eSDLError,"Couldn't Create Surface: %s",SDL_GetError() );
-  return Data_Wrap_Struct(cSurface,0,SDL_FreeSurface,result);
+  return Data_Wrap_Struct(cSurface,0,sdl_freeSurface,result);
 }
 /* doesn't respect ColorKey */
 static VALUE sdl_rotateXYScaled(VALUE mod,VALUE src,VALUE dst,VALUE x,
@@ -179,7 +179,7 @@ static VALUE sdl_transformSurface(VALUE obj,VALUE bgcolor,VALUE angle,
 				 NUM2DBL(yscale),NUM2UINT(flags));
   if( result==NULL )
     rb_raise( eSDLError,"Couldn't Create Surface: %s",SDL_GetError() );
-  return Data_Wrap_Struct(cSurface,0,SDL_FreeSurface,result);
+  return Data_Wrap_Struct(cSurface,0,sdl_freeSurface,result);
 }
 
 static void defineConstForSGE()

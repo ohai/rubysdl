@@ -140,7 +140,7 @@ static VALUE render_str(VALUE obj,VALUE font,VALUE r,VALUE g,VALUE b,
   if( surface == NULL )
     return Qnil;
 
-  return Data_Wrap_Struct(cSurface,0,SDL_FreeSurface,surface);  
+  return Data_Wrap_Struct(cSurface,0,sdl_freeSurface,surface);  
 }
 
 static VALUE skk_Context_render_str(VALUE obj,VALUE font,VALUE r,VALUE g,

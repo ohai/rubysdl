@@ -19,6 +19,13 @@
   */
 #include "rubysdl.h"
 
+void sdl_freeSurface(SDL_Surface* surface)
+{
+  if( !rubysdl_is_quit() ){
+    SDL_FreeSurface(surface);
+  }
+}
+
 Uint32 VALUE2COLOR(VALUE color,SDL_PixelFormat *format)
 {
   if( rb_obj_is_kind_of( color, rb_cArray ) ){
@@ -97,9 +104,6 @@ static VALUE sdl_getVideoInfo(VALUE mod)
   rb_iv_set(obj,"@blit_fill",BOOL(info->blit_fill));
   rb_iv_set(obj,"@video_mem",UINT2NUM(info->video_mem));
   rb_iv_set(obj,"@bpp",UINT2NUM(info->vfmt->BitsPerPixel));
-#if 0
-  rb_iv_set(obj,"@vfmt",Data_Wrap_Struct(cPixelFormat,0,0,info->vfmt));
-#endif
   return obj;
 }
 
@@ -210,7 +214,7 @@ static VALUE sdl_createSurface(VALUE class,VALUE flags,VALUE w,VALUE h,
   if( newSurface==NULL ){
     rb_raise( eSDLError,"Couldn't Create Surface: %s",SDL_GetError() );
   }
-  return Data_Wrap_Struct(class,0,SDL_FreeSurface,newSurface);
+  return Data_Wrap_Struct(class,0,sdl_freeSurface,newSurface);
 }
 				    
 static VALUE sdl_loadBMP(VALUE class,VALUE filename)
@@ -221,7 +225,7 @@ static VALUE sdl_loadBMP(VALUE class,VALUE filename)
     rb_raise(eSDLError,"Couldn't Load BMP file %s : %s",
 	     STR2CSTR(filename),SDL_GetError());
   }
-  return Data_Wrap_Struct(class,0,SDL_FreeSurface,image);
+  return Data_Wrap_Struct(class,0,sdl_freeSurface,image);
 }
 static VALUE sdl_saveBMP(VALUE obj,VALUE filename)
 {
@@ -241,7 +245,7 @@ static VALUE sdl_displayFormat(VALUE obj)
   if( destImage==NULL ){
     rb_raise(eSDLError,"Couldn't convert surface format: %s",SDL_GetError());
   }
-  return Data_Wrap_Struct(cSurface,0,SDL_FreeSurface,destImage);
+  return Data_Wrap_Struct(cSurface,0,sdl_freeSurface,destImage);
 }
 
 static VALUE sdl_displayFormatAlpha(VALUE obj)
@@ -252,7 +256,7 @@ static VALUE sdl_displayFormatAlpha(VALUE obj)
   if( destImage==NULL ){
     rb_raise(eSDLError,"Couldn't convert surface format: %s",SDL_GetError());
   }
-  return Data_Wrap_Struct(cSurface,0,SDL_FreeSurface,destImage);
+  return Data_Wrap_Struct(cSurface,0,sdl_freeSurface,destImage);
 }
 
 static VALUE sdl_setColorKey(VALUE obj,VALUE flag,VALUE key)
@@ -573,9 +577,7 @@ void init_video()
   rb_define_attr(cVideoInfo,"blit_fill",1,0);
   rb_define_attr(cVideoInfo,"video_mem",1,0);
   rb_define_attr(cVideoInfo,"bpp",1,0);
-#if 0
-  rb_define_attr(cVideoInfo,"vfmt",1,0);
-#endif
+
   
   rb_define_module_function(mSDL,"videoInfo",sdl_getVideoInfo,0);
   

@@ -205,7 +205,7 @@ static VALUE ttf_render(VALUE obj,VALUE text,VALUE fgr,VALUE fgg,VALUE fgb,
   if( surface == NULL )
     return Qnil;
 
-  return Data_Wrap_Struct(cSurface,0,SDL_FreeSurface,surface);
+  return Data_Wrap_Struct(cSurface,0,sdl_freeSurface,surface);
 }
 
 static VALUE sdl_ttf_renderSolidUTF8(VALUE obj,VALUE text,VALUE r,

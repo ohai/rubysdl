@@ -29,7 +29,7 @@ static VALUE sdl_load(VALUE class,VALUE filename)
     rb_raise(eSDLError,"Couldn't load %s: %s",STR2CSTR(filename),
 	     SDL_GetError());
   }
-  return Data_Wrap_Struct(class,0,SDL_FreeSurface,surface);
+  return Data_Wrap_Struct(class,0,sdl_freeSurface,surface);
 }
 
 void init_sdl_image()
