@@ -3,7 +3,7 @@ require 'mkmf'
 sdl_config = with_config('sdl-config', 'sdl-config')
 
 $CFLAGS += ' ' + `#{sdl_config} --cflags`.chomp
-$LDFLAGS += ' ' + `#{sdl_config} --libs`.chomp
+$LOCAL_LIBS += ' ' + `#{sdl_config} --libs`.chomp
 
 have_func("TTF_OpenFontIndex","SDL_ttf.h")
 have_func("TTF_FontFaces","SDL_ttf.h")
