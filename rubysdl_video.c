@@ -1,13 +1,5 @@
 #include "rubysdl.h"
 
-#define SetRect(Rect,X,Y,W,H) \
-do{ \
-  Rect.x=NUM2INT(X); \
-  Rect.y=NUM2INT(Y); \
-  Rect.w=NUM2INT(W); \
-  Rect.h=NUM2INT(H); \
-}while(0) \
-
 static VALUE sdl_warpMouse(VALUE mod,VALUE x,VALUE y)
 {
   SDL_WarpMouse( NUM2UINT(x),NUM2UINT(y) );
@@ -250,7 +242,12 @@ void init_video()
   rb_define_method(cSurface,"h",sdl_surfaceH,0);
   rb_define_method(cSurface,"w",sdl_surfaceW,0);
   rb_define_method(cSurface,"format",sdl_surface_format,0);
-  
+
+#if 0
+  rb_define_method(cSurface,"mustLock?",sdl_mustlock,0);
+  rb_define_method(cSurface,"lock",sdl_lockSurface,0);
+  rb_define_method(cSurface,"unlock",sdl_unlockSurface,0);
+#endif
   cPixelFormat = rb_define_class_under(mSDL,"PixelFormat",rb_cObject);
   rb_define_method(cPixelFormat,"mapRGB",sdl_format_mapRGB,3);
   rb_define_method(cPixelFormat,"mapRGBA",sdl_format_mapRGBA,4);
