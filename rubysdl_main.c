@@ -1,7 +1,7 @@
 /*
   Ruby/SDL   Ruby extension library for SDL
 
-  Copyright (C) 2001,2002 Ohbayashi Ippei
+  Copyright (C) 2001-2004 Ohbayashi Ippei
   
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
