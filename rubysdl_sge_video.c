@@ -238,21 +238,35 @@ static VALUE sdl_boundingBoxCheck(VALUE collisionMap1, VALUE x1, VALUE y1,
                cdata2, (Sint16) NUM2INT(x2), (Sint16) NUM2INT(y2)));
 }
 
-static VALUE sdl_set_cdata(VALUE obj, VALUE x, VALUE y, VALUE w, VALUE h)
+static VALUE sdl_set_cdata(VALUE obj, VALUE vx, VALUE vy, VALUE vw, VALUE vh)
 {
   sge_cdata * cdata = value_to_collision_map(obj);
-  sge_set_cdata(cdata, 
-                (Sint16) NUM2INT(x), (Sint16) NUM2INT(y),
-                (Sint16) NUM2INT(w), (Sint16) NUM2INT(h));
+  Sint16 x, y, w, h;
+  
+  x = NUM2INT(vx);
+  y = NUM2INT(vy);
+  w = NUM2INT(vw);
+  h = NUM2INT(vh);
+  if( x < 0 || y < 0 || x+w > cdata->w || y+h > cdata->h ){
+    rb_raise(eSDLError,"Couldn't clear that area");
+  }
+  sge_set_cdata(cdata, x, y, w, h );
   return Qnil;
 }
 
-static VALUE sdl_unset_cdata(VALUE obj, VALUE x, VALUE y, VALUE w, VALUE h)
+static VALUE sdl_unset_cdata(VALUE obj, VALUE vx, VALUE vy, VALUE vw, VALUE vh)
 {
   sge_cdata * cdata = value_to_collision_map(obj);
-  sge_unset_cdata(cdata, 
-                  (Sint16) NUM2INT(x), (Sint16) NUM2INT(y),
-                  (Sint16) NUM2INT(w), (Sint16) NUM2INT(h));
+  Sint16 x, y, w, h;
+  
+  x = NUM2INT(vx);
+  y = NUM2INT(vy);
+  w = NUM2INT(vw);
+  h = NUM2INT(vh);
+  if( x < 0 || y < 0 || x+w > cdata->w || y+h > cdata->h ){
+    rb_raise(eSDLError,"Couldn't clear that area");
+  }
+  sge_unset_cdata(cdata, x, y, w, h);
   return Qnil;
 }
 
