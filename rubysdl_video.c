@@ -14,17 +14,39 @@ static VALUE sdl_warpMouse(VALUE mod,VALUE x,VALUE y)
   return Qnil;
 }
 
-static VALUE sdl_setVideoMode(VALUE class,VALUE w,VALUE h,VALUE bpp,
+static VALUE sdl_updateRect(VALUE obj,VALUE x,VALUE y,VALUE w,VALUE h)
+{
+  SDL_Surface *screen;
+  Data_Get_Struct(obj,SDL_Surface,screen);
+  SDL_UpdateRect(screen,NUM2INT(x),NUM2INT(y),NUM2INT(w),NUM2INT(h));
+  return Qnil;
+}
+
+static VALUE sdl_flip(VALUE obj)
+{
+  SDL_Surface *screen;
+  Data_Get_Struct(obj,SDL_Surface,screen);
+  if( SDL_Flip(screen) < 0 ){
+    rb_raise( eSDLError,"flip fail : %s",SDL_GetError() );
+  }
+  return Qnil;
+}
+
+static VALUE sdl_setVideoMode(VALUE mod,VALUE w,VALUE h,VALUE bpp,
        VALUE flags)
 {
   SDL_Surface *screen;
+  VALUE screenObject;
   screen=SDL_SetVideoMode(NUM2INT(w),NUM2INT(h),NUM2INT(bpp),
 			  NUM2UINT(flags));
   if( screen==NULL ){
     rb_raise(eSDLError,"Cound't set %dx%d %d bpp video mode: %s",
 	     NUM2INT(w),NUM2INT(h),NUM2INT(bpp),SDL_GetError());
   }
-  return Data_Wrap_Struct(class,0,0,screen);
+  screenObject = Data_Wrap_Struct(cSurface,0,0,screen);
+  rb_define_singleton_method(screenObject,"updateRect",sdl_updateRect,4);
+  rb_define_singleton_method(screenObject,"flip",sdl_flip,0);
+  return screenObject;
 }
 
 
@@ -126,23 +148,6 @@ static VALUE sdl_surface_format(VALUE obj)
   Data_Get_Struct(obj,SDL_Surface,surface);
   return Data_Wrap_Struct(cPixelFormat,0,0,surface->format);
 }
-static VALUE sdl_updateRect(VALUE obj,VALUE x,VALUE y,VALUE w,VALUE h)
-{
-  SDL_Surface *screen;
-  Data_Get_Struct(obj,SDL_Surface,screen);
-  SDL_UpdateRect(screen,NUM2INT(x),NUM2INT(y),NUM2INT(w),NUM2INT(h));
-  return Qnil;
-}
-
-static VALUE sdl_flip(VALUE obj)
-{
-  SDL_Surface *screen;
-  Data_Get_Struct(obj,SDL_Surface,screen);
-  if( SDL_Flip(screen) < 0 ){
-    rb_raise( eSDLError,"flip fail : %s",SDL_GetError() );
-  }
-  return Qnil;
-}
 
 /* return ture if this fuction succeed, ohterwise return false */
 static VALUE sdl_fillRect(VALUE obj,VALUE x,VALUE y,VALUE w,VALUE h,
@@ -231,7 +236,8 @@ void init_video()
 {
   rb_define_module_function(mSDL,"blitSurface",sdl_blitSurface,8);
   rb_define_module_function(mSDL,"warpMouse",sdl_warpMouse,2);
-  
+  rb_define_module_function(mSDL,"setVideoMode",sdl_setVideoMode,4);
+
   cSurface = rb_define_class_under(mSDL,"Surface",rb_cObject);
 
   rb_define_singleton_method(cSurface,"new",sdl_createSurface,4);
@@ -245,11 +251,6 @@ void init_video()
   rb_define_method(cSurface,"w",sdl_surfaceW,0);
   rb_define_method(cSurface,"format",sdl_surface_format,0);
   
-  cScreen = rb_define_class_under(mSDL,"Screen",cSurface);
-  rb_define_singleton_method(cScreen,"setVideoMode",sdl_setVideoMode,4);
-  rb_define_method(cScreen,"updateRect",sdl_updateRect,4);
-  rb_define_method(cScreen,"flip",sdl_flip,0);
-
   cPixelFormat = rb_define_class_under(mSDL,"PixelFormat",rb_cObject);
   rb_define_method(cPixelFormat,"mapRGB",sdl_format_mapRGB,3);
   rb_define_method(cPixelFormat,"mapRGBA",sdl_format_mapRGBA,4);
