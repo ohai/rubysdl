@@ -254,7 +254,6 @@ static VALUE sdl_surface_format(VALUE obj)
   return Data_Wrap_Struct(cPixelFormat,0,free,format);
 }
 
-/* return ture if this fuction succeed, ohterwise return false */
 static VALUE sdl_fillRect(VALUE obj,VALUE x,VALUE y,VALUE w,VALUE h,
 		      VALUE color)
 {
@@ -282,6 +281,58 @@ static VALUE sdl_surfaceW(VALUE obj)
   return INT2NUM( surface->w );
 }
 
+/* palette and colormap methods */
+static void check_given_colors(VALUE colors,VALUE firstcolor)
+{
+  if( NUM2INT(firstcolor)<0 || NUM2INT(firstcolor)>255 )
+    rb_raise(eSDLError,"firstcolor must be more than 0,less than 255");
+  Check_Type(colors,T_ARRAY);
+  if( RARRAY(colors)->len+NUM2INT(firstcolor) > 256 )
+    rb_raise(eSDLError,"colors is too large");
+}
+static void set_colors_to_array(VALUE colors,SDL_Color palette[])
+{
+  VALUE color;
+  int i;
+  
+  for( i=0; i < RARRAY(colors)->len; ++i){
+    color = rb_ary_entry(colors,i);
+    Check_Type(color,T_ARRAY);
+    if( RARRAY(color)->len != 3)
+      rb_raise(rb_eArgError,"a color must be array that has 3 length");
+    palette[i].r = NUM2INT(rb_ary_entry(color,0));
+    palette[i].g = NUM2INT(rb_ary_entry(color,1));
+    palette[i].b = NUM2INT(rb_ary_entry(color,2));
+  }
+  
+}
+
+static VALUE sdl_setPalette(VALUE obj,VALUE flags,VALUE colors,VALUE firstcolor)
+{
+  SDL_Surface *surface;
+  SDL_Color palette[256];
+  
+  check_given_colors(colors,firstcolor);
+  
+  Data_Get_Struct(obj,SDL_Surface,surface);
+
+  set_color_to_array(colors,palette);
+  
+  return BOOL(SDL_SetPalette( surface, NUM2UINT(flags), palette,
+			      NUM2INT(firstcolor), RARRAY(colors)->len));
+}
+
+static VALUE sdl_setColors(VALUE obj,VALUE colors,VALUE firstcolor)
+{
+  SDL_Surface *surface;
+  SDL_Color palette[256];
+
+  check_given_colors(colors,firstcolor);
+  Data_Get_Struct(obj,SDL_Surface,surface);
+  set_color_to_array(colors,palette);
+  return BOOL(SDL_SetColors( surface, palette,
+			     NUM2INT(firstcolor), RARRAY(colors)->len));
+}
 /* surface lock methods */
 static VALUE sdl_mustlock(VALUE obj)
 {
