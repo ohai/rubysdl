@@ -167,6 +167,7 @@ module SDL
       alias draw_aa_circle_alpha drawAACircleAlpha
       alias draw_aa_ellipse_alpha drawAAEllipseAlpha
 
+      
     end
   end
 
@@ -182,7 +183,12 @@ module SDL
     end
     
   end
-  
+
+  if defined?(BMFont) then
+    class BMFont
+      alias set_color setColor
+    end
+  end
 end
 
 
