@@ -38,7 +38,7 @@ module SDL
     when Integer
       return i
     when Array
-      return format->mapRGB(*color)
+      return format.mapRGB(*color)
     else
       raise Error,'first argument must be Integer or Array'
     end
@@ -53,10 +53,10 @@ module SDL
 	raise SDL::Error,"width of cursor must be muliple of 8"
       end
 
-      white=color2int(white,bitmap->format)
-      black=color2int(black,bitmap->format)
-      transparent=color2int(transparent,bitmap->format)
-      inverted=color2int(inverted,bitmap->format)
+      white=color2int(white,bitmap.format)
+      black=color2int(black,bitmap.format)
+      transparent=color2int(transparent,bitmap.format)
+      inverted=color2int(inverted,bitmap.format)
       
       data=[]
       mask=[]
