@@ -22,10 +22,9 @@
 #include "rubysdl.h"
 #include <sge.h>
 
-extern Uint8 _sge_lock;
 static VALUE sdl_get_autoLocking(VALUE mod)
 {
-  return BOOL(_sge_lock);
+  return BOOL(sge_getLock());
 }
 
 static VALUE  sdl_set_autoLocking(VALUE mod,VALUE bool)
