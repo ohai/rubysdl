@@ -49,14 +49,6 @@ Object
 
 ==== メソッド
 
---- Surface#mapRGB(r,g,b)
-
---- Surface#mapRGBA(r,g,b,a)
-
---- Surface#getRGB(pixel)
-
---- Surface#getRGBA(pixel)
-
 --- Surface#displayFormat
 
 --- Surface#setColorKey(flag,key)
