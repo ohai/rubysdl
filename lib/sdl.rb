@@ -23,22 +23,26 @@ module SDL
       SDL::blitSurface(surface,0,0,surface.w,surface.h,self,x,y)
     end
 
-    def rotateSurface(angle,bgcolor)
-      rotateScaledSurface(angle,1.0,bgcolor)
+    if defined?(rotateScaledSurface) then
+      def rotateSurface(angle,bgcolor)
+	rotateScaledSurface(angle,1.0,bgcolor)
+      end
     end
   end
 
   module_function
-    
-  def rotateScaled(src,dst,x,y,angle,scale)
-    rotateXYScaled(src,dst,x,y,angle,scale,scale)
-  end
-  def rotate(src,dst,x,y,angle)
-    rotateXYScaled(src,dst,x,y,angle,1,1)
-  end
 
-  def rotateBlit(src,dst,x,y,angle)
-    rotateScaledBlit(src,dst,x,y,angle,1)
+  if defined?(rotateXYScaled) then
+    def rotateScaled(src,dst,x,y,angle,scale)
+      rotateXYScaled(src,dst,x,y,angle,scale,scale)
+    end
+    def rotate(src,dst,x,y,angle)
+      rotateXYScaled(src,dst,x,y,angle,1,1)
+    end
+
+    def rotateBlit(src,dst,x,y,angle)
+      rotateScaledBlit(src,dst,x,y,angle,1)
+    end
   end
 
   def blitSurface2(src,srcRect,dst,dstRect)
@@ -54,12 +58,14 @@ module SDL
     end
   end
 
-  class << Mixer
-    alias open_imp open
-    
-    def open(frequency=Mixer::DEFAULT_FREQUENCY,format=Mixer::DEFAULT_FORMAT,
-	     cannels=Mixer::DEFAULT_CHANNELS,chunksize=4096)
-      open_imp(frequency,format,cannels,chunksize)
+  if defined?(Mixer)
+    class << Mixer
+      alias open_imp open
+      
+      def open(frequency=Mixer::DEFAULT_FREQUENCY,format=Mixer::DEFAULT_FORMAT,
+	       cannels=Mixer::DEFAULT_CHANNELS,chunksize=4096)
+	open_imp(frequency,format,cannels,chunksize)
+      end
     end
   end
 
