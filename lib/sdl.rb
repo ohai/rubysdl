@@ -1,6 +1,6 @@
 #
 # Ruby/SDL   Ruby extension library for SDL
-#  Copyright (C) 2001 Ohbayashi Ippei
+#  Copyright (C) 2001,2002 Ohbayashi Ippei
 # 
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -23,7 +23,7 @@ end
 
 module SDL
 
-  VERSION = "0.7"
+  VERSION = "0.8"
 
   class PixelFormat
 
