@@ -113,6 +113,69 @@ static VALUE mix_paused(VALUE mod,VALUE channel)
   return Mix_Paused(NUM2INT(channel));
 }
 
+/* music functions */
+#define MakeSimpleRubyFunc(rubyFunc,sdlFunc) \
+static VALUE rubyFunc(VALUE mod) \
+{ \
+  sdlFunc(); \
+  return Qnil; \
+} \
+
+static VALUE mix_playMusic(VALUE mod,VALUE music,VALUE loops)
+{
+  Mix_Music *mus;
+  if( ! rb_obj_is_kind_of(music,cMusic) )
+    rb_raise(rb_eArgError,"type mismatch");
+  Data_Get_Struct(music,Mix_Music,mus);
+  Mix_PlayMusic(mus,NUM2INT(loops));
+  return Qnil;
+}
+
+static VALUE mix_fadeInMusic(VALUE mod,VALUE music,VALUE loops,VALUE ms)
+{
+  Mix_Music *mus;
+  if( ! rb_obj_is_kind_of(music,cMusic) )
+    rb_raise(rb_eArgError,"type mismatch");
+  Data_Get_Struct(music,Mix_Music,mus);
+  Mix_fadeInMusic(mus,NUM2INT(loops),NUM2INT(ms));
+  return Qnil;
+}
+
+static VALUE mix_setVolumeMusic(VALUE mod,VALUE volume)
+{
+  Mix_VolumeMusic( NUM2INT(volume) );
+}
+
+static VALUE mix_fadeOutMusic(VALUE mod,VALUE ms)
+{
+  Mix_FadeOutMusic(NUM2INT(ms));
+  return Qnil;
+}
+
+MakeSimpleRubyFunc(mix_haltMusic,Mix_HaltMusic)
+MakeSimpleRubyFunc(mix_pauseMusic,Mix_PauseMusic)
+MakeSimpleRubyFunc(mix_resumeMusic,Mix_ResumeMusic)
+MakeSimpleRubyFunc(mix_rewindMusic,Mix_RewindMusic)
+
+static VALUE mix_pausedMusic(VALUE mod)
+{
+  return BOOL(Mix_PausedMusic());
+}
+
+static VALUE mix_playingMusic(VALUE mod)
+{
+  return BOOL(Mix_PlayingMusic());
+}
+
+static VALUE mix_loadMus(VALUE class,VALUE filename)
+{
+  Mix_Music* music;
+  music = Mix_LoadMUS(STR2CSTR(filename));
+  if( music == NULL )
+    rb_raise(eSDLError,
+	     "Couldn't load %s: %s",STR2CSTR(filename),SDL_GetError());
+  return Data_Wrap_Struct(class,0,Mix_FreeMusic,music);
+}
 static void defineConstForAudio()
 {
   rb_define_const(mMixer,"FORMAT_U8",UINT2NUM(AUDIO_U8));
@@ -140,11 +203,25 @@ void init_mixer()
   rb_define_module_function(mMixer,"pause",mix_pause,1);
   rb_define_module_function(mMixer,"resume",mix_resume,1);
   rb_define_module_function(mMixer,"pause?",mix_paused,1);
+
+  rb_define_module_function(mMixer,"playMusic",mix_playMusic,2);
+  rb_define_module_function(mMixer,"fadeInMusic",mix_fadeInMusic,3);
+  rb_define_module_function(mMixer,"setVolumeMusic",mix_setVolumeMusic,1);
+  rb_define_module_function(mMixer,"haltMusic",mix_haltMusic,0);
+  rb_define_module_function(mMixer,"fadeOutMusic",mix_fadeOutMusic,1);
+  rb_define_module_function(mMixer,"pauseMusic",mix_pauseMusic,0);
+  rb_define_module_function(mMixer,"resumeMusic",mix_resumeMusic,0);
+  rb_define_module_function(mMixer,"rewindMusic",mix_rewindMusic,0);
+  rb_define_module_function(mMixer,"pauseMusic?",mix_pausedMusic,0);
+  rb_define_module_function(mMixer,"playMusic?",mix_playingMusic,0);
   
   cWave = rb_define_class_under(mMixer,"Wave",rb_cObject);
   rb_define_singleton_method(cWave,"load",mix_loadWav,1);
   rb_define_method(cWave,"setVolume",mix_wave_volume,1);
 
+  cMusic = rb_define_class_under(mMixer,"Music",rb_cObject);
+  rb_define_singleton_method(cMusic,"load",mix_loadMus,1);
+  
   defineConstForAudio();
   return ;
 }
