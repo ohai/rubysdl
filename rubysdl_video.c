@@ -29,13 +29,20 @@ void sdl_freeSurface(SDL_Surface* surface)
 Uint32 VALUE2COLOR(VALUE color,SDL_PixelFormat *format)
 {
   if( rb_obj_is_kind_of( color, rb_cArray ) ){
-    if( RARRAY(color)->len != 3 ){
-      rb_raise(rb_eArgError,"type mismatch:color array needs 3 elements");
-    }else{
+    switch( RARRAY(color)->len ){
+    case 3:
       return SDL_MapRGB(format,
 			NUM2UINT(rb_ary_entry(color,0)),
 			NUM2UINT(rb_ary_entry(color,1)),
 			NUM2UINT(rb_ary_entry(color,2)) );
+    case 4:
+      return SDL_MapRGBA(format,
+                         NUM2UINT(rb_ary_entry(color,0)),
+                         NUM2UINT(rb_ary_entry(color,1)),
+                         NUM2UINT(rb_ary_entry(color,2)),
+                         NUM2UINT(rb_ary_entry(color,3)) );
+    default:
+      rb_raise(rb_eArgError,"type mismatch:color array needs 3 or 4 elements");
     }
   }else{
     return NUM2UINT(color);
@@ -527,6 +534,13 @@ static VALUE sdl_getFlags(VALUE obj)
   Data_Get_Struct(obj,SDL_Surface,surface);
   return UINT2NUM(surface->flags);
 }
+static VALUE sdl_surface_pixels(VALUE obj)
+{
+  SDL_Surface *surface;
+  Data_Get_Struct(obj,SDL_Surface,surface);
+  return rb_str_new(surface->pixels,
+                    surface->w * surface->h * surface->format->BytesPerPixel);
+}
 
 static void defineConstForVideo()
 {
@@ -615,7 +629,8 @@ void init_video()
   rb_define_method(cSurface,"bpp",sdl_getBpp,0);
   rb_define_method(cSurface,"colorkey",sdl_getColorkey,0);
   rb_define_method(cSurface,"alpha",sdl_getAlpha,0);
-
+  rb_define_method(cSurface,"pixels",sdl_surface_pixels,0);
+  
   cScreen = rb_define_class_under(mSDL,"Screen",cSurface);
   rb_define_method(cScreen,"updateRect",sdl_updateRect,4);
   rb_define_method(cScreen,"flip",sdl_flip,0);
