@@ -28,3 +28,4 @@ do{ \
   Rect.h=NUM2INT(H); \
 }while(0) \
 
+#define TORF(x) (x)?Qtrue:Qfalse
