@@ -451,6 +451,25 @@ Object
       Needs SGE ,Needs lock
       Draws a filled circle.
 
+--- SDL::Surface#drawEllipse(x,y,rx,ry,color)
+--- SDL::Surface#draw_ellipse(x,y,rx,ry,color)
+      Needs SGE, Needs lock
+      Draws an ellipse.
+
+--- SDL::Surface#drawEllispe(x,y,rx,ry,color)
+      See drawEllipse.  This method exists for compatability but should not
+      be used.
+
+--- SDL::Surface#drawFilledEllipse(x,y,rx,ry,color)
+--- SDL::Surface#draw_filled_ellipse(x,y,rx,ry,color)
+      Needs SGE, Needs lock
+      Draws a filled ellipse.
+
+--- SDL::Surface#drawFilledEllispe(x,y,rx,ry,color)
+      See drawFilledEllipse.  This method exists for compatability but
+      should not be used.
+
+
 --- SDL::Surface#rotateScaledSurface(angle,scale,bgcolor)
 --- SDL::Surface#rotate_scaled_surface(angle,scale,bgcolor)
       Needs SGE

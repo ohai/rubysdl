@@ -210,6 +210,8 @@ void init_sge_video()
   rb_define_method(cSurface,"drawFilledCircle",sdl_drawFilledCircle,4);
   rb_define_method(cSurface,"drawEllispe",sdl_drawEllipse,5);
   rb_define_method(cSurface,"drawFilledEllispe",sdl_drawFilledEllipse,5);
+  rb_define_method(cSurface,"drawEllipse",sdl_drawEllipse,5);
+  rb_define_method(cSurface,"drawFilledEllipse",sdl_drawFilledEllipse,5);
   
   rb_define_method(cSurface,"rotateScaledSurface",sdl_rotateScaledSurface,3);
   rb_define_module_function(mSDL,"rotateScaledBlit",sdl_rotateScaledBlit,6);

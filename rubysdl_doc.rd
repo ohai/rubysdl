@@ -453,17 +453,25 @@ Object
 
       色がcolorの円を描き、中をぬりつぶす。
 
---- SDL::Surface#drawEllispe(x,y,rx,ry,color)
---- SDL::Surface#draw_ellispe(x,y,rx,ry,color)
+--- SDL::Surface#drawEllipse(x,y,rx,ry,color)
+--- SDL::Surface#draw_ellipse(x,y,rx,ry,color)
       SGEが必要 ロックが必要
 
       色がcolorの楕円を描く。中はぬりつぶさない。
 
---- SDL::Surface#drawFilledEllispe(x,y,rx,ry,color)
---- SDL::Surface#draw_filled_ellispe(x,y,rx,ry,color)
+--- SDL::Surface#drawFilledEllipse(x,y,rx,ry,color)
+--- SDL::Surface#draw_filled_ellipse(x,y,rx,ry,color)
       SGEが必要 ロックが必要
 
       色がcolorの楕円を描く。中をぬりつぶす。。
+
+--- SDL::Surface#drawEllispe(x,y,rx,ry,color)
+--- SDL::Surface#draw_ellispe(x,y,rx,ry,color)
+      つづりを間違えていた。使わないように。
+      
+--- SDL::Surface#drawFilledEllispe(x,y,rx,ry,color)
+--- SDL::Surface#draw_filled_ellispe(x,y,rx,ry,color)
+      つづりを間違えていた。使わないように。
 
 --- SDL::Surface#rotateScaledSurface(angle,scale,bgcolor)
 --- SDL::Surface#rotate_scaled_surface(angle,scale,bgcolor)

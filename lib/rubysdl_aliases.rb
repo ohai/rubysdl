@@ -141,8 +141,10 @@ module SDL
       alias draw_rect drawRect
       alias draw_circle drawCircle
       alias draw_filled_circle drawFilledCircle
-      alias draw_ellispe drawEllispe
-      alias draw_filled_ellispe drawFilledEllispe
+      alias draw_ellispe drawEllispe # typo
+      alias draw_ellipse drawEllipse
+      alias draw_filled_ellispe drawFilledEllispe # typo 
+      alias draw_filled_ellipse drawFilledEllipse
       alias rotate_scaled_surface rotateScaledSurface
       alias transform_surface transformSurface
     end
