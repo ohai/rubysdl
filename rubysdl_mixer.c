@@ -93,6 +93,22 @@ static VALUE mix_paused(VALUE mod,VALUE channel)
 {
   return Mix_Paused(NUM2INT(channel));
 }
+
+static void defineConstForAudio()
+{
+  rb_define_const(mMixer,"FORMAT_U8",UINT2NUM(AUDIO_U8));
+  rb_define_const(mMixer,"FORMAT_S8",UINT2NUM(AUDIO_S8));
+  rb_define_cosnt(mMixer,"FORMAT_U16LSB",UINT2NUM(AUDIO_U16LSB));
+  rb_define_cosnt(mMixer,"FORMAT_S16LSB",UINT2NUM(AUDIO_S16LSB));
+  rb_define_cosnt(mMixer,"FORMAT_U16MSB",UINT2NUM(AUDIO_U16MSB));
+  rb_define_cosnt(mMixer,"FORMAT_S16MSB",UINT2NUM(AUDIO_S16MSB));
+  rb_define_cosnt(mMixer,"FORMAT_U16",UINT2NUM(AUDIO_U16));
+  rb_define_cosnt(mMixer,"FORMAT_S16",UINT2NUM(AUDIO_S16));
+
+  rb_define_cosnt(mMixer,"FORMAT_U16SYS",UINT2NUM(AUDIO_U16SYS));
+  rb_define_cosnt(mMixer,"FORMAT_S16SYS",UINT2NUM(AUDIO_S16SYS));
+}
+
 void init_mixer()
 {
   mMixer = rb_define_module_under(mSDL,"Mixer");
@@ -109,7 +125,8 @@ void init_mixer()
   cWave = rb_define_class_under(mMixer,"Wave",rb_cObject);
   rb_define_singleton_method(cWave,"load",mix_loadWav,1);
   rb_define_method(cWave,"setVolume",mix_wave_volume,1);
-  
+
+  defineConstForAudio();
   return ;
 }
 
