@@ -152,20 +152,26 @@ module SDL
       blitSurface( transformed, 0, 0, 0, 0, dst, qx-dst_x, qy-dst_y )
     end      
   end
+
+  Rect = Struct.new( :x, :y, :w, :h )
   
-  def blitSurface2(src,srcRect,dst,dstRect)
-    if srcRect.nil? && dstRect.nil? then
-      blitSurface(src,0,0,0,0,dst,0,0)
-    elsif srcRect.nil? then
-      blitSurface(src,0,0,0,0,dst,dstRect[0],dstRect[1])
-    elsif dstRect.nil? then
-      blitSurface(src,srcRect[0],srcRect[1],srcRect[2],srcRect[3],dst,0,0)
+  def convertRect(rect)
+    case srcRect
+    when NilClass
+      return Rect.new( 0, 0, 0, 0 )
+    when Array
+      return Rect.new( rect[0], rect[1], rect[2], rect[3] )
     else
-      blitSurface(src,srcRect[0],srcRect[1],srcRect[2],srcRect[3],dst,
-		  dstRect[0],dstRect[1])
+      return rect
     end
   end
-
+  
+  def blitSurface2(src,srcRect,dst,dstRect)
+    srcR = convertRect(srcRect)
+    dstR = convertRect(dstRect)
+    blitSurface( src, srcR.x, srcR.y, srcR.w, srcR.h , dst, dstR.x, dstR.y )
+  end
+  
   if defined?(Mixer)
     class << Mixer
       alias open_imp open
