@@ -26,6 +26,7 @@ rubysdl_image.c
 rubysdl_opengl.c
 rubysdl_pixel.c
 rubysdl_event2.c
+sdlgl.patch
 sample/testsprite.rb
 sample/playwave.rb
 sample/movesp.rb
@@ -38,3 +39,7 @@ sample/joy.rb
 sample/playmod.rb
 sample/testgl.rb
 sample/icon.bmp
+sample/cursor.rb
+sample/event2.rb
+sample/joy2.rb
+sample/cursor.bmp
