@@ -6,7 +6,7 @@ static VALUE sdl_getTicks(VALUE mod)
 }
 static VALUE sdl_delay(VALUE mod,VALUE ms)
 {
-  SDL_delay(NUM2UINT(ms));
+  SDL_Delay(NUM2UINT(ms));
   return Qnil;
 }
 
