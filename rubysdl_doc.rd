@@ -216,6 +216,13 @@ bpp=bit per pixelである。
         テクスチャーマッピングを使用する。ほんの少しはやいがみためが少し
         悪くなる。px、py、flagsは無視される。
 
+--- SDL.transformBlit(src,dst,x,y,angle,xscale,yscale,flags)
+      SGEが必要
+
+      srcの画像をX方向にxscale倍、Y方向にyscale倍して、
+      画像の真中を中心にしてangle度回転した画像をdstの(x,y)を中心に描画する。
+      flagsは((<SDL.transform>))と同じ。
+
 === SDL::Surface
 
 画像を保持するクラスです。
@@ -421,6 +428,9 @@ Object
 --- SDL::Surface#alpha
       サーフィスに設定されたアルファ値を返す。
 
+--- SDL::Surface#flags
+      サーフィスに設定されたフラグを返す。
+      
 --- SDL::Surface#setPalette(flag,colors,firstcolor)
       8bppのサーフェスにパレットを設定する。
       

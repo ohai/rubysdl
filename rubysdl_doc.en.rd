@@ -196,7 +196,14 @@ some functions need SGE or SDL_image
          but the result isn't
          as nice as in the normal mode. This mode will also ignore the px/py
          coordinates and the other flags.
-      
+
+--- SDL.transformBlit(src,dst,x,y,angle,xscale,yscale,flags)
+      Need SGE
+
+      Blit src surface to dst surface.
+      * x, y - drawed point in dst surface.
+      * angle, xscale, yscale, flags - same as ((<SDL.transform>)).
+
 === SDL::Surface
 
 This class have image.
@@ -403,6 +410,9 @@ Object
 
 --- SDL::Surface#alpha
       Returns alpha on this surface.
+
+--- SDL::Surface#flags
+      Returns flags on this surface.
 
 --- SDL::Surface#setPalette(flag,colors,firstcolor)
       Sets a portion of the palette for the given 8-bit surface.
