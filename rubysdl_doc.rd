@@ -25,13 +25,37 @@
 
 StandardError
 
+== 初期化関連
+
+=== SDL内のモジュール関数
+
+--- init(flag)
+
+--- quit
+      at_exit{ SDL.quit; } というように使ってください。
+
+--- initializedSystem(flag)
+
 == video関連
+
+一部の機能は、SGEライブラリが必要です。
 
 === SDL内のモジュール関数
 
 --- blitSurface(src,srcX,srcY,srcW,srcH,dst,dstX,dstY)
 
 --- warpMouse(x,y)
+
+--- rotateXYScaledBlit(src,dst,x,y,angle,xscale,yscale)
+      SGEが必要
+      SGEのsge_rotate_xyscaled関数とはsrcとdstの順序が入れ替わっていることに
+      注意するように。下の2つの関数も同様である。
+      これは、blitSurfaceに合わせたためである。
+      また、この仕様は変更する可能性がある。
+
+--- rotateScaledBlit(src,dst,x,y,angle,scale)
+
+--- rotateBlit(src,dst,x,y,angle)
 
 === Surface
 
@@ -65,6 +89,35 @@ Object
 
 --- Surface#format
 
+--- Surface#put(image,x,y)
+
+--- Surface#getPixel(x,y) 
+--- Surface#[]
+      SGEが必要
+
+--- Surface#putPixel(x,y)
+--- Surface#[]=
+      SGEが必要
+
+--- Surface#drawLine(x1,y1,x2,y2,color)
+      SGEが必要
+
+--- Surface#drawRect(x,y,w,h,color)
+      SGEが必要
+
+--- Surface#drawCircle(x,y,r,color)
+      SGEが必要
+
+--- Surface#drawFilledCircle(x,y,r,color)
+      SGEが必要
+
+--- Surface#rotateScaledSurface(angle,scale,bgcolor)
+      SGEが必要
+      これは、selfをangle度傾け、scale倍した画像を持つSurfaceのインスタンスを
+      生成するメソッドである。回転によって生じる隙間はbgcolorで埋められる。
+
+--- Surface#rotateSurface(angle,bgcolor)
+      
 === Screen
 
 ここにかきこまれた画像が画面に表示されます。
@@ -194,6 +247,7 @@ Object
 
 音をだしたりするのに使うモジュール
 ボリュームは0から128が有効です。
+このモジュールの機能を使うためには、SDL_mixerライブラリが必要です。
 
 ==== モジュール関数
 
@@ -246,3 +300,5 @@ Window関連の処理をまとめたモジュール
 --- icon=(iconImage)
 
 --- iconify
+
+=end
