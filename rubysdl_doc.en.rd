@@ -374,6 +374,31 @@ Object
 --- SDL::Surface#alpha
       Returns alpha on this surface.
 
+--- SDL::Surface#setPalette(flag,colors,firstcolor)
+      Sets a portion of the palette for the given 8-bit surface.
+
+      Palettized (8-bit) screen surfaces with the SDL_HWPALETTE flag have two
+      palettes, a logical palette that is used for mapping blits to/from
+      the surface and a physical palette (that determines how the
+      hardware will map the colors to the display).
+
+      This method can modify either the logical or physical
+      palette by specifing SDL::LOGPAL or SDL::PHYSPAL in the flags parameter.
+
+      If you want to modify the palette from Xth to th, you will give
+      following array as colors, and X as firstcolor.
+        [ [rX,gX,bX],[rX+1,gX+1,bX+1], ... ,[rY,gY,bY] ]
+
+--- SDL::Surface#setColors(colors,firstcolor)
+      Same as ((<SDL::Surface#setPalette>)), but flag is
+      SDL::LOGPAL|SDL::PHYSPAL.
+
+--- SDL::Surface#getPalette
+      Returns the palette of the specified surface. Return value is array
+      as following.
+        [ [r0,g0,b0],[r1,g1,b1], ... ,[r255,g255,b255] ]
+      Returns nil if the surface have no palette.
+
 === Screen
 
 SDL display the image that the instance of "Screen" have.

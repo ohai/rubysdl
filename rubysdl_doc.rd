@@ -389,6 +389,34 @@ Object
 --- SDL::Surface#alpha
       サーフィスに設定されたアルファ値を返す。
 
+--- SDL::Surface#setPalette(flag,colors,firstcolor)
+      8bppのサーフェスにパレットを設定する。
+      
+      ((<SDL.setVideoMode>))でflagにSDL::HWPALETTE、bppに8を指定して得た
+      スクリーンサーフィスには、2つのパレットがある。一方は論理パレットで
+      ((<SDL.blitSurface>))などで画像を転送するときに用いられる。
+      他方は物理パレットで、実際に画面に表示されるときの色を決定する。
+
+      flagに SDL::LOGPALを指定すると論理パレットを、SDL::PHYSPALを指定すると
+      物理パレットを変更する。両方のORを取ると、両方変更する。
+
+      実際のパレットの値の設定の仕方は以下の通りである。
+      0から255のうちXからYまでを変更したいとする。
+      まずcolorsにはY-X+1の要素を持つ配列を指定する。
+      その各々の要素は3つの要素を持った配列を入れる。
+      それにはr,g,bの値を入れ色を指定する。そしてfirstcolorにはXを指定する。
+      
+      パレットの変更が成功したときはtrue、失敗したときはfalseを返す。
+
+--- SDL::Surface#setColors(colors,firstcolor)
+      ((<SDL::Surface#setColors>))のflagにSDL::LOGPAL|SDL::PHYSPALを指定
+      するのと同じ。
+
+--- SDL::Surface#getPalette
+      パレットを配列で返す。その内容は以下の様になっている。
+        [ [r0,g0,b0],[r1,g1,b1], ... ,[r255,g255,b255] ]
+      サーフィスがパレットを持っていないときはnilを返す。
+
 === SDL::Screen
 
 ここにかきこまれた画像が画面に表示される。
