@@ -189,6 +189,13 @@ module SDL
       alias set_color setColor
     end
   end
+
+  if defined?(Kanji) then
+    class Kanji
+      alias set_coding_system setCodingSystem
+      alias put_tate putTate
+    end
+  end
 end
 
 
