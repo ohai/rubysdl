@@ -1840,5 +1840,16 @@ Object
 
 --- SDL::SKK::Keybind#unset_key(key_str)
       Unset keybind.
-    
+
+== Others
+=== Avoid pthread problem
+You can possibly avoid Ruby/SDL pthread problem when you put following 
+in your script.
+  require 'rbconfig'
+  
+  if RUBY_PLATFORM =~ /linux/
+    trap('INT','EXIT')
+    trap('EXIT','EXIT')
+  end
+
 =end

@@ -1876,5 +1876,15 @@ Object
 --- SDL::SKK::Keybind#unset_key(key_str)
 
       指定したキーのキーバインドを消す
-    
+
+== その他
+=== Linuxで'--disable-pthread'を使わない場合の問題を避ける方法
+以下の内容をスクリプトの最初に置いておけばこの問題を回避できる可能性があります。
+  require 'rbconfig'
+  
+  if RUBY_PLATFORM =~ /linux/
+    trap('INT','EXIT')
+    trap('EXIT','EXIT')
+  end
+  
 =end
