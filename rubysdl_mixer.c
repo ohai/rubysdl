@@ -189,6 +189,13 @@ static void defineConstForAudio()
 
   rb_define_const(mMixer,"FORMAT_U16SYS",UINT2NUM(AUDIO_U16SYS));
   rb_define_const(mMixer,"FORMAT_S16SYS",UINT2NUM(AUDIO_S16SYS));
+
+  rb_define_const(mMixer,"CHANNELS",INT2NUM(MIX_CHANNELS));
+  rb_define_const(mMixer,"DEFAULT_FREQUENCY",INT2NUM(MIX_DEFAULT_FREQUENCY));
+  rb_define_const(mMixer,"DEFAULT_FORMAT",UINT2NUM(MIXDEFAULT_FORMAT));
+  rb_define_const(mMixer,"DEFAULT_CHANNELS",UINT2NUM(MIX_DEFAULT_CHANNELS));
+  rb_define_const(mMixer,"MAX_VOLUME",INT2NUM(MIX_MAX_VOLUME));
+
 }
 
 void init_mixer()
