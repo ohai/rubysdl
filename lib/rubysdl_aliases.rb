@@ -73,6 +73,9 @@ module SDL
     alias key_mod keyMod
 # alias gain? gain?
     alias app_state appState
+    alias enable_unicode enableUNICODE
+    alias disable_unicode disableUNICODE
+    alias enable_unicode? enableUNICODE?
     alias mouse_x mouseX
     alias mouse_y mouseY
     alias mouse_xrel mouseXrel
@@ -92,6 +95,9 @@ module SDL
 #     alias new new
 #     alias push push
       alias app_state appState
+      alias enable_unicode enableUNICODE
+      alias disable_unicode disableUNICODE
+      alias enable_unicode? enableUNICODE?
     end
   end
 end
