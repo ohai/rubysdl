@@ -51,3 +51,5 @@ sample/sdlskk.rb
 sample/ellipses.rb
 sample/collision.rb
 sample/stetris.rb
+sample/aadraw.rb
+sample/alphadraw.rb
