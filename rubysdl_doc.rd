@@ -773,7 +773,10 @@ SDL::Event2.poll,SDL::Event2.waitはSDL::Event2のサブクラスのインスタンスを返しま
       押したキーの種類。SDL::Key::ESCAPEなど。
 --- SDL::Event2::KeyDown#mod
       ((<SDL::Key.modState>))と同じ。
-
+--- SDL::Event2::KeyDown#unicode
+      変換済みのキーボード入力。利用するためには
+      ((<SDL::Event2.enableUNICODE>))をあらかじめ呼んでおく必要がある。
+      
 ==== SDL::Event2::KeyUp
 キーを離したときに生じるイベント。
 --- SDL::Event2::KeyUp#press
