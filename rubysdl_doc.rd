@@ -111,21 +111,20 @@ bpp=bit per pixelである。
       SGEが必要
 
 --- videoInfo
-      Videoの情報を配列で返す。その内容は以下の通り。
+      Videoの情報をVideoInfoのインスタンスで返す。その内容は以下の通り。
       真偽値を表すものはtrue,falseが入っている。
       詳しい意味はSDLのドキュメントを参照してください。
-        [ hw_available,
-          wm_available,
-          blit_hw,
-          blit_hw_CC,
-          blit_hw_A,
-          blit_sw,
-          blit_sw_CC,
-          blit_sw_A,
-          blit_fill,
-          video_mem,
-          vfmt,
-        ]
+        VideoInfo#hw_available
+        VideoInfo#wm_available
+        VideoInfo#blit_hw
+        VideoInfo#blit_hw_CC
+        VideoInfo#blit_hw_A
+        VideoInfo#blit_sw
+        VideoInfo#blit_sw_CC
+        VideoInfo#blit_sw_A
+        VideoInfo#blit_fill
+        VideoInfo#video_mem
+        VideoInfo#vfmt
 	
 --- blitSurface(src,srcX,srcY,srcW,srcH,dst,dstX,dstY)
       srcで指定されたSurfaceからdstで指定されたSurfaceへの高速なblit

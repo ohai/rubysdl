@@ -97,21 +97,21 @@ some functions need SGE or SDL_image
       Needs SGE
 
 --- videoInfo
-      Return  video information in array. The contents are following.
+      Return  video information in the object of VideoInfo .
+      The contents are following.
       Values represent boolean value are true/false .
       Please read SDL document to know about this information.
-        [ hw_available,
-          wm_available,
-          blit_hw,
-          blit_hw_CC,
-          blit_hw_A,
-          blit_sw,
-          blit_sw_CC,
-          blit_sw_A,
-          blit_fill,
-          video_mem,
-          vfmt,
-        ]
+        VideoInfo#hw_available
+        VideoInfo#wm_available
+        VideoInfo#blit_hw
+        VideoInfo#blit_hw_CC
+        VideoInfo#blit_hw_A
+        VideoInfo#blit_sw
+        VideoInfo#blit_sw_CC
+        VideoInfo#blit_sw_A
+        VideoInfo#blit_fill
+        VideoInfo#video_mem
+        VideoInfo#vfmt
 	
 --- blitSurface(src,srcX,srcY,srcW,srcH,dst,dstX,dstY)
       This performs a fast blit from the source surface to the destination
