@@ -176,6 +176,9 @@ bpp=bit per pixelである。
 
       また、ColorKeyは無視される。
 
+      このメソッドは古いためあまり使うべきではない。
+      ((<SDL.transform>))や((<SDL.transformBlit>))を使うべきである。
+
 --- SDL.rotateScaled(src,dst,x,y,angle,scale)
       ((<SDL.rotateXYScaled>))と同様、ただしxscaleとyscaleがともにscaleであると
       する。
@@ -393,6 +396,9 @@ Object
 
       これは、selfをangle度傾け、scale倍した画像を持つSurfaceのインスタンスを
       生成するメソッドである。回転によって生じる隙間はbgcolorで埋められる。
+
+      このメソッドは古いためあまり使うべきではない。
+      ((<SDL::Surface#transformSurface>))を使ったほうがよい。
 
 --- SDL::Surface#rotateSurface(angle,bgcolor)
       ((<SDL::Surface#rotateScaledSurface>))と同様。

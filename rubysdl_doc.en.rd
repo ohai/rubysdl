@@ -160,6 +160,9 @@ some functions need SGE or SDL_image
 
       And note that this function ignores colorkey.
 
+      This method is obsolete. Please use ((<SDL.transform>)) or
+      ((<SDL.transformBlit>))
+
 --- SDL.rotateScaled(src,dst,x,y,angle,scale)
       Same as above, but with xscale=yscale.
 
@@ -377,7 +380,9 @@ Object
       This function makes the instance of Surface with a rotated and scaled
       copy of "self". "angle" is the rotation angle in degrees.
       "scale" is the scaling value , 1.0 is the normal size.
-      
+
+      This method is obsolete. Please use ((<SDL::Surface#transformSurface>)).
+
 --- SDL::Surface#rotateSurface(angle,bgcolor)
       Same as above,but with scale=1.0 .
 
