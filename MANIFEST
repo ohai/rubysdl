@@ -1,7 +1,7 @@
 MANIFEST
 depend
 extconf.rb
-lib/rubysdl.rb
+lib/sdl.rb
 rubysdl.h
 rubysdl_const_list.txt
 rubysdl_doc.rd
@@ -25,3 +25,4 @@ sample/sgetest.rb
 sample/font.rb
 sample/cdrom.rb
 sample/rotate.rb
+sample/joy.rb
