@@ -8,7 +8,6 @@ SDL.setGLAttr SDL::GL_BLUE_SIZE,5
 SDL.setGLAttr SDL::GL_DEPTH_SIZE,16
 SDL.setGLAttr SDL::GL_DOUBLEBUFFER,1
 SDL.setVideoMode 640,400,16,SDL::OPENGL
-ObjectSpace.garbage_collect
 GL::Viewport( 0, 0, 640, 400 );
 GL::MatrixMode( GL::PROJECTION );
 GL::LoadIdentity( );
@@ -163,6 +162,5 @@ loop do
   GL::Rotate(5.0, 1.0, 1.0, 1.0);
   
   SDL.GLSwapBuffers
-  ObjectSpace.garbage_collect
 
 end
