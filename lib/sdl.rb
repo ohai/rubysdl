@@ -33,6 +33,18 @@ module SDL
     end
   end
 
+  def color2int(color,format)
+    case color
+    when Integer
+      return i
+    when Array
+      return format->mapRGB(*color)
+    else
+      raise Error,'first argument must be Integer or Array'
+    end
+  end
+  module_function :color2int
+    
   module Mouse
     module_function
 
@@ -41,6 +53,11 @@ module SDL
 	raise SDL::Error,"width of cursor must be muliple of 8"
       end
 
+      white=color2int(white,bitmap->format)
+      black=color2int(black,bitmap->format)
+      transparent=color2int(transparent,bitmap->format)
+      inverted=color2int(inverted,bitmap->format)
+      
       data=[]
       mask=[]
 
