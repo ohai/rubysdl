@@ -7,6 +7,8 @@
 static VALUE sdl_init(VALUE obj,VALUE flags)
 {
   Uint32 flag;
+  
+  rb_secure(1);
   flag= NUM2UINT(flags);
   if( SDL_Init(flag) < 0 )
     rb_raise(eSDLError,"Couldn't initialize SDL: %s",SDL_GetError());
@@ -54,6 +56,9 @@ void Init_rubysdl()
   init_video();
   init_event();
   init_keyEvent();
+  init_mouse();
+  init_time();
+  init_wm();
 #ifdef HAVE_SDL_MIXER
   init_mixer();
 #endif
