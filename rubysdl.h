@@ -24,20 +24,27 @@
 #ifndef UINT2NUM
 #define UINT2NUM(v) INT2NUM(v)
 #endif
-VALUE mSDL;
-VALUE eSDLError;
-VALUE cSurface;
-VALUE cScreen;
-VALUE cPixelFormat;
-VALUE cEvent;
-VALUE mKey;
-VALUE mMixer;
-VALUE cWave;
-VALUE mWM;
-VALUE mMouse;
-VALUE cTTF;
-VALUE cJoyStick;
-VALUE cCD;
+
+#ifdef DEF_GLOBAL
+#define GLOBAL
+#else
+#define GLOBAL extern
+#endif
+
+GLOBAL VALUE mSDL;
+GLOBAL VALUE eSDLError;
+GLOBAL VALUE cSurface;
+GLOBAL VALUE cScreen;
+GLOBAL VALUE cPixelFormat;
+GLOBAL VALUE cEvent;
+GLOBAL VALUE mKey;
+GLOBAL VALUE mMixer;
+GLOBAL VALUE cWave;
+GLOBAL VALUE mWM;
+GLOBAL VALUE mMouse;
+GLOBAL VALUE cTTF;
+GLOBAL VALUE cJoyStick;
+GLOBAL VALUE cCD;
 
 #define SetRect(Rect,X,Y,W,H) \
 do{ \

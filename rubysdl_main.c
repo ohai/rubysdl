@@ -20,6 +20,7 @@
 /* rubysdl.c -- SDL(Simple Directmedia Layer)
  */
 
+#define DEF_GLOBAL
 #include "rubysdl.h"
 #include <signal.h>
 #include <stdio.h>
