@@ -8,6 +8,7 @@
 * ((<Error>))
 * ((<Surface>))
   * ((<Screen>))
+* ((<PixelFormat>))
 * ((<Event>))
 * ((<Mixer>)) (module)
 * ((<Mixer::Wave>))
@@ -42,11 +43,19 @@ Object
 
 ==== クラスメソッド
 
---- Surface.new(flag,w,h,surface)
+--- Surface.new(flag,w,h,format)
 
 --- Surface.loadBMP(filename)
 
 ==== メソッド
+
+--- Surface#mapRGB(r,g,b)
+
+--- Surface#mapRGBA(r,g,b,a)
+
+--- Surface#getRGB(pixel)
+
+--- Surface#getRGBA(pixel)
 
 --- Surface#displayFormat
 
@@ -61,6 +70,8 @@ Object
 --- Surface#h
 
 --- Surface#w
+
+--- Surface#format
 
 === Screen
 
@@ -79,6 +90,30 @@ Object
 --- Screen#updateRect(x,y,w,h)
 
 --- Screen#flip
+
+=== PixelFormat
+
+SDL_PixelFormatのラッパークラス。
+Surface#formatで取得でき、((<Surface.new>))のフォーマットとしてこの
+オブジェクトを与えることができる。
+
+==== スーパークラス
+
+Object
+
+==== クラスメソッド
+
+なし
+
+==== メソッド
+
+---PixelFormat#MapRGB(r,g,b)
+
+---PixelFormat#MapRGBA(r,g,b,a)
+
+---PixelFormat#getRGB(pixel)
+
+---PixelFormat#getRGBA(pixel)
 
 == Event関連
 
