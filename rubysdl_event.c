@@ -250,6 +250,21 @@ static VALUE sdl_getAppState(VALUE class)
   return INT2FIX(SDL_GetAppState());
 }
 
+static VALUE sdl_enableUNICODE(VALUE class)
+{
+  SDL_EnableUNICODE(1);
+  return Qnil;
+}
+static VALUE sdl_disableUNICODE(VALUE class)
+{
+  SDL_EnableUNICODE(0);
+  return Qnil;
+}
+static VALUE sdl_is_enableUNICODE(VALUE class)
+{
+  return BOOL(SDL_EnableUNICODE(-1));
+}
+
 static void defineConstForEvent()
 {
   rb_define_const(cEvent,"NOEVENT",INT2NUM(SDL_NOEVENT));
@@ -294,11 +309,31 @@ static void defineConstForEvent()
 
 }
 
+static VALUE sdl_event2_enableUNICODE(VALUE class)
+{
+  SDL_EnableUNICODE(1);
+  return Qnil;
+}
+static VALUE sdl_event2_disableUNICODE(VALUE class)
+{
+  SDL_EnableUNICODE(0);
+  return Qnil;
+}
+static VALUE sdl_event2_is_enableUNICODE(VALUE class)
+{
+  return BOOL(SDL_EnableUNICODE(-1));
+}
+
 void init_event()
 {
   cEvent = rb_define_class_under(mSDL,"Event",rb_cObject);
   rb_define_singleton_method(cEvent,"new",createEventObject,0);
+  
   rb_define_singleton_method(cEvent,"appState",sdl_getAppState,0);
+  rb_define_singleton_method(cEvent,"enableUNICODE",sdl_enableUNICODE,0);
+  rb_define_singleton_method(cEvent,"disableUNICODE",sdl__disableUNICODE,0);
+  rb_define_singleton_method(cEvent,"enableUNICODE?",sdl_is_enableUNICODE,0);
+  
   rb_define_method(cEvent,"poll",sdl_pollEvent,0);
   rb_define_method(cEvent,"wait",sdl_waitEvent,0);
   
