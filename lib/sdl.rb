@@ -127,6 +127,17 @@ module SDL
     end
   end
 
+  if defined?(transform) then
+    def transformBlit(src,dst,x,y,angle,xscale,yscale,flags)
+      colorkey = src.colorkey
+      transformed = src.transformSurface( colorkey, angle,
+					 xscale, yscale, flags )
+      transformed.setColorKey( SDL::SRCCOLORKEY|SDL::RLEACCEL, colorkey )
+      blitSurface( transformed, 0, 0, 0, 0, dst, x-transformed.w/2,
+		  y-transformed.h/2 )
+    end      
+  end
+  
   def blitSurface2(src,srcRect,dst,dstRect)
     if srcRect.nil? && dstRect.nil? then
       blitSurface(src,0,0,0,0,dst,0,0)
