@@ -30,6 +30,9 @@ end
 if have_library("smpeg","SMPEG_new") then
   $CFLAGS+= " -D HAVE_SMPEG "
 end
+if have_library("SDLSKK","SDLSKK_Context_new") then
+  $CFLAGS+= " -D HAVE_SDLSKK "
+end
 if enable_config("opengl",false) then
   dir_config('x11','/usr/X11R6')
   
