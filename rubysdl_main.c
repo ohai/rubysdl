@@ -79,6 +79,11 @@ static VALUE sdl_wasInit(VALUE mod,VALUE flags)
   return UINT2NUM( SDL_WasInit(NUM2UINT(flags)) );
 }
 
+static int is_quit=0;
+int rubysdl_is_quit(void)
+{
+  return is_quit;
+}
 static void sdl_quit()
 {
 #ifdef HAVE_SDL_MIXER
@@ -87,6 +92,7 @@ static void sdl_quit()
 #ifdef HAVE_SDL_TTF
   quit_ttf();
 #endif
+  is_quit = 1;
   SDL_Quit();
   return ;
 }
