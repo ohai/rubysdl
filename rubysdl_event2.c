@@ -43,6 +43,7 @@ static VALUE createKeyEvent(VALUE obj,SDL_Event *event)
   rb_iv_set(obj,"@press",BOOL(event->key.state==SDL_PRESSED));
   rb_iv_set(obj,"@sym",INT2FIX(event->key.keysym.sym));
   rb_iv_set(obj,"@mod",UINT2NUM(event->key.keysym.mod));
+  rb_iv_set(obj,"@unicode",UINT2NUM(event->key.keysym.unicode));
   return obj;
 }
 
@@ -191,11 +192,13 @@ static VALUE sdl_event2_push(VALUE class,VALUE event)
     e.key.state=(rb_iv_get(event,"@press"))?SDL_PRESSED:SDL_RELEASED;
     e.key.keysym.sym=NUM2INT(rb_iv_get(event,"@sym"));
     e.key.keysym.mod=NUM2UINT(rb_iv_get(event,"@mod"));
+    e.key.keysym.unicode = NUM2UINT( rb_iv_get(event,"@unicode") );
   }else if(eventClass==cKeyUpEvent){
     e.type=SDL_KEYUP;
     e.key.state=(rb_iv_get(event,"@press"))?SDL_PRESSED:SDL_RELEASED;
     e.key.keysym.sym=NUM2INT(rb_iv_get(event,"@sym"));
     e.key.keysym.mod=NUM2UINT(rb_iv_get(event,"@mod"));
+    e.key.keysym.unicode = NUM2UINT( rb_iv_get(event,"@unicode") );
   }else if(eventClass==cMouseMotionEvent){
     e.type=SDL_MOUSEMOTION;
     e.motion.state=NUM2INT(rb_iv_get(event,"@state"));
@@ -279,11 +282,13 @@ void init_event2(void)
   rb_define_attr(cKeyDownEvent,"press",1,1);
   rb_define_attr(cKeyDownEvent,"sym",1,1);
   rb_define_attr(cKeyDownEvent,"mod",1,1);
+  rb_define_attr(cKeyDownEvent,"unicode",1,1);
   
   cKeyUpEvent=rb_define_class_under(cEvent2,"KeyUp",cEvent2);
   rb_define_attr(cKeyUpEvent,"press",1,1);
   rb_define_attr(cKeyUpEvent,"sym",1,1);
   rb_define_attr(cKeyUpEvent,"mod",1,1);
+  rb_define_attr(cKeyUpEvent,"unicode",1,1);
   
   cMouseMotionEvent=rb_define_class_under(cEvent2,"MouseMotion",cEvent2);
   rb_define_attr(cMouseMotionEvent,"state",1,1);
