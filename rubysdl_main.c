@@ -1,160 +1,24 @@
 /* rubysdl.c -- SDL(Simple Directmedia Layer)
  */
 
-#include <SDL.h>
-
-#include "ruby.h"
-
-VALUE gSDLModule;
-VALUE gSurfaceClass;
-VALUE gScreenClass;
-VALUE gEventClass;
-VALUE gKeyClass;
-
-#define SetRect(Rect,X,Y,W,H) \
-do{ \
-  Rect.x=NUM2INT(X); \
-  Rect.y=NUM2INT(Y); \
-  Rect.w=NUM2INT(W); \
-  Rect.h=NUM2INT(H); \
-}while(0) \
-
-/*---------------video-------------*/
+#include "rubysdl.h"
 
 static VALUE sdl_init(VALUE obj,VALUE flags)
 {
   Uint32 flag;
 
   flag= NUM2INT(flags);
-  return INT2FIX(SDL_Init(flag));
+  flag = flag & ~(SDL_INIT_TIMER & SDL_INIT_THREAD);
+  return INT2FIX(SDL_Init(flag)); 
 }
 
-static VALUE sdl_setVideoMode(VALUE class,VALUE w,VALUE h,VALUE bpp,
-       VALUE flags)
+static VALUE sdl_quit(VALUE obj)
 {
-  SDL_Surface *screen;
-  screen=SDL_SetVideoMode(NUM2INT(w),NUM2INT(h),NUM2INT(bpp),
-			  NUM2INT(flags));
-  return Data_Wrap_Struct(class,0,SDL_FreeSurface,screen);
-}
-
-static VALUE sdl_loadBMP(VALUE class,VALUE filename)
-{
-  SDL_Surface *image;
-  image=SDL_LoadBMP(STR2CSTR(filename));
-  return Data_Wrap_Struct(class,0,SDL_FreeSurface,image);
-}
-
-static VALUE sdl_displayFormat(VALUE obj)
-{
-  SDL_Surface *srcImage,*destImage;
-  Data_Get_Struct(obj,SDL_Surface,srcImage);
-  destImage=SDL_DisplayFormat(srcImage);
-  return Data_Wrap_Struct(gSurfaceClass,0,SDL_FreeSurface,destImage);
-}
-
-static VALUE sdl_setColorKey(VALUE obj,VALUE flag,VALUE key)
-{
-  SDL_Surface *surface;
-  Data_Get_Struct(obj,SDL_Surface,surface);
-  return INT2FIX(SDL_SetColorKey(surface,NUM2INT(flag),NUM2INT(key)));
-}
-
-static VALUE sdl_blitSurface(VALUE obj,VALUE src,VALUE srcX,VALUE srcY,VALUE srcW,
-			     VALUE srcH,VALUE dest,VALUE destX,
-			     VALUE destY)
-{
-  SDL_Surface *srcSurface,*destSurface;
-  SDL_Rect srcRect,destRect;
-  
-  Data_Get_Struct(src,SDL_Surface,srcSurface);
-  Data_Get_Struct(dest,SDL_Surface,destSurface);
-  SetRect(srcRect,srcX,srcY,srcW,srcH);
-  SetRect(destRect,destX,destY,srcW,srcH);
-  return INT2FIX(SDL_BlitSurface(srcSurface,&srcRect,destSurface,
-				 &destRect));
-}
-
-static VALUE sdl_updateRect(VALUE obj,VALUE x,VALUE y,VALUE w,VALUE h)
-{
-  SDL_Surface *screen;
-  Data_Get_Struct(obj,SDL_Surface,screen);
-  SDL_UpdateRect(screen,NUM2INT(x),NUM2INT(y),NUM2INT(w),NUM2INT(h));
+  SDL_Quit();
   return Qnil;
 }
 
-/* return ture if this fuction succeed, ohterwise return false */
-static VALUE sdl_fillRect(VALUE obj,VALUE x,VALUE y,VALUE w,VALUE h,
-		      VALUE color)
-{
-  SDL_Surface *surface;
-  SDL_Rect rect;
-  int result;
-  
-  SetRect(rect,x,y,w,h);
-  Data_Get_Struct(obj,SDL_Surface,surface);
-  result = SDL_FillRect(surface,&rect,NUM2INT(color));
-  if( result == 0 )
-    return Qtrue;
-  else
-    return Qfalse;
-}
-
-/* --------------event------------------ */
-static VALUE createEventObject(VALUE class)
-{
-  SDL_Event *event;
-  
-  return Data_Make_Struct(class,SDL_Event,0,free,event);
-}
-
-static VALUE sdl_pollEvent(VALUE obj)
-{
-  SDL_Event *event;
-
-  Data_Get_Struct(obj,SDL_Event,event);
-  return INT2NUM(SDL_PollEvent(event));
-}
-static VALUE sdl_eventType(VALUE obj)
-{
-  SDL_Event *event;
-
-  Data_Get_Struct(obj,SDL_Event,event);
-  return INT2FIX(event->type);
-}
-static VALUE sdl_eventKeySym(VALUE obj)
-{
-  SDL_Event *event;
-  
-  Data_Get_Struct(obj,SDL_Event,event);
-  if((event->type != SDL_KEYDOWN) && (event->type != SDL_KEYDOWN))
-    rb_raise(rb_eRuntimeError,"this event is not key event");
-  return INT2FIX(event->key.keysym.sym);
-}
-/* initialization */
-
-void defineConstForVideo()
-{
-  /* Available for Screen.setVideoMode */
-  rb_define_const(gSDLModule,"SWSURFACE",INT2NUM(SDL_SWSURFACE));
-  rb_define_const(gSDLModule,"HWSURFACW",INT2NUM(SDL_HWSURFACE));
-  rb_define_const(gSDLModule,"ASYNCBLIT",INT2NUM(SDL_ASYNCBLIT));
-  rb_define_const(gSDLModule,"ANYFORMAT",INT2NUM(SDL_ANYFORMAT));
-  rb_define_const(gSDLModule,"HWPALETTE",INT2NUM(SDL_HWPALETTE));
-  rb_define_const(gSDLModule,"DOUBLEBUF",INT2NUM(SDL_DOUBLEBUF));
-  rb_define_const(gSDLModule,"FULLSCREEN",INT2NUM(SDL_FULLSCREEN));
-  rb_define_const(gSDLModule,"OPENGL",INT2NUM(SDL_OPENGL));
-  rb_define_const(gSDLModule,"OPENGLBLIT",INT2NUM(SDL_OPENGLBLIT));
-  rb_define_const(gSDLModule,"RESIZABLE",INT2NUM(SDL_RESIZABLE));
-  rb_define_const(gSDLModule,"HWACCEL",INT2NUM(SDL_HWACCEL));
-  rb_define_const(gSDLModule,"SRCCOLORKEY",INT2NUM(SDL_SRCCOLORKEY));
-  rb_define_const(gSDLModule,"RLEACCELOK",INT2NUM(SDL_RLEACCELOK));
-  rb_define_const(gSDLModule,"RLEACCEL",INT2NUM(SDL_RLEACCEL));
-  rb_define_const(gSDLModule,"SRCALPHA",INT2NUM(SDL_SRCALPHA));
-  rb_define_const(gSDLModule,"PREALLOC",INT2NUM(SDL_PREALLOC));
-}
-
-void defineConst()
+static void defineConst()
 {
   rb_define_const(gSDLModule,"INIT_TIMER",INT2NUM(SDL_INIT_TIMER));
   rb_define_const(gSDLModule,"INIT_AUDIO",INT2NUM(SDL_INIT_AUDIO));
@@ -166,41 +30,8 @@ void defineConst()
   rb_define_const(gSDLModule,"INIT_EVERYTHING",INT2NUM(SDL_INIT_EVERYTHING));
 }
 
-void   defineConstForEvent()
-{
-  rb_define_const(gEventClass,"NOEVENT",INT2NUM(SDL_NOEVENT));
-  rb_define_const(gEventClass,"ACTIVEEVENT",INT2NUM(SDL_ACTIVEEVENT));	/* Application loses/gains visibility */
-  rb_define_const(gEventClass,"KEYDOWN",INT2NUM(SDL_KEYDOWN));/* Keys pressed */
-  rb_define_const(gEventClass,"KEYUP",INT2NUM(SDL_KEYUP));/* Keys released */
-  rb_define_const(gEventClass,"MOUSEMOTION",INT2NUM(SDL_MOUSEMOTION));/* Mouse moved */
-  rb_define_const(gEventClass,"MOUSEBUTTONDOWN",INT2NUM(SDL_MOUSEBUTTONDOWN));/* Mouse button pressed */
-  rb_define_const(gEventClass,"MOUSEBUTTONUP",INT2NUM(SDL_MOUSEBUTTONUP));/* Mouse button released */
-  rb_define_const(gEventClass,"JOYAXISMOTION",INT2NUM(SDL_JOYAXISMOTION));/* Joystick axis motion */
-  rb_define_const(gEventClass,"JOYBALLMOTION",INT2NUM(SDL_JOYBALLMOTION));/* Joystick trackball motion */
-  rb_define_const(gEventClass,"JOYHATMOTION",INT2NUM(SDL_JOYHATMOTION));/* Joystick hat position change */
-  rb_define_const(gEventClass,"JOYBUTTONDOWN",INT2NUM(SDL_JOYBUTTONDOWN));/* Joystick button pressed */
-  rb_define_const(gEventClass,"JOYBUTTONUP",INT2NUM(SDL_JOYBUTTONUP));	/* Joystick button released */
-  rb_define_const(gEventClass,"QUIT",INT2NUM(SDL_QUIT));/* User-requested quit */
-  rb_define_const(gEventClass,"SYSWMEVENT",INT2NUM(SDL_SYSWMEVENT));/* System specific event */
-  rb_define_const(gEventClass,"EVENT_RESERVEDA",INT2NUM(SDL_EVENT_RESERVEDA));/* Reserved for future use.. */
-  rb_define_const(gEventClass,"EVENT_RESERVEDB",INT2NUM(SDL_EVENT_RESERVEDB));/* Reserved for future use.. */
-  rb_define_const(gEventClass,"VIDEORESIZE",INT2NUM(SDL_VIDEORESIZE));/* User resized video mode */
-  rb_define_const(gEventClass,"EVENT_RESERVED1",INT2NUM(SDL_EVENT_RESERVED1));/* Reserved for future use.. */
-  rb_define_const(gEventClass,"EVENT_RESERVED2",INT2NUM(SDL_EVENT_RESERVED2));/* Reserved for future use.. */
-  rb_define_const(gEventClass,"EVENT_RESERVED3",INT2NUM(SDL_EVENT_RESERVED3));/* Reserved for future use.. */
-  rb_define_const(gEventClass,"EVENT_RESERVED4",INT2NUM(SDL_EVENT_RESERVED4));/* Reserved for future use.. */
-  rb_define_const(gEventClass,"EVENT_RESERVED5",INT2NUM(SDL_EVENT_RESERVED5));/* Reserved for future use.. */
-  rb_define_const(gEventClass,"EVENT_RESERVED6",INT2NUM(SDL_EVENT_RESERVED6));/* Reserved for future use.. */
-  rb_define_const(gEventClass,"EVENT_RESERVED7",INT2NUM(SDL_EVENT_RESERVED7));/* Reserved for future use.. */
-  /* Events SDL_USEREVENT through SDL_MAXEVENTS-1 are for your use */
-  rb_define_const(gEventClass,"USEREVENT",INT2NUM(SDL_USEREVENT));
-  /* This last event is only for bounding internal arrays
-     It is the number of bits in the event mask datatype -- Uint32
-     */
-  rb_define_const(gEventClass,"NUMEVENTS",INT2NUM(SDL_NUMEVENTS));
-}
 
-void defineConstForKey()
+static void defineConstForKey()
 {
   rb_define_const(gKeyClass,"UNKNOWN",INT2NUM(SDLK_UNKNOWN));
   rb_define_const(gKeyClass,"FIRST",INT2NUM(SDLK_FIRST));
@@ -455,33 +286,17 @@ void defineConstForKey()
   
   rb_define_const(gKeyClass,"LAST",INT2NUM(SDLK_LAST));
 }
+
 void Init_rubysdl()
 {
   gSDLModule = rb_define_module("SDL");
   rb_define_module_function(gSDLModule,"init",sdl_init,1);
-  rb_define_module_function(gSDLModule,"blitSurface",sdl_blitSurface,8);
+  rb_define_module_function(gSDLModule,"quit",sdl_quit,0);
 
-  gSurfaceClass = rb_define_class_under(gSDLModule,"Surface",rb_cObject);
-  rb_define_singleton_method(gSurfaceClass,"loadBMP",sdl_loadBMP,1);
-  rb_define_method(gSurfaceClass,"displayFormat",sdl_displayFormat,0);
-  rb_define_method(gSurfaceClass,"setColorKey",sdl_setColorKey,2);
-  rb_define_method(gSurfaceClass,"fillRect",sdl_fillRect,5);
-
-  gScreenClass = rb_define_class_under(gSDLModule,"Screen",gSurfaceClass);
-  rb_define_singleton_method(gScreenClass,"setVideoMode",
-			     sdl_setVideoMode,4);
-  rb_define_method(gScreenClass,"updateRect",sdl_updateRect,4);
-
-  gEventClass = rb_define_class_under(gSDLModule,"Event",rb_cObject);
-  rb_define_singleton_method(gEventClass,"new",createEventObject,0);
-  rb_define_method(gEventClass,"pollEvent",sdl_pollEvent,0);
-  rb_define_method(gEventClass,"type",sdl_eventType,0);
-  rb_define_method(gEventClass,"keySym",sdl_eventKeySym,0);
-
+  init_video();
+  init_event();
   gKeyClass = rb_define_class_under(gSDLModule,"Key",rb_cObject);
   
   defineConst();
-  defineConstForVideo();
-  defineConstForEvent();
   defineConstForKey();
 }
