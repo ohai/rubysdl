@@ -331,7 +331,7 @@ void init_event()
   
   rb_define_singleton_method(cEvent,"appState",sdl_getAppState,0);
   rb_define_singleton_method(cEvent,"enableUNICODE",sdl_enableUNICODE,0);
-  rb_define_singleton_method(cEvent,"disableUNICODE",sdl__disableUNICODE,0);
+  rb_define_singleton_method(cEvent,"disableUNICODE",sdl_disableUNICODE,0);
   rb_define_singleton_method(cEvent,"enableUNICODE?",sdl_is_enableUNICODE,0);
   
   rb_define_method(cEvent,"poll",sdl_pollEvent,0);
