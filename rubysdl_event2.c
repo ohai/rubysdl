@@ -25,7 +25,7 @@
 typedef VALUE (*createEventObjFunc)(SDL_Event *);
 static createEventObjFunc createEventObj[SDL_NUMEVENTS];
 
-static createNoEvent(SDL_Event *event)
+static VALUE createNoEvent(SDL_Event *event)
 {
   return Qnil;
 }
@@ -38,7 +38,7 @@ static VALUE createActiveEvent(SDL_Event *event)
   return obj;
 }
 
-static VALUE createKeyEvent(VALUE obj)
+static VALUE createKeyEvent(VALUE obj,SDL_Event *event)
 {
   rb_iv_set(obj,"@press",BOOL(event->key.state==SDL_PRESSED));
   rb_iv_set(obj,"@sym",INT2FIX(event->key.keysym.sym));
@@ -49,13 +49,13 @@ static VALUE createKeyEvent(VALUE obj)
 static VALUE createKeyDownEvent(SDL_Event *event)
 {
   VALUE obj=rb_obj_alloc(cKeyDownEvent);
-  return createKeyEvent(obj);
+  return createKeyEvent(obj,event);
 }
 
 static VALUE createKeyUpEvent(SDL_Event *event)
 {
   VALUE obj=rb_obj_alloc(cKeyUpEvent);
-  return createKeyEvent(obj);
+  return createKeyEvent(obj,event);
 }
 
 static VALUE createMouseMotionEvent(SDL_Event *event)
@@ -69,7 +69,7 @@ static VALUE createMouseMotionEvent(SDL_Event *event)
   return obj;
 }
 
-static VALUE createMouseButtonEvent(VALUE obj)
+static VALUE createMouseButtonEvent(VALUE obj,SDL_Event *event)
 {
   rb_iv_set(obj,"@button",INT2FIX(event->button.button));
   rb_iv_set(obj,"@press",BOOL(event->button.state==SDL_PRESSED));
@@ -81,13 +81,13 @@ static VALUE createMouseButtonEvent(VALUE obj)
 static VALUE createMouseButtonDownEvent(SDL_Event *event)
 {
   VALUE obj=rb_obj_alloc(cMouseButtonDownEvent);
-  return createMouseButtonEvent(obj);
+  return createMouseButtonEvent(obj,event);
 }
 
 static VALUE createMouseButtonUpEvent(SDL_Event *event)
 {
   VALUE obj=rb_obj_alloc(cMouseButtonUpEvent);
-  return createMouseButtonEvent(obj);
+  return createMouseButtonEvent(obj,event);
 }
 
 static VALUE createJoyAxisEvent(SDL_Event *event)
@@ -118,23 +118,23 @@ static VALUE createJoyHatEvent(SDL_Event *event)
   return obj;
 }
 
-static VALUE createJoyButtonEvent(VALUE obj)
+static VALUE createJoyButtonEvent(VALUE obj,SDL_Event *event)
 {
   rb_iv_set(obj,"@which",INT2FIX(event->jbutton.which));
   rb_iv_set(obj,"@button",INT2FIX(event->jbutton.button));
-  rb_iv_set(obj,"press",BOOL(event->jbutton.state==SDL_PRESSED));
+  rb_iv_set(obj,"@press",BOOL(event->jbutton.state==SDL_PRESSED));
   return obj;
 }
 static VALUE createJoyButtonUpEvent(SDL_Event *event)
 {
   VALUE obj=rb_obj_alloc(cJoyButtonUpEvent);
-  return createJoyButtonEvent(obj);
+  return createJoyButtonEvent(obj,event);
 }
 
 static VALUE createJoyButtonDownEvent(SDL_Event *event)
 {
   VALUE obj=rb_obj_alloc(cJoyButtonUpEvent);
-  return createJoyButtonEvent(obj);
+  return createJoyButtonEvent(obj,event);
 }
 
 static VALUE createQuitEvent(SDL_Event *event)
@@ -157,11 +157,11 @@ static VALUE createVideoResizeEvent(SDL_Event *event)
   return obj;
 }
 
-static VALUE sdl_event2_pall(VALUE class)
+static VALUE sdl_event2_poll(VALUE class)
 {
   SDL_Event event;
   if( SDL_PollEvent(&event)==1)
-    return createEventObj[event->type](&event);
+    return createEventObj[event.type](&event);
   else
     return Qnil;
 }
@@ -169,9 +169,92 @@ static VALUE sdl_event2_wait(VALUE class)
 {
   SDL_Event event;
   if( SDL_WaitEvent(&event)==1)
-    return createEventObj[event->type](&event);
+    return createEventObj[event.type](&event);
   else
     rb_raise(eSDLError,"Event handling error");
+}
+static VALUE sdl_event2_new(VALUE class)
+{
+  return rb_obj_alloc(class);
+}
+
+static VALUE sdl_event2_push(VALUE class,VALUE event)
+{
+  SDL_Event e;
+  VALUE eventClass=CLASS_OF(event);
+  if(eventClass==cActiveEvent){
+    e.type=SDL_ACTIVEEVENT;
+    e.active.gain=rb_iv_get(event,"@gain");
+    e.active.state=NUN2INT(rb_iv_get(event,"@state"));
+  }else if(eventClass==cKeyDownEvent){
+    e.type=SDL_KEYDOWN;
+    e.key.state=(rb_iv_get(event,"@press"))?SDL_PRESSED:SDL_RELEASED;
+    e.key.keysym.sym=NUM2INT(rb_iv_get(event,"@sym"));
+    e.key.keysym.mod=NUM2UINT(rb_iv_get(event,"@mod"));
+  }else if(eventClass==cKeyUpEvent){
+    e.type=SDL_KEYUP;
+    e.key.state=(rb_iv_get(event,"@press"))?SDL_PRESSED:SDL_RELEASED;
+    e.key.keysym.sym=NUM2INT(rb_iv_get(event,"@sym"));
+    e.key.keysym.mod=NUM2UINT(rb_iv_get(event,"@mod"));
+  }else if(eventClass==cMouseMotionEvent){
+    e.type=SDL_MOUSEMOTION;
+    e.motion.state=NUM2INT(rb_iv_get(event,"@state"));
+    e.motion.x=NUM2INT(rb_iv_get(event,"@x"));
+    e.motion.y=NUM2INT(rb_iv_get(event,"@y"));
+    e.motion.xrel=NUM2INT(rb_iv_get(event,"@xrel"));
+    e.motion.yrel=NUM2INT(rb_iv_get(event,"@yrel"));
+  }else if(eventClass==cMouseButtonDownEvent){
+    e.type=SDL_MOUSEBUTTONDOWN;
+    e.button.button=NUM2INT(rb_iv_get(event,"@button"));
+    e.button.state=(rb_iv_get(event,"@press"))?SDL_PRESSED:SDL_RELEASED;
+    e.button.x=NUM2INT(rb_iv_get(event,"@x"));
+    e.button.y=NUM2INT(rb_iv_get(event,"@y"));
+  }else if(eventClass==cMouseButtonUpEvent){
+    e.type=SDL_MOUSEBUTTONUP;
+    e.button.button=NUM2INT(rb_iv_get(event,"@button"));
+    e.button.state=(rb_iv_get(event,"@press"))?SDL_PRESSED:SDL_RELEASED;
+    e.button.x=NUM2INT(rb_iv_get(event,"@x"));
+    e.button.y=NUM2INT(rb_iv_get(event,"@y"));\
+  }else if(eventClass==cJoyAxisEvent){
+    e.type=SDL_JOYAXISMOTION;
+    e.jaxis.which=NUM2INT(rb_iv_get(event,"@which"));
+    e.jaxis.axis=NUM2INT(rb_iv_get(event,"@axis"));
+    e.jaxis.value=NUM2INT(rb_iv_get(event,"@value"));
+  }else if(eventClass==cJoyBallEvent){
+    e.type=SDL_JOYBALLMOTION;
+    e.jball.which=NUM2INT(rb_iv_get(event,"@which"));
+    e.jball.ball=NUM2INT(rb_iv_get(event,"@ball"));
+    e.jball.xrel=NUM2INT(rb_iv_get(event,"@xrel"));
+    e.jball.yrel=NUM2INT(rb_iv_get(event,"@yrel"));
+  }else if(eventClass==cJoyHatEvent){
+    e.type=SDL_JOYHATMOTION;
+    e.jhat.which=NUM2INT(rb_iv_get(event,"@which"));
+    e.jhat.hat=NUM2INT(rb_iv_get(event,"@hat"));
+    e.jhat.value=NUM2INT(rb_iv_get(event,"@value"));
+  }else if(eventClass==cJoyButtonUpEvent){
+    e.type=SDL_JOYBUTTONUP;
+    e.jbutton.which=NUM2INT(rb_iv_get(event,"@which"));
+    e.jbutton.button=NUM2INT(rb_iv_get(event,"@button"));
+    e.jbutton.state=(rb_iv_get(event,"@press"))?SDL_PRESSED:SDL_RELEASED;
+  }else if(eventClass==cJoyButtonDownEvent){
+    e.type=SDL_JOYBUTTONDOWN;
+    e.jbutton.which=NUM2INT(rb_iv_get(event,"@which"));
+    e.jbutton.button=NUM2INT(rb_iv_get(event,"@button"));
+    e.jbutton.state=(rb_iv_get(event,"@press"))?SDL_PRESSED:SDL_RELEASED;
+  }else if(eventClass==cQuitEvent){
+    e.type=SDL_QUIT;
+  }else if(eventClass==cSysWMEvent){
+    e.type=SDL_SYSWMEVENT;
+  }else if(eventClass==cVideoResizeEvent){
+    e.type=SDL_VIDEORESIZE;
+    e.resize.w=NUM2INT(rb_iv_get(event,"@w"));
+    e.resize.h=NUM2INT(rb_iv_get(event,"@h"));
+  }else {
+    rb_raise(eSDLError,"This object couldn't be pushed");
+  }
+  if(SDL_PushEvent(&e)==-1)
+    rb_raise(eSDLError,"the event couldn't be pushed");
+  return Qnil;
 }
 void init_event2(void)
 {
@@ -181,78 +264,80 @@ void init_event2(void)
   rb_define_singleton_method(cEvent2,"poll",sdl_event2_poll,0);
   rb_define_singleton_method(cEvent2,"wait",sdl_event2_wait,0);
   /*rb_define_attr(cEvent2,"type",1,0);*/
+  rb_define_singleton_method(cEvent2,"new",sdl_event2_new,0);
+  rb_define_singleton_method(cEvent2,"push",sdl_event2_push,1);
   
-  cActiveEvent=rb_define_class_under(mSDL,"Active",cEvent2);
+  cActiveEvent=rb_define_class_under(cEvent2,"Active",cEvent2);
   rb_define_attr(cActiveEvent,"gain",1,1);
   rb_define_attr(cActiveEvent,"state",1,1);
   
-  cKeyDownEvent=rb_define_class_under(mSDL,"KeyDown",cEvent2);
+  cKeyDownEvent=rb_define_class_under(cEvent2,"KeyDown",cEvent2);
   rb_define_attr(cKeyDownEvent,"press",1,1);
   rb_define_attr(cKeyDownEvent,"sym",1,1);
   rb_define_attr(cKeyDownEvent,"mod",1,1);
   
-  cKeyUpEvent=rb_define_class_under(mSDL,"KeyUp",cEvent2);
+  cKeyUpEvent=rb_define_class_under(cEvent2,"KeyUp",cEvent2);
   rb_define_attr(cKeyUpEvent,"press",1,1);
   rb_define_attr(cKeyUpEvent,"sym",1,1);
   rb_define_attr(cKeyUpEvent,"mod",1,1);
   
-  cMouseMotionEvent=rb_define_class_under(mSDL,"MouseMotion",cEvent2);
+  cMouseMotionEvent=rb_define_class_under(cEvent2,"MouseMotion",cEvent2);
   rb_define_attr(cMouseMotionEvent,"state",1,1);
   rb_define_attr(cMouseMotionEvent,"x",1,1);
   rb_define_attr(cMouseMotionEvent,"y",1,1);
   rb_define_attr(cMouseMotionEvent,"xrel",1,1);
   rb_define_attr(cMouseMotionEvent,"yrel",1,1);
   
-  cMouseButtonDownEvent=rb_define_class_under(mSDL,"MouseButtonDown",cEvent2);
+  cMouseButtonDownEvent=rb_define_class_under(cEvent2,"MouseButtonDown",cEvent2);
   rb_define_attr(cMouseButtonDownEvent,"button",1,1);
   rb_define_attr(cMouseButtonDownEvent,"press",1,1);
   rb_define_attr(cMouseButtonDownEvent,"x",1,1);
   rb_define_attr(cMouseButtonDownEvent,"y",1,1);
 
-  cMouseButtonUpEvent=rb_define_class_under(mSDL,"MouseButtonUp",cEvent2);
+  cMouseButtonUpEvent=rb_define_class_under(cEvent2,"MouseButtonUp",cEvent2);
   rb_define_attr(cMouseButtonUpEvent,"button",1,1);
   rb_define_attr(cMouseButtonUpEvent,"press",1,1);
   rb_define_attr(cMouseButtonUpEvent,"x",1,1);
   rb_define_attr(cMouseButtonUpEvent,"y",1,1);
   
-  cJoyAxisEvent=rb_define_class_under(mSDL,"JoyAxis",cEvent2);
+  cJoyAxisEvent=rb_define_class_under(cEvent2,"JoyAxis",cEvent2);
   rb_define_attr(cJoyAxisEvent,"which",1,1);
   rb_define_attr(cJoyAxisEvent,"axis",1,1);
   rb_define_attr(cJoyAxisEvent,"value",1,1);
   
-  cJoyBallEvent=rb_define_class_under(mSDL,"JoyBall",cEvent2);
+  cJoyBallEvent=rb_define_class_under(cEvent2,"JoyBall",cEvent2);
   rb_define_attr(cJoyBallEvent,"which",1,1);
   rb_define_attr(cJoyBallEvent,"ball",1,1);
   rb_define_attr(cJoyBallEvent,"xrel",1,1);
   rb_define_attr(cJoyBallEvent,"yrel",1,1);
   
-  cJoyHatEvent=rb_define_class_under(mSDL,"JoyHat",cEvent2);
+  cJoyHatEvent=rb_define_class_under(cEvent2,"JoyHat",cEvent2);
   rb_define_attr(cJoyHatEvent,"which",1,1);
   rb_define_attr(cJoyHatEvent,"hat",1,1);
   rb_define_attr(cJoyHatEvent,"value",1,1);
   
-  cJoyButtonUpEvent=rb_define_class_under(mSDL,"JoyButtonUp",cEvent2);
+  cJoyButtonUpEvent=rb_define_class_under(cEvent2,"JoyButtonUp",cEvent2);
   rb_define_attr(cJoyButtonUpEvent,"which",1,1);
   rb_define_attr(cJoyButtonUpEvent,"button",1,1);
   rb_define_attr(cJoyButtonUpEvent,"press",1,1);
 
-  cJoyButtonDownEvent=rb_define_class_under(mSDL,"JoyButtonDown",cEvent2);
+  cJoyButtonDownEvent=rb_define_class_under(cEvent2,"JoyButtonDown",cEvent2);
   rb_define_attr(cJoyButtonDownEvent,"which",1,1);
   rb_define_attr(cJoyButtonDownEvent,"button",1,1);
   rb_define_attr(cJoyButtonDownEvent,"press",1,1);
   
-  cQuitEvent=rb_define_class_under(mSDL,"Quit",cEvent2);
+  cQuitEvent=rb_define_class_under(cEvent2,"Quit",cEvent2);
   
-  cSysWMEvent=rb_define_class_under(mSDL,"SysWM",cEvent2);
+  cSysWMEvent=rb_define_class_under(cEvent2,"SysWM",cEvent2);
   
-  cVideoResizeEvent=rb_define_class_under(mSDL,"VideoResize",cEvent2);
+  cVideoResizeEvent=rb_define_class_under(cEvent2,"VideoResize",cEvent2);
   rb_define_attr(cVideoResizeEvent,"x",1,1);
   rb_define_attr(cVideoResizeEvent,"y",1,1);
 
-  for(i=0;i<SDL_NUMEVENS;++i)
+  for(i=0;i<SDL_NUMEVENTS;++i)
     createEventObj[i]=createNoEvent;
   createEventObj[SDL_ACTIVEEVENT]=createActiveEvent;
-  createEventObj[SDL_KEYDOWN]=createKeyDownEvent
+  createEventObj[SDL_KEYDOWN]=createKeyDownEvent;
   createEventObj[SDL_KEYUP]=createKeyUpEvent;
   createEventObj[SDL_MOUSEMOTION]=createMouseMotionEvent;
   createEventObj[SDL_MOUSEBUTTONDOWN]=createMouseButtonDownEvent;
