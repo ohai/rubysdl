@@ -289,12 +289,13 @@ Object
 ==== class method
 
 --- SDL::Surface.new(flag,w,h,format)
+--- SDL::Surface.new(flags,w,h,depth,Rmask,Gmask,Bmask,Amask)
       Create an empty surface.
       You must call this method after ((<SDL.setVideoMode>))
 
       format must be the instance of ((<SDL::Surface>)), and create the
       surface that has same bpp as specified surface.
-
+      
       The flags specifies the type of surface that should be
       created, it is an OR'd combination of the following possible values.
       
@@ -629,6 +630,15 @@ Object
 --- SDL::Surface#flags
       Returns flags on this surface.
 
+--- SDL::Surface#Rmask
+--- SDL::Surface#Gmask
+--- SDL::Surface#Bmask
+--- SDL::Surface#Amask
+      Returns [RGBA] mask on this surface.
+
+--- SDL::Surface#pixels
+      Returns pixel data as String.
+      
 --- SDL::Surface#setPalette(flag,colors,firstcolor)
 --- SDL::Surface#set_palette(flag,colors,firstcolor)
       Sets a portion of the palette for the given 8-bit surface.

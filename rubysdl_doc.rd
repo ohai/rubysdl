@@ -288,7 +288,7 @@ bpp=bit per pixelである。
 
       * SDL::TRANSFORM_TMAP
 
-        テクスチャーマッピングを使用する。ほんの少しはやいがみためが少し
+        テクスチャーマッピングを使用する。ほんの少しはやいが、みためが少し
         悪くなる。px、py、flagsは無視される。
 
 --- SDL.transformBlit(src,dst,angle,xscale,yscale,px,py,qx,qy,flags)
@@ -311,12 +311,16 @@ Object
 ==== クラスメソッド
 
 --- SDL::Surface.new(flag,w,h,format)
+--- SDL::Surface.new(flags,w,h,depth,Rmask,Gmask,Bmask,Amask)
       新しい((<SDL::Surface>))のインスタンスを生成する。
       ((<SDL.setVideoMode>))を呼びだした後でしか使用してはならない。
 
       formatとしては((<SDL::Surface>))のインスタンスを与え、指定した
       サーフィスと同じbppのサーフィスを生成する。
-
+      
+      また、[RGBA]maskを明示して指定することもできる。
+      その場合は、マシンのエンディアンに注意してください。
+      
       flagには以下のフラグのORを取ったものを与えることができる。
 
       * SDL::SWSURFACE
@@ -336,7 +340,8 @@ Object
 
         システムメモリかビデオメモリのうちハードウェアによるアルファを利用
         できるほうにサーフィスを取ろうとする。
-        
+
+
 --- SDL::Surface.loadBMP(filename)
 --- SDL::Surface.load_bmp(filename)
       指定されたファイル名のWindows BMP形式のファイルから((<SDL::Surface>))
@@ -643,6 +648,15 @@ Object
 
 --- SDL::Surface#flags
       サーフィスに設定されたフラグを返す。
+
+--- SDL::Surface#Rmask
+--- SDL::Surface#Gmask
+--- SDL::Surface#Bmask
+--- SDL::Surface#Amask
+      サーフェスの[RGBA]maskを返す。
+
+--- SDL::Surface#pixels
+      サーフェスのメモリイメージを文字列として返す。
       
 --- SDL::Surface#setPalette(flag,colors,firstcolor)
 --- SDL::Surface#set_palette(flag,colors,firstcolor)
