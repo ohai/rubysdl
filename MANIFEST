@@ -37,7 +37,6 @@ sample/alpha.rb
 sample/sgetest.rb
 sample/font.rb
 sample/cdrom.rb
-sample/rotate.rb
 sample/joy.rb
 sample/playmod.rb
 sample/testgl.rb
