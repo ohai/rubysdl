@@ -96,6 +96,7 @@ static VALUE skk_Context_input_event(VALUE obj,VALUE event)
       ev2.type = SDL_KEYDOWN;
       ev2.key.keysym.sym = NUM2INT( rb_iv_get(event,"@sym") );
       ev2.key.keysym.unicode = NUM2UINT( rb_iv_get(event,"@unicode") );
+      ev2.key.keysym.mod = NUM2INT( rb_iv_get(event,"@mod"));
       SDLSKK_Context_input_event( context, &ev2 );
       return Qnil;
     }else{
