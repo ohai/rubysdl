@@ -224,7 +224,26 @@ static VALUE sdl_createSurface(VALUE class,VALUE flags,VALUE w,VALUE h,
   }
   return Data_Wrap_Struct(class,0,sdl_freeSurface,newSurface);
 }
-				    
+
+static VALUE sdl_createSurfaceWithFormat(VALUE class,VALUE flags,VALUE w,
+                                         VALUE h,VALUE depth,VALUE Rmask,
+                                         VALUE Gmask,VALUE Bmask,
+                                         VALUE Amask)
+{
+  SDL_Surface *surface;
+
+  surface = SDL_CreateRGBSurface(NUM2UINT(flags),NUM2INT(w),NUM2INT(h),
+                                 NUM2UINT(depth),NUM2UINT(Rmask),
+                                 NUM2UINT(Gmask),NUM2UINT(Bmask),
+                                 NUM2UINT(Amask));
+  if( surface == NULL ){
+    rb_raise(eSDLError,"Couldn't Create Surface: %s",SDL_GetError());
+  }
+  return Data_Wrap_Struct(class,0,sdl_freeSurface,surface);
+}
+
+
+
 static VALUE sdl_loadBMP(VALUE class,VALUE filename)
 {
   SDL_Surface *image;
@@ -534,6 +553,31 @@ static VALUE sdl_getFlags(VALUE obj)
   Data_Get_Struct(obj,SDL_Surface,surface);
   return UINT2NUM(surface->flags);
 }
+static VALUE sdl_surface_rmask(VALUE obj)
+{
+  SDL_Surface *surface;
+  Data_Get_Struct(obj,SDL_Surface,surface);
+  return UINT2NUM(surface->format->Rmask);
+}
+static VALUE sdl_surface_gmask(VALUE obj)
+{
+  SDL_Surface *surface;
+  Data_Get_Struct(obj,SDL_Surface,surface);
+  return UINT2NUM(surface->format->Gmask);
+}
+static VALUE sdl_surface_bmask(VALUE obj)
+{
+  SDL_Surface *surface;
+  Data_Get_Struct(obj,SDL_Surface,surface);
+  return UINT2NUM(surface->format->Bmask);
+}
+static VALUE sdl_surface_amask(VALUE obj)
+{
+  SDL_Surface *surface;
+  Data_Get_Struct(obj,SDL_Surface,surface);
+  return UINT2NUM(surface->format->Amask);
+}
+
 static VALUE sdl_surface_pixels(VALUE obj)
 {
   SDL_Surface *surface;
@@ -600,7 +644,8 @@ void init_video()
   
   cSurface = rb_define_class_under(mSDL,"Surface",rb_cObject);
 
-  rb_define_singleton_method(cSurface,"new",sdl_createSurface,4);
+  rb_define_singleton_method(cSurface,"create",sdl_createSurface,4);
+  rb_define_singleton_method(cSurface,"createWithFormat",sdl_createSurfaceWithFormat,8);
   rb_define_singleton_method(cSurface,"loadBMP",sdl_loadBMP,1);
   rb_define_method(cSurface,"saveBMP",sdl_saveBMP,1);
   rb_define_method(cSurface,"displayFormat",sdl_displayFormat,0);
@@ -629,6 +674,10 @@ void init_video()
   rb_define_method(cSurface,"bpp",sdl_getBpp,0);
   rb_define_method(cSurface,"colorkey",sdl_getColorkey,0);
   rb_define_method(cSurface,"alpha",sdl_getAlpha,0);
+  rb_define_method(cSurface,"Rmask",sdl_surface_rmask,0);
+  rb_define_method(cSurface,"Gmask",sdl_surface_gmask,0);
+  rb_define_method(cSurface,"Bmask",sdl_surface_bmask,0);
+  rb_define_method(cSurface,"Amask",sdl_surface_amask,0);
   rb_define_method(cSurface,"pixels",sdl_surface_pixels,0);
   
   cScreen = rb_define_class_under(mSDL,"Screen",cSurface);
