@@ -21,6 +21,9 @@ if !defined?(block_given?) then
 end
 
 module SDL
+
+  VERSION = "0.6"
+  
   class Surface
     def put(surface,x,y)
       SDL::blitSurface(surface,0,0,surface.w,surface.h,self,x,y)
