@@ -51,6 +51,7 @@ void init_time();
 void init_wm();
 #ifdef HAVE_SDL_TTF
 void init_ttf();
+void quit_ttf();
 #endif
 #ifdef HAVE_SDL_MIXER
 void  init_mixer();
@@ -58,6 +59,10 @@ void quit_mixer();
 #endif
 #ifdef HAVE_SMPEG
 void init_smpeg();
+#endif
+
+#ifdef HAVE_SDLSKK
+void init_sdlskk();
 #endif
 
 static void sdl_quit();
@@ -124,7 +129,8 @@ void Init_sdl()
   rb_define_module_function(mSDL,"initSubSystem",sdl_initSubSystem,1);
   
   defineConst();
-  
+
+
   init_video();
 #ifdef HAVE_SGE
   init_sge_video();
