@@ -31,7 +31,7 @@ StandardError
 
 == initialize
 
-=== module functions in mudule SDL
+=== module functions in module SDL
 
 --- init(flag)
 
@@ -64,6 +64,10 @@ some functions need SGE or SDL_image
 	
 --- blitSurface(src,srcX,srcY,srcW,srcH,dst,dstX,dstY)
 
+--- blitSurface2(src,srcRect,dst,dstRect)
+      You use this function like:
+      blitSurface2(src,[0,32,32,32],dst,[100,200])
+
 --- warpMouse(x,y)
 
 --- rotateXYScaled(src,dst,x,y,angle,xscale,yscale)
@@ -72,7 +76,7 @@ some functions need SGE or SDL_image
       in that src and dst are changing.
       Following two functions are same.
       This is equal to blitSurface.
-      And note that this funcion ignores colorkey.
+      And note that this function ignores colorkey.
 
 --- rotateScaled(src,dst,x,y,angle,scale)
 
@@ -154,8 +158,8 @@ Object
 
 SDL display the image that the instance of "Screen" have.
 Only SDL::setVideoMode makes this object.
-In fact the class nemed "Screen" doesn't exist,and the object that
-SDL::setVideoMode returns is the isntance of Surface with following
+In fact the class named "Screen" doesn't exist,and the object that
+SDL::setVideoMode returns is the instance of Surface with following
 singleton methods.
 
 ==== super class
@@ -247,7 +251,7 @@ Object
 
 === Key
 
-The module defines key consants.
+The module defines key constants.
 This module some functions to get the key state.
 
 ==== module functions
@@ -256,7 +260,7 @@ This module some functions to get the key state.
       scan key state.
 
 --- press?(key)
-      Get key state that "scan" funcion scan.
+      Get key state that "scan" function scan.
       return true if "key" is pressed and return false if "key" is released.
 
 --- modState
@@ -267,7 +271,7 @@ This module some functions to get the key state.
 
 == Mouse
 
-The module mouse consants and mouse functuions.
+The module mouse constants and mouse functions.
 
 === module functions
 
@@ -306,6 +310,26 @@ Need SDL_mixer to use functions if this module.
 
 --- pause?(channel)
 
+--- playMusic(music,loops)
+
+--- fadeInMusic(music,loops,ms)
+
+--- setVolumeMusic(volume)
+
+--- haltMusic
+
+--- fadeOutMusic(ms)
+
+--- pauseMusic
+
+--- resumeMusic
+
+--- rewindMusic
+
+--- pauseMusic?
+
+--- playMusic?
+
 === Mixer::Wave
 
 The class handling wave
@@ -321,6 +345,16 @@ Object
 ==== method
 
 --- Mixer::Wave#setVolume(volume)
+
+=== Music
+
+==== super class
+
+Object
+
+==== class method
+
+--- Mixer::Music.load(filename)
 
 == Window Manager 
 
@@ -458,7 +492,7 @@ Object
 --- TTF#drawSolidUTF8(dest,text,x,y,r,g,b)
       Draw text on "dest" at ("x","y"). r,g,b are color elements of text.
       This function use colorkey internally.
-      Text must be UTF-8 (you can use ascii code).
+      Text must be UTF-8 (you can use ASCII code).
 
 --- TTF#drawBlendedUTF8(dest,text,x,y,r,g,b)
       Similar to drawSolidUTF8.
