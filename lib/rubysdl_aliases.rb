@@ -148,6 +148,24 @@ module SDL
       alias rotate_scaled_surface rotateScaledSurface
       alias transform_surface transformSurface
       alias make_collision_map makeCollisionMap
+
+      alias draw_aa_line drawAALine
+      alias draw_aa_circle drawAACircle
+      alias draw_aa_filled_circle drawAAFilledCircle
+      alias draw_aa_ellipse drawAAEllipse
+
+      alias draw_line_alpha drawLineAlpha
+      alias draw_rect_alpha drawRectAlpha
+      alias draw_filled_rect_alpha drawFilledRectAlpha
+      alias draw_circle_alpha drawCircleAlpha
+      alias draw_filled_circle_alpha drawFilledCircleAlpha
+      alias draw_ellipse_alpha drawEllipseAlpha
+      alias draw_filled_ellipse_alpha drawFilledEllipseAlpha
+
+      alias draw_aa_line_alpha drawAALineAlpha
+      alias draw_aa_circle_alpha drawAACircleAlpha
+      alias draw_aa_ellipse_alpha drawAAEllipseAlpha
+
     end
   end
 
