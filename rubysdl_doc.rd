@@ -340,6 +340,30 @@ Object
 --- Surface#rotateSurface(angle,bgcolor)
       rotateScaledSurfaceと同様。ただしscaleは1としたことになる。
 
+--- Surface#mapRGB(r,g,b)
+      selfのサーフィスのフォーマット(bppなど)に従ってr,g,bによって
+      あらわされる色に対応したpixelの値を返す。
+
+--- Surface#mapRGBA(r,g,b,a)
+      ((<Surface#mapRGB>))と同様。ただしアルファ値も含めることができる。
+
+--- Surface#getRGB(pixel)
+      ((<Surface#mapRGB>))と逆の変換をする。返り値は [r,g,b]
+      という内容の配列を返す。
+
+--- Surface#getRGBA(pixel)
+      ((<Surface#getRGB>))と同様。ただし返り値にアルファも含んでいる。
+      返り値は[r,g,b,a]という内容の配列である。
+
+--- Surface#bpp
+      サーフィスのフォーマットの1ピクセルあたりのビット数を返す。
+
+--- Surface#colorkey
+      サーフィスに設定されたカラーキーの値を返す。
+
+--- Surface#alpha
+      サーフィスに設定されたアルファ値を返す。
+
 === Screen
 
 ここにかきこまれた画像が画面に表示される。
@@ -374,6 +398,9 @@ SDL::setVideoModeによってのみ生成される。
       定しておくことが必要である。
 
 === PixelFormat
+
+このクラスの機能はすべて((<Surface>))にうつされた。そちらを使用したほうが
+よい。
 
 SDL_PixelFormatのラッパークラス。
 ((<Surface#format>))で取得でき、((<Surface.new>))のformatとしてこの

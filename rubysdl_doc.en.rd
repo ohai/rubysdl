@@ -322,6 +322,30 @@ Object
 --- Surface#rotateSurface(angle,bgcolor)
       Same as above,but with scale=1.0 .
 
+--- Surface#mapRGB(r,g,b)
+    Maps the RGB color value to the pixel format of specified surface
+    and returns the pixel value as a integer.
+
+--- Surface#mapRGBA(r,g,b,a)
+      Same as above,but includes alpha value.
+
+--- Surface#getRGB(pixel)
+      Get RGB component values from a pixel stored in the specified pixel
+      format.Returns r,g,b value in array as [r,g,b].
+
+--- Surface#getRGBA(pixel)
+      Same as above, but return value includes alplah value.
+      Returns r,g,b,a in arrary as [r,g,b,a].
+
+--- Surface#bpp
+      Return bits per pixel on this surface.
+
+--- Surface#colorkey
+      Returns colorkey on this surface.
+
+--- Surface#alpha
+      Returns alpha on this surface.
+
 === Screen
 
 SDL display the image that the instance of "Screen" have.
@@ -357,6 +381,9 @@ singleton methods.
       setting the video mode for this method to perform hardware flipping.
 
 === PixelFormat
+
+((<Surface>)) has all methods of ((<PixelFormat>)),
+and you should use ((<Surface>)) instead of ((<PixelFormat>)).
 
 The wrapper class of SDL_PixelFormat.
 You can get the instance by Surface#format, and ((<Surface.new>)) can use
