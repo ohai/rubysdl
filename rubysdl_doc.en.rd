@@ -475,6 +475,20 @@ The module mouse constants and mouse functions.
 --- warp(x,y)
       Set the position of the mouse cursor (generates a mouse motion event).
 
+--- show
+      Show mouse cursor.
+
+--- hide
+      Hide mouse cursor.
+
+--- setCursor(bitmap,white,black,transparent,inverted,hot_x=0,hot_y=0)
+      Change mouse cursor. bitmap is form of cursor,instance of
+      ((<Surface>)).The cursor width must be a multiple of 8.
+      The cursor is created in black and white according to
+      bitmap and white,black,transparent,inverted.
+      white,black,transparent,inverted represents that elements in
+      bitmap as pixel value.
+
 == audio
 
 === Mixer

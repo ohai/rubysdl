@@ -510,6 +510,19 @@ Object
 --- warp(x,y)
       マウスカーソルの位置を設定する（マウス移動のイベントを生成する)。
 
+--- show
+      マウスカーソルを表示する。
+
+--- hide
+      マウスカーソルを消す。
+
+--- setCursor(bitmap,white,black,transparent,inverted,hot_x=0,hot_y=0)
+      マウスカーソルを変える。
+      bitmapとして((<Surface>))のインスタンスを与える。
+      カーソルの色は白黒で生成される。
+      white,black,transparent,invertedはそのサーフィス内で、どの
+      ピクセルがカーソルの白、黒、透明、反転にあたるかを示す。
+
 == audio関連
 
 === Mixer
