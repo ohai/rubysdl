@@ -50,3 +50,4 @@ sample/randrect.rb
 sample/sdlskk.rb
 sample/ellipses.rb
 sample/collision.rb
+sample/stetris.rb
