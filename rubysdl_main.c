@@ -90,6 +90,23 @@ static VALUE sdl_wasInit(VALUE mod,VALUE flags)
   return UINT2NUM( SDL_WasInit(NUM2UINT(flags)) );
 }
 
+static VALUE sdl_putenv(VALUE mod,VALUE var)
+{
+  if( putenv(GETCSTR(var)) < 0 ){
+    rb_raise(eSDLError,"Can't put environ variable: %s", GETCSTR(var));
+  }
+  return Qnil;
+}
+
+static VALUE sdl_getenv(VALUE mod,VALUE name)
+{
+  char* result = getenv(GETCSTR(name));
+  if( result == NULL ){
+    rb_raise(eSDLError,"Can't get environ variable: %s", GETCSTR(name));
+  }
+  return rb_str_new2(result);
+}
+
 static int is_quit=0;
 int rubysdl_is_quit(void)
 {
@@ -106,6 +123,12 @@ static void sdl_quit()
   is_quit = 1;
   SDL_Quit();
   return ;
+}
+
+static VALUE sdl_rb_quit(VALUE obj)
+{
+  sdl_quit();
+  return Qnil;
 }
 
 static void defineConst()
@@ -128,6 +151,9 @@ void Init_sdl()
   rb_define_module_function(mSDL,"init",sdl_init,1);
   rb_define_module_function(mSDL,"initedSystem",sdl_wasInit,1);
   rb_define_module_function(mSDL,"initSubSystem",sdl_initSubSystem,1);
+  rb_define_module_function(mSDL,"quit",sdl_rb_quit,0);
+  rb_define_module_function(mSDL,"putenv",sdl_putenv,1);
+  rb_define_module_function(mSDL,"getenv",sdl_getenv,1);
   
   defineConst();
 
