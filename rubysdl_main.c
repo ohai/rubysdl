@@ -49,6 +49,7 @@ void init_joystick();
 void init_cdrom();
 void init_time();
 void init_wm();
+void init_kanji(void);
 #ifdef HAVE_SDL_TTF
 void init_ttf();
 void quit_ttf();
@@ -156,6 +157,7 @@ void Init_sdl()
   init_cdrom();
   init_time();
   init_wm();
+  init_kanji();
 #ifdef HAVE_SDL_TTF
   init_ttf();
 #endif
