@@ -56,6 +56,7 @@ module SDL
 #   alias bpp bpp
 #   alias colorkey colorkey
 #   alias alpha alpha
+    alias copy_rect copyRect
   end
 end
 
