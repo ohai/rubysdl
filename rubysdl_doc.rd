@@ -45,6 +45,7 @@
   * ((<SDL::SKK::Dictionary>))
   * ((<SDL::SKK::RomKanaRuleTable>))
   * ((<SDL::SKK::Keybind>))
+* ((<OpenGLによる3D描画>))
 * ((<その他>))
 
 == エラー処理
@@ -123,6 +124,12 @@ bpp=bit per pixelである。
         可能なモードがあればそれを返してくる。デフォルトの動作では、要求され
         たモードが直接サポートされていない場合はエミュレーションを行う。
 
+      * SDL::OPENGL
+
+        OpenGLを利用した3D描画を有効にする。
+        この機能を利用するときは、((<SDL::Surface>))を通した描画は
+        使うべきではない。
+        
       flagはそのほかにもある。さらに詳しく知る必要があれば
       SDLのドキュメントを見てください。
 
@@ -2080,9 +2087,55 @@ Object
 
       指定したキーのキーバインドを消す
 
+== OpenGLによる3D描画
+Ruby/SDLでは、Ruby用のOpenGL Interfaceを併用することで3D描画が実現可能である。
+OpenGL Interfaceのインストールのしかたなどについては、README.jaを
+参照せよ。Windows用のバイナリには必要なものがすべて含まれている。
+
+基本的には、以下のことをすれば使える。
+(1) sdlとopenglをrequireでロードする
+(2) ((<SDL.init>))をSDL::INIT_VIDEO付きで呼ぶ
+(3) ((<SDL.setGLAttr>))で必要な設定をする
+(4) ((<SDL.setVideoMode>))のflagにSDL::OPENGLを加えて呼ぶ
+(5) GLモジュールの描画関数を呼び、描画する(詳しくはOpenGL Interfaceのドキュメントなどを参照するとよいだろう)
+(6) 描画内容の画面への反映は、((<SDL.flip>))などではなく、((<SDL.GLSwapBuffersn>))を呼ぶ。
+
+また、OpenGLを使っているときは、((<SDL.blitSurface>))などのSDLの2D描画機能は
+使うべきではない。そのような利用は想定されていないからである。
+sample/testgl.rbなどが参考になるであろう。
+
+=== モジュール関数
+--- SDL.setGLAttr(attr,val)
+--- SDL.set_GL_attr(attr,val)
+      OpenGL属性((|attr|))の値を((|val|))にする。
+      
+      使える属性は以下の通り
+      * SDL::GL_RED_SIZE
+      * SDL::GL_GREEN_SIZE
+      * SDL::GL_BLUE_SIZE
+      * SDL::GL_ALPHA_SIZE
+      * SDL::GL_BUFFER_SIZE
+      * SDL::GL_DOUBLEBUFFER
+      * SDL::GL_DEPTH_SIZE
+      * SDL::GL_STENCIL_SIZE
+      * SDL::GL_ACCUM_RED_SIZE
+      * SDL::GL_ACCUM_GREEN_SIZE
+      * SDL::GL_ACCUM_BLUE_SIZE
+      * SDL::GL_ACCUM_ALPHA_SIZE
+
+--- SDL.getGLAttr(attr)
+--- SDL.get_GL_attr(attr)
+      OpenGL属性((|attr|))の値を得る。
+      ((<SDL.setVideoMode>))を呼んだ後に指定した属性が期待通りであるかを
+      チェックするのに有用である。
+      
+--- SDL.GLSwapBuffers
+--- SDL.GL_swap_buffers
+      ダブルバッファがサポートされている場合、OpenGLのバッファを入れ替える。
+      
 == その他
 === Linuxで'--disable-pthread'を使わない場合の問題を避ける方法
-以下の内容をスクリプトの最初に置いておけばこの問題を回避できる可能性があります。
+以下の内容をスクリプトの最初に置いておけばこの問題を回避できる可能性がある。
   require 'rbconfig'
   
   if RUBY_PLATFORM =~ /linux/

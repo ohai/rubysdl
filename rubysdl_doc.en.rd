@@ -44,6 +44,7 @@ In this module number starts 0,not 1.
   * ((<SDL::SKK::Dictionary>))
   * ((<SDL::SKK::RomKanaRuleTable>))
   * ((<SDL::SKK::Keybind>))
+* ((<3D drawing with OpenGL>))
 * ((<Others>))
 
 == Error handling
@@ -2041,6 +2042,46 @@ Object
 --- SDL::SKK::Keybind#unset_key(key_str)
       Unset keybind.
 
+== 3D drawing with OpenGL
+You can draw 3D graphics with OpenGL.
+
+How to use OpenGL.
+(1) require 'sdl'; require 'opengl'
+(2) Call ((<SDL.init>)) with SDL::INIT_VIDEO
+(3) Set attribute of OpenGL, please use ((<SDL.setGLAttr>))
+(4) Call ((<SDL.setVideoMode>)) with SDL::OPENGL
+(5) Use GL module methods to draw
+(6) Call ((<SDL.GLSwapBuffersn>)) instead of ((<SDL.flip>)) to update screen
+
+Please see sample/opengl.rb .
+
+=== module function
+--- SDL.setGLAttr(attr,val)
+--- SDL.set_GL_attr(attr,val)
+      Set the value of special SDL/OpenGL attribute.
+
+      List of attribute:
+      * SDL::GL_RED_SIZE
+      * SDL::GL_GREEN_SIZE
+      * SDL::GL_BLUE_SIZE
+      * SDL::GL_ALPHA_SIZE
+      * SDL::GL_BUFFER_SIZE
+      * SDL::GL_DOUBLEBUFFER
+      * SDL::GL_DEPTH_SIZE
+      * SDL::GL_STENCIL_SIZE
+      * SDL::GL_ACCUM_RED_SIZE
+      * SDL::GL_ACCUM_GREEN_SIZE
+      * SDL::GL_ACCUM_BLUE_SIZE
+      * SDL::GL_ACCUM_ALPHA_SIZE
+
+--- SDL.getGLAttr(attr)
+--- SDL.get_GL_attr(attr)
+      Get the value of special SDL/OpenGL attribute.
+      
+--- SDL.GLSwapBuffers
+--- SDL.GL_swap_buffers
+      Swap the OpenGL buffers, update display, if double-buffering is supported.
+      
 == Others
 === Avoid pthread problem
 You can possibly avoid Ruby/SDL pthread problem when you put following 
