@@ -33,7 +33,7 @@ static VALUE sdl_displayFormat(VALUE obj)
   SDL_Surface *srcImage,*destImage;
   Data_Get_Struct(obj,SDL_Surface,srcImage);
   destImage=SDL_DisplayFormat(srcImage);
-  return Data_Wrap_Struct(gSurfaceClass,0,SDL_FreeSurface,destImage);
+  return Data_Wrap_Struct(cSurface,0,SDL_FreeSurface,destImage);
 }
 
 static VALUE sdl_setColorKey(VALUE obj,VALUE flag,VALUE key)
@@ -83,41 +83,41 @@ static VALUE sdl_fillRect(VALUE obj,VALUE x,VALUE y,VALUE w,VALUE h,
     return Qfalse;
 }
 
-void defineConstForVideo()
+static void defineConstForVideo()
 {
   /* Available for Screen.setVideoMode */
-  rb_define_const(gSDLModule,"SWSURFACE",INT2NUM(SDL_SWSURFACE));
-  rb_define_const(gSDLModule,"HWSURFACW",INT2NUM(SDL_HWSURFACE));
-  rb_define_const(gSDLModule,"ASYNCBLIT",INT2NUM(SDL_ASYNCBLIT));
-  rb_define_const(gSDLModule,"ANYFORMAT",INT2NUM(SDL_ANYFORMAT));
-  rb_define_const(gSDLModule,"HWPALETTE",INT2NUM(SDL_HWPALETTE));
-  rb_define_const(gSDLModule,"DOUBLEBUF",INT2NUM(SDL_DOUBLEBUF));
-  rb_define_const(gSDLModule,"FULLSCREEN",INT2NUM(SDL_FULLSCREEN));
-  rb_define_const(gSDLModule,"OPENGL",INT2NUM(SDL_OPENGL));
-  rb_define_const(gSDLModule,"OPENGLBLIT",INT2NUM(SDL_OPENGLBLIT));
-  rb_define_const(gSDLModule,"RESIZABLE",INT2NUM(SDL_RESIZABLE));
-  rb_define_const(gSDLModule,"HWACCEL",INT2NUM(SDL_HWACCEL));
-  rb_define_const(gSDLModule,"SRCCOLORKEY",INT2NUM(SDL_SRCCOLORKEY));
-  rb_define_const(gSDLModule,"RLEACCELOK",INT2NUM(SDL_RLEACCELOK));
-  rb_define_const(gSDLModule,"RLEACCEL",INT2NUM(SDL_RLEACCEL));
-  rb_define_const(gSDLModule,"SRCALPHA",INT2NUM(SDL_SRCALPHA));
-  rb_define_const(gSDLModule,"PREALLOC",INT2NUM(SDL_PREALLOC));
+  rb_define_const(mSDL,"SWSURFACE",INT2NUM(SDL_SWSURFACE));
+  rb_define_const(mSDL,"HWSURFACW",INT2NUM(SDL_HWSURFACE));
+  rb_define_const(mSDL,"ASYNCBLIT",INT2NUM(SDL_ASYNCBLIT));
+  rb_define_const(mSDL,"ANYFORMAT",INT2NUM(SDL_ANYFORMAT));
+  rb_define_const(mSDL,"HWPALETTE",INT2NUM(SDL_HWPALETTE));
+  rb_define_const(mSDL,"DOUBLEBUF",INT2NUM(SDL_DOUBLEBUF));
+  rb_define_const(mSDL,"FULLSCREEN",INT2NUM(SDL_FULLSCREEN));
+  rb_define_const(mSDL,"OPENGL",INT2NUM(SDL_OPENGL));
+  rb_define_const(mSDL,"OPENGLBLIT",INT2NUM(SDL_OPENGLBLIT));
+  rb_define_const(mSDL,"RESIZABLE",INT2NUM(SDL_RESIZABLE));
+  rb_define_const(mSDL,"HWACCEL",INT2NUM(SDL_HWACCEL));
+  rb_define_const(mSDL,"SRCCOLORKEY",INT2NUM(SDL_SRCCOLORKEY));
+  rb_define_const(mSDL,"RLEACCELOK",INT2NUM(SDL_RLEACCELOK));
+  rb_define_const(mSDL,"RLEACCEL",INT2NUM(SDL_RLEACCEL));
+  rb_define_const(mSDL,"SRCALPHA",INT2NUM(SDL_SRCALPHA));
+  rb_define_const(mSDL,"PREALLOC",INT2NUM(SDL_PREALLOC));
 }
 
 void init_video()
 {
-  rb_define_module_function(gSDLModule,"blitSurface",sdl_blitSurface,8);
+  rb_define_module_function(mSDL,"blitSurface",sdl_blitSurface,8);
 
-  gSurfaceClass = rb_define_class_under(gSDLModule,"Surface",rb_cObject);
-  rb_define_singleton_method(gSurfaceClass,"loadBMP",sdl_loadBMP,1);
-  rb_define_method(gSurfaceClass,"displayFormat",sdl_displayFormat,0);
-  rb_define_method(gSurfaceClass,"setColorKey",sdl_setColorKey,2);
-  rb_define_method(gSurfaceClass,"fillRect",sdl_fillRect,5);
+  cSurface = rb_define_class_under(mSDL,"Surface",rb_cObject);
+  rb_define_singleton_method(cSurface,"loadBMP",sdl_loadBMP,1);
+  rb_define_method(cSurface,"displayFormat",sdl_displayFormat,0);
+  rb_define_method(cSurface,"setColorKey",sdl_setColorKey,2);
+  rb_define_method(cSurface,"fillRect",sdl_fillRect,5);
 
-  gScreenClass = rb_define_class_under(gSDLModule,"Screen",gSurfaceClass);
-  rb_define_singleton_method(gScreenClass,"setVideoMode",
+  cScreen = rb_define_class_under(mSDL,"Screen",cSurface);
+  rb_define_singleton_method(cScreen,"setVideoMode",
 			     sdl_setVideoMode,4);
-  rb_define_method(gScreenClass,"updateRect",sdl_updateRect,4);
+  rb_define_method(cScreen,"updateRect",sdl_updateRect,4);
 
   defineConstForVideo();
   return;

@@ -1,0 +1,5 @@
+rubysdl_event.o: rubysdl_event.c rubysdl.h
+rubysdl_event_key.o: rubysdl_event_key.c rubysdl.h
+rubysdl_main.o: rubysdl_main.c rubysdl.h
+rubysdl_video.o: rubysdl_video.c rubysdl.h
+rubysdl_mixer.o: rubysdl_mixer.c rubysdl.h
