@@ -134,10 +134,22 @@ static VALUE skk_Dict_load(VALUE obj,VALUE filename,VALUE users)
   SDLSKK_Dictionary* dict;
 
   Data_Get_Struct(obj,SDLSKK_Dictionary,dict);
-
+  
   if( !SDLSKK_Dict_load(dict,STR2CSTR(filename),RTEST(users)) )
     rb_raise(eSDLError,"Couldn't load %s",STR2CSTR(filename));
 
+  return Qnil;
+}
+
+static VALUE skk_Dict_save(VALUE obj, VALUE filename)
+{
+  SDLSKK_Dictionary* dict;
+
+  Data_Get_Struct(obj,SDLSKK_Dictionary,dict);
+
+  if( !SDLSKK_Dict_save_user_jisyo(dict,STR2CSTR(filename)) )
+    rb_raise(eSDLError,"Couldn't save %s",STR2CSTR(filename));
+  
   return Qnil;
 }
 
@@ -168,6 +180,8 @@ void init_sdlskk(void)
   
   rb_define_singleton_method(cDictionary,"new",skk_Dictionary_new,0);
   rb_define_method(cDictionary,"load",skk_Dict_load,2);
+  rb_define_method(cDictionary,"save",skk_Dict_save,1);
+  
   rb_define_singleton_method(cRomKanaRuleTable,"new",
 			     skk_RomKanaRuleTable_new,1);  
 }
