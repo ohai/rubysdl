@@ -263,7 +263,11 @@ static void defineConstForEvent()
   rb_define_const(cEvent,"EVENT_RESERVEDA",INT2NUM(SDL_EVENT_RESERVEDA));
   rb_define_const(cEvent,"EVENT_RESERVEDB",INT2NUM(SDL_EVENT_RESERVEDB));
   rb_define_const(cEvent,"VIDEORESIZE",INT2NUM(SDL_VIDEORESIZE));
+#if SDL_VERSION_ATLEAST(1,2,0)
+  rb_define_const(cEvent,"VIDEOEXPOSE",INT2NUM(SDL_VIDEOEXPOSE));
+#else
   rb_define_const(cEvent,"EVENT_RESERVED1",INT2NUM(SDL_EVENT_RESERVED1));
+#endif
   rb_define_const(cEvent,"EVENT_RESERVED2",INT2NUM(SDL_EVENT_RESERVED2));
   rb_define_const(cEvent,"EVENT_RESERVED3",INT2NUM(SDL_EVENT_RESERVED3));
   rb_define_const(cEvent,"EVENT_RESERVED4",INT2NUM(SDL_EVENT_RESERVED4));
