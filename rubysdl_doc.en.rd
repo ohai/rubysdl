@@ -1583,6 +1583,48 @@ Object
 --- SDL::BMFont#textout(surface,string,x,y)
       Render the given string on surface. (x,y) is the position
       of the left top corner.
+
+=== SDL::Kanji
+This class handles bdf fonts. You can draw Japanese character with this
+class.
+
+==== super class
+
+Object
+
+==== class method
+--- SDL::Kanji.open(filename,size)
+      Open bdf font file and return font object.
+      You should specify font size as ((|size|)).
+      
+==== method
+--- SDL::Kanji#add(filename)
+      Open other bdf file and add lacked glyphs.
+      
+--- SDL::Kanji#setCodingSystem
+--- SDL::Kanji#set_coding_system
+      Set Character coding system. You can use following.
+      * SDL::Kanji::JIS
+      * SDL::Kanji::SJIS
+      * SDL::Kanji::EUC
+      
+      Default is SDL::Kanji::EUC.
+      
+--- SDL::Kanji#textwidth(text)
+      Return the width of text.
+      
+--- SDL::Kanji#width
+      Return the width of one ascii character.
+      
+--- SDL::Kanji#height
+      Return font height.
+      
+--- SDL::Kanji#put(surface,text,x,y,r,g,b)
+      Draw text on surface at (x,y) whose color is (r,g,b).
+      
+--- SDL::Kanji#putTate(surface,text,x,y,r,g,b)
+--- SDL::Kanji#put_tate(surface,text,x,y,r,g,b)
+      Draw Tategaki text.
       
 === SDL::TTF
 

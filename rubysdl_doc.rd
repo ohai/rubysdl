@@ -1560,7 +1560,7 @@ Object
 == フォント関係
 
 === SDL::BMFont
-ビットマップフォントを表すクラス
+ビットマップフォントを表すクラス。利用にはSGEが必要。
 
 ==== スーパークラス
 
@@ -1592,10 +1592,50 @@ Object
 --- SDL::BMFont#textout(surface,string,x,y)
       ((|string|))を((|surface|))に描画する。
       ((|x|)),((|y|))は描画位置の左上となる。
+
+=== SDL::Kanji
+bdfフォントを表わすクラス。日本語も利用可能。
+
+==== スーパークラス
+
+Object
+
+==== クラスメソッド
+--- SDL::Kanji.open(filename,size)
+      bdfフォントファイルを読み、フォントオブジェクトを返す。
+      文字の大きさはsizeで指定する。
+      
+==== メソッド
+--- SDL::Kanji#add(filename)
+      既に開いているフォントに追加してフォントを開く。
+      具体的には以前のフォントに無かった文字が、
+      新しいフォントファイルで補完される。
+      
+--- SDL::Kanji#setCodingSystem(sys)
+--- SDL::Kanji#set_coding_system
+      文字コードを指定する。
+      sysに指定できるのはSDL::Kanji::EUC,SDL::Kanji::SJIS,SDL::Kanji::JIS
+      のいずれか。
+      
+--- SDL::Kanji#textwidth(text)
+      指定した文字列の幅を返す。
+      
+--- SDL::Kanji#width
+      ASCII一文字の幅を返す。
+      
+--- SDL::Kanji#height
+      フォントの高さを返す
+      
+--- SDL::Kanji#put(surface,text,x,y,r,g,b)
+      surfaceのx,yに指定した文字列を描画する。
+      
+--- SDL::Kanji#putTate(surface,text,x,y,r,g,b)
+--- SDL::Kanji#put_tate(surface,text,x,y,r,g,b)
+      surfaceのx,yに指定した文字列を縦書きで描画する。
       
 === SDL::TTF
 
-ＴｒｕｅＴｙｐｅフォントを表すクラス
+ＴｒｕｅＴｙｐｅフォントを表すクラス。利用にはSDL_ttfが必要。
 
 ==== スーパークラス
 
