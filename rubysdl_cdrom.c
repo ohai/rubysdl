@@ -92,6 +92,20 @@ static VALUE sdl_cd_currentFrame(VALUE obj)
   Data_Get_Struct(obj,SDL_CD,cd);
   return INT2NUM(cd->cur_frame);
 }
+static VALUE sdl_cd_trackType(VALUE obj,VALUE track)
+{
+  SDL_CD *cd;
+  int index=NUM2INT(track);
+  Data_Get_Struct(obj,SDL_CD,cd);
+  return INT2FIX(cd->track[index].type);
+}
+static VALUE sdl_cd_trackLength(VALUE obj,VALUE track)
+{
+  SDL_CD *cd;
+  int index=NUM2INT(track);
+  Data_Get_Struct(obj,SDL_CD,cd);
+  return INT2FIX(cd->track[index].length);
+}
 
 static void defineConstForCDROM()
 {
@@ -121,6 +135,8 @@ void init_cdrom()
   rb_define_method(cCD,"numTracks",sdl_cd_numTracks,0);
   rb_define_method(cCD,"currentTrack",sdl_cd_currentTrack,0);
   rb_define_method(cCD,"currentFrame",sdl_cd_currentFrame,0);
+  rb_define_method(cCD,"trackType",sdl_cd_trackType,1);
+  rb_define_method(cCD,"trackLength",sdl_cd_trackLength,1);
   
   defineConstForCDROM();
 }
