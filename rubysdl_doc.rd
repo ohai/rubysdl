@@ -1614,6 +1614,21 @@ Object
       SDL_ttf 2.0.4 が必要
       フォントのstyleの名前を返す。
 
+--- SDL::TTF#height
+      フォントの高さを返す。通常は指定したポイントと同じ。
+      
+--- SDL::TTF#ascent
+      フォントのascent(ベースラインから上端までの相対位置)を返す。
+      ベースライン相対の正の値を返す。
+      
+--- SDL::TTF#descent
+      フォントのdescent(ベースラインから下端までの相対位置)を返す。
+      ベースライン相対の負の値を返す。
+      
+--- SDL::TTF#lineSkip
+--- SDL::TTF#line_skip
+      そのフォントの行間として推奨される値を返す。
+      
 --- SDL::TTF#drawSolidUTF8(dest,text,x,y,r,g,b)
 --- SDL::TTF#draw_solid_utf8(dest,text,x,y,r,g,b)
       selfのフォント設定でdest(Surfaceのインスタンス)にString textを

@@ -5,7 +5,7 @@
 Interface of this lib is very close to SDL.
 So you also had better refer to SDL document.
 
-All classes/modules in Ruby/SDL are in "module SDL".
+nAll classes/modules in Ruby/SDL are in "module SDL".
 In this module number starts 0,not 1.
 
 == Class/Module
@@ -1607,6 +1607,21 @@ Object
       Need SDL_ttf 2.0.4 or later
       Returns the name of style.
 
+--- SDL::TTF#height
+      Get the total height of the font - usually equal to point size.
+      
+--- SDL::TTF#ascent
+      Get the offset from the baseline to the top of the font
+      This is a positive value, relative to the baseline.
+      
+--- SDL::TTF#descent
+      Get the offset from the baseline to the bottom of the font
+      This is a negative value, relative to the baseline.
+      
+--- SDL::TTF#lineSkip
+--- SDL::TTF#line_skip
+      Get the recommended spacing between lines of text for this font.
+      
 --- SDL::TTF#drawSolidUTF8(dest,text,x,y,r,g,b)
 --- SDL::TTF#draw_solid_utf8(dest,text,x,y,r,g,b)
       Draw text on "dest" at ("x","y"). r,g,b are color elements of text.
