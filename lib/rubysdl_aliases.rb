@@ -315,6 +315,7 @@ module SDL
       alias fixed_width? fixedWidth?
       alias family_name familyName
       alias style_name styleName
+      alias line_skip lineSkip
       alias draw_solid_utf8 drawSolidUTF8
       alias draw_blended_utf8 drawBlendedUTF8
       alias draw_shaded_utf8 drawShadedUTF8
