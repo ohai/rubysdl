@@ -8,6 +8,7 @@ module SDL
   class Screen
     alias update_rect updateRect
     alias flip flip
+    alias toggle_fullscreen toggleFullScreen
   end
 end
 

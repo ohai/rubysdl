@@ -122,6 +122,16 @@ static VALUE sdl_flip(VALUE obj)
   return Qnil;
 }
 
+static VALUE sdl_toggleFullScreen(VALUE obj)
+{
+  SDL_Surface *screen;
+  Data_Get_Struct(obj,SDL_Surface,screen);
+  if( SDL_WM_ToggleFullScreen(screen)==0 ){
+    rb_raise( eSDLError,"toggle full screen fail : %s", SDL_GetError() );
+  }
+  return Qnil;
+}
+
 static VALUE sdl_setVideoMode(VALUE mod,VALUE w,VALUE h,VALUE bpp,
        VALUE flags)
 {
@@ -604,7 +614,7 @@ void init_video()
   cScreen = rb_define_class_under(mSDL,"Screen",cSurface);
   rb_define_method(cScreen,"updateRect",sdl_updateRect,4);
   rb_define_method(cScreen,"flip",sdl_flip,0);
-  
+  rb_define_method(cScreen,"toggleFullScreen",sdl_toggleFullScreen,0);
   defineConstForVideo();
   return;
 }
