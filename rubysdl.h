@@ -53,6 +53,10 @@ GLOBAL VALUE cContext;
 GLOBAL VALUE cDictionary;
 GLOBAL VALUE cRomKanaRuleTable;
 
+#ifdef HAVE_SGE
+GLOBAL VALUE cCollisionMap;
+#endif /* ifdef HAVE_SGE */
+
 #ifdef DEF_EVENT2
 GLOBAL VALUE cEvent2;
 GLOBAL VALUE cActiveEvent;

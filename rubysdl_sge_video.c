@@ -182,6 +182,80 @@ static VALUE sdl_transformSurface(VALUE obj,VALUE bgcolor,VALUE angle,
   return Data_Wrap_Struct(cSurface,0,sdl_freeSurface,result);
 }
 
+static VALUE sdl_makeCollisionMap(VALUE obj)
+{
+  sge_cdata * cdata;
+  SDL_Surface *surface;
+  Data_Get_Struct(obj,SDL_Surface,surface);
+  cdata = sge_make_cmap(surface);
+  if( cdata==NULL )
+    rb_raise( eSDLError,"Couldn't Create CollisionMap: %s",SDL_GetError() );
+  return Data_Wrap_Struct(cCollisionMap,0,sge_destroy_cmap,cdata);
+}
+
+static sge_cdata * value_to_collision_map(VALUE value)
+{
+  sge_cdata * cdata;
+  if( !rb_obj_is_kind_of(value, cCollisionMap) )
+    rb_raise(rb_eArgError,"type mismatch(expect CollisionMap)");
+  Data_Get_Struct(value, sge_cdata, cdata);
+  return cdata;
+}
+
+static VALUE sdl_classBoundingBoxCheck(VALUE class,
+                                       VALUE x1, VALUE y1, VALUE w1, VALUE h1,
+                                       VALUE x2, VALUE y2, VALUE w2, VALUE h2)
+{
+  return BOOL(_sge_bbcheck
+              ((Sint16) NUM2INT(x1), (Sint16) NUM2INT(y1),
+               (Sint16) NUM2INT(w1), (Sint16) NUM2INT(h1),
+               (Sint16) NUM2INT(x2), (Sint16) NUM2INT(y2),
+               (Sint16) NUM2INT(w2), (Sint16) NUM2INT(h2)));
+}
+
+static VALUE sdl_collisionCheck(VALUE collisionMap1, VALUE x1, VALUE y1,
+                                VALUE collisionMap2, VALUE x2, VALUE y2)
+{
+  sge_cdata * cdata1 = value_to_collision_map(collisionMap1);
+  sge_cdata * cdata2 = value_to_collision_map(collisionMap2);
+  int collided;
+  collided = sge_cmcheck
+    (cdata1, (Sint16) NUM2INT(x1), (Sint16) NUM2INT(y1),
+     cdata2, (Sint16) NUM2INT(x2), (Sint16) NUM2INT(y2));
+  if(!collided)
+    return Qnil;
+  return rb_ary_new3(2, INT2NUM(sge_get_cx()), INT2NUM(sge_get_cy()));
+}
+
+static VALUE sdl_boundingBoxCheck(VALUE collisionMap1, VALUE x1, VALUE y1,
+                                  VALUE collisionMap2, VALUE x2, VALUE y2)
+{
+  sge_cdata * cdata1 = value_to_collision_map(collisionMap1);
+  sge_cdata * cdata2 = value_to_collision_map(collisionMap2);
+  int collided;
+  return BOOL(sge_bbcheck
+              (cdata1, (Sint16) NUM2INT(x1), (Sint16) NUM2INT(y1),
+               cdata2, (Sint16) NUM2INT(x2), (Sint16) NUM2INT(y2)));
+}
+
+static VALUE sdl_set_cdata(VALUE obj, VALUE x, VALUE y, VALUE w, VALUE h)
+{
+  sge_cdata * cdata = value_to_collision_map(obj);
+  sge_set_cdata(cdata, 
+                (Sint16) NUM2INT(x), (Sint16) NUM2INT(y),
+                (Sint16) NUM2INT(w), (Sint16) NUM2INT(h));
+  return Qnil;
+}
+
+static VALUE sdl_unset_cdata(VALUE obj, VALUE x, VALUE y, VALUE w, VALUE h)
+{
+  sge_cdata * cdata = value_to_collision_map(obj);
+  sge_unset_cdata(cdata, 
+                  (Sint16) NUM2INT(x), (Sint16) NUM2INT(y),
+                  (Sint16) NUM2INT(w), (Sint16) NUM2INT(h));
+  return Qnil;
+}
+
 static void defineConstForSGE()
 {
   rb_define_const(mSDL,"TRANSFORM_AA",UINT2NUM(SGE_TAA));
@@ -219,5 +293,16 @@ void init_sge_video()
 
   rb_define_module_function(mSDL,"transform",sdl_transform,10);
   rb_define_method(cSurface,"transformSurface",sdl_transformSurface,5);
+
+  rb_define_method(cSurface,"makeCollisionMap", sdl_makeCollisionMap, 0);
+
+  cCollisionMap = rb_define_class_under(mSDL,"CollisionMap",cSurface);
+  rb_define_singleton_method(cCollisionMap,"boundingBoxCheck",
+                             sdl_classBoundingBoxCheck, 8);
+  rb_define_method(cCollisionMap,"collisionCheck", sdl_collisionCheck, 5);
+  rb_define_method(cCollisionMap,"boundingBoxCheck", sdl_boundingBoxCheck, 5);
+  rb_define_method(cCollisionMap,"clear", sdl_unset_cdata, 4);
+  rb_define_method(cCollisionMap,"set", sdl_set_cdata, 4);
+
 }
 #endif /* HAVE_SGE */

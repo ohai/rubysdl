@@ -549,6 +549,49 @@ Object
         [ [r0,g0,b0],[r1,g1,b1], ... ,[r255,g255,b255] ]
       Returns nil if the surface have no palette.
 
+--- SDL::Surface#makeCollisionMap
+      Need SGE
+
+      Create a collision map.  Call SetColorKey first.  Every
+      non-transparent pixel in the surface is set to solid in the collision
+      map.  Returns an instance of CollisionMap.
+
+=== SDL::CollisionMap
+
+Need SGE
+
+This is a map of which pixels in a surface are solid and which are
+transparent.  Its methods can quickly determine whether or not two
+surfaces would overlap if drawn at particular coordinates.
+
+Only ((<SDL::Surface.makeCollisionMap>)) makes this object.
+
+==== class method
+
+--- SDL::CollisionMap#boundingBoxCheck(x1, y1, w1, h1, x2, y2, w2, h2)
+      Return true if the bounding boxes overlap.
+
+==== method
+
+--- SDL::CollisionMap#collisionCheck(x1, y1, collisionMap, x2, y2)
+      Determine if this collision map, if drawn with its upper-left
+      corner at (x1, y1), would collide with collisionMap if drawn
+      with its upper-left corner at (x2, y2).  If so, return the
+      coordinate of the last collision found as an array ([x, y]).
+      If no collision, returns nil.
+
+      This method calls boundingBoxCheck automatically.
+
+--- SDL::CollisionMap#boundingBoxCheck(x1, y1, collisionMap, x2, y2)
+      Return true if the bounding boxes of the two maps would overlap if
+      drawn with upper-left corners at (x1, y1) and (x2, y2).
+
+--- SDL::CollisionMap#clear(x1, y1, w, h)
+      Clear (make transparent) an area of the collision map.
+
+--- SDL::CollisionMap#set(x1, y1, w, h)
+      Set (make solid) an area of the collision map.
+
 === SDL::Screen
 
 SDL display the image that the instance of "Screen" have.

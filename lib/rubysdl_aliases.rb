@@ -147,8 +147,23 @@ module SDL
       alias draw_filled_ellipse drawFilledEllipse
       alias rotate_scaled_surface rotateScaledSurface
       alias transform_surface transformSurface
+      alias make_collision_map makeCollisionMap
     end
   end
+
+  if defined?(CollisionMap) then
+
+    class CollisionMap
+      alias collision_check collisionCheck
+      alias bounding_box_check boundingBoxCheck
+    end
+
+    class << CollisionMap
+      alias bounding_box_check boundingBoxCheck
+    end
+    
+  end
+  
 end
 
 

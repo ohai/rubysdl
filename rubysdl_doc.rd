@@ -557,6 +557,48 @@ Object
         [ [r0,g0,b0],[r1,g1,b1], ... ,[r255,g255,b255] ]
       サーフィスがパレットを持っていないときはnilを返す。
 
+--- SDL::Surface#makeCollisionMap
+      SGEが必要
+      
+      collision map を生成する。 あらかじめ((<SDL::Surface#setColorKey>))
+      を呼んでおく必要がある。((<SDL::Surface#setColorKey>))で設定された
+      不透明部分が衝突判定に利用される。
+      
+      ((<SDL::CollisionMap>))のインスタンスを返す。
+
+=== SDL::CollisionMap
+
+SGEが必要
+
+1ドットごとの衝突判定をするための情報を表わすクラス。
+これでふたつの画像が重なっているかどうかを簡単に判定できる。
+
+((<SDL::Surface.makeCollisionMap>)) によってのみインスタンスが得られる。
+
+==== クラスメソッド
+
+--- SDL::CollisionMap#boundingBoxCheck(x1, y1, w1, h1, x2, y2, w2, h2)
+      ふたつの長方形が重なっているかどうかを判定し、重なっていれば
+      真を、いなければ偽を返す。
+
+==== method
+
+--- SDL::CollisionMap#collisionCheck(x1, y1, collisionMap, x2, y2)
+      self が (x1,y1) に描画され、collisionMapが (x2,y2) に描画された
+      としたとき、そのふたつの画像の不透明部分が重なるかどうかを
+      判定する。
+
+      内部で自動的に((<SDL::CollisionMap#boundingBoxCheck>))を呼ぶ。
+
+--- SDL::CollisionMap#boundingBoxCheck(x1, y1, collisionMap, x2, y2)
+      ふたつの長方形が重なっているかどうかを判定する。
+
+--- SDL::CollisionMap#clear(x1, y1, w, h)
+      指定した長方形の部分を判定なしの状態にする。
+
+--- SDL::CollisionMap#set(x1, y1, w, h)
+      指定した長方形の部分をすべて判定ありの状態にする。
+
 === SDL::Screen
 
 ここにかきこまれた画像が画面に表示される。
