@@ -29,6 +29,8 @@
 void init_video();
 #ifdef HAVE_SGE
 void init_sge_video();
+#else
+void init_pixel();
 #endif
 #ifdef DEF_OPENGL
 void init_opengl();
@@ -111,6 +113,8 @@ void Init_sdl()
   init_video();
 #ifdef HAVE_SGE
   init_sge_video();
+#else
+  init_pixel();
 #endif
 #ifdef DEF_OPENGL
   init_opengl();

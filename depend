@@ -11,3 +11,4 @@ rubysdl_image.o: rubysdl_image.c rubysdl.h
 rubysdl_ttf.o: rubysdl_ttf.c rubysdl.h
 rubysdl_joystick.o: rubysdl_joystick.c rubysdl.h
 rubysdl_cdrom.o: rubysdl_cdrom.c rubysdl.h
+rubysdl_pixel.o: rubysdl_pixel.c rubysdl.h

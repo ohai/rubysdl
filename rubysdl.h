@@ -84,3 +84,6 @@ do{ \
 #endif
 
 Uint32 VALUE2COLOR(VALUE color,SDL_PixelFormat *format);
+void rubysdl_putPixel(SDL_Surface *surface, Sint16 x, Sint16 y, Uint32 color);
+Uint32 rubysdl_getPixel(SDL_Surface *surface, Sint16 x, Sint16 y);
+
