@@ -23,7 +23,7 @@ end
 
 module SDL
 
-  VERSION = "0.9"
+  VERSION = "0.9.1"
 
   class PixelFormat
 
