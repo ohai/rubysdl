@@ -3,7 +3,7 @@ require 'sdl'
 SDL.init( SDL::INIT_CDROM )
 
 print SDL::CD.numDrive,"\n"
-print SDL::CD.name(0),"\n"
+print SDL::CD.indexName(0),"\n"
 cd=SDL::CD.open(0)
 cd.status
 print cd.numTracks," ",cd.status, "\n"
