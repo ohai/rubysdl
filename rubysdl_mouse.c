@@ -31,8 +31,9 @@ static VALUE sdl_getMouseState(VALUE mod)
   int x,y;
   Uint8 result;
   result=SDL_GetMouseState(&x,&y);
-  return rb_ary_new3(5,INT2FIX(x),INT2FIX(y),result&SDL_BUTTON_LMASK,
-		     result&SDL_BUTTON_MMASK,result&SDL_BUTTON_RMASK);
+  return rb_ary_new3(5,INT2FIX(x),INT2FIX(y),BOOL(result&SDL_BUTTON_LMASK),
+		     BOOL(result&SDL_BUTTON_MMASK),
+		     BOOL(result&SDL_BUTTON_RMASK));
 }
 void init_mouse()
 {
