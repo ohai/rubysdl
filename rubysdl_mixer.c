@@ -24,8 +24,7 @@
 
 static int mix_opened=0;
 
-static VALUE playing_wave[MIX_CHANNELS] =
-{ Qnil,Qnil,Qnil,Qnil,Qnil,Qnil,Qnil,Qnil };
+static VALUE playing_wave = Qnil;
 static VALUE playing_music=Qnil;
 
 static VALUE mix_openAudio(VALUE mod,VALUE frequency,VALUE format,
@@ -40,10 +39,6 @@ static VALUE mix_openAudio(VALUE mod,VALUE frequency,VALUE format,
     rb_raise(eSDLError,"Couldn't open audio: %s",SDL_GetError());
   }
 
-  /* to avoid to do garbage collect when playing */
-  for( i=0; i<MIX_CHANNELS; ++i)
-    rb_global_variable( &(playing_wave[i]) );
-  rb_global_variable( &playing_music );
   
   return Qnil;
 }
@@ -73,7 +68,8 @@ static VALUE mix_playChannel(VALUE mod,VALUE channel,VALUE wave,VALUE loops)
   if( playing_channel == -1 ){
     rb_raise( eSDLError, "couldn't play wave" );
   }
-  playing_wave[playing_channel]=wave; /* to avoid gc problem */
+
+  rb_ary_store(playing_wave,playing_channel,wave);/* to avoid gc problem */
   return INT2FIX(playing_channel);
 }
 
@@ -247,7 +243,12 @@ void init_mixer()
 
   cMusic = rb_define_class_under(mMixer,"Music",rb_cObject);
   rb_define_singleton_method(cMusic,"load",mix_loadMus,1);
-  
+
+  /* to avoid to do garbage collect when playing */
+  playing_wave = rb_ary_new();
+  rb_global_variable( &playing_wave );
+  rb_global_variable( &playing_music );
+
   defineConstForAudio();
   return ;
 }
