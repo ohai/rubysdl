@@ -28,6 +28,7 @@
 * ((<SDL::SKK::Context>))
 * ((<SDL::SKK::Dictionary>))
 * ((<SDL::SKK::RomKanaRuleTable>))
+* ((<SDL::SKK::Keybind>))
 
 == SDL::Error
 
@@ -1709,10 +1710,11 @@ Object
 
 ==== クラスメソッド
 
---- SDL::SKK::Context.new(dict,romkana_table,use_minibuffer)
+--- SDL::SKK::Context.new(dict,romkana_table,bind,use_minibuffer)
       ((<SDL::SKK::Context>))のインスタンスを生成し、それを返す。
       dict、romkana_tableとして利用する辞書とローマ仮名変換の規則の情報
-      を与える。use_minibufferを真にするとミニバッファが利用できる。
+      を与える。bindとしてキーバインドを与える。use_minibufferを真にすると
+      ミニバッファが利用できる。
       
 ==== メソッド
 
@@ -1732,6 +1734,17 @@ Object
 --- SDL::SKK::Context#clear
       入力文字列と入力状態をクリアして初期状態にもどす。
 
+--- SDL::SKK::Context#clear_text
+      contextのcontextのモードが、確定入力モード、アルファベット入力モード、
+      JISX0208アルファベット入力モードのいずれかであればそのモードを
+      維持したまま入力テキストを空にする。
+      
+      複数行の入力を実現したい場合、SDLSKK_Context_clearを呼ぶと
+      モードが確定入力モードに戻ってしまうのが不自然である場合、この関数を
+      呼ぶとよい。
+      
+      また、カットバッファの内容も保存される。
+      
 --- SDL::SKK::Context#get_basic_mode
       contextのモードが、確定入力モード、アルファベット入力モード、
       JISX0208アルファベット入力モードのいずれかであれば真を、それ
@@ -1779,4 +1792,69 @@ Object
       
 ==== メソッド
 
+=== SDL::SKK::Keybind
+
+SDLSKKでのキーバインドを表わすクラス。
+
+==== スーパークラス
+
+Object
+
+==== クラスメソッド
+
+--- SDL::SKK::Keybind.new
+      キーバインドオブジェクトを確保する。
+      最初はキーバインドは空である。
+
+==== メソッド
+
+--- SDL::SKK::Keybind#set_key(key_str,cmd_str)
+    
+      キーバインドを設定する。
+      key_strとして与えられる文字列は以下の通り
+      * アルファベット、% などのasciiの記号
+        * "SPC" "TAB" "DEL" "RET" "UP" "DOWN" "RIGHT" "LEFT" "INSERT" "HOME" "END"
+          "PAGEUP" "PAGEDOWN" "F1" "F2" "F3" "F4" "F5" "F6" "F7" "F8" "F9" "F10"
+          "F11" "F12" "F13" "F14" "F15" "HELP"
+        * "C-a" "M-C-a" などといった修飾キー
+  
+      cmd_strとして与えられる文字列は以下の通り
+      * "backward-char",
+      * "forward-char",
+      * "backward-delete-char",
+      * "delete-char",
+      * "kakutei",
+      * "kettei",
+      * "space",
+      * "keyboard-quit",
+      * "set-mark-command",
+      * "kill-region",
+      * "yank",
+      * "copy",
+      * "graph-char",
+      * "upper-char",
+      * "lower-char",
+      * "abbrev-input",
+      * "latin-mode",
+      * "previous-candidate",
+      * "jisx0208-mode",
+      * "toggle-kana",
+      * "beginning-of-line"
+      * "end-of-line"
+      * "do-nothing"
+      ただし、"a" "/" などのascii character 一文字のキーにはデフォルト以外の
+      キーバインドはしないようにしてください
+      
+      標準のキーバインドを少し変更したいという場合は、まず
+      ((<SDL::SKK::Keybind#set_default_key>))を呼んで、デフォルトのキーバインドを
+      設定してから((<SDL::SKK::Keybind#set_key>))を呼んでください
+
+--- SDL::SKK::Keybind#set_default_key
+
+      標準的なキーバインドを設定する
+
+--- SDL::SKK::Keybind#unset_key(key_str)
+
+      指定したキーのキーバインドを消す
+    
 =end

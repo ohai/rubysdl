@@ -27,6 +27,7 @@ In this module number starts 0,not 1.
 * ((<SDL::SKK::Context>))
 * ((<SDL::SKK::Dictionary>))
 * ((<SDL::SKK::RomKanaRuleTable>))
+* ((<SDL::SKK::Keybind>))
 
 == SDL::Error
 
@@ -1699,9 +1700,9 @@ Object
 
 ==== class method
 
---- SDL::SKK::Context.new(dict,romkana_table,use_minibuffer)
-      Create an instance of ((<SDL::SKK::Context>)) from the dictionary
-      and the RomKanaRuleTable. And if use_minibuffer is true, you
+--- SDL::SKK::Context.new(dict,romkana_table,keybind,use_minibuffer)
+      Create an instance of ((<SDL::SKK::Context>)) from the dictionary,
+      the keybind and the RomKanaRuleTable. And if use_minibuffer is true, you
       can use minibuffer.      
       
 ==== method
@@ -1764,4 +1765,63 @@ Object
       
 ==== method
 
+=== SDL::SKK::Keybind
+
+This class represents the keybind in SDLSKK input system.
+
+==== super class
+
+Object
+
+==== class method
+
+--- SDL::SKK::Keybind.new
+      Create the instance of ((<SDL::SKK::Keybind>)) without any keybind.
+
+==== method
+
+--- SDL::SKK::Keybind#set_key(key_str,cmd_str)
+      Set keybind.
+      
+      You can use following string as ((|key_str|)).
+      * alphabet and other ascii character
+      * "SPC" "TAB" "DEL" "RET" "UP" "DOWN" "RIGHT" "LEFT" "INSERT" "HOME" "END"
+        "PAGEUP" "PAGEDOWN" "F1" "F2" "F3" "F4" "F5" "F6" "F7" "F8" "F9" "F10"
+        "F11" "F12" "F13" "F14" "F15" "HELP"
+      * Modified key like "C-a" or "M-C-a"
+
+      And you can following as ((|cmd_str|))
+      * "backward-char",
+      * "forward-char",
+      * "backward-delete-char",
+      * "delete-char",
+      * "kakutei",
+      * "kettei",
+      * "space",
+      * "keyboard-quit",
+      * "set-mark-command",
+      * "kill-region",
+      * "yank",
+      * "copy",
+      * "graph-char",
+      * "upper-char",
+      * "lower-char",
+      * "abbrev-input",
+      * "latin-mode",
+      * "previous-candidate",
+      * "jisx0208-mode",
+      * "toggle-kana",
+      * "beginning-of-line"
+      * "end-of-line"
+      * "do-nothing"
+
+      You should not set any command on one ascii character like "a" or "/".
+
+--- SDL::SKK::Keybind#set_default_key
+      Set default keybind. You should call this method immediately after
+      call ((<SDL::SKK::Keybind.new>))
+
+--- SDL::SKK::Keybind#unset_key(key_str)
+      Unset keybind.
+    
 =end
