@@ -33,7 +33,7 @@ end
 if have_library("SDLSKK","SDLSKK_Context_new") then
   $CFLAGS+= " -D HAVE_SDLSKK "
 end
-if enable_config("opengl",false) then
+if enable_config("opengl",true) then
   dir_config('x11','/usr/X11R6')
   
   $CFLAGS+= " -D DEF_OPENGL "
