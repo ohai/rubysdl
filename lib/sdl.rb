@@ -14,7 +14,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 # 
-require 'rubysdl.so'
+require 'sdl.so'
 
 
 module SDL
@@ -40,5 +40,17 @@ module SDL
   def rotateBlit(src,dst,x,y,angle)
     rotateScaledBlit(src,dst,x,y,angle,1)
   end
+
+  def blitSurface2(src,srcRect,dst,dstRect)
+    if srcRect.nil? && dstRect.nil? then
+      blitSurface(src,0,0,0,0,dst,0,0)
+    elsif srcRect.nil? then
+      blitSurface(src,0,0,0,0,dst,dstRect[0],dstRect[1])
+    elsif dstRect.nil? then
+      blitSurface(src,srcRect[0],srcRect[1],srcRect[2],srcRect[3],dst,0,0)
+    else
+      blitSurface(src,srcRect[0],srcRect[1],srcRect[2],srcRect[3],dst,
+		  dstRect[0],dstRect[1])
+    end
 end
 
