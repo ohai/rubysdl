@@ -54,3 +54,5 @@ sample/stetris.rb
 sample/aadraw.rb
 sample/alphadraw.rb
 sample/fpstimer.rb
+sample/bfont.rb
+sample/font.bmp
