@@ -35,6 +35,29 @@ Uint32 VALUE2COLOR(VALUE color,SDL_PixelFormat *format)
   }
 }
 
+static VALUE sdl_listModes(VALUE mod,VALUE flags)
+{
+  SDL_Rect **modes;
+  int i;
+  VALUE modesArray;
+  
+  modes=SDL_ListModes(NULL,NUM2UINT(flags));
+
+  if( modes == NULL )
+    return Qnil;/* no modes available */
+  if( modes == (SDL_Rect **)-1)
+    return Qtrue;/* all resolutions available */
+
+  /* available modes into modesArray */
+  modesArray=rb_ary_new();
+  
+  for(i=0;modes[i]!=NULL;++i){
+    rb_ary_push( modesArray,
+		 rb_ary_new3( 2, INT2NUM(modes[i]->w), INT2NUM(modes[i]->h)) );
+  }
+  return modesArray;
+}
+
 static VALUE sdl_checkVideoMode(VALUE mod,VALUE w,VALUE h,VALUE bpp,
 				VALUE flags)
 {
@@ -327,6 +350,7 @@ void init_video()
   rb_define_module_function(mSDL,"blitSurface",sdl_blitSurface,8);
   rb_define_module_function(mSDL,"setVideoMode",sdl_setVideoMode,4);
   rb_define_module_function(mSDL,"checkVideoMode",sdl_checkVideoMode,4);
+  rb_define_module_function(mSDL,"listModes",sdl_listModes,1);
   cVideoInfo=rb_define_class_under(mSDL,"VideoInfo",rb_cObject);
   rb_define_attr(cVideoInfo,"hw_available",1,0);
   rb_define_attr(cVideoInfo,"wm_available",1,0);
