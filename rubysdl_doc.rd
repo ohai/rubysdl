@@ -474,6 +474,90 @@ Object
 --- SDL::Surface#draw_filled_ellispe(x,y,rx,ry,color)
       つづりを間違えていた。使わないように。
 
+--- SDL::Surface#drawAALine(x1,y1,x2,y2,color)
+--- SDL::Surface#draw_aa_line(x1,y1,x2,y2,color)
+      SGEが必要 ロックが必要
+
+      色がcolorのアンチエリアスした線を(x1,y1)から(x2,y2)まで描く。
+      
+--- SDL::Surface#drawAACircle(x,y,r,color)
+--- SDL::Surface#draw_aa_circle(x,y,r,color)
+      SGEが必要 ロックが必要
+
+      色がcolorのアンチエリアスした円を描く。
+      
+--- SDL::Surface#drawAAFilledCircle(x,y,r,color)
+--- SDL::Surface#draw_aa_filled_circle(x,y,r,color)
+      SGEが必要 ロックが必要
+
+      色がcolorのアンチエリアスした円を描き、中をぬりつぶす。
+      
+--- SDL::Surface#drawAAEllipse(x,y,rx,ry,color)
+--- SDL::Surface#draw_aa_ellipse(x,y,rx,ry,color)
+      SGEが必要 ロックが必要
+
+      色がcolorのアンチエリアスした楕円を描く。
+      
+--- SDL::Surface#drawLineAlpha(x1,y1,x2,y2,color,alpha)
+--- SDL::Surface#draw_line_alpha(x1,y1,x2,y2,color,alpha)
+      SGEが必要 ロックが必要
+
+      アルファブレンドした直線を描く。
+      
+--- SDL::Surface#drawRectAlpha(x,y,w,h,color,alpha)
+--- SDL::Surface#draw_rect_alpha(x,y,w,h,color,alpha)
+      SGEが必要 ロックが必要
+
+      アルファブレンドした長方形を描く。
+      
+--- SDL::Surface#drawFilledRectAlpha(x,y,w,h,color,alpha)
+--- SDL::Surface#draw_filled_rect_alpha(x,y,w,h,color,alpha)
+      SGEが必要 ロックが必要
+
+      アルファブレンドした長方形を描き、中をぬりつぶす。
+      
+--- SDL::Surface#drawCircleAlpha(x,y,r,color,alpha)
+--- SDL::Surface#draw_circle_alpha(x,y,r,color,alpha)
+      SGEが必要 ロックが必要
+
+      アルファブレンドした円を描く。
+      
+--- SDL::Surface#drawFilledCircleAlpha(x,y,r,color,alpha)
+--- SDL::Surface#draw_filled_circle_alpha(x,y,r,color,alpha)
+      SGEが必要 ロックが必要
+
+      アルファブレンドした円を描き、中をぬりつぶす。
+      
+--- SDL::Surface#drawEllipseAlpha(x,y,rx,ry,color,alpha)
+--- SDL::Surface#draw_ellipse_alpha(x,y,rx,ry,color,alpha)
+      SGEが必要 ロックが必要
+
+      アルファブレンドした楕円を描く。
+      
+--- SDL::Surface#drawFilledEllipseAlpha(x,y,rx,ry,color,alpha)
+--- SDL::Surface#draw_filled_ellipse_alpha(x,y,rx,ry,color,alpha)
+      SGEが必要 ロックが必要
+
+      アルファブレンドした楕円を描き、中をぬりつぶす。
+      
+--- SDL::Surface#drawAALineAlpha(x1,y1,x2,y2,color,alpha)
+--- SDL::Surface#draw_aa_line_alpha(x1,y1,x2,y2,color,alpha)
+      SGEが必要 ロックが必要
+
+      アルファブレンド、アンチエリアスした直線を描く。
+      
+--- SDL::Surface#drawAACircleAlpha(x,y,r,color,alpha)
+--- SDL::Surface#draw_aa_circle_alpha(x,y,r,color,alpha)
+      SGEが必要 ロックが必要
+
+      アルファブレンド、アンチエリアスした円を描く。
+      
+--- SDL::Surface#drawAAEllipseAlpha(x,y,rx,ry,color,alpha)
+--- SDL::Surface#draw_aa_ellipse_alpha(x,y,rx,ry,color,alpha)
+      SGEが必要 ロックが必要
+
+      アルファブレンド、アンチエリアスした楕円を描く。
+      
 --- SDL::Surface#rotateScaledSurface(angle,scale,bgcolor)
 --- SDL::Surface#rotate_scaled_surface(angle,scale,bgcolor)
       SGEが必要 

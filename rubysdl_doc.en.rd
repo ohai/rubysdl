@@ -470,7 +470,90 @@ Object
       See drawFilledEllipse.  This method exists for compatability but
       should not be used.
 
+--- SDL::Surface#drawAALine(x1,y1,x2,y2,color)
+--- SDL::Surface#draw_aa_line(x1,y1,x2,y2,color)
+      Needs SGE ,Needs lock
+      
+      Draws an antialiased line from (x1,y1) to (x2,y2).
+      
+--- SDL::Surface#drawAACircle(x,y,r,color)
+--- SDL::Surface#draw_aa_circle(x,y,r,color)
+      Needs SGE ,Needs lock
 
+      Draws an antialiased circle.
+      
+--- SDL::Surface#drawAAFilledCircle(x,y,r,color)
+--- SDL::Surface#draw_aa_filled_circle(x,y,r,color)
+      Needs SGE ,Needs lock
+
+      Draws a filled antialiased circle.
+      
+--- SDL::Surface#drawAAEllipse(x,y,rx,ry,color)
+--- SDL::Surface#draw_aa_ellipse(x,y,rx,ry,color)
+      Needs SGE ,Needs lock
+
+      Draws an antialiased ellipse.
+      
+--- SDL::Surface#drawLineAlpha(x1,y1,x2,y2,color,alpha)
+--- SDL::Surface#draw_line_alpha(x1,y1,x2,y2,color,alpha)
+      Needs SGE ,Needs lock
+
+      Draws a line with alpha blending.
+      
+--- SDL::Surface#drawRectAlpha(x,y,w,h,color,alpha)
+--- SDL::Surface#draw_rect_alpha(x,y,w,h,color,alpha)
+      Needs SGE ,Needs lock
+
+      Draws a rectangle with alpha blending.
+      
+--- SDL::Surface#drawFilledRectAlpha(x,y,w,h,color,alpha)
+--- SDL::Surface#draw_filled_rect_alpha(x,y,w,h,color,alpha)
+      Needs SGE ,Needs lock
+
+      x
+      
+--- SDL::Surface#drawCircleAlpha(x,y,r,color,alpha)
+--- SDL::Surface#draw_circle_alpha(x,y,r,color,alpha)
+      Needs SGE ,Needs lock
+
+      Draws a circle with alpha blending.
+      
+--- SDL::Surface#drawFilledCircleAlpha(x,y,r,color,alpha)
+--- SDL::Surface#draw_filled_circle_alpha(x,y,r,color,alpha)
+      Needs SGE ,Needs lock
+
+      Draws a filled circle with alpha blending.
+      
+--- SDL::Surface#drawEllipseAlpha(x,y,rx,ry,color,alpha)
+--- SDL::Surface#draw_ellipse_alpha(x,y,rx,ry,color,alpha)
+      Needs SGE ,Needs lock
+
+      Draws an ellipse with alpha blending.
+      
+--- SDL::Surface#drawFilledEllipseAlpha(x,y,rx,ry,color,alpha)
+--- SDL::Surface#draw_filled_ellipse_alpha(x,y,rx,ry,color,alpha)
+      Needs SGE ,Needs lock
+
+      Draws a filled ellipse with alpha blending.
+      
+--- SDL::Surface#drawAALineAlpha(x1,y1,x2,y2,color,alpha)
+--- SDL::Surface#draw_aa_line_alpha(x1,y1,x2,y2,color,alpha)
+      Needs SGE ,Needs lock
+
+      Draws an antialiased line with alpha blending.
+      
+--- SDL::Surface#drawAACircleAlpha(x,y,r,color,alpha)
+--- SDL::Surface#draw_aa_circle_alpha(x,y,r,color,alpha)
+      Needs SGE ,Needs lock
+
+      Draws an antialiased circle with alpha blending.
+      
+--- SDL::Surface#drawAAEllipseAlpha(x,y,rx,ry,color,alpha)
+--- SDL::Surface#draw_aa_ellipse_alpha(x,y,rx,ry,color,alpha)
+      Needs SGE ,Needs lock
+
+      Draws an antialiased ellipse with alpha blending.
+      
 --- SDL::Surface#rotateScaledSurface(angle,scale,bgcolor)
 --- SDL::Surface#rotate_scaled_surface(angle,scale,bgcolor)
       Needs SGE
