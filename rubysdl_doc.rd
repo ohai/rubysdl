@@ -191,6 +191,30 @@ bpp=bit per pixelである。
 --- SDL.rotateBlit(src,dst,x,y,angle)
       ((<SDL.rotateScaledBlit>))と同様、ただしscaleが1であるとする。
 
+--- SDL.transform(src,dst,angle,xscale,yscale,px,py,qx,qy,flags)
+      SGEが必要
+      回転縮小拡大を描画する。
+      src全体をpx,pyを中心にangle度回転、X方向にxscale倍、Y方向にyscale倍して
+      px、pyがdstのqx、qyに一致するように描画する。
+      flagの意味は以下の通り。これらのORをとってもよい。
+
+      * 0
+
+        普通に回転させる
+
+      * SDL::TRANSFORM_SAFE
+
+        srcとdstのフォーマットが違ってもうまくいくようにする。多少遅い。
+
+      * SDL::TRANSFORM_AA
+
+        通常より遅いがみためは良くなる。
+
+      * SDL::TRANSFORM_TMAP
+
+        テクスチャーマッピングを使用する。ほんの少しはやいがみためが少し
+        悪くなる。px、py、flagsは無視される。
+
 === SDL::Surface
 
 画像を保持するクラスです。
@@ -363,7 +387,14 @@ Object
       生成するメソッドである。回転によって生じる隙間はbgcolorで埋められる。
 
 --- SDL::Surface#rotateSurface(angle,bgcolor)
-      SDL::Surface#rotateScaledSurfaceと同様。ただしscaleは1としたことになる。
+      ((<SDL::Surface#rotateScaledSurface>))と同様。
+      ただしscaleは1としたことになる。
+
+--- SDL::Surface#transformSurface(bgcolor,angle,xscale,yscale,flags)
+      selfをangle度回転し、X方向にxscale倍、Y方向にyscale倍して、生じた
+      すきまをbgcolorで塗りつぶした画像を持つDSL::Surfaceのインスタンス
+      を生成するメソッド。
+      flagは((<SDL.transform>))と同じ。
 
 --- SDL::Surface#mapRGB(r,g,b)
       selfのサーフィスのフォーマット(bppなど)に従ってr,g,bによって

@@ -151,12 +151,49 @@ static VALUE sdl_rotateScaledBlit(VALUE mod,VALUE src,VALUE dst,VALUE x,
   }
   return INT2NUM(result);
 }
-  
+
+static VALUE sdl_transform(VALUE mod,VALUE src,VALUE dst,VALUE angle,
+			   VALUE xscale,VALUE yscale,VALUE px,VALUE py,
+			   VALUE qx,VALUE qy,VALUE flags)
+{
+  SDL_Surface *srcSurface,*dstSurface;
+  if( !rb_obj_is_kind_of(src,cSurface) || !rb_obj_is_kind_of(dst,cSurface) )
+    rb_raise(rb_eArgError,"type mismatch(expect Surface)");
+  Data_Get_Struct(src,SDL_Surface,srcSurface);
+  Data_Get_Struct(dst,SDL_Surface,dstSurface);
+  sge_transform(srcSurface,dstSurface,NUM2DBL(angle),NUM2DBL(xscale),
+		NUM2DBL(yscale),NUM2INT(px),NUM2INT(py),NUM2INT(qx),
+		NUM2INT(qy),NUM2UINT(flags));
+  return Qnil;
+}
+
+static VALUE sdl_transformSurface(VALUE obj,VALUE bgcolor,VALUE angle,
+				  VALUE xscale,VALUE yscale,VALUE flags)
+{
+  SDL_Surface *surface,*result;
+  Data_Get_Struct(obj,SDL_Surface,surface);
+  result = sge_transform_surface(surface,VALUE2COLOR(bgcolor,surface->format),
+				 NUM2DBL(angle),NUM2DBL(xscale),
+				 NUM2DBL(yscale),NUM2UINT(flags));
+  if( result==NULL )
+    rb_raise( eSDLError,"Couldn't Create Surface: %s",SDL_GetError() );
+  return Data_Wrap_Struct(cSurface,0,SDL_FreeSurface,result);
+}
+
+static void defineConstForSGE()
+{
+  rb_define_const(mSDL,"TRANSFORM_AA",UINT2NUM(SGE_TAA));
+  rb_define_const(mSDL,"TRANSFORM_SAFE",UINT2NUM(SGE_TSAFE));
+  rb_define_const(mSDL,"TRANSFORM_TMAP",UINT2NUM(SGE_TTMAP));
+}
+
 void init_sge_video()
 {
   sge_Update_OFF();
   sge_Lock_ON();
 
+  defineConstForSGE();
+  
   rb_define_module_function(mSDL,"autoLock",sdl_get_autoLocking,0);
   rb_define_module_function(mSDL,"autoLock=",sdl_set_autoLocking,1);
 
@@ -175,5 +212,8 @@ void init_sge_video()
   rb_define_method(cSurface,"rotateScaledSurface",sdl_rotateScaledSurface,3);
   rb_define_module_function(mSDL,"rotateScaledBlit",sdl_rotateScaledBlit,6);
   rb_define_module_function(mSDL,"rotateXYScaled",sdl_rotateXYScaled,7);
+
+  rb_define_module_function(mSDL,"transform",sdl_transform,10);
+  rb_define_method(cSurface,"transformSurface",sdl_transformSurface,5);
 }
 #endif /* HAVE_SGE */

@@ -173,6 +173,29 @@ some functions need SGE or SDL_image
 --- SDL.rotateBlit(src,dst,x,y,angle)
       Same as rotateScaledBlit,but with scale=1.0;
 
+--- SDL.transform(src,dst,angle,xscale,yscale,px,py,qx,qy,flags)
+      Need SGE
+
+      *src - The surface to be rotated and scaled
+      *src - The surface to be rotated and scaled
+      *angle - The rotation angle in degrees.
+      *xscale  yscale - The x and y scaling factor. Can be negative
+       (mirroring). 1.0 is 1:1 scale.
+      *px / py - The pivot point to rotate around in the src surface.
+      *qx / qy - The destination point on dst surface.
+      *flags
+        *0 - Default.
+        *SGE_TAA - Use the interpolating renderer. Much slower but
+         can look better.
+        *SGE_TSAFE - Don't asume that the src and dst surfaces has the
+         same pixel format. This is the default when the two surfaces
+         don't have the same BPP.
+         This is slower but will render wierd pixel formats right.
+        *SGE_TTMAP - Use texture mapping. This is a bit faster
+         but the result isn't
+         as nice as in the normal mode. This mode will also ignore the px/py
+         coordinates and the other flags.
+      
 === SDL::Surface
 
 This class have image.
@@ -350,6 +373,12 @@ Object
 --- SDL::Surface#rotateSurface(angle,bgcolor)
       Same as above,but with scale=1.0 .
 
+--- SDL::Surface#transformSurface(bgcolor,angle,xscale,yscale,flags)
+      Creates a rotated and scaled image of src. See ((<SDL.transform>))
+      for more information.
+
+      * bgcolor - What background color should the new surface have.
+      
 --- SDL::Surface#mapRGB(r,g,b)
     Maps the RGB color value to the pixel format of specified surface
     and returns the pixel value as a integer.
