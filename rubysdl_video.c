@@ -501,8 +501,8 @@ void init_video()
 
   rb_define_method(cSurface,"mapRGB",sdl_mapRGB,3);
   rb_define_method(cSurface,"mapRGBA",sdl_mapRGBA,4);
-  rb_define_method(cSurface,"getRGB",sdl_getRGB,3);
-  rb_define_method(cSurface,"getRGBA",sdl_getRGBA,4);
+  rb_define_method(cSurface,"getRGB",sdl_getRGB,1);
+  rb_define_method(cSurface,"getRGBA",sdl_getRGBA,1);
   rb_define_method(cSurface,"bpp",sdl_getBpp,0);
   rb_define_method(cSurface,"colorkey",sdl_getColorkey,0);
   rb_define_method(cSurface,"alpha",sdl_getAlpha,0);
