@@ -177,6 +177,12 @@ static void defineConstForEvent()
      It is the number of bits in the event mask datatype -- Uint32
      */
   rb_define_const(cEvent,"NUMEVENTS",INT2NUM(SDL_NUMEVENTS));
+
+  /* The available application states */
+  rb_define_const(cEvent,"APPMOUSEFOCUS",UINT2NUM(SDL_APPMOUSEFOCUS));
+  rb_define_const(cEvent,"APPINPUTFOCUS",UINT2NUM(SDL_APPINPUTFOCUS));
+  rb_define_const(cEvent,"APPACTIVE",UINT2NUM(SDL_APPACTIVE));
+
 }
 
 void init_event()
