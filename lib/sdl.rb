@@ -36,7 +36,7 @@ module SDL
     def_delegators( :@surface, :mapRGB, :mapRGBA, :getRGB, :getRGBA, :bpp,
 		    :colorkey, :alpha )
   end
-  
+
   class Surface
     def put(surface,x,y)
       SDL::blitSurface(surface,0,0,surface.w,surface.h,self,x,y)
@@ -63,7 +63,17 @@ module SDL
                            self.alpha )
       return new_surface
     end
-    
+
+    def self.new(*args)
+      case args.size
+      when 4
+        create(*args)
+      when 8
+        createWithFormat(*args)
+      else
+        raise ArgumentError,"must be SDL::Surface.new(flags,w,h,surface) or SDL::Surface.new(flags,w,h,depth,Rmask,Gmask,Bmask,Amask)"
+      end
+    end
   end
 
   def color2int(color,format)
