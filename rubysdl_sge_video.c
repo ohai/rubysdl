@@ -138,7 +138,7 @@ static VALUE sdl_rotateScaledBlit(VALUE mod,VALUE src,VALUE dst,VALUE x,
   Data_Get_Struct(src,SDL_Surface,srcSurface);
   Data_Get_Struct(dst,SDL_Surface,dstSurface);
   colorkey=srcSurface->format->colorkey;
-  flags = srcSurface->flags & ( SDL_RLEACCEL|SDL_SRCCOLORKEY )
+  flags = srcSurface->flags & ( SDL_RLEACCEL|SDL_SRCCOLORKEY );
   tmpSurface = sge_rotate_scaled_surface(srcSurface,NUM2INT(angle),
 					 NUM2DBL(scale),colorkey);
   if( tmpSurface==NULL )
