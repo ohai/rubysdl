@@ -9,6 +9,7 @@ Add following methods
   SDL::Surface#copyRect
 Fix some warnings
 Fix a critical bug in SDLSKK module
+Setup OpenGL by default
 
 version 0.9.2
 Primitive draw with anti-alias and alpha blending is now available.
