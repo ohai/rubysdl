@@ -35,6 +35,14 @@ static VALUE sdl_ttf_setFontStyle(VALUE obj,VALUE style)
   TTF_SetFontStyle(font,NUM2UINT(style));
   return Qnil;
 }
+static VALUE sdl_ttf_sizeText(VALUE obj,VALUE text)
+{
+  TTF_Font *font;
+  int w,h;
+  Data_Get_Struct(obj,TTF_Font,font);
+  TTF_SizeUTF8(font,STR2CSTR(text),&w,&h);
+  return rb_ary_new3(2,INT2FIX(w),INT2FIX(h));
+}
 static VALUE ttf_draw(VALUE obj,VALUE dest,VALUE text,VALUE x,
 		      VALUE y,VALUE r,VALUE g,VALUE b,RenderFunc render)
 {
@@ -89,9 +97,11 @@ void init_ttf()
   cTTF=rb_define_class_under(mSDL,"TTF",rb_cObject);
   rb_define_singleton_method(cTTF,"init",sdl_ttf_init,0);
   rb_define_singleton_method(cTTF,"open",sdl_ttf_open,2);
+  
   rb_define_method(cTTF,"style",sdl_ttf_getFontStyle,0);
   rb_define_method(cTTF,"style=",sdl_ttf_setFontStyle,1);
-  
+  rb_define_method(cTTF,"textSize",sdl_ttf_sizeText,1);
+
   rb_define_method(cTTF,"drawSolidUTF8",sdl_ttf_drawSolidUTF8,7);
   rb_define_method(cTTF,"drawBlendedUTF8",sdl_ttf_drawBlendedUTF8,7);
   
