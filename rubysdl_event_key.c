@@ -318,12 +318,14 @@ static VALUE sdl_enableKeyRepeat(VALUE mod,VALUE delay,VALUE interval)
   if( SDL_EnableKeyRepeat( NUM2INT(delay),NUM2INT(interval) )==-1 ){
     rb_raise(eSDLError,"enable key repeat fail: %s",SDL_GetError());
   }
+  return Qnil;
 }
 static VALUE sdl_disableKeyRepeat(VALUE mod)
 {
   if( SDL_EnableKeyRepeat( 0,0 )==-1 ){
     rb_raise(eSDLError,"disable key repeat fail: %s",SDL_GetError());
   }
+  return Qnil;
 }
 static VALUE sdl_getKeyName(VALUE mod,VALUE key)
 {
