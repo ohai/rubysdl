@@ -45,6 +45,10 @@ StandardError
 
 === SDL内のモジュール関数
 
+--- checkVideoMode(w,h,bpp,flags)
+
+--- videoInfo
+
 --- blitSurface(src,srcX,srcY,srcW,srcH,dst,dstX,dstY)
 
 --- warpMouse(x,y)
@@ -168,13 +172,15 @@ Object
 
 ==== メソッド
 
----PixelFormat#MapRGB(r,g,b)
+--- PixelFormat#MapRGB(r,g,b)
 
----PixelFormat#MapRGBA(r,g,b,a)
+--- PixelFormat#MapRGBA(r,g,b,a)
 
----PixelFormat#getRGB(pixel)
+--- PixelFormat#getRGB(pixel)
 
----PixelFormat#getRGBA(pixel)
+--- PixelFormat#getRGBA(pixel)
+
+--- PixelFormat#bpp
 
 == Event関連
 
@@ -436,7 +442,7 @@ Object
       destの位置(x,y)の所に書きこむ。色はr,g,bで決められる。
       透明色(ColorKey)は有効である。textはUTF-8を使う。
 
-	--- TTF#drawBlendedUTF8(dest,text,x,y,r,g,b)
+--- TTF#drawBlendedUTF8(dest,text,x,y,r,g,b)
       drawSolidUTF8と同様。drawSolidUTF8よりも高品質な描画ができる。
 
 =end
