@@ -57,8 +57,13 @@ module SDL
       flagbase=SDL::SWSURFACE|SDL::HWSURFACE|SDL::SRCCOLORKEY|SDL::SRCALPHA
       new_surface=Surface.new(flagbase&self.flags,w,h,self)
       SDL.blitSurface(self,x,y,w,h,new_surface,0,0)
+      new_surface.setColorKey(self.flags & (SDL::SRCCOLORKEY|SDL::RLEACCEL),
+                              self.colorkey )
+      new_surface.setAlpha(self.flags & (SDL::SRCALPHA|SDL::RLEACCEL),
+                           self.alpha )
       return new_surface
     end
+    
   end
 
   def color2int(color,format)
