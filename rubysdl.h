@@ -62,6 +62,7 @@ GLOBAL VALUE cKeybind;
 
 #ifdef HAVE_SGE
 GLOBAL VALUE cCollisionMap;
+GLOBAL VALUE cBMFont;
 #endif /* ifdef HAVE_SGE */
 
 #ifdef DEF_EVENT2
