@@ -243,6 +243,28 @@ static VALUE sdl_createSurfaceWithFormat(VALUE class,VALUE flags,VALUE w,
 }
 
 
+static VALUE sdl_createSurfaceFrom(VALUE class,VALUE pixels,VALUE w,
+                                   VALUE h,VALUE depth,VALUE pitch,
+                                   VALUE Rmask,VALUE Gmask,VALUE Bmask,
+                                   VALUE Amask)
+{
+  SDL_Surface *surface;
+  void* pixel_data;
+  
+  StringValue(pixels);
+  pixel_data = malloc(RSTRING(pixels)->len);
+  memcpy(pixel_data,RSTRING(pixels)->ptr,RSTRING(pixels)->len);
+  
+  surface = SDL_CreateRGBSurfaceFrom(pixel_data,NUM2INT(w),NUM2INT(h),
+                                     NUM2UINT(depth),NUM2INT(pitch),
+                                     NUM2UINT(Rmask),NUM2UINT(Gmask),
+                                     NUM2UINT(Bmask),NUM2UINT(Amask));
+  if( surface == NULL ){
+    rb_raise(eSDLError,"Couldn't Create Surface: %s",SDL_GetError());
+  }
+  surface->flags &= ~SDL_PREALLOC;
+  return Data_Wrap_Struct(class,0,sdl_freeSurface,surface);
+}
 
 static VALUE sdl_loadBMP(VALUE class,VALUE filename)
 {
@@ -646,6 +668,7 @@ void init_video()
 
   rb_define_singleton_method(cSurface,"create",sdl_createSurface,4);
   rb_define_singleton_method(cSurface,"createWithFormat",sdl_createSurfaceWithFormat,8);
+  rb_define_singleton_method(cSurface,"new_from",sdl_createSurfaceFrom,9);
   rb_define_singleton_method(cSurface,"loadBMP",sdl_loadBMP,1);
   rb_define_method(cSurface,"saveBMP",sdl_saveBMP,1);
   rb_define_method(cSurface,"displayFormat",sdl_displayFormat,0);
