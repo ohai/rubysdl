@@ -368,9 +368,18 @@ module SDL
   end
 end
 
+# rubysdl_opengl.c
+class <<  SDL
+  if method_defined?(:getGLAttr)
+    alias get_GL_attr getGLAttr
+    alias set_GL_attr setGLAttr
+    alias GL_swap_buffers GLSwapBuffers
+  end
+end
+
 # sdl.rb
 
-module  SDL
+module SDL
   class Surface
     if method_defined?(:rotateScaledSurface) then
       alias rotate_scaled_surface rotateScaledSurface
