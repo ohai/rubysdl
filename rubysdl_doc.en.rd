@@ -1202,6 +1202,10 @@ The module that have the functions for window management.
       attempts to iconify/minimise it. If ((<SDL::WM.iconify>)) is successful,
       the application will receive a APPACTIVE loss event.
 
+--- SDL::Screen#toggleFullScreen
+--- SDL::Screen#toggle_fullscreen
+      Toggles fullscreen mode.
+      
 == CDROM
 
 === SDL::CD

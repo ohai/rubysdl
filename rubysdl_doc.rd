@@ -1229,6 +1229,10 @@ Window関連の処理をまとめたモジュール
       ウィンドウのアイコン化、最小化をする。
       成功すれば、SDL::Event::APPACTIVEイベントが生じる。
 
+--- SDL::Screen#toggleFullScreen
+--- SDL::Screen#toggle_fullscreen
+      フルスクリーンモードをきりかえる。
+      
 == CDROM関係
 
 === SDL::CD
