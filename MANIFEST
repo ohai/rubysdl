@@ -53,3 +53,4 @@ sample/collision.rb
 sample/stetris.rb
 sample/aadraw.rb
 sample/alphadraw.rb
+sample/fpstimer.rb
