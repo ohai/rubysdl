@@ -125,9 +125,6 @@ some functions need SGE or SDL_image
       You use this function like:
       blitSurface2(src,[0,32,32,32],dst,[100,200])
 
---- warpMouse(x,y)
-      Set the position of the mouse cursor (generates a mouse motion event).
-
 --- rotateXYScaled(src,dst,x,y,angle,xscale,yscale)
       Needs SGE
 
@@ -475,6 +472,8 @@ The module mouse constants and mouse functions.
       Return value is following,
         [ x , y , pressLButton? , pressMButton? , pressRButton? ]
 
+--- warp(x,y)
+      Set the position of the mouse cursor (generates a mouse motion event).
 
 == audio
 

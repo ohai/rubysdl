@@ -61,11 +61,6 @@ static VALUE sdl_getVideoInfo(VALUE mod)
   return obj;
 }
 
-static VALUE sdl_warpMouse(VALUE mod,VALUE x,VALUE y)
-{
-  SDL_WarpMouse( NUM2UINT(x),NUM2UINT(y) );
-  return Qnil;
-}
 
 static VALUE sdl_updateRect(VALUE obj,VALUE x,VALUE y,VALUE w,VALUE h)
 {
@@ -330,7 +325,6 @@ static void defineConstForVideo()
 void init_video()
 {
   rb_define_module_function(mSDL,"blitSurface",sdl_blitSurface,8);
-  rb_define_module_function(mSDL,"warpMouse",sdl_warpMouse,2);
   rb_define_module_function(mSDL,"setVideoMode",sdl_setVideoMode,4);
   rb_define_module_function(mSDL,"checkVideoMode",sdl_checkVideoMode,4);
   cVideoInfo=rb_define_class_under(mSDL,"VideoInfo",rb_cObject);

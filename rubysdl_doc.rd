@@ -142,9 +142,6 @@ bpp=bit per pixelである。
 
       srcRectにnilを指定した場合はsrc全体をblitする。
 
---- warpMouse(x,y)
-      マウスカーソルの位置を設定する（マウス移動のイベントを生成する)。
-
 --- rotateXYScaled(src,dst,x,y,angle,xscale,yscale)
       SGEが必要
 
@@ -509,6 +506,9 @@ Object
       配列の内容は
         [ x , y , pressLButton? , pressMButton? , pressRButton? ]
       となっています。
+
+--- warp(x,y)
+      マウスカーソルの位置を設定する（マウス移動のイベントを生成する)。
 
 == audio関連
 

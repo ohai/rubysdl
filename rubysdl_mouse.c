@@ -38,10 +38,18 @@ static VALUE sdl_getMouseState(VALUE mod)
 		     BOOL(result&SDL_BUTTON_MMASK),
 		     BOOL(result&SDL_BUTTON_RMASK));
 }
+static VALUE sdl_warpMouse(VALUE mod,VALUE x,VALUE y)
+{
+  SDL_WarpMouse( NUM2UINT(x),NUM2UINT(y) );
+  return Qnil;
+}
+
 void init_mouse()
 {
   mMouse=rb_define_module_under(mSDL,"Mouse");
+  
   rb_define_module_function(mMouse,"state",sdl_getMouseState,0);
+  rb_define_module_function(mMouse,"warp",sdl_warpMouse,2);
 
   defineConstForMouse();
 }
