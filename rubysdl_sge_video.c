@@ -362,7 +362,6 @@ static VALUE sdl_boundingBoxCheck(VALUE collisionMap1, VALUE x1, VALUE y1,
 {
   sge_cdata * cdata1 = value_to_collision_map(collisionMap1);
   sge_cdata * cdata2 = value_to_collision_map(collisionMap2);
-  int collided;
   return BOOL(sge_bbcheck
               (cdata1, (Sint16) NUM2INT(x1), (Sint16) NUM2INT(y1),
                cdata2, (Sint16) NUM2INT(x2), (Sint16) NUM2INT(y2)));
@@ -400,11 +399,65 @@ static VALUE sdl_unset_cdata(VALUE obj, VALUE vx, VALUE vy, VALUE vw, VALUE vh)
   return Qnil;
 }
 
+/* bitmap font */
+static VALUE sdl_bf_open(VALUE obj, VALUE file, VALUE flags)
+{
+  sge_bmpFont* font;
+
+  font = sge_BF_OpenFont(GETCSTR(file),NUM2UINT(flags));
+  if( font == NULL )
+    rb_raise(eSDLError,"Couldn't open font: %s", GETCSTR(file));
+  
+  return Data_Wrap_Struct(cBMFont,0,sge_BF_CloseFont,font);
+}
+
+static VALUE sdl_bf_setColor(VALUE obj,VALUE r,VALUE g,VALUE b)
+{
+  sge_bmpFont* font;
+  Data_Get_Struct(obj,sge_bmpFont,font);
+
+  sge_BF_SetColor(font,NUM2UINT(r),NUM2UINT(g),NUM2UINT(b));
+  return Qnil;
+}
+
+static VALUE sdl_bf_getHeight(VALUE obj)
+{
+  sge_bmpFont* font;
+  Data_Get_Struct(obj,sge_bmpFont,font);
+  return INT2FIX(sge_BF_GetHeight(font));
+}
+
+static VALUE sdl_bf_getWidth(VALUE obj)
+{
+  sge_bmpFont* font;
+  Data_Get_Struct(obj,sge_bmpFont,font);
+  return INT2FIX(sge_BF_GetWidth(font));
+}
+
+static VALUE sdl_bf_textout(VALUE obj,VALUE surface,VALUE string,
+                            VALUE x, VALUE y)
+{
+  sge_bmpFont* font;
+  SDL_Surface* target;
+  
+  if(!rb_obj_is_kind_of(surface,cSurface))
+    rb_raise( rb_eArgError,"type mismatch(expect Surface)" );
+  Data_Get_Struct(obj,sge_bmpFont,font);
+  Data_Get_Struct(surface,SDL_Surface,target);
+  sge_BF_textout(target,font,GETCSTR(string),NUM2INT(x),NUM2INT(y));
+  return Qnil;
+}
+
 static void defineConstForSGE()
 {
   rb_define_const(mSDL,"TRANSFORM_AA",UINT2NUM(SGE_TAA));
   rb_define_const(mSDL,"TRANSFORM_SAFE",UINT2NUM(SGE_TSAFE));
   rb_define_const(mSDL,"TRANSFORM_TMAP",UINT2NUM(SGE_TTMAP));
+
+  rb_define_const(cBMFont,"TRANSPARENT",UINT2NUM(SGE_BFTRANSP));
+  rb_define_const(cBMFont,"NOCONVERT",UINT2NUM(SGE_BFNOCONVERT));
+  rb_define_const(cBMFont,"SFONT",UINT2NUM(SGE_BFSFONT));
+  rb_define_const(cBMFont,"PALETTE",UINT2NUM(SGE_BFPALETTE));
 }
 
 void init_sge_video()
@@ -412,8 +465,6 @@ void init_sge_video()
   sge_Update_OFF();
   sge_Lock_ON();
 
-  defineConstForSGE();
-  
   rb_define_module_function(mSDL,"autoLock",sdl_get_autoLocking,0);
   rb_define_module_function(mSDL,"autoLock=",sdl_set_autoLocking,1);
 
@@ -464,7 +515,7 @@ void init_sge_video()
   /* collision detection */
   rb_define_method(cSurface,"makeCollisionMap", sdl_makeCollisionMap, 0);
 
-  cCollisionMap = rb_define_class_under(mSDL,"CollisionMap",cSurface);
+  cCollisionMap = rb_define_class_under(mSDL,"CollisionMap",rb_cObject);
   rb_define_singleton_method(cCollisionMap,"boundingBoxCheck",
                              sdl_classBoundingBoxCheck, 8);
   rb_define_method(cCollisionMap,"collisionCheck", sdl_collisionCheck, 5);
@@ -472,5 +523,15 @@ void init_sge_video()
   rb_define_method(cCollisionMap,"clear", sdl_unset_cdata, 4);
   rb_define_method(cCollisionMap,"set", sdl_set_cdata, 4);
 
+  /* bitmap font */
+  cBMFont = rb_define_class_under(mSDL,"BMFont",rb_cObject);
+  rb_define_singleton_method(cBMFont,"open",sdl_bf_open,2);
+
+  rb_define_method(cBMFont,"setColor",sdl_bf_setColor,3);
+  rb_define_method(cBMFont,"height",sdl_bf_getHeight,0);
+  rb_define_method(cBMFont,"width",sdl_bf_getWidth,0);
+  rb_define_method(cBMFont,"out",sdl_bf_textout,4);
+
+  defineConstForSGE();
 }
 #endif /* HAVE_SGE */
