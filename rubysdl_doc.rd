@@ -974,6 +974,13 @@ SDL::Event2.poll,SDL::Event2.waitはSDL::Event2のサブクラスのインスタンスを返しま
       その内容は、
         [ rate,format,channels ]
 
+--- SDL::Mixer.allocateChannels(numchannels)
+      Ruby/SDLで利用できるチャンネルの数を動的に変更する。
+      もし指定したチャンネルの数が指定まえのものより小さければ
+      それより上のチャンネルでの再生は止まる。
+      
+      これは新しく確保できたチャンネルの数を返す。
+
 --- SDL::Mixer.playChannel(channel,wave,loop)
       指定したchannelでwaveを演奏する。
       channelに-1を指定すると、あいているchannelが適当にえらばれる。

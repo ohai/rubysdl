@@ -949,6 +949,12 @@ Needs SDL_mixer to use functions if this module.
       Returns the audio spec in array.
         [ rate,format,channels ]
 
+--- SDL::Mixer.allocateChannels(numchannels)
+      Dynamically change the number of channels managed by the mixer.
+      If decreasing the number of channels, the upper channels are
+      stopped.
+      This method returns the new number of allocated channels.
+
 --- SDL::Mixer.playChannel(channel,wave,looping)
       Play a wave on a specific channel.
 
