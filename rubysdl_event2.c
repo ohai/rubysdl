@@ -256,6 +256,10 @@ static VALUE sdl_event2_push(VALUE class,VALUE event)
     rb_raise(eSDLError,"the event couldn't be pushed");
   return Qnil;
 }
+static VALUE sdl_event2_getAppState(VALUE class)
+{
+  return INT2FIX(SDL_GetAppState());
+}
 void init_event2(void)
 {
   int i;
@@ -266,7 +270,7 @@ void init_event2(void)
   /*rb_define_attr(cEvent2,"type",1,0);*/
   rb_define_singleton_method(cEvent2,"new",sdl_event2_new,0);
   rb_define_singleton_method(cEvent2,"push",sdl_event2_push,1);
-  
+  rb_define_singleton_method(cEvent2,"appState",sdl_event2_getAppState,0);
   cActiveEvent=rb_define_class_under(cEvent2,"Active",cEvent2);
   rb_define_attr(cActiveEvent,"gain",1,1);
   rb_define_attr(cActiveEvent,"state",1,1);
