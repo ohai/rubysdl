@@ -22,6 +22,7 @@ In this module number starts 0,not 1.
 * ((<SDL::CD>))
 * ((<SDL::Joystick>))
 * ((<SDL::TTF>))
+* ((<SDL::MPEG>))
 
 == SDL::Error
 
@@ -1028,6 +1029,119 @@ Object
 --- SDL::TTF#drawBlendedUTF8(dest,text,x,y,r,g,b)
       Similar to drawSolidUTF8.
       More beautiful than drawSolidUTF8,but more slowly than drawSolidUTF8.
+
+== MPEG stream
+
+Needs SMPEG library.
+
+Don't touch the destination surface while playing mpeg, because smpeg uses
+native thread.
+
+=== SDL::MPEG
+
+This class handles MPEG stream
+
+==== super class 
+
+Object
+
+==== class method 
+
+--- SDL::MPEG.load(filename)
+--- SDL::MPEG.new(filename)
+      Create a new SDL::MPEG object from an MPEG file.
+
+==== メソッド
+
+--- SDL::MPEG#info
+      Returns the current information of SDL::MPEG instance.
+      Return value is a instance of ((<SDL::MPEG::Info>))
+
+--- SDL::MPEG#enableAudio(enable)
+      Enable or disable audio playback in MPEG stream.
+      
+--- SDL::MPEG#enableVideo(enable)
+      Enable or disable video playback in MPEG stream.
+
+--- SDL::MPEG#status
+      Returns the current status.Returns following value.
+        SDL::MPEG::ERROR
+        SDL::MPEG::STOPPED
+        SDL::MPEG::PLAYING
+
+--- SDL::MPEG#setVolume(volume)
+      Set the audio volume of an MPEG stream, in the range 0-100.
+
+--- SDL::MPEG#setDisplay(surface)
+      Set the destination surface for MPEG video playback.
+
+--- SDL::MPEG#setLoop(repeat)
+      Set or clear looping play.
+      
+--- SDL::MPEG#scaleXY(w,h)
+      Scale pixel display.
+
+--- SDL::MPEG#scale(scale)
+      Scale pixel display.
+
+--- SDL::MPEG#move(x,y)
+      Move the video display area within the destination surface.
+
+--- SDL::MPEG#setDisplayRegion(x,y,w,h)
+      Set the region of the video to be shown.
+
+--- SDL::MPEG#play
+      Play an MPEG stream.
+
+      Warning: Don't access the surface while playing.
+
+--- SDL::MPEG#pause
+      Pause/Resume playback.
+
+--- SDL::MPEG#stop
+      Stop playback.
+
+--- SDL::MPEG#rewind
+      Rewind the play position of MPEG stream  to the begining of the MPEG.
+
+--- SDL::MPEG#seek(bytes)
+      Seek 'bytes' bytes in the MPEG stream.
+
+--- SDL::MPEG#skip(seconds)
+      Skip 'seconds' seconds in the MPEG stream.
+
+--- SDL::MPEG#renderFrame(framenum)
+      Render a particular frame in the MPEG video.
+
+--- SDL::MPEG#setFilter(filter)
+      Set video filter. Available filter is following.
+        SDL::MPEG::NULL_FILTER  No filter
+        SDL::MPEG::BILINEAR_FILTER  Bilinear filter
+        SDL::MPEG::DEBLOCKING_FILTER  Deblocking filter
+
+=== SDL::MPEG::Info
+
+The instance of this class has the information of ((<SDL::MPEG>)).
+Get that with ((<SDL:MPEG#info>)).
+
+==== スーパークラス
+
+Object
+
+==== メソッド
+
+--- SDL::MPEG::Info#has_audio
+--- SDL::MPEG::Info#has_video
+--- SDL::MPEG::Info#width
+--- SDL::MPEG::Info#height
+--- SDL::MPEG::Info#current_frame
+--- SDL::MPEG::Info#current_fps
+--- SDL::MPEG::Info#audio_string
+--- SDL::MPEG::Info#audio_current_frame
+--- SDL::MPEG::Info#current_offset
+--- SDL::MPEG::Info#total_size
+--- SDL::MPEG::Info#current_time
+--- SDL::MPEG::Info#total_time
 
 == Time
 

@@ -23,6 +23,7 @@
 * ((<SDL::CD>))
 * ((<SDL::Joystick>))
 * ((<SDL::TTF>))
+* ((<SDL::MPEG>))
 
 == SDL::Error
 
@@ -1051,6 +1052,124 @@ Object
 
 --- SDL::TTF#drawBlendedUTF8(dest,text,x,y,r,g,b)
       drawSolidUTF8と同様。drawSolidUTF8よりも高品質な描画ができる。
+
+== MPEG再生処理
+
+この機能はsmpegというライブラリによって提供されている。
+よってこの機能を使うためにはsmpegが必要である。
+
+またこの機能は内部で別スレッドを作ってそのスレッド内で再生ルーチンを
+呼ぶことによって実現されている。そのため再生中は再生映像が描画されて
+いるサーフィスにアクセスしてはいけない。
+
+=== SDL::MPEG
+
+MPEGのデータを表す。
+
+==== スーパークラス
+
+Object
+
+==== クラスメソッド
+
+--- SDL::MPEG.load(filename)
+--- SDL::MPEG.new(filename)
+      MPEGファイルを読み込み、SDL::MPEGのインスタンスを返す。
+
+==== メソッド
+
+--- SDL::MPEG#info
+      MPEGの現在の情報を返す。返り値はSDL::MPEG::Infoのインスタンス
+
+--- SDL::MPEG#enableAudio(enable)
+      音声の再生をするかどうか指定する。trueで再生、falseで再生しないを
+      指定できる。
+
+--- SDL::MPEG#enableVideo(enable)
+      映像の再生をするかどうか指定する。trueで再生、falseで再生しないを
+      指定できる。
+
+--- SDL::MPEG#status
+      MPEGストリームの現在の状態を返す。返り値は以下の通り。
+        SDL::MPEG::ERROR
+        SDL::MPEG::STOPPED
+        SDL::MPEG::PLAYING
+
+--- SDL::MPEG#setVolume(volume)
+      ボリュームを指定する。0から100までが有効。
+
+--- SDL::MPEG#setDisplay(surface)
+      再生した映像を実際に描画するサーフィスを指定する。
+
+--- SDL::MPEG#setLoop(repeat)
+      再生がループするかどうか設定する。trueでループする、falseでループしな
+      いとなる。
+
+--- SDL::MPEG#scaleXY(w,h)
+      再生映像の大きさを幅 w 、高さ h に指定する。
+
+--- SDL::MPEG#scale(scale)
+      再生画像の大きさをscale倍に指定する。
+
+--- SDL::MPEG#move(x,y)
+      再生画像の左上の位置を(x,y)に指定する。
+
+--- SDL::MPEG#setDisplayRegion(x,y,w,h)
+      再生画像のsetDisplayで指定したサーフィス内での描画範囲を指定する。
+
+--- SDL::MPEG#play
+      MPEGを再生する。
+
+      注意: 再生中にはsetDisplayで指定したサーフィスにアクセスしては
+      いけない。
+
+--- SDL::MPEG#pause
+      再生を一時中断する。
+
+--- SDL::MPEG#stop
+      再生を停止する。
+
+--- SDL::MPEG#rewind
+      再生位置を一番最初にする。
+
+--- SDL::MPEG#seek(bytes)
+      bytesバイトの位置に再生位置を移動する。
+
+--- SDL::MPEG#skip(seconds)
+      seconds秒再生位置を前方に移動させる。
+
+--- SDL::MPEG#renderFrame(framenum)
+      framenum目のフレームを描画する。
+
+--- SDL::MPEG#setFilter(filter)
+      再生映像にかけるフィルタを指定する。以下のフィルタを指定可能。
+        SDL::MPEG::NULL_FILTER  フィルタなし
+        SDL::MPEG::BILINEAR_FILTER  バイリニアフィルタ 
+        SDL::MPEG::DEBLOCKING_FILTER   
+
+=== SDL::MPEG::Info
+
+((<SDL::MPEG>))の情報を持つ。
+((<SDL:MPEG#info>))などでこのクラスのインスタンスを得る。
+
+==== スーパークラス
+
+Object
+
+==== メソッド
+
+--- SDL::MPEG::Info#has_audio
+--- SDL::MPEG::Info#has_video
+--- SDL::MPEG::Info#width
+--- SDL::MPEG::Info#height
+--- SDL::MPEG::Info#current_frame
+--- SDL::MPEG::Info#current_fps
+--- SDL::MPEG::Info#audio_string
+--- SDL::MPEG::Info#audio_current_frame
+--- SDL::MPEG::Info#current_offset
+--- SDL::MPEG::Info#total_size
+--- SDL::MPEG::Info#current_time
+--- SDL::MPEG::Info#total_time
 
 == 時刻処理
 
