@@ -132,7 +132,8 @@ module SDL
       colorkey = src.colorkey
       transformed = src.transformSurface( colorkey, angle,
 					 xscale, yscale, flags )
-      transformed.setColorKey( SDL::SRCCOLORKEY|SDL::RLEACCEL, colorkey )
+      transformed.setColorKey( src.flags & (SDL::SRCCOLORKEY|SDL::RLEACCEL),
+			      colorkey )
       rad = Math::PI*angle/180.0
       x = px - src.w/2.0 ; y = py - src.h/2.0
       x *= xscale ; y *= yscale
