@@ -12,7 +12,7 @@ static VALUE sdl_getPixel(VALUE obj,VALUE x,VALUE y)
 {
   SDL_Surface *surface;
   Data_Get_Struct(obj,SDL_Surface,surface);
-  return UINT2NUM( sge_getPixel(surface,NUM2INT(x),NUM2INT(y)) );
+  return UINT2NUM( sge_GetPixel(surface,NUM2INT(x),NUM2INT(y)) );
 }
 static VALUE sdl_putPixel(VALUE obj,VALUE x,VALUE y,VALUE color)
 {
@@ -52,6 +52,28 @@ static VALUE sdl_drawFilledCircle(VALUE obj,VALUE x,VALUE y,VALUE r,VALUE color)
   return Qnil;
 }
 
+static VALUE sdl_rotateScaledSurface(VALUE obj,VALUE angle,VALUE scale,VALUE bgcolor)
+{
+  SDL_Surface *surface,*result;
+  Data_Get_Struct(obj,SDL_Surface,surface);
+  result=sge_rotate_scaled_surface(surface,NUM2INT(angle),NUM2DBL(scale),
+			    NUM2UINT(bgcolor));
+  return Data_Wrap_Struct(cSurface,0,SDL_FreeSurface,result);
+}
+static VALUE sdl_rotateXYScaledBlit(VALUE mod,VALUE src,VALUE dst,VALUE x,
+				    VALUE y,VALUE angle,VALUE xscale,
+				    VALUE yscale)
+{
+  SDL_Surface *srcSurface,*dstSurface;
+  if( !rb_obj_is_kind_of(src,cSurface) || !rb_obj_is_kind_of(dst,cSurface) )
+    rb_raise(rb_eArgError,"type mismatch(expect Surface)");
+  Data_Get_Struct(src,SDL_Surface,srcSurface);
+  Data_Get_Struct(dst,SDL_Surface,dstSurface);
+  sge_rotate_xyscaled(dstSurface,srcSurface,NUM2INT(x),NUM2INT(y),
+		      NUM2INT(angle),NUM2DBL(xscale),NUM2DBL(yscale));
+  return Qnil;
+}
+
 void init_sge_video()
 {
   sge_Update_OFF();
@@ -70,5 +92,9 @@ void init_sge_video()
   rb_define_method(cSurface,"drawRect",sdl_drawRect,5);
   rb_define_method(cSurface,"drawCircle",sdl_drawCircle,4);
   rb_define_method(cSurface,"drawFilledCircle",sdl_drawFilledCircle,4);
+
+  rb_define_method(cSurface,"rotateScaledSurface",sdl_rotateScaledSurface,3);
+
+  rb_define_module_function(mSDL,"rotateXYScaledBlit",sdl_rotateXYScaledBlit,7);
 }
 #endif /* HAVE_SGE */
