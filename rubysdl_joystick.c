@@ -19,6 +19,7 @@
   */
 #include "rubysdl.h"
 
+
 static VALUE sdl_getJoyPolling(VALUE class)
 {
   return BOOL(SDL_JoystickEventState(SDL_QUERY)==SDL_ENABLE);
@@ -47,7 +48,7 @@ static VALUE sdl_joystick_open(VALUE class,VALUE index)
   if(joystick==NULL)
     rb_raise(eSDLError,"Couldn't open joystick No.%d :%s",NUM2INT(index),
 	     SDL_GetError());
-  return Data_Wrap_Struct(class,0,SDL_JoystickClose,joystick);
+  return Data_Wrap_Struct(class,0,0,joystick);
 }
 static VALUE sdl_joystick_opened(VALUE class,VALUE index)
 {
