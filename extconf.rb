@@ -5,7 +5,7 @@ sdl_config = with_config('sdl-config', 'sdl-config')
 $CFLAGS += ' ' + `#{sdl_config} --cflags`.chomp
 $LDFLAGS += ' ' + `#{sdl_config} --libs`.chomp
 
-if enable_config("event2",false) then
+if enable_config("event2",true) then
   $CFLAGS+= " -D DEF_EVENT2"
 end
 
