@@ -182,7 +182,9 @@ bpp=bit per pixelである。
 --- SDL.blitSurface2(src,srcRect,dst,dstRect)
       blitSurface2(src,[0,32,32,32],dst,[100,200])
       のように使う。
-
+      また、srcRect、dstRectとして x,y,z,wという名前のメソッドを
+      持つオブジェクトでその領域を指定することもできる。
+      
       srcRectにnilを指定した場合はsrc全体をblitする。
 
 --- SDL.rotateXYScaled(src,dst,x,y,angle,xscale,yscale)

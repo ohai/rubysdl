@@ -168,8 +168,14 @@ some functions need SGE or SDL_image
 
 --- SDL.blitSurface2(src,srcRect,dst,dstRect)
       You use this function like:
-      blitSurface2(src,[0,32,32,32],dst,[100,200])
-
+        blitSurface2(src,[0,32,32,32],dst,[100,200])
+      or
+        Rect = Struct.new( 'Rect', :x, :y, :w, :h )
+        
+        rect1 = Rect.new( 16, 0, 16, 16 )
+        rect2 = Rect.new( 120, 0, 0, 0 )
+        blitSurface2( src, rect1, dst, rect2 )
+      
 --- SDL.rotateXYScaled(src,dst,x,y,angle,xscale,yscale)
       Needs SGE
 
