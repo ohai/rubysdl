@@ -119,7 +119,12 @@ static VALUE sdl_setVideoMode(VALUE mod,VALUE w,VALUE h,VALUE bpp,
   rb_define_singleton_method(screenObject,"flip",sdl_flip,0);
   return screenObject;
 }
-
+static VALUE sdl_setGamma(VALUE mod,VALUE rgamma,VALUE ggamma,VALUE bgamma)
+{
+  if(SDL_SetGamma(NUM2DBL(rgamma),NUM2DBL(ggamma),NUM2DBL(bgamma))==-1)
+    rb_raise(eSDLError,"set gamma failed: %s",SDL_GetError());
+  return Qnil;
+}
 
 static VALUE sdl_createSurface(VALUE class,VALUE flags,VALUE w,VALUE h,
 			       VALUE format)
@@ -220,6 +225,7 @@ static VALUE sdl_setAlpha(VALUE obj,VALUE flag,VALUE alpha)
   Data_Get_Struct(obj,SDL_Surface,surface);
   SDL_SetAlpha(surface,NUM2UINT(flag),NUM2INT(alpha));
 }
+
 static VALUE sdl_setClipRect(VALUE obj,VALUE x,VALUE y,VALUE w,VALUE h)
 {
   SDL_Surface *surface;
@@ -351,6 +357,7 @@ void init_video()
   rb_define_module_function(mSDL,"setVideoMode",sdl_setVideoMode,4);
   rb_define_module_function(mSDL,"checkVideoMode",sdl_checkVideoMode,4);
   rb_define_module_function(mSDL,"listModes",sdl_listModes,1);
+  rb_define_module_function(mSDL,"setGamma",sdl_setGamma,3);
   cVideoInfo=rb_define_class_under(mSDL,"VideoInfo",rb_cObject);
   rb_define_attr(cVideoInfo,"hw_available",1,0);
   rb_define_attr(cVideoInfo,"wm_available",1,0);
