@@ -56,6 +56,7 @@ void init_ttf();
 #endif
 #ifdef HAVE_SDL_MIXER
 void  init_mixer();
+void quit_mixer();
 #endif
 #ifdef HAVE_SMPEG
 void init_smpeg();
@@ -149,8 +150,7 @@ void Init_sdl()
 #ifdef HAVE_SDLSKK
   init_sdlskk();
 #endif
-  /* rb_set_end_proc(sdl_quit,0); */
-  atexit(sdl_quit); 
+  rb_set_end_proc(sdl_quit,0); 
 }
 
 
