@@ -1,10 +1,13 @@
 MANIFEST
+README.ja
+README.en
 depend
 extconf.rb
 lib/sdl.rb
 rubysdl.h
 rubysdl_const_list.txt
 rubysdl_doc.rd
+rubysdl_doc.en.rd
 rubysdl_event.c
 rubysdl_event_key.c
 rubysdl_main.c
