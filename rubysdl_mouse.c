@@ -19,6 +19,8 @@
   */
 #include "rubysdl.h"
 
+static SDL_Cursor *cursor=NULL;
+
 static void defineConstForMouse()
 {
   rb_define_const(cEvent,"BUTTON_LEFT",INT2NUM(SDL_BUTTON_LEFT));
@@ -44,12 +46,43 @@ static VALUE sdl_warpMouse(VALUE mod,VALUE x,VALUE y)
   return Qnil;
 }
 
+static VALUE sdl_setCursor_imp(VALUE mod,VALUE data,VALUE mask,VALUE w,
+			       VALUE h,VALUE hot_x,VALUE hot_y)
+{
+  SDL_Cursor *newCursor;
+  newCursor=SDL_CreateCursor(STR2CSTR(data),STR2CSTR(mask),NUM2INT(w),
+			     NUM2INT(h),NUM2INT(hot_x),NUM2INT(hot_y));
+  if( newCursor==NULL )
+    rb_raise(eSDLError,"cursor creation failed :%s",SDL_GetError());
+  SDL_SetCursor(newCursor);
+  
+  /* free old cursor */
+  if( cursor!=NULL )
+    SDL_FreeCursor(cursor);
+  cursor=newCursor;
+  
+  return Qnil;
+}
+  
+static VALUE sdl_showCursor(VALUE mod)
+{
+  SDL_ShowCursor(1);
+  return Qnil;
+}
+static VALUE sdl_hideCursor(VALUE mod)
+{
+  SDL_ShowCursor(0);
+  return Qnil;
+}
+
 void init_mouse()
 {
   mMouse=rb_define_module_under(mSDL,"Mouse");
   
   rb_define_module_function(mMouse,"state",sdl_getMouseState,0);
   rb_define_module_function(mMouse,"warp",sdl_warpMouse,2);
-
+  rb_define_module_function(mMouse,"setCursor_imp",sdl_setCursor_imp,6);
+  rb_define_module_function(mMouse,"show",sdl_showCursor,0);
+  rb_define_module_function(mMouse,"hide",sdl_hideCursor,0);
   defineConstForMouse();
 }
