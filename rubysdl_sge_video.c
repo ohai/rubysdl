@@ -55,7 +55,7 @@ static VALUE sdl_drawLine(VALUE obj,VALUE x1,VALUE y1,VALUE x2,VALUE y2,VALUE co
 {
   SDL_Surface *surface;
   Data_Get_Struct(obj,SDL_Surface,surface);
-  sge_Line( surface,NUM2INT(x1),NUM2INT(y1),NUM2INT(x2),NUM2INT(x2),
+  sge_Line( surface,NUM2INT(x1),NUM2INT(y1),NUM2INT(x2),NUM2INT(y2),
 	    VALUE2COLOR(color,surface->format) );
   return Qnil;
 }
@@ -139,8 +139,9 @@ static VALUE sdl_rotateScaledBlit(VALUE mod,VALUE src,VALUE dst,VALUE x,
 void init_sge_video()
 {
   sge_Update_OFF();
+#if 0
   sge_Lock_ON();
-
+#endif
 
   rb_define_module_function(mSDL,"autoLock",sdl_get_autoLocking,0);
   rb_define_module_function(mSDL,"autoLock=",sdl_set_autoLocking,1);
