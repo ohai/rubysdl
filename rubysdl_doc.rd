@@ -54,7 +54,7 @@ StandardError
 
       version 0.3にて廃止。ライブラリから自動的によびだされる。
 
---- SDL.initializedSystem(flag)
+--- SDL.initedSystem(flag)
       Not documented yet
 
 == video関連

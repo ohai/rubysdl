@@ -49,7 +49,7 @@ StandardError
         SDL::INIT_CDROM
         SDL::INIT_JOYSTICK
 
---- SDL.initializedSystem(flag)
+--- SDL.initedSystem(flag)
       Not documented yet
 
 == video
