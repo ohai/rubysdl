@@ -130,6 +130,7 @@ static VALUE sdl_rotateScaledBlit(VALUE mod,VALUE src,VALUE dst,VALUE x,
   SDL_Surface *srcSurface,*dstSurface,*tmpSurface;
   SDL_Rect destRect;
   Uint32 colorkey;
+  Uint32 flags;
   int result;
   
   if( !rb_obj_is_kind_of(src,cSurface) || !rb_obj_is_kind_of(dst,cSurface) )
@@ -137,11 +138,12 @@ static VALUE sdl_rotateScaledBlit(VALUE mod,VALUE src,VALUE dst,VALUE x,
   Data_Get_Struct(src,SDL_Surface,srcSurface);
   Data_Get_Struct(dst,SDL_Surface,dstSurface);
   colorkey=srcSurface->format->colorkey;
+  flags = srcSurface->flags & ( SDL_RLEACCEL|SDL_SRCCOLORKEY )
   tmpSurface = sge_rotate_scaled_surface(srcSurface,NUM2INT(angle),
 					 NUM2DBL(scale),colorkey);
   if( tmpSurface==NULL )
     rb_raise(eSDLError,"SDL memory allocate failed :%s",SDL_GetError());
-  SDL_SetColorKey(tmpSurface,SDL_SRCCOLORKEY|SDL_RLEACCEL,colorkey);
+  SDL_SetColorKey(tmpSurface,flags,colorkey);
   destRect.x=NUM2INT(x)-tmpSurface->h/2;
   destRect.y=NUM2INT(y)-tmpSurface->w/2;
   result = SDL_BlitSurface(tmpSurface,NULL,dstSurface,&destRect);
