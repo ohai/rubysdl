@@ -15,6 +15,7 @@
 * ((<WM>)) (module)
 * ((<Key>)) (module)
 * ((<Mouse>)) (module)
+* ((<TTF>))
 
 == Error
 
@@ -46,16 +47,16 @@ StandardError
 
 --- warpMouse(x,y)
 
---- rotateXYScaledBlit(src,dst,x,y,angle,xscale,yscale)
+--- rotateXYScaled(src,dst,x,y,angle,xscale,yscale)
       SGEが必要
       SGEのsge_rotate_xyscaled関数とはsrcとdstの順序が入れ替わっていることに
       注意するように。下の2つの関数も同様である。
       これは、blitSurfaceに合わせたためである。
       また、この仕様は変更する可能性がある。
 
---- rotateScaledBlit(src,dst,x,y,angle,scale)
+--- rotateScaled(src,dst,x,y,angle,scale)
 
---- rotateBlit(src,dst,x,y,angle)
+--- rotate(src,dst,x,y,angle)
 
 === Surface
 
@@ -301,4 +302,30 @@ Window関連の処理をまとめたモジュール
 
 --- iconify
 
+== フォント関係
+
+=== TTF
+
+ＴｒｕｅＴｙｐｅフォントを表すクラス
+
+==== スーパークラス
+
+Object
+
+==== クラスメソッド
+
+--- TTF.init
+
+--- TTF.open(filename,size)
+
+==== メソッド
+
+--- TTF#style
+
+--- TTF#style=(style)
+
+--- TTF#drawSolidUTF8(dest,text,x,y,r,g,b)
+      selfのフォント設定でdest(Surfaceのインスタンス)にString textを
+      destの位置(x,y)の所に書きこむ。色はr,g,bで決められる。
+      透明色(ColorKey)は有効である。textはUTF-8を使う。
 =end
