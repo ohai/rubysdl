@@ -1,7 +1,7 @@
 MANIFEST
 README.ja
 README.en
-LICENCE
+LICENSE
 depend
 extconf.rb
 lib/sdl.rb
