@@ -27,51 +27,16 @@ static VALUE sdl_setVideoMode(VALUE class,VALUE w,VALUE h,VALUE bpp,
   return Data_Wrap_Struct(class,0,0,screen);
 }
 
-static VALUE sdl_mapRGB(VALUE obj,VALUE r,VALUE g,VALUE b)
-{
-  SDL_Surface  *surface;
-  Data_Get_Struct(obj,SDL_Surface,surface);
-  return UINT2NUM( SDL_MapRGB( surface->format,NUM2INT(r),NUM2INT(g),
-			       NUM2INT(b) ) );
-}
-static VALUE sdl_mapRGBA(VALUE obj,VALUE r,VALUE g,VALUE b,VALUE a)
-{
-  SDL_Surface  *surface;
-  Data_Get_Struct(obj,SDL_Surface,surface);
-  return UINT2NUM( SDL_MapRGBA( surface->format,NUM2INT(r),NUM2INT(g),
-			       NUM2INT(b),NUM2INT(a) ) );
-}
-static VALUE sdl_getRGB(VALUE obj,VALUE pixel)
-{
-  SDL_Surface  *surface;
-  Uint8 r,g,b;
-  Data_Get_Struct(obj,SDL_Surface,surface);
-  SDL_GetRGB(NUM2UINT(pixel),surface->format,&r,&g,&b);
-  return rb_ary_new3( 3,UINT2NUM(r),UINT2NUM(g),UINT2NUM(b) );
-}
-static VALUE sdl_getRGBA(VALUE obj,VALUE pixel)
-{
-  SDL_Surface  *surface;
-  Uint8 r,g,b,a;
-  Data_Get_Struct(obj,SDL_Surface,surface);
-  SDL_GetRGBA(NUM2UINT(pixel),surface->format,&r,&g,&b,&a);
-  return rb_ary_new3( 4,UINT2NUM(r),UINT2NUM(g),UINT2NUM(b),UINT2NUM(a) );
-}
-/* this method must be called after SDL::Surface::setVideoMode.
-   object screen are given for getting information about mask and depth.
-   */
+
 static VALUE sdl_createSurface(VALUE class,VALUE flags,VALUE w,VALUE h,
-			       VALUE formatObj)
+			       VALUE format)
 {
-  SDL_Surface *sur,*newSurface;
+  SDL_Surface *newSurface;
   SDL_PixelFormat *pixFormat;
-  if( rb_obj_is_kind_of( formatObj,cSurface ) ){
-    Data_Get_Struct(formatObj,SDL_Surface,sur);
-    pixFormat = sur->format;
-  }else if( rb_obj_is_kind_of( formatObj,cPixelFormat ) ){
-    Data_Get_Struct(formatObj,SDL_PixelFormat,pixFormat);
+  if( rb_obj_is_kind_of( format,cPixelFormat ) ){
+    Data_Get_Struct(format,SDL_PixelFormat,pixFormat);
   }else{
-    rb_raise( rb_eArgError,"type mismatch(expect Surface or PixelFormat)" );
+    rb_raise( rb_eArgError,"type mismatch(expect PixelFormat)" );
   }
   newSurface = SDL_CreateRGBSurface( NUM2UINT(flags),NUM2INT(w),NUM2INT(h),
 				     pixFormat->BitsPerPixel,
@@ -271,10 +236,6 @@ void init_video()
 
   rb_define_singleton_method(cSurface,"new",sdl_createSurface,4);
   rb_define_singleton_method(cSurface,"loadBMP",sdl_loadBMP,1);
-  rb_define_method(cSurface,"mapRGB",sdl_mapRGB,3);
-  rb_define_method(cSurface,"mapRGBA",sdl_mapRGBA,4);
-  rb_define_method(cSurface,"getRGB",sdl_getRGB,3);
-  rb_define_method(cSurface,"getRGBA",sdl_getRGBA,4);
   rb_define_method(cSurface,"displayFormat",sdl_displayFormat,0);
   rb_define_method(cSurface,"setColorKey",sdl_setColorKey,2);
   rb_define_method(cSurface,"fillRect",sdl_fillRect,5);
