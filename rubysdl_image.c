@@ -23,7 +23,12 @@
 
 static VALUE sdl_load(VALUE class,VALUE filename)
 {
-  SDL_Surface *surface=IMG_Load(STR2CSTR(filename));
+  SDL_Surface *surface;
+  surface = IMG_Load(STR2CSTR(filename));
+  if(surface==NULL){
+    rb_raise(eSDLError,"Couldn't load %s: %s",STR2CSTR(filename),
+	     SDL_GetError());
+  }
   return Data_Wrap_Struct(class,0,SDL_FreeSurface,surface);
 }
 
