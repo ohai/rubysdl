@@ -3,7 +3,7 @@
 = SDL
 
 すべてのクラス/モジュールはmodule SDLの下にあります。
-
+このモジュール内では数はほぼすべて0から始まります。
 == クラス/モジュール構成
 * ((<Error>))
 * ((<Surface>))
@@ -36,6 +36,7 @@ StandardError
 
 --- quit
       at_exit{ SDL.quit; } というように使ってください。
+      version 0.3にて廃止。ライブラリから自動的によびだされる。
 
 --- initializedSystem(flag)
 
@@ -256,9 +257,9 @@ Object
 --- scan
       キーボードの状態をスキャンします
 
---- state(key)
+--- press?(key)
       これを呼び出す前にscanを呼びだしてください。
-      scan で得た状態を得ます。1で押している、0で離している、です。
+      scan で得た状態を得ます。trueで押している、falseで離しているです。
 
 --- modState
 
