@@ -1125,7 +1125,7 @@ Object
 --- SDL::CD.numDrive
       いくつのCDROMドライブが使用できるかを返す。
 
---- SDL::CD.name(drive)
+--- SDL::CD.indexName(drive)
       指定したドライブの名前を文字列で返す。
       ドライブの指定は0からCD.numDrive-1の整数で指定する。
 
@@ -1217,7 +1217,7 @@ Object
 --- SDL::Joystick.num
       利用可能なジョイスティックの数を返す。
 
---- SDL::Joystick.name(index)
+--- SDL::Joystick.indexName(index)
       指定したジョイスティックの名前を文字列で返す。
       0からJoystick.num-1の整数で指定する。
 

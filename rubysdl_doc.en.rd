@@ -1098,7 +1098,7 @@ number of frames on a CD.
 --- SDL::CD.numDrive
       Returns the number of CD-ROM drives on the system.
 
---- SDL::CD.name(drive)
+--- SDL::CD.indexName(drive)
       Returns a human-readable, system-dependent identifier for the CD-ROM.
       drive is the index of the drive. Drive indices start to 0 and end at
       SDL::CD.numDrive-1
@@ -1189,7 +1189,7 @@ Object
 --- SDL::Joystick.num
       Returns the number of attached joysticks.
 
---- SDL::Joystick.name(index)
+--- SDL::Joystick.indexName(index)
       Get the implementation dependent name of joystick. The index parameter
       refers to the N'th joystick on the system.
 
