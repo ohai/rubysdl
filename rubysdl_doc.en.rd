@@ -577,7 +577,18 @@ Object
         SDL::Event::APPMOUSEFOCUS
         SDL::Event::APPINPUTFOCUS
         SDL::Event::APPACTIVE
-
+        
+--- SDL::Event.enableUNICODE
+      Enables UNICODE keyboard translation.
+      UNICODE translation is disabled by default.
+      If you will use SDLSKK on Ruby/SDL, you should enable translation.
+      
+--- SDL::Event.disableUNICODE
+      Disable UNICODE keyboard translation.
+      
+--- SDL::Event.enableUNICODE?
+      Returns whether UNICODE keyboard translation is enabled.
+      
 ==== method
 
 --- SDL::Event#poll
@@ -697,6 +708,15 @@ Object
 --- SDL::Event2.appState
       Same as ((<SDL::Event.appState>)).
 
+--- SDL::Event2.enableUNICODE
+      Same as ((<SDL::Event.enableUNICODE>)).
+      
+--- SDL::Event2.disableUNICODE
+      Same as ((<SDL::Event2.disableUNICODE>)).
+      
+--- SDL::Event2.enableUNICODE?
+      Same as ((<SDL::Event.enableUNICODE?>)).
+      
 ==== method
 
 Nothing
