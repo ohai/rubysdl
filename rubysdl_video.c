@@ -27,8 +27,38 @@ static VALUE sdl_setVideoMode(VALUE class,VALUE w,VALUE h,VALUE bpp,
   return Data_Wrap_Struct(class,0,0,screen);
 }
 
-/* this method must be called after SDL::Surface::setVideoMode
-   screen are given for getting information about mask and depth
+static VALUE sdl_mapRGB(VALUE obj,VALUE r,VALUE g,VALUE b)
+{
+  SDL_Surface  *surface;
+  Data_Get_Struct(obj,SDL_Surface,surface);
+  return UINT2NUM( SDL_MapRGB( surface->format,NUM2INT(r),NUM2INT(g),
+			       NUM2INT(b) ) );
+}
+static VALUE sdl_mapRGBA(VALUE obj,VALUE r,VALUE g,VALUE b,VALUE a)
+{
+  SDL_Surface  *surface;
+  Data_Get_Struct(obj,SDL_Surface,surface);
+  return UINT2NUM( SDL_MapRGBA( surface->format,NUM2INT(r),NUM2INT(g),
+			       NUM2INT(b),NUM2INT(a) ) );
+}
+static VALUE sdl_getRGB(VALUE obj,VALUE pixel)
+{
+  SDL_Surface  *surface;
+  Uint8 r,g,b;
+  Data_Get_Struct(obj,SDL_Surface,surface);
+  SDL_GetRBG(NUM2UINT(pixel),surface->format,&r,&g,&b);
+  return rb_ary_new3( 3,UINT2NUM(r),UINT2NUM(g),UINT2NUM(b) );
+}
+static VALUE sdl_getRGBA(VALUE obj,VALUE pixel)
+{
+  SDL_Surface  *surface;
+  Uint8 r,g,b,a;
+  Data_Get_Struct(obj,SDL_Surface,surface);
+  SDL_GetRBGA(NUM2UINT(pixel),surface->format,&r,&g,&b,&a);
+  return rb_ary_new3( 4,UINT2NUM(r),UINT2NUM(g),UINT2NUM(b),UINT2NUM(a) );
+}
+/* this method must be called after SDL::Surface::setVideoMode.
+   object screen are given for getting information about mask and depth.
    */
 static VALUE sdl_createSurface(VALUE class,VALUE flags,VALUE w,VALUE h,
 			       VALUE screen)
@@ -200,6 +230,8 @@ void init_video()
 
   rb_define_singleton_method(cSurface,"new",sdl_createSurface,4);
   rb_define_singleton_method(cSurface,"loadBMP",sdl_loadBMP,1);
+  rb_define_method(cSurface,"mapRGB",sdl_mapRGB,3);
+  rb_define_method(cSurface,"mapRGBA",sdl_mapRGBA,4);
   rb_define_method(cSurface,"displayFormat",sdl_displayFormat,0);
   rb_define_method(cSurface,"setColorKey",sdl_setColorKey,2);
   rb_define_method(cSurface,"fillRect",sdl_fillRect,5);
