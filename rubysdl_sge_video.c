@@ -155,9 +155,7 @@ static VALUE sdl_rotateScaledBlit(VALUE mod,VALUE src,VALUE dst,VALUE x,
 void init_sge_video()
 {
   sge_Update_OFF();
-#if 0
   sge_Lock_ON();
-#endif
 
   rb_define_module_function(mSDL,"autoLock",sdl_get_autoLocking,0);
   rb_define_module_function(mSDL,"autoLock=",sdl_set_autoLocking,1);
