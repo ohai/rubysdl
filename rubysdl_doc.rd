@@ -48,7 +48,22 @@ StandardError
 --- checkVideoMode(w,h,bpp,flags)
 
 --- videoInfo
-
+      Videoの情報を配列で返す。その内容は以下の通り。
+      真偽値を表すものはtrue,falseが入っている。
+      詳しい意味はSDLのドキュメントを参照してください。
+      [ hw_available,
+        wm_available,
+	blit_hw,
+	blit_hw_CC,
+	blit_hw_A,
+	blit_sw,
+	blit_sw_CC,
+	blit_sw_A,
+	blit_fill,
+	video_mem,
+	vfmt,
+	]
+	
 --- blitSurface(src,srcX,srcY,srcW,srcH,dst,dstX,dstY)
 
 --- warpMouse(x,y)
@@ -68,6 +83,7 @@ StandardError
 --- rotateScaledBlit(src,dst,x,y,angle,scale)
       SGEが必要
       ColorKeyは有効となる。
+      rotateBlitも同様である。
 
 --- rotateBlit(src,dst,x,y,angle)
 
