@@ -132,8 +132,8 @@ static void defineConstForJoystick()
 void init_joystick()
 {
   cJoystick = rb_define_class_under(mSDL,"Joystick",rb_cObject);
-  rb_define_singleton_method(cJoystick,"poll?",sdl_getJoyPolling,0);
-  rb_define_singleton_method(cJoystick,"poll?=",sdl_setJoyPolling,1);
+  rb_define_singleton_method(cJoystick,"poll",sdl_getJoyPolling,0);
+  rb_define_singleton_method(cJoystick,"poll=",sdl_setJoyPolling,1);
   rb_define_singleton_method(cJoystick,"num",sdl_joystick_num,0);
   rb_define_singleton_method(cJoystick,"name",sdl_joystick_name,1);
   rb_define_singleton_method(cJoystick,"open",sdl_joystick_open,1);
