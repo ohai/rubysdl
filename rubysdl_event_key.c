@@ -286,9 +286,9 @@ static VALUE sdl_keyScan(VALUE mod)
   modState=SDL_GetModState();
   return Qnil;
 }
-static VALUE sdl_keyState(VALUE mod,VALUE keysym)
+static VALUE sdl_keyPressed(VALUE mod,VALUE keysym)
 {
-  return INT2NUM(keyState[NUM2INT(keysym)]);
+  return (keyState[NUM2INT(keysym)]==SDL_PRESSED)?Qtrue:Qfalse;
 }
 static VALUE sdl_modState(VALUE mod)
 {
@@ -310,7 +310,7 @@ void init_keyEvent()
 {
   mKey = rb_define_module_under(mSDL,"Key");
   rb_define_module_function(mKey,"scan",sdl_keyScan,0);
-  rb_define_module_function(mKey,"state",sdl_keyState,1);
+  rb_define_module_function(mKey,"press?",sdl_keyPressed,1);
   rb_define_module_function(mKey,"modState",sdl_modState,0);
   rb_define_module_function(mKey,"enableKeyRepeat",sdl_enableKeyRepeat,2);
   rb_define_module_function(mKey,"disableKeyRepeat",sdl_disableKeyRepeat,0);
