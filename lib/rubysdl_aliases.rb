@@ -18,8 +18,8 @@ class << SDL
   alias check_video_mode checkVideoMode
   alias list_modes listModes
   alias set_gamma setGamma
-  alias getGammaRamp get_gamma_ramp
-  alias setGammaRamp set_gamma_ramp
+  alias get_gamma_ramp getGammaRamp
+  alias set_gamma_ramp setGammaRamp
   alias video_info videoInfo
 end
 
@@ -63,28 +63,30 @@ class << SDL::Event
   alias app_state appState
 end
 
-class SDL::Event
+module SDL
+  class Event
 # alias poll poll
 # alias wait wait
 # alias type type
-  alias key_press? keyPress?
-  alias key_sym keySym
-  alias key_mod keyMod
+    alias key_press? keyPress?
+    alias key_sym keySym
+    alias key_mod keyMod
 # alias gain? gain?
-  alias app_state appState
-  alias mouse_x mouseX
-  alias mouse_y mouseY
-  alias mouse_xrel mouseXrel
-  alias mouse_yrel mouseYrel
-  alias mouse_button mouseButton
-  alias mouse_press? mousePress?
+    alias app_state appState
+    alias mouse_x mouseX
+    alias mouse_y mouseY
+    alias mouse_xrel mouseXrel
+    alias mouse_yrel mouseYrel
+    alias mouse_button mouseButton
+    alias mouse_press? mousePress?
 # alias info info
+  end
 end
 
 # rubysdl_event2.c
 module SDL
   if defined?(Event2) then
-    class Event2
+    class << Event2
 #     alias poll poll
 #     alias wait wait
 #     alias new new
@@ -116,21 +118,23 @@ class << SDL
 end
 
 
-class SDL::Surface
-  # shared with rubysdl_sge_video.c and rubysdl_pixel.c
-  alias get_pixel getPixel
-  alias put_pixel putPixel
-  if defined?(drawLine)
-    #  alias [] []
-    #  alias []= []=
-    alias draw_line drawLine
-    alias draw_rect drawRect
-    alias draw_circle drawCircle
-    alias draw_filled_circle drawFilledCircle
-    alias draw_ellispe drawEllispe
-    alias draw_filled_ellispe drawFilledEllispe
-    alias rotate_scaled_surface rotateScaledSurface
-    alias transform_surface transformSurface
+module SDL
+  class Surface
+    # shared with rubysdl_sge_video.c and rubysdl_pixel.c
+    alias get_pixel getPixel
+    alias put_pixel putPixel
+    if defined?(drawLine)
+      #  alias [] []
+      #  alias []= []=
+      alias draw_line drawLine
+      alias draw_rect drawRect
+      alias draw_circle drawCircle
+      alias draw_filled_circle drawFilledCircle
+      alias draw_ellispe drawEllispe
+      alias draw_filled_ellispe drawFilledEllispe
+      alias rotate_scaled_surface rotateScaledSurface
+      alias transform_surface transformSurface
+    end
   end
 end
 
@@ -141,58 +145,64 @@ class << SDL
   alias delay delay
 end
 
+module SDL
 # rubysdl_cdrom.c
-class << SDL::CD
-  alias num_drive numDrive
-  alias name_index nameIndex
+  class << CD
+    alias num_drive numDrive
+    alias index_name indexName
 # alias open open
-end
+  end
 
-class SDL::CD
+  class CD
 # alias status status
 # alias play play
-  alias play_tracks playTracks
-  alias pause pause
+    alias play_tracks playTracks
+    alias pause pause
 # alias resume resume
 # alias stop stop
 # alias eject eject
-  alias num_tracks numTracks
-  alias current_track currentTrack
-  alias current_frame currentFrame
-  alias track_type trackType
-  alias track_length trackLength
+    alias num_tracks numTracks
+    alias current_track currentTrack
+    alias current_frame currentFrame
+    alias track_type trackType
+    alias track_length trackLength
+  end
 end
 
 # rubysdl_joystick.c
-class << SDL::Joystick
+module SDL
+  class << Joystick
 #  alias poll poll
 #  alias poll= poll=
 # alias num num
-  alias index_name indexName
+    alias index_name indexName
 # alias open open
 # alias open? open?
-  alias update_all updateAll
-end
+    alias update_all updateAll
+  end
 
-class SDL::Joystick
+  class Joystick
 # alias index index
-  alias num_axes numAxes
-  alias num_balls numBalls
-  alias num_hats numHats
-  alias num_buttons numButtons
+    alias num_axes numAxes
+    alias num_balls numBalls
+    alias num_hats numHats
+    alias num_buttons numButtons
 # alias axis axis
 # alias hat hat
 # alias button button
 # alias ball ball
+  end
 end
 
 # rubysdl_event_key.c
-class << SDL::Key
+module SDL
+  class << Key
 # alias scan scan
 # alias press? press?
-  alias mod_state modState
-  alias enable_key_repeat enableKeyRepeat
-  alias disable_key_repeat disableKeyRepeat
+    alias mod_state modState
+    alias enable_key_repeat enableKeyRepeat
+    alias disable_key_repeat disableKeyRepeat
+  end
 end
 
 # rubysdl_wm.c
@@ -212,7 +222,7 @@ module SDL
       alias play_channel playChannel
 #     alias play? play?
       alias set_volume setVolume
-      aliaa allocate_channels allocateChannels
+      alias allocate_channels allocateChannels
 #     alias halt halt
 #     alias pause pause
 #     alias resume resume
@@ -228,10 +238,12 @@ module SDL
       alias pause_music? pauseMusic?
       alias play_music? playMusic?
     end
-    
-    class Mixer::Wave
-#     alias load load
-      alias set_volume setVolume
+
+    module Mixer
+      class Wave
+#       alias load load
+	alias set_volume setVolume
+      end
     end
     # class Mixer::Music
     # alias load load
@@ -293,7 +305,7 @@ end
 
 # sdl.rb
 
-class SDL
+class << SDL
   if defined?(rotateScaledSurface) then
     alias rotate_scaled_surface rotateScaledSurface
   end
