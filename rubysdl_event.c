@@ -161,7 +161,7 @@ static VALUE sdl_eventMouseButton(VALUE obj)
   
   Data_Get_Struct(obj,SDL_Event,event);
   eventCheck( (event->type==SDL_MOUSEBUTTONUP)||
-	     ( event->type==SDL_MOUSEBUTTONUP)   , "mouse button" );
+	      (event->type==SDL_MOUSEBUTTONDOWN) , "mouse button" );
   return INT2NUM( event->button.button );
 }
 static VALUE sdl_eventMousePressed(VALUE obj)
@@ -170,7 +170,7 @@ static VALUE sdl_eventMousePressed(VALUE obj)
   
   Data_Get_Struct(obj,SDL_Event,event);
   eventCheck( (event->type==SDL_MOUSEBUTTONUP)||
-	      ( event->type==SDL_MOUSEBUTTONUP)   , "mouse button" );
+	      ( event->type==SDL_MOUSEBUTTONDOWN)   , "mouse button" );
   return (event->button.state==SDL_PRESSED)?Qtrue:Qfalse;
 }
 
