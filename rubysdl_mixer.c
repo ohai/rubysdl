@@ -45,7 +45,6 @@ static void mix_FreeMusic(Mix_Music *music)
 static VALUE mix_openAudio(VALUE mod,VALUE frequency,VALUE format,
 			   VALUE channels,VALUE chunksize)
 {
-  int i;
   if( mix_opened ){
     rb_raise(eSDLError,"already initialize SDL::Mixer");
   }
@@ -179,6 +178,7 @@ static VALUE mix_fadeInMusic(VALUE mod,VALUE music,VALUE loops,VALUE ms)
 static VALUE mix_setVolumeMusic(VALUE mod,VALUE volume)
 {
   Mix_VolumeMusic( NUM2INT(volume) );
+  return Qnil;
 }
 
 static VALUE mix_fadeOutMusic(VALUE mod,VALUE ms)
