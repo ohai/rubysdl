@@ -47,6 +47,24 @@ GLOBAL VALUE cTTF;
 GLOBAL VALUE cJoystick;
 GLOBAL VALUE cCD;
 
+#ifdef DEF_EVENT2
+GLOBAL VALUE cEvent2;
+GLOBAL VALUE cActiveEvent;
+GLOBAL VALUE cKeyDownEvent;
+GLOBAL VALUE cKeyUpEvent;
+GLOBAL VALUE cMouseMotionEvent;
+GLOBAL VALUE cMouseButtonDownEvent;
+GLOBAL VALUE cMouseButtonUpEvent;
+GLOBAL VALUE cJoyAxisEvent;
+GLOBAL VALUE cJoyBallEvent;
+GLOBAL VALUE cJoyHatEvent;
+GLOBAL VALUE cJoyButtonUpEvent;
+GLOBAL VALUE cJoyButtonDownEvent;
+GLOBAL VALUE cQuitEvent;
+GLOBAL VALUE cSysWMEvent;
+GLOBAL VALUE cVideoResizeEvent;
+#endif
+
 #define SetRect(Rect,X,Y,W,H) \
 do{ \
   Rect.x=NUM2INT(X); \
