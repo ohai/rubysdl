@@ -22,10 +22,21 @@
 #include "rubysdl.h"
 #include <sge.h>
 
-#if 0
-static VALUE sdl_get_autoLocking(VALUE mod);
-stativ sdl_set_autoLocking(VALUE mod,VALUE bool);
-#endif
+extern Uint8 _sge_lock;
+static VALUE sdl_get_autoLocking(VALUE mod)
+{
+  return BOOL(_sge_lock);
+}
+
+static VALUE  sdl_set_autoLocking(VALUE mod,VALUE bool)
+{
+  if(bool)
+    sge_Lock_ON();
+  else
+    sge_Lock_OFF();
+  return Qnil;
+}
+
      
 static VALUE sdl_getPixel(VALUE obj,VALUE x,VALUE y)
 {
@@ -128,10 +139,10 @@ void init_sge_video()
   sge_Update_OFF();
   sge_Lock_ON();
 
-#if 0
-  rb_define_module_function(mSDL,"autoLock?",sdl_get_autoLocking,0);
-  rb_define_module_function(mSDL,"autoLock?=",sdl_set_autoLocking,1);
-#endif
+
+  rb_define_module_function(mSDL,"autoLock",sdl_get_autoLocking,0);
+  rb_define_module_function(mSDL,"autoLock=",sdl_set_autoLocking,1);
+
   rb_define_method(cSurface,"getPixel",sdl_getPixel,2);
   rb_define_method(cSurface,"putPixel",sdl_putPixel,3);
   rb_define_method(cSurface,"[]",sdl_getPixel,2);
