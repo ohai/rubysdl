@@ -1694,7 +1694,7 @@ Object
 
 --- SDL::TTF#textSize(text)
 --- SDL::TTF#text_size(text)
-      Get Text size on image in array. Return [x,y].
+      Get Text size on image in array. Return [width,height].
 
 --- SDL::TTF#faces
       Need SDL_ttf 2.0.4 or later

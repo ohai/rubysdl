@@ -1715,7 +1715,7 @@ Object
 
 --- SDL::TTF#textSize(text)
 --- SDL::TTF#text_size(text)
-      textを描画したときの縦、横の必要な大きさを配列で返す
+      textを描画したときの大きさを[幅,高さ]という配列で返す
 
 --- SDL::TTF#faces
       SDL_ttf 2.0.4 が必要
