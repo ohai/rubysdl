@@ -84,6 +84,9 @@ void Init_sdl()
   init_sdl_image();
 #endif
   init_event();
+#ifdef DEF_EVENT2
+  init_event2();
+#endif
   init_keyEvent();
   init_mouse();
   init_joystick();
