@@ -270,6 +270,9 @@ module SDL
       alias draw_solid_utf8 drawSolidUTF8
       alias draw_blended_utf8 drawBlendedUTF8
       alias draw_shaded_utf8 drawShadedUTF8
+      alias render_solid_utf8 renderSolidUTF8
+      alias render_blended_utf8 renderBlendedUTF8
+      alias render_shaded_utf8 renderShadedUTF8
     end
   end
 end
