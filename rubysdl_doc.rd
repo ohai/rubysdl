@@ -446,6 +446,7 @@ Object
 ==== クラスメソッド
 
 --- TTF.init
+      TrueTypeFontを使うためには最初にこの関数を呼ばなければならない。
 
 --- TTF.open(filename,size)
 
