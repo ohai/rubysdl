@@ -17,8 +17,6 @@
   License along with this library; if not, write to the Free Software
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
   */
-/* rubysdl.c -- SDL(Simple Directmedia Layer)
- */
 
 #define DEF_GLOBAL
 #include "rubysdl.h"
@@ -67,10 +65,17 @@ static VALUE sdl_init(VALUE obj,VALUE flags)
 {
   Uint32 flag;
   
-  rb_secure(1);
+  rb_secure(4);
   flag= NUM2UINT(flags);
   if( SDL_Init(flag) < 0 )
     rb_raise(eSDLError,"Couldn't initialize SDL: %s",SDL_GetError());
+  return Qnil;
+}
+
+static VALUE sdl_initSubSystem(VALUE obj,VALUE flags)
+{
+  if( SDL_InitSubSystem(NUM2UINT(flags)) < 0 )
+    rb_raise(eSDLError,"Couldn't initialize SDL subsystem: %s",SDL_GetError());
   return Qnil;
 }
 
@@ -116,6 +121,7 @@ void Init_sdl()
   eSDLError = rb_define_class_under(mSDL,"Error",rb_eStandardError);
   rb_define_module_function(mSDL,"init",sdl_init,1);
   rb_define_module_function(mSDL,"initedSystem",sdl_wasInit,1);
+  rb_define_module_function(mSDL,"initSubSystem",sdl_initSubSystem,1);
   
   defineConst();
   
