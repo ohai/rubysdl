@@ -63,7 +63,7 @@ static VALUE sdl_eventActiveGained(VALUE obj)
   SDL_Event *event;
   
   Data_Get_Struct(obj,SDL_Event,event);
-  eventCheck( event->type == ACTIVEEVENT , "active" );
+  eventCheck( event->type == SDL_ACTIVEEVENT , "active" );
   return (event->active.gain)?Qtrue:Qfalse;
 }
 static VALUE sdl_eventActiveState(VALUE obj)
@@ -71,7 +71,7 @@ static VALUE sdl_eventActiveState(VALUE obj)
   SDL_Event *event;
   
   Data_Get_Struct(obj,SDL_Event,event);
-  eventCheck( event->type == ACTIVEEVENT , "active" );
+  eventCheck( event->type == SDL_ACTIVEEVENT , "active" );
   return INT2NUM(event->active.state);
 }
 
@@ -187,7 +187,7 @@ void init_event()
   
   rb_define_method(cEvent,"type",sdl_eventType,0);
   
-  rb_define_method(cEvent,"keyPress?",sdl_eventKeyPressed,0)
+  rb_define_method(cEvent,"keyPress?",sdl_eventKeyPressed,0);
   rb_define_method(cEvent,"keySym",sdl_eventKeySym,0);
   rb_define_method(cEvent,"keyMod",sdl_eventKeyMod,0);
 
