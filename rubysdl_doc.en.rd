@@ -135,7 +135,7 @@ some functions need SGE or SDL_image
         SDL::VideoInfo#blit_sw_A
         SDL::VideoInfo#blit_fill
         SDL::VideoInfo#video_mem
-#        SDL::VideoInfo#vfmt
+        SDL::VideoInfo#bpp
 	
 --- SDL.blitSurface(src,srcX,srcY,srcW,srcH,dst,dstX,dstY)
       This performs a fast blit from the source surface to the destination
@@ -184,7 +184,35 @@ Object
 ==== class method
 
 --- SDL::Surface.new(flag,w,h,format)
-      Not documented yet
+      Create an empty surface.
+      You must call this method after ((<SDL.setVideoMode>))
+
+      format must be the instance of ((<SDL::Surface>)), and create the
+      surface that has same bpp as specified surface.
+
+      The flags specifies the type of surface that should be
+      created, it is an OR'd combination of the following possible values.
+      
+      * SDL::SWSURFACE
+
+        SDL will create the surface in system memory.
+
+      * SDL::HWSURFACE
+
+        SDL will attempt to create the surface in video memory.
+
+      * SDL::SRCCOLORKEY
+
+        With this flag SDL will attempt to find the best
+        location for this surface, either in system memory or
+        video memory, to obtain hardware colorkey blitting
+        support.
+
+      * SDL::SRCALPHA
+
+        With this flag SDL will attempt to find the best
+        location for this surface, either in system memory or
+        video memory, to obtain hardware alpha support.
 
 --- SDL::Surface.loadBMP(filename)
       Loads a image from a named Windows BMP file and return

@@ -147,7 +147,7 @@ bpp=bit per pixelである。
         SDL::VideoInfo#blit_sw_A
         SDL::VideoInfo#blit_fill
         SDL::VideoInfo#video_mem
-#        SDL::VideoInfo#vfmt
+        SDL::VideoInfo#bpp
 	
 --- SDL.blitSurface(src,srcX,srcY,srcW,srcH,dst,dstX,dstY)
       srcで指定されたSurfaceからdstで指定されたSurfaceへの高速なblit
@@ -202,12 +202,36 @@ Object
 ==== クラスメソッド
 
 --- SDL::Surface.new(flag,w,h,format)
-      Not documented yet
+      新しい((<SDL::Surface>))のインスタンスを生成する。
+      ((<SDL.setVideoMode>))を呼びだした後でしか使用してはならない。
 
+      formatとしては((<SDL::Surface>))のインスタンスを与え、指定した
+      サーフィスと同じbppのサーフィスを生成する。
+
+      flagには以下のフラグのORを取ったものを与えることができる。
+
+      * SDL::SWSURFACE
+
+        システムメモリ内にサーフィスをとる。
+
+      * SDL::HWSURFACE
+
+        ビデオメモリ内にサーフィスを取ろうとする。
+
+      * SDL::SRCCOLORKEY
+
+        システムメモリかビデオメモリのうちハードウェアによる透明色機能を
+        利用できるほうにサーフィスを取ろうとする。
+
+      * SDL::SRCALPHA      
+
+        システムメモリかビデオメモリのうちハードウェアによるアルファを利用
+        できるほうにサーフィスを取ろうとする。
+        
 --- SDL::Surface.loadBMP(filename)
       指定されたファイル名のWindows BMP形式のファイルから((<SDL::Surface>))
       のインスタンスを作成する。
-      ファイルが開けない等のエラーが生じた場合はSDL::Error例外が生じる。
+      ファイルが開けない等のエラーが生じた場合は((<SDL::Error>))例外が生じる。
 
 --- SDL::Surface.load(filename)
       SDL_imageが必要
