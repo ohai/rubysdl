@@ -1,5 +1,18 @@
 #include "rubysdl.h"
 
+static VALUE sdl_getJoyPolling(VALUE class)
+{
+  return TORF(SDL_JoystickEventState(SDL_QUERY)==SDL_ENABLE);
+}
+static VALUE sdl_setJoyPolling(VALUE class,VALUE poll)
+{
+  if(poll)
+    SDL_JoystickEventState(SDL_ENABLE);
+  else
+    SDL_JoystickEventState(SDL_IGNORE);
+  return poll;
+}
+
 static VALUE sdl_joyStick_num(VALUE class)
 {
   return INT2FIX(SDL_NumJoysticks());
@@ -100,6 +113,8 @@ static void defineConstForJoyStick()
 void init_joystick()
 {
   cJoyStick = rb_define_class_under(mSDL,"JoyStick",rb_cObject);
+  rb_define_singleton_method(cJoyStick,"poll?",sdl_getJoyPolling,0);
+  rb_define_singleton_method(cJoyStick,"poll?=",sdl_setJoyPolling,1);
   rb_define_singleton_method(cJoyStick,"num",sdl_joyStick_num,0);
   rb_define_singleton_method(cJoyStick,"name",sdl_joyStick_name,1);
   rb_define_singleton_method(cJoyStick,"open",sdl_joyStick_open,1);
