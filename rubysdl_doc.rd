@@ -1655,10 +1655,10 @@ Object
 
 ==== クラスメソッド
 
---- SDL::SKK::Context.new(dict,romkana_table)
+--- SDL::SKK::Context.new(dict,romkana_table,use_minibuffer)
       ((<SDL::SKK::Context>))のインスタンスを生成し、それを返す。
       dict、romkana_tableとして利用する辞書とローマ仮名変換の規則の情報
-      を与える。
+      を与える。use_minibufferを真にするとミニバッファが利用できる。
       
 ==== メソッド
 
@@ -1670,7 +1670,22 @@ Object
       
 --- SDL::SKK::Context#render_str(font,r,g,b)
       入力文字列が描かれた((<SDL::Surface>))のインスタンスを返すメソッド。
-      
+
+--- SDL::SKK::Context#render_minibuffer_str(font,r,g,b)
+      ミニバッファの文字列が描かれた((<SDL::Surface>))のインスタンスを
+      返すメソッド。
+
+--- SDL::SKK::Context#clear
+      入力文字列と入力状態をクリアして初期状態にもどす。
+
+--- SDL::SKK::Context#get_basic_mode
+      contextのモードが、確定入力モード、アルファベット入力モード、
+      JISX0208アルファベット入力モードのいずれかであれば真を、それ
+      以外では偽を返す。辞書登録モードのときなども偽を返す。
+
+      これが真のときにリターンキーを押したら入力終了とみなす、
+      などといった処理に利用する。
+
 === SDL::SKK::Dictionary
 
 辞書を示すクラス。

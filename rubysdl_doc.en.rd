@@ -1633,9 +1633,10 @@ Object
 
 ==== class method
 
---- SDL::SKK::Context.new(dict,romkana_table)
+--- SDL::SKK::Context.new(dict,romkana_table,use_minibuffer)
       Create an instance of ((<SDL::SKK::Context>)) from the dictionary
-      and the RomKanaRuleTable.
+      and the RomKanaRuleTable. And if use_minibuffer is true, you
+      can use minibuffer.      
       
 ==== method
 
@@ -1646,7 +1647,20 @@ Object
       Returns input (Japanese) string.
       
 --- SDL::SKK::Context#render_str(font,r,g,b)
-      Render the text.
+      Renders the text.
+
+--- SDL::SKK::Context#render_minibuffer_str(font,r,g,b)
+      Renders minibuffer text.
+
+--- SDL::SKK::Context#clear
+      Clears text and initializes context.
+
+--- SDL::SKK::Context#get_basic_mode
+      Returns whether context's state is basic mode.
+      
+      If this method returns true, and you get return, you can
+      stop inputting.
+      
       
 === SDL::SKK::Dictionary
 
