@@ -185,7 +185,7 @@ static VALUE sdl_event2_push(VALUE class,VALUE event)
   if(eventClass==cActiveEvent){
     e.type=SDL_ACTIVEEVENT;
     e.active.gain=rb_iv_get(event,"@gain");
-    e.active.state=NUN2INT(rb_iv_get(event,"@state"));
+    e.active.state=NUM2INT(rb_iv_get(event,"@state"));
   }else if(eventClass==cKeyDownEvent){
     e.type=SDL_KEYDOWN;
     e.key.state=(rb_iv_get(event,"@press"))?SDL_PRESSED:SDL_RELEASED;
