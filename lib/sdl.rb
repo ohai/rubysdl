@@ -52,5 +52,7 @@ module SDL
       blitSurface(src,srcRect[0],srcRect[1],srcRect[2],srcRect[3],dst,
 		  dstRect[0],dstRect[1])
     end
+  end
+
 end
 
