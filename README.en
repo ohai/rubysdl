@@ -30,7 +30,7 @@ SDL_ttf   http://www.libsdl.org/projects/SDL_ttf/index.html
 SDL_image   http://www.libsdl.org/projects/SDL_image/index.html
 SGE   http://www.etek.chalmers.se/~e8cal1/sge/
 SMPEG  http://www.icculus.org/smpeg/
-SDLSKK http://www.kmc.gr.jp/~ohai/
+SDLSKK http://www.kmc.gr.jp/~ohai/sdlskk.en.html
 
 4 INSTALL
 
@@ -48,11 +48,11 @@ install on Linux
   And run 'make','make install'.
 
 (3)install SGE
-  Edit Makefile.conf to make valid 'C_ONLY=y'.
-  And run 'make' and 'make install'.
+  Run 'make' and 'make install'.
   
 (4)install SDL_mixer, SDL_ttf, SDL_image, SMPEG and SDLSKK
   See documents of these libraries and install them .
+
 (5)install this extension library,Ruby/SDL
   Run 'ruby extconf.rb','make' and 'make install'.
 
@@ -63,8 +63,6 @@ install on Linux
   sample/*.rb
     Ruby/SDL samples.In some script, you have to prepare data such as
     "sample.wav" and "sample.mpg".
-  rubysdl_const_list.txt
-    List of constants
   rubysdl_doc.en.rd
     Simple reference manual
   document of SDL
@@ -76,7 +74,7 @@ install on Linux
   You can use OpenGL with this library.
 
   (1) Setup OpenGL and SDL.
-  (2) Get OpenGL Interface from RAA(http://www.ruby-lang.org/en/raa.html)
+  (2) Get OpenGL Interface (http://raa.ruby-lang.org/projects/opengl/)
   (3) Install OpenGL Interface
   (4) Run "ruby extconf.rb" with "--enable-opengl".
   (5) Run "make" and "make install"
