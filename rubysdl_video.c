@@ -247,8 +247,11 @@ static VALUE sdl_setClipRect(VALUE obj,VALUE x,VALUE y,VALUE w,VALUE h)
 static VALUE sdl_surface_format(VALUE obj)
 {
   SDL_Surface *surface;
+  SDL_PixelFormat *format;
   Data_Get_Struct(obj,SDL_Surface,surface);
-  return Data_Wrap_Struct(cPixelFormat,0,0,surface->format);
+  format = xmalloc( sizeof(SDL_PixelFormat) );
+  *format = *(surface->format);
+  return Data_Wrap_Struct(cPixelFormat,0,free,format);
 }
 
 /* return ture if this fuction succeed, ohterwise return false */
