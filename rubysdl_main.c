@@ -55,7 +55,7 @@ void init_wm();
 void init_ttf();
 #endif
 #ifdef HAVE_SDL_MIXER
-  init_mixer();
+void  init_mixer();
 #endif
 
 static void sdl_quit();
