@@ -54,6 +54,12 @@ void Init_rubysdl()
   defineConst();
   
   init_video();
+#ifdef HAVE_SGE
+  init_sge_video();
+#endif
+#ifdef HAVE_SDL_IMAGE
+  init_sdl_image();
+#endif
   init_event();
   init_keyEvent();
   init_mouse();
