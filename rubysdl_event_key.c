@@ -256,6 +256,26 @@ void defineConstForKey()
   /* Add any other keys here */
   
   rb_define_const(cKey,"LAST",INT2NUM(SDLK_LAST));
+
+  /* key mods */
+  rb_define_const(cKey,"MOD_NONE",UINT2NUM(KMOD_NONE));
+  rb_define_const(cKey,"MOD_LSHIFT",UINT2NUM(KMOD_LSHIFT));
+  rb_define_const(cKey,"MOD_RSHIFT",UINT2NUM(KMOD_RSHIFT));
+  rb_define_const(cKey,"MOD_LCTRL",UINT2NUM(KMOD_LCTRL));
+  rb_define_const(cKey,"MOD_RCTRL",UINT2NUM(KMOD_RCTRL));
+  rb_define_const(cKey,"MOD_LALT",UINT2NUM(KMOD_LALT));
+  rb_define_const(cKey,"MOD_RALT",UINT2NUM(KMOD_RALT));
+  rb_define_const(cKey,"MOD_LMETA",UINT2NUM(KMOD_LMETA));
+  rb_define_const(cKey,"MOD_RMETA",UINT2NUM(KMOD_RMETA));
+  rb_define_const(cKey,"MOD_NUM",UINT2NUM(KMOD_NUM));
+  rb_define_const(cKey,"MOD_CAPS",UINT2NUM(KMOD_CAPS));
+  rb_define_const(cKey,"MOD_MODE",UINT2NUM(KMOD_MODE));
+  rb_define_const(cKey,"MOD_RESERVED",UINT2NUM(KMOD_RESERVED));
+
+  rb_define_const(cKey,"MOD_CTRL",UINT2NUM(KMOD_CTRL));
+  rb_define_const(cKey,"MOD_SHIFT",UINT2NUM(KMOD_SHIFT));
+  rb_define_const(cKey,"MOD_ALT",UINT2NUM(KMOD_ALT));
+  rb_define_const(cKey,"MOD_META",UINT2NUM(KMOD_META));
 }
 
 /* under 2 function is for testing */
