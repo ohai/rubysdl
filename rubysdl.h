@@ -31,6 +31,12 @@
 #define GLOBAL extern
 #endif
 
+#ifdef StringValuePtr
+#define GETCSTR(v) StringValuePtr(v)
+#else
+#define GETCSTR(v) STR2CSTR(v)
+#endif
+
 GLOBAL VALUE mSDL;
 GLOBAL VALUE eSDLError;
 GLOBAL VALUE cVideoInfo;

@@ -50,10 +50,10 @@ static VALUE smpeg_load(VALUE class,VALUE filename)
   VALUE obj;
   char error_msg[2048];
     
-  mpeg = SMPEG_new(STR2CSTR(filename),NULL,0);
+  mpeg = SMPEG_new(GETCSTR(filename),NULL,0);
   if( SMPEG_error(mpeg) ){
     snprintf(error_msg,sizeof(error_msg),"Couldn't load %s: %s",
-	     STR2CSTR(filename),SMPEG_error(mpeg));
+	     GETCSTR(filename),SMPEG_error(mpeg));
     SMPEG_delete(mpeg);
     rb_raise(eSDLError,"%s",error_msg);
   }

@@ -222,10 +222,10 @@ static VALUE sdl_createSurface(VALUE class,VALUE flags,VALUE w,VALUE h,
 static VALUE sdl_loadBMP(VALUE class,VALUE filename)
 {
   SDL_Surface *image;
-  image=SDL_LoadBMP(STR2CSTR(filename));
+  image=SDL_LoadBMP(GETCSTR(filename));
   if( image==NULL ){
     rb_raise(eSDLError,"Couldn't Load BMP file %s : %s",
-	     STR2CSTR(filename),SDL_GetError());
+	     GETCSTR(filename),SDL_GetError());
   }
   return Data_Wrap_Struct(class,0,sdl_freeSurface,image);
 }
@@ -233,8 +233,8 @@ static VALUE sdl_saveBMP(VALUE obj,VALUE filename)
 {
   SDL_Surface *image;
   Data_Get_Struct( obj, SDL_Surface, image );
-  if( SDL_SaveBMP( image, STR2CSTR(filename) )==-1 ){
-    rb_raise(eSDLError,"cannot save %s: %s",STR2CSTR(filename),SDL_GetError());
+  if( SDL_SaveBMP( image, GETCSTR(filename) )==-1 ){
+    rb_raise(eSDLError,"cannot save %s: %s",GETCSTR(filename),SDL_GetError());
   }
   return Qnil;
 }

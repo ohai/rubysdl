@@ -50,7 +50,7 @@ static VALUE sdl_setCursor_imp(VALUE mod,VALUE data,VALUE mask,VALUE w,
 			       VALUE h,VALUE hot_x,VALUE hot_y)
 {
   SDL_Cursor *newCursor;
-  newCursor=SDL_CreateCursor(STR2CSTR(data),STR2CSTR(mask),NUM2INT(w),
+  newCursor=SDL_CreateCursor(GETCSTR(data),GETCSTR(mask),NUM2INT(w),
 			     NUM2INT(h),NUM2INT(hot_x),NUM2INT(hot_y));
   if( newCursor==NULL )
     rb_raise(eSDLError,"cursor creation failed :%s",SDL_GetError());

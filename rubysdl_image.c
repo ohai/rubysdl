@@ -24,9 +24,9 @@
 static VALUE sdl_load(VALUE class,VALUE filename)
 {
   SDL_Surface *surface;
-  surface = IMG_Load(STR2CSTR(filename));
+  surface = IMG_Load(GETCSTR(filename));
   if(surface==NULL){
-    rb_raise(eSDLError,"Couldn't load %s: %s",STR2CSTR(filename),
+    rb_raise(eSDLError,"Couldn't load %s: %s",GETCSTR(filename),
 	     SDL_GetError());
   }
   return Data_Wrap_Struct(class,0,sdl_freeSurface,surface);

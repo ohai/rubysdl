@@ -27,7 +27,7 @@ static VALUE sdl_wm_getCaption(VALUE mod)
 }
 static VALUE sdl_wm_setCaption(VALUE mod,VALUE title,VALUE icon)
 {
-  SDL_WM_SetCaption( STR2CSTR(title),STR2CSTR(icon) );
+  SDL_WM_SetCaption( GETCSTR(title),GETCSTR(icon) );
   return Qnil;
 }
 static VALUE sdl_wm_setIcon(VALUE mod,VALUE icon)

@@ -106,10 +106,10 @@ static VALUE mix_loadWav(VALUE class,VALUE filename)
 {
   Mix_Chunk *wave;
   Check_Type(filename,T_STRING);
-  wave = Mix_LoadWAV( STR2CSTR(filename) );
+  wave = Mix_LoadWAV( GETCSTR(filename) );
   if( wave == NULL ){
     rb_raise( eSDLError,"Couldn't load wave file %s: %s",
-	      STR2CSTR(filename),SDL_GetError() );
+	      GETCSTR(filename),SDL_GetError() );
   }
   return Data_Wrap_Struct(class,0,mix_FreeChunk,wave);
 }
@@ -205,10 +205,10 @@ static VALUE mix_playingMusic(VALUE mod)
 static VALUE mix_loadMus(VALUE class,VALUE filename)
 {
   Mix_Music* music;
-  music = Mix_LoadMUS(STR2CSTR(filename));
+  music = Mix_LoadMUS(GETCSTR(filename));
   if( music == NULL )
     rb_raise(eSDLError,
-	     "Couldn't load %s: %s",STR2CSTR(filename),SDL_GetError());
+	     "Couldn't load %s: %s",GETCSTR(filename),SDL_GetError());
   return Data_Wrap_Struct(class,0,mix_FreeMusic,music);
 }
 static void defineConstForAudio()

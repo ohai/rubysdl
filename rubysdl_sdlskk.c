@@ -202,8 +202,8 @@ static VALUE skk_Dict_load(VALUE obj,VALUE filename,VALUE users)
 
   Data_Get_Struct(obj,SDLSKK_Dictionary,dict);
   
-  if( !SDLSKK_Dict_load(dict,STR2CSTR(filename),RTEST(users)) )
-    rb_raise(eSDLError,"Couldn't load %s",STR2CSTR(filename));
+  if( !SDLSKK_Dict_load(dict,GETCSTR(filename),RTEST(users)) )
+    rb_raise(eSDLError,"Couldn't load %s",GETCSTR(filename));
 
   return Qnil;
 }
@@ -214,8 +214,8 @@ static VALUE skk_Dict_save(VALUE obj, VALUE filename)
 
   Data_Get_Struct(obj,SDLSKK_Dictionary,dict);
 
-  if( !SDLSKK_Dict_save_user_dict(dict,STR2CSTR(filename)) )
-    rb_raise(eSDLError,"Couldn't save %s",STR2CSTR(filename));
+  if( !SDLSKK_Dict_save_user_dict(dict,GETCSTR(filename)) )
+    rb_raise(eSDLError,"Couldn't save %s",GETCSTR(filename));
   
   return Qnil;
 }
@@ -224,10 +224,10 @@ static VALUE skk_RomKanaRuleTable_new(VALUE class,VALUE table_file)
 {
   SDLSKK_RomKanaRuleTable* rule_table;
 
-  rule_table = SDLSKK_RomKanaRuleTable_new( STR2CSTR(table_file) );
+  rule_table = SDLSKK_RomKanaRuleTable_new( GETCSTR(table_file) );
 
   if( rule_table == NULL )
-    rb_raise(eSDLError,"Couldn't load %s",STR2CSTR(table_file));
+    rb_raise(eSDLError,"Couldn't load %s",GETCSTR(table_file));
   
   return Data_Wrap_Struct(class,0,SDLSKK_RomKanaRuleTable_delete,rule_table);
 }
@@ -242,7 +242,7 @@ static VALUE skk_Keybind_set_key(VALUE obj,VALUE key_str,VALUE cmd_str)
   SDLSKK_Keybind* keybind;
   
   Data_Get_Struct(obj,SDLSKK_Keybind,keybind);
-  SDLSKK_Keybind_set_key(keybind,STR2CSTR(key_str),STR2CSTR(cmd_str));
+  SDLSKK_Keybind_set_key(keybind,GETCSTR(key_str),GETCSTR(cmd_str));
   return Qnil;
 }
 
@@ -259,7 +259,7 @@ static VALUE skk_Keybind_unset_key(VALUE obj,VALUE key_str)
   SDLSKK_Keybind* keybind;
   
   Data_Get_Struct(obj,SDLSKK_Keybind,keybind);
-  SDLSKK_Keybind_unset_key(keybind,STR2CSTR(key_str));
+  SDLSKK_Keybind_unset_key(keybind,GETCSTR(key_str));
   return Qnil;
 }
 

@@ -44,16 +44,16 @@ static VALUE sdl_ttf_open(int argc, VALUE *argv, VALUE class)
   VALUE filename, size, index;
   rb_scan_args( argc, argv, "21", &filename, &size, &index );
   if( NIL_P(index) )
-    font=TTF_OpenFont( STR2CSTR(filename),NUM2INT(size) );
+    font=TTF_OpenFont( GETCSTR(filename),NUM2INT(size) );
   else
 #ifdef HAVE_TTF_OPENFONTINDEX
-    font=TTF_OpenFontIndex( STR2CSTR(filename),NUM2INT(size),NUM2INT(index) );
+    font=TTF_OpenFontIndex( GETCSTR(filename),NUM2INT(size),NUM2INT(index) );
 #else
     if( index != 0)
       rb_raise(rb_eRuntimeError,"Not supported for selecting indivisual font face by SDL_ttf. The feature is in SDL_ttf 2.0.4 or later.");
 #endif
   if( font==NULL )
-    rb_raise(eSDLError,"Couldn't open font %s: %s",STR2CSTR(filename),
+    rb_raise(eSDLError,"Couldn't open font %s: %s",GETCSTR(filename),
 	     TTF_GetError());
   return Data_Wrap_Struct(class,0,ttf_closeFont,font);
 }
@@ -118,7 +118,7 @@ static VALUE sdl_ttf_sizeText(VALUE obj,VALUE text)
   TTF_Font *font;
   int w,h;
   Data_Get_Struct(obj,TTF_Font,font);
-  TTF_SizeUTF8(font,STR2CSTR(text),&w,&h);
+  TTF_SizeUTF8(font,GETCSTR(text),&w,&h);
   return rb_ary_new3(2,INT2FIX(w),INT2FIX(h));
 }
 static VALUE ttf_draw(VALUE obj,VALUE dest,VALUE text,VALUE x,
@@ -130,7 +130,7 @@ static VALUE ttf_draw(VALUE obj,VALUE dest,VALUE text,VALUE x,
   SDL_Color fg,bg;
   SDL_Rect destRect;
   int result;
-  char *ctext=STR2CSTR(text);
+  char *ctext=GETCSTR(text);
   /* If text=="" , TTF_RenderUTF8_Solid() and etc fail to render */
   if( ctext[0]=='\0' )return INT2FIX(0);
   
@@ -200,7 +200,7 @@ static VALUE ttf_render(VALUE obj,VALUE text,VALUE fgr,VALUE fgg,VALUE fgb,
   fg.r=NUM2UINT(fgr); fg.g=NUM2UINT(fgg); fg.b=NUM2UINT(fgb);
   bg.r=NUM2UINT(bgr); bg.g=NUM2UINT(bgg); bg.b=NUM2UINT(bgb);
   
-  surface = render( font, STR2CSTR(text), fg, bg );
+  surface = render( font, GETCSTR(text), fg, bg );
 
   if( surface == NULL )
     return Qnil;
