@@ -447,6 +447,10 @@ static void defineConstForVideo()
   /*Transparency definitions: These define alpha as the opacity of a surface*/
   rb_define_const(mSDL,"ALPHA_OPAQUE",INT2NUM(SDL_ALPHA_OPAQUE));
   rb_define_const(mSDL,"ALPHA_TRANSPARENT",INT2NUM(SDL_ALPHA_TRANSPARENT));
+
+  /* flags for SDL::Surface.setPalette */
+  rb_define_const(mSDL,"LOGPAL",INT2NUM(SDL_LOGPAL));
+  rb_define_const(mSDL,"PHYSPAL",INT2NUM(SDL_PHYSPAL));
 }
 
 void init_video()
