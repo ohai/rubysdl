@@ -227,6 +227,26 @@ static VALUE sdl_surfaceW(VALUE obj)
   return INT2NUM( surface->w );
 }
 
+/* surface lock methods */
+static VALUE sdl_mustlock(VALUE obj)
+{
+  SDL_Surface *surface;
+  Data_Get_Struct(obj,SDL_Surface,surface);
+  return BOOL( SDL_MUSTLOCK(surface) );
+}
+static VALUE sdl_lockSurface(VALUE obj)
+{
+  SDL_Surface *surface;
+  Data_Get_Struct(obj,SDL_Surface,surface);
+  return FIX2NUM(SDL_LockSurface(surface));
+}
+static VALUE sdl_unlockSurface(VALUE obj)
+{
+  SDL_Surface *surface;
+  Data_Get_Struct(obj,SDL_Surface,surface);
+  SDL_UnlockSurface(surface);
+  return Qnil;
+}
 /* class PixelFormat methods */
 static VALUE sdl_format_mapRGB(VALUE obj,VALUE r,VALUE g,VALUE b)
 {
@@ -309,11 +329,10 @@ void init_video()
   rb_define_method(cSurface,"w",sdl_surfaceW,0);
   rb_define_method(cSurface,"format",sdl_surface_format,0);
 
-#if 0
   rb_define_method(cSurface,"mustLock?",sdl_mustlock,0);
   rb_define_method(cSurface,"lock",sdl_lockSurface,0);
   rb_define_method(cSurface,"unlock",sdl_unlockSurface,0);
-#endif
+
   cPixelFormat = rb_define_class_under(mSDL,"PixelFormat",rb_cObject);
   rb_define_method(cPixelFormat,"mapRGB",sdl_format_mapRGB,3);
   rb_define_method(cPixelFormat,"mapRGBA",sdl_format_mapRGBA,4);
