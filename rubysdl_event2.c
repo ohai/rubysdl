@@ -134,7 +134,7 @@ static VALUE createJoyButtonUpEvent(SDL_Event *event)
 
 static VALUE createJoyButtonDownEvent(SDL_Event *event)
 {
-  VALUE obj=rb_obj_alloc(cJoyButtonUpEvent);
+  VALUE obj=rb_obj_alloc(cJoyButtonDownEvent);
   return createJoyButtonEvent(obj,event);
 }
 
