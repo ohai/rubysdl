@@ -14,6 +14,7 @@
   * ((<SDL::Screen>))
 * ((<SDL::PixelFormat>))
 * ((<SDL::Event>))
+* ((<SDL::Event2>))
 * ((<SDL::Key>)) (module)
 * ((<SDL::Mouse>)) (module)
 * ((<SDL::Mixer>)) (module)
@@ -693,6 +694,9 @@ Object
 
 --- SDL::Event2.new
       Not documented yet
+
+--- SDL::Event2.appState
+      ((<SDL::Event.appState>))と同じ。
 
 ==== method
 

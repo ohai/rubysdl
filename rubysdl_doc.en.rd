@@ -14,6 +14,7 @@ In this module number starts 0,not 1.
   * ((<SDL::Screen>))
 * ((<SDL::PixelFormat>))
 * ((<SDL::Event>))
+* ((<SDL::Event2>))
 * ((<SDL::Key>)) (module)
 * ((<SDL::Mouse>)) (module)
 * ((<SDL::Mixer>)) (module)
@@ -666,6 +667,9 @@ Object
 
 --- SDL::Event2.new
       Not documented yet.
+
+--- SDL::Event2.appState
+      Same as ((<SDL::Event.appState>)).
 
 ==== method
 
