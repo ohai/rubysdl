@@ -5,6 +5,12 @@ sdl_config = with_config('sdl-config', 'sdl-config')
 $CFLAGS += ' ' + `#{sdl_config} --cflags`.chomp
 $LDFLAGS += ' ' + `#{sdl_config} --libs`.chomp
 
+have_func("TTF_OpenFontIndex","SDL_ttf.h")
+have_func("TTF_FontFaces","SDL_ttf.h")
+have_func("TTF_FontFaceIsFixedWidth","SDL_ttf.h")
+have_func("TTF_FontFaceFamilyName","SDL_ttf.h")
+have_func("TTF_FontFaceStyleName","SDL_ttf.h")
+
 if enable_config("event2",true) then
   $CFLAGS+= " -D DEF_EVENT2"
 end
