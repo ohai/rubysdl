@@ -125,6 +125,14 @@ module SDL
     def rotateBlit(src,dst,x,y,angle)
       rotateScaledBlit(src,dst,x,y,angle,1)
     end
+
+    alias autoLock? autoLock
+    def autoLockON
+      self.autoLock = true
+    end
+    def autoLockOFF
+      self.autoLock =false
+    end
   end
 
   if defined?(transform) then
