@@ -105,11 +105,11 @@ Object
 --- Surface#put(image,x,y)
 
 --- Surface#getPixel(x,y) 
---- Surface#[]
+--- Surface#[](x,y)
       SGEが必要
 
---- Surface#putPixel(x,y)
---- Surface#[]=
+--- Surface#putPixel(x,y,pixel)
+--- Surface#[]=(x,y,pixel)
       SGEが必要
 
 --- Surface#drawLine(x1,y1,x2,y2,color)
@@ -194,14 +194,19 @@ Object
 
 --- Event#poll
 
+--- Event#wait
+
 --- Event#type
+
+--- Event#info
+      イベントの情報を配列で返す。
+      このメソッドは、これ以下のメソッドをすべて代用できる。
 
 --- Event#keyPress?
 
 --- Event#keySym
 
 --- Event#keyMod
-
 
 --- Event#gain?
 
@@ -214,7 +219,6 @@ Object
 --- Event#mouseXrel
 
 --- Event#mouseYrel
-
 
 --- Event#mouseButton
 
@@ -355,6 +359,10 @@ Object
 
 --- CD#currentFrame
 
+--- CD#trackType(track)
+
+--- CD#trackLength(track)
+
 == ジョイスティック関連
 
 === JoyStick
@@ -366,6 +374,12 @@ Object
 Object
 
 === クラスメソッド
+
+--- JoyStick.pall?
+      イベントのpollingに合わせて、JoyStick.updateAllを呼びだすかどうか
+      を得る。
+      
+--- JoyStick.pall?=(polling)
 
 --- JoyStick.num
 
@@ -422,7 +436,7 @@ Object
       destの位置(x,y)の所に書きこむ。色はr,g,bで決められる。
       透明色(ColorKey)は有効である。textはUTF-8を使う。
 
---- TTF#drawBlendedUTF8(dest,text,x,y,r,g,b)
+	--- TTF#drawBlendedUTF8(dest,text,x,y,r,g,b)
       drawSolidUTF8と同様。drawSolidUTF8よりも高品質な描画ができる。
 
 =end
