@@ -386,13 +386,14 @@ Object
       This method can handle all event.
 
 --- Event#keyPress?
-      Not documented yet
+      Returns true when you got key event and a key pressed down,
+      otherwise returns false.
 
 --- Event#keySym
-      Not documented yet
+      Returns SDL vertual keysym.
 
 --- Event#keyMod
-      Not documented yet
+      Returns Current Key modifiers.
 
 --- Event#gain?
       Not documented yet
@@ -401,22 +402,26 @@ Object
       Not documented yet
 
 --- Event#mouseX
-      Not documented yet
+      Returns the X coordinate of the mouse.
 
 --- Event#mouseY
-      Not documented yet
+      Returns the Y coordinate of the mouse.
 
 --- Event#mouseXrel
-      Not documented yet
+      Returns the relative motion in the X direction.
 
 --- Event#mouseYrel
-      Not documented yet
+      Returns the relative motion in the Y direction.
 
 --- Event#mouseButton
-      Not documented yet
+      Returns the mouse button index.
+        SDL::Mouse::BUTTON_LEFT  
+        SDL::Mouse::BUTTON_MIDDLE  
+        SDL::Mouse::BUTTON_RIGHT 
 
 --- Event#mousePress?
-      Not documented yet
+      Returns true when this mouse event is SDL::Event::MOUSEBUTTONDOWN,
+      otherwise returns false.
 
 === Key
 

@@ -419,13 +419,13 @@ Object
       このメソッドは、これ以下のメソッドをすべて代用できる。
 
 --- Event#keyPress?
-      Not documented yet
+      キーイベントでキーが押し下げられていればtrueを、いなければfalseを返す。
 
 --- Event#keySym
-      Not documented yet
+      キーイベントで押し下げ/上げられたキーをを返す。
 
 --- Event#keyMod
-      Not documented yet
+      キーイベントでの修飾キー(SHIFT,CTRLなど)の状態を返す。
 
 --- Event#gain?
       Not documented yet
@@ -434,22 +434,28 @@ Object
       Not documented yet
 
 --- Event#mouseX
-      Not documented yet
+      マウスイベントでのマウスカーソルのX座標を返す。
 
 --- Event#mouseY
-      Not documented yet
+      マウスイベントでのマウスカーソルのY座標を返す。      
 
 --- Event#mouseXrel
-      Not documented yet
+      マウスイベントでのマウスカーソルのX座標の変化量を返す。
 
 --- Event#mouseYrel
-      Not documented yet
+      マウスイベントでのマウスカーソルのX座標の変化量を返す。
 
 --- Event#mouseButton
-      Not documented yet
+      マウスイベントでどのボタンのイベントであるかをかえす。
+      それは以下の定数でしめされる。
+
+        SDL::Mouse::BUTTON_LEFT  左ボタン
+        SDL::Mouse::BUTTON_MIDDLE  中ボタン
+        SDL::Mouse::BUTTON_RIGHT 右ボタン
 
 --- Event#mousePress?
-      Not documented yet
+      このイベントがマウスの押し下げのイベントであればtrue、
+      そうでなければfalseを返す。
 
 === Key
 
