@@ -33,6 +33,48 @@ module SDL
     end
   end
 
+  module Mouse
+    module_function
+
+    def setCursor(bitmap,white,black,transparent,inverted,hot_x=0,hot_y=0)
+      if bitmap.w % 8 != 0 then
+	raise SDL::Error,"width of cursor must be muliple of 8"
+      end
+
+      data=[]
+      mask=[]
+
+      i=-1
+      for y in 0..(bitmap.h-1)
+	for x in 0..(bitmap.w-1)
+	  if x%8 != 0 then
+	    data[i] <<= 1
+	    mask[i] <<= 1
+	  else
+	    i+=1
+	    data[i]=mask[i]=0
+	  end
+	  
+	  case bitmap.getPixel(x,y)
+	  when white
+	    mask[i] |= 0x01
+	  when black
+	    data[i] |= 0x01
+	    mask[i] |= 0x01
+	  when transparent
+	    # do nothing 
+	  when inverted
+	    data[i] |= 0x01
+	  end
+
+	end
+      end
+
+      setCursor_imp data.pack('C*'),mask.pack('C*'),bitmap.w,bitmap.h,hot_x,hot_y
+    end
+    
+  end # of module Mouse
+  
   module_function
 
   if defined?(rotateXYScaled) then
