@@ -244,6 +244,12 @@ static VALUE sdl_eventInfo(VALUE obj)
   }
   return Qnil;
 }
+
+static VALUE sdl_getAppState(VALUE class)
+{
+  return INT2FIX(SDL_GetAppState());
+}
+
 static void defineConstForEvent()
 {
   rb_define_const(cEvent,"NOEVENT",INT2NUM(SDL_NOEVENT));
@@ -292,6 +298,7 @@ void init_event()
 {
   cEvent = rb_define_class_under(mSDL,"Event",rb_cObject);
   rb_define_singleton_method(cEvent,"new",createEventObject,0);
+  rb_define_singleton_method(cEvent,"appState",sdl_getAppState,0);
   rb_define_method(cEvent,"poll",sdl_pollEvent,0);
   rb_define_method(cEvent,"wait",sdl_waitEvent,0);
   
