@@ -31,7 +31,6 @@ static VALUE playing_music=Qnil;
 static void mix_FreeChunk(Mix_Chunk *chunk)
 {
   if( ! mix_closed ){
-    printf("%d\n",mix_closed);
     Mix_FreeChunk( chunk );
   }
 }
@@ -39,7 +38,6 @@ static void mix_FreeChunk(Mix_Chunk *chunk)
 static void mix_FreeMusic(Mix_Music *music)
 {
   if( !mix_closed ){
-    printf("%d\n",mix_closed);
     Mix_FreeMusic( music );
   }
 }
