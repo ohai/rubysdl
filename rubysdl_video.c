@@ -132,11 +132,8 @@ static VALUE sdl_setVideoMode(VALUE mod,VALUE w,VALUE h,VALUE bpp,
   if( screen==NULL ){
     rb_raise(eSDLError,"Cound't set %dx%d %d bpp video mode: %s",
 	     NUM2INT(w),NUM2INT(h),NUM2INT(bpp),SDL_GetError());
-  }
-  screenObject = Data_Wrap_Struct(cSurface,0,0,screen);
-  rb_define_singleton_method(screenObject,"updateRect",sdl_updateRect,4);
-  rb_define_singleton_method(screenObject,"flip",sdl_flip,0);
-  return screenObject;
+  }  
+  return Data_Wrap_Struct(cScreen,0,0,screen);
 }
 static VALUE sdl_setGamma(VALUE mod,VALUE rgamma,VALUE ggamma,VALUE bgamma)
 {
@@ -604,6 +601,10 @@ void init_video()
   rb_define_method(cSurface,"colorkey",sdl_getColorkey,0);
   rb_define_method(cSurface,"alpha",sdl_getAlpha,0);
 
+  cScreen = rb_define_class_under(mSDL,"Screen",cSurface);
+  rb_define_method(cScreen,"updateRect",sdl_updateRect,4);
+  rb_define_method(cScreen,"flip",sdl_flip,0);
+  
   defineConstForVideo();
   return;
 }
