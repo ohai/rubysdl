@@ -60,6 +60,9 @@ bpp=bit per pixelである。
 
 === SDL内のモジュール関数
 
+--- getVideoSurface
+      Not documented yet
+
 --- setVideoMode(w,h,bpp,flags)
       指定された画面の幅、高さ、bppの値でビデオモードを設定する。
       bppが0の場合、現在のディスプレイのbppの値が使用される。
@@ -318,6 +321,16 @@ Object
 
       色がcolorの円を描き、中をぬりつぶす。
 
+--- Surface#drawEllispe(x,y,rx,ry,color)
+      SGEが必要 ロックが必要
+
+      色がcolorの楕円を描く。中はぬりつぶさない。
+
+--- Surface#drawFilledEllispe(x,y,rx,ry,color)
+      SGEが必要 ロックが必要
+
+      色がcolorの楕円を描く。中をぬりつぶす。。
+
 --- Surface#rotateScaledSurface(angle,scale,bgcolor)
       SGEが必要 
 
@@ -404,7 +417,13 @@ Object
       返り値は[r,g,b,a]という内容の配列である。
 
 --- PixelFormat#bpp
-      フォーマトの1ピクセルあたりのビット数を返す。
+      フォーマットの1ピクセルあたりのビット数を返す。
+
+--- PixelFormat#colorkey
+      Not documented yet
+
+--- PixelFormat#alpha
+      Not documented yet
 
 == Event関連
 

@@ -53,6 +53,9 @@ some functions need SGE or SDL_image
 
 === functions in module SDL
 
+--- getVideoSurface
+      Not documented yet
+
 --- setVideoMode(w,h,bpp,flags)
       Set up a video mode with the specified width, height and bits-per-pixel.
       If bpp is 0, it is treated as the current display bits per pixel.
@@ -394,6 +397,12 @@ nothing
 
 --- PixelFormat#bpp
       Return bits per pixel on this format.
+
+--- PixelFormat#colorkey
+      Not documented yet
+
+--- PixelFormat#alpha
+      Not documented yet
 
 == Event handling
 
