@@ -1,3 +1,8 @@
+version 0.9.4
+SDL::Surface#pixels, SDL::Surface#[RGBA]mask, SDL::Surface.new_fromを追加
+SDL::Surface.newを拡張
+OpenGL関連のドキュメントを最低限の分追加
+
 version 0.9.3
 sgeのbitmap font描画機能を追加
 SDL_kanjiによるbdf font描画機能を追加

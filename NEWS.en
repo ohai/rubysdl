@@ -1,3 +1,8 @@
+version 0.9.4
+Add SDL::Surface#pixels, SDL::Surface#[RGBA]mask and SDL::Surface.new_from
+Modyfy SDL::Surface.new
+Add a little OpenGL document
+
 version 0.9.3
 Support bitmap font drawing with sge
 Support bdf font drawing with SDL_kanji
