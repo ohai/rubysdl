@@ -437,6 +437,9 @@ Object
 
 --- TTF#style=(style)
 
+--- TTF#textSize(text)
+      textを描画したときの縦、横の必要な大きさを配列で返す
+
 --- TTF#drawSolidUTF8(dest,text,x,y,r,g,b)
       selfのフォント設定でdest(Surfaceのインスタンス)にString textを
       destの位置(x,y)の所に書きこむ。色はr,g,bで決められる。
