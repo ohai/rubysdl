@@ -4,6 +4,7 @@
 #include "rubysdl.h"
 #include <signal.h>
 #include <stdio.h>
+static VALUE sdl_quit();
 static VALUE sdl_init(VALUE obj,VALUE flags)
 {
   Uint32 flag;
@@ -12,6 +13,7 @@ static VALUE sdl_init(VALUE obj,VALUE flags)
   flag= NUM2UINT(flags);
   if( SDL_Init(flag) < 0 )
     rb_raise(eSDLError,"Couldn't initialize SDL: %s",SDL_GetError());
+  atexit(sdl_quit);
   return Qnil;
 }
 
@@ -20,7 +22,7 @@ static VALUE sdl_wasInit(VALUE mod,VALUE flags)
   return UINT2NUM( SDL_WasInit(NUM2UINT(flags)) );
 }
 
-static VALUE sdl_quit(VALUE obj)
+static VALUE sdl_quit()
 {
 #ifdef HAVE_SDL_MIXER
   quit_mixer();
@@ -50,7 +52,6 @@ void Init_rubysdl()
   mSDL = rb_define_module("SDL");
   eSDLError = rb_define_class_under(mSDL,"Error",rb_eStandardError);
   rb_define_module_function(mSDL,"init",sdl_init,1);
-  rb_define_module_function(mSDL,"quit",sdl_quit,0);
   rb_define_module_function(mSDL,"initedSystem",sdl_wasInit,1);
   
   defineConst();

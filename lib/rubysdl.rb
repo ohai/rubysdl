@@ -1,6 +1,5 @@
 require 'rubysdl.so'
 
-at_exit{ SDL.quit; }
 
 module SDL
   class Surface
