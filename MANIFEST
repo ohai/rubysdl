@@ -26,7 +26,6 @@ rubysdl_image.c
 rubysdl_opengl.c
 rubysdl_pixel.c
 rubysdl_event2.c
-sdlgl.patch
 sample/testsprite.rb
 sample/playwave.rb
 sample/movesp.rb
