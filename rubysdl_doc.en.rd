@@ -746,7 +746,9 @@ This event occurs when a key is pressed.
       Returns the pressed key such as SDL::Key::ESCAPE.
 --- SDL::Event2::KeyDown#mod
       Same as ((<SDL::Key.modState>)).
-
+--- SDL::Event2::KeyDown#unicode
+      Returns key input translated to UNICODE.If you will use this,
+      you need to call ((<SDL::Event2.enableUNICODE>)) beforehand.
 ==== SDL::Event2::KeyUp
 This event occurs when a key is released.
 + Method
