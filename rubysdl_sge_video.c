@@ -530,7 +530,7 @@ void init_sge_video()
   rb_define_method(cBMFont,"setColor",sdl_bf_setColor,3);
   rb_define_method(cBMFont,"height",sdl_bf_getHeight,0);
   rb_define_method(cBMFont,"width",sdl_bf_getWidth,0);
-  rb_define_method(cBMFont,"out",sdl_bf_textout,4);
+  rb_define_method(cBMFont,"textout",sdl_bf_textout,4);
 
   defineConstForSGE();
 }
