@@ -1,6 +1,8 @@
 MANIFEST
 README.ja
 README.en
+NEWS.ja
+NEWS.en
 LICENSE
 depend
 extconf.rb
