@@ -54,5 +54,14 @@ module SDL
     end
   end
 
+  class << Mixer
+    alias open_imp open
+    
+    def open(frequency=Mixer::DEFAULT_FREQUENCY,format=Mixer::DEFAULT_FORMAT,
+	     cannels=Mixer::DEFAULT_CHANNELS,chunksize=4096)
+      open_imp(frequency,format,cannels,chunksize)
+    end
+  end
+
 end
 
