@@ -44,7 +44,7 @@ GLOBAL VALUE cMusic;
 GLOBAL VALUE mWM;
 GLOBAL VALUE mMouse;
 GLOBAL VALUE cTTF;
-GLOBAL VALUE cJoyStick;
+GLOBAL VALUE cJoystick;
 GLOBAL VALUE cCD;
 
 #define SetRect(Rect,X,Y,W,H) \
