@@ -23,12 +23,12 @@ static SDL_Cursor *cursor=NULL;
 
 static void defineConstForMouse()
 {
-  rb_define_const(cEvent,"BUTTON_LEFT",INT2NUM(SDL_BUTTON_LEFT));
-  rb_define_const(cEvent,"BUTTON_MIDDLE",INT2NUM(SDL_BUTTON_MIDDLE));
-  rb_define_const(cEvent,"BUTTON_RIGHT",INT2NUM(SDL_BUTTON_RIGHT));
-  rb_define_const(cEvent,"BUTTON_LMASK",UINT2NUM(SDL_BUTTON_LMASK));
-  rb_define_const(cEvent,"BUTTON_MMASK",UINT2NUM(SDL_BUTTON_MMASK));
-  rb_define_const(cEvent,"BUTTON_RMASK",UINT2NUM(SDL_BUTTON_RMASK));
+  rb_define_const(mMouse,"BUTTON_LEFT",INT2NUM(SDL_BUTTON_LEFT));
+  rb_define_const(mMouse,"BUTTON_MIDDLE",INT2NUM(SDL_BUTTON_MIDDLE));
+  rb_define_const(mMouse,"BUTTON_RIGHT",INT2NUM(SDL_BUTTON_RIGHT));
+  rb_define_const(mMouse,"BUTTON_LMASK",UINT2NUM(SDL_BUTTON_LMASK));
+  rb_define_const(mMouse,"BUTTON_MMASK",UINT2NUM(SDL_BUTTON_MMASK));
+  rb_define_const(mMouse,"BUTTON_RMASK",UINT2NUM(SDL_BUTTON_RMASK));
 }
 
 static VALUE sdl_getMouseState(VALUE mod)
