@@ -238,7 +238,7 @@ static VALUE sdl_lockSurface(VALUE obj)
 {
   SDL_Surface *surface;
   Data_Get_Struct(obj,SDL_Surface,surface);
-  return FIX2NUM(SDL_LockSurface(surface));
+  return INT2FIX(SDL_LockSurface(surface));
 }
 static VALUE sdl_unlockSurface(VALUE obj)
 {
