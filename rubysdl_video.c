@@ -44,21 +44,23 @@ static VALUE sdl_checkVideoMode(VALUE mod,VALUE w,VALUE h,VALUE bpp,
 static VALUE sdl_getVideoInfo(VALUE mod)
 {
   const SDL_VideoInfo *info;
+  VALUE obj;
   info = SDL_GetVideoInfo();
-  return rb_ary_new3(11,
-		     BOOL(info->hw_available),
-		     BOOL(info->wm_available),
-		     BOOL(info->blit_hw),
-		     BOOL(info->blit_hw_CC),
-		     BOOL(info->blit_hw_A),
-		     BOOL(info->blit_sw),
-		     BOOL(info->blit_sw_CC),
-		     BOOL(info->blit_sw_A),
-		     BOOL(info->blit_fill),
-		     UINT2NUM(info->video_mem),
-		     Data_Wrap_Struct(cPixelFormat,0,0,info->vfmt)
-		     );
+  obj=rb_obj_alloc(cVideoInfo);
+  rb_iv_set(obj,"@hw_available",BOOL(info->hw_available));
+  rb_iv_set(obj,"@wm_available",BOOL(info->wm_available));
+  rb_iv_set(obj,"@blit_hw",BOOL(info->blit_hw));
+  rb_iv_set(obj,"@blit_hw_CC",BOOL(info->blit_hw_CC));
+  rb_iv_set(obj,"@blit_hw_A",BOOL(info->blit_hw_A));
+  rb_iv_set(obj,"@blit_sw",BOOL(info->blit_sw));
+  rb_iv_set(obj,"@blit_sw_CC",BOOL(info->blit_sw_CC));
+  rb_iv_set(obj,"@blit_sw_A",BOOL(info->blit_sw_A));
+  rb_iv_set(obj,"@blit_fill",BOOL(info->blit_fill));
+  rb_iv_set(obj,"@video_mem",UINT2NUM(info->video_mem));
+  rb_iv_set(obj,"@vfmt",Data_Wrap_Struct(cPixelFormat,0,0,info->vfmt));
+  return obj;
 }
+
 static VALUE sdl_warpMouse(VALUE mod,VALUE x,VALUE y)
 {
   SDL_WarpMouse( NUM2UINT(x),NUM2UINT(y) );
@@ -331,6 +333,19 @@ void init_video()
   rb_define_module_function(mSDL,"warpMouse",sdl_warpMouse,2);
   rb_define_module_function(mSDL,"setVideoMode",sdl_setVideoMode,4);
   rb_define_module_function(mSDL,"checkVideoMode",sdl_checkVideoMode,4);
+  cVideoInfo=rb_define_class_under(mSDL,"VideoInfo",rb_cObject);
+  rb_define_attr(cVideoInfo,"hw_available",1,0);
+  rb_define_attr(cVideoInfo,"wm_available",1,0);
+  rb_define_attr(cVideoInfo,"blit_hw",1,0);
+  rb_define_attr(cVideoInfo,"blit_hw_CC",1,0);
+  rb_define_attr(cVideoInfo,"blit_hw_A",1,0);
+  rb_define_attr(cVideoInfo,"blit_sw",1,0);
+  rb_define_attr(cVideoInfo,"blit_sw_CC",1,0);
+  rb_define_attr(cVideoInfo,"blit_sw_A",1,0);
+  rb_define_attr(cVideoInfo,"blit_fill",1,0);
+  rb_define_attr(cVideoInfo,"video_mem",1,0);
+  rb_define_attr(cVideoInfo,"vfmt",1,0);
+
   rb_define_module_function(mSDL,"videoInfo",sdl_getVideoInfo,0);
   
   cSurface = rb_define_class_under(mSDL,"Surface",rb_cObject);
