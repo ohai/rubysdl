@@ -33,5 +33,5 @@ void init_wm()
   rb_define_module_function(mWM,"caption",sdl_wm_getCaption,0);
   rb_define_module_function(mWM,"setCaption",sdl_wm_setCaption,2);
   rb_define_module_function(mWM,"icon=",sdl_wm_setIcon,1);
-  rb_define_module_function(mWM,"iconify",sdl_wm_iconifyWindow,1);
+  rb_define_module_function(mWM,"iconify",sdl_wm_iconifyWindow,0);
 }
