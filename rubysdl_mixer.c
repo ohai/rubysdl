@@ -23,9 +23,26 @@
 #include <SDL_mixer.h>
 
 static int mix_opened=0;
+static int mix_closed=0;
 
 static VALUE playing_wave = Qnil;
 static VALUE playing_music=Qnil;
+
+static void mix_FreeChunk(Mix_Chunk *chunk)
+{
+  if( ! mix_closed ){
+    printf("%d\n",mix_closed);
+    Mix_FreeChunk( chunk );
+  }
+}
+
+static void mix_FreeMusic(Mix_Music *music)
+{
+  if( !mix_closed ){
+    printf("%d\n",mix_closed);
+    Mix_FreeMusic( music );
+  }
+}
 
 static VALUE mix_openAudio(VALUE mod,VALUE frequency,VALUE format,
 			   VALUE channels,VALUE chunksize)
@@ -39,7 +56,7 @@ static VALUE mix_openAudio(VALUE mod,VALUE frequency,VALUE format,
     rb_raise(eSDLError,"Couldn't open audio: %s",SDL_GetError());
   }
 
-  
+  mix_opened = 1;
   return Qnil;
 }
 
@@ -96,7 +113,7 @@ static VALUE mix_loadWav(VALUE class,VALUE filename)
     rb_raise( eSDLError,"Couldn't load wave file %s: %s",
 	      STR2CSTR(filename),SDL_GetError() );
   }
-  return Data_Wrap_Struct(class,0,Mix_FreeChunk,wave);
+  return Data_Wrap_Struct(class,0,mix_FreeChunk,wave);
 }
 
 /* Volume setting functions and methods : volume in 0..128 */
@@ -194,7 +211,7 @@ static VALUE mix_loadMus(VALUE class,VALUE filename)
   if( music == NULL )
     rb_raise(eSDLError,
 	     "Couldn't load %s: %s",STR2CSTR(filename),SDL_GetError());
-  return Data_Wrap_Struct(class,0,Mix_FreeMusic,music);
+  return Data_Wrap_Struct(class,0,mix_FreeMusic,music);
 }
 static void defineConstForAudio()
 {
@@ -263,6 +280,7 @@ void quit_mixer()
 {
   if( mix_opened ){
     Mix_CloseAudio();
+    mix_closed = 1;
   }
 }
 #endif  /* HAVE_SDL_MIXER */
