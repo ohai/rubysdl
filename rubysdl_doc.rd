@@ -602,6 +602,18 @@ Object
         SDL::Event::APPINPUTFOCUS
         SDL::Event::APPACTIVE
 
+--- SDL::Event.enableUNICODE
+      イベント処理時にキー入力からUCSでの表現を生成する機能を有効にする。
+      デフォルトでは無効になっている。
+      SDLSKKの機能を利用するときにはこれを有効にする必要がある。
+      
+--- SDL::Event.disableUNICODE
+      イベント処理時にキー入力からUCSでの表現を生成する機能を無効にする。
+      
+--- SDL::Event.enableUNICODE?
+      イベント処理時にキー入力からUCSでの表現を生成する機能が有効であるか
+      どうかを返す。
+
 ==== メソッド
 
 --- SDL::Event#poll
@@ -724,6 +736,15 @@ Object
 --- SDL::Event2.appState
       ((<SDL::Event.appState>))と同じ。
 
+--- SDL::Event2.enableUNICODE
+      ((<SDL::Event.enableUNICODE>))と同じ
+      
+--- SDL::Event2.disableUNICODE
+      ((<SDL::Event2.disableUNICODE>))と同じ
+      
+--- SDL::Event2.enableUNICODE?
+      ((<SDL::Event.enableUNICODE?>))と同じ
+      
 ==== method
 
 なし。
