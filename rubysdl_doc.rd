@@ -653,6 +653,205 @@ Object
       MOUSEBUTTONDOWN,MOUSEBUTTONUPイベントにおいて、マウスボタンが
       押されたならtrue、離されたならfalseを返す。
 
+=== SDL::Event2
+イベントを取り扱うためのクラスその2。
+こちらのクラスのほうが((<SDL::Event>))より使いやすいでしょう。
+
+==== super class
+
+Object
+
+==== class method
+
+--- SDL::Event2.poll
+    現在イベントキュー内で処理待ちしているイベントがないかをしらべ、
+    ひとつでもあればそのイベントに対応するクラスのインスタンスを返す。
+    ひとつもなければnilを返す。
+    返すインスタンスに対応するクラスは以下の通り。
+      SDL::Event2::Active
+      SDL::Event2::KeyDown
+      SDL::Event2::KeyUp
+      SDL::Event2::MouseMotion
+      SDL::Event2::MouseButtonDown
+      SDL::Event2::MouseButtonUp
+      SDL::Event2::JoyAxis
+      SDL::Event2::JoyBall
+      SDL::Event2::JoyHat
+      SDL::Event2::JoyButtonUp
+      SDL::Event2::JoyButtonDown
+      SDL::Event2::Quit
+      SDL::Event2::SysWM
+      SDL::Event2::VideoResize
+    これらのクラスはすべてSDL::Event2のサブクラスである。
+    
+--- SDL::Event2.wait
+    次のイベントが来るまで待ち、来ればそのイベントに対応するクラスの
+    インスタンスを返す。
+
+--- SDL::Event2.push(event)
+      Not documented yet
+
+--- SDL::Event2.new
+      Not documented yet
+
+==== method
+
+なし。
+
+=== SDL::Event2のサブクラス
+SDL::Event2.poll,SDL::Event2.waitはSDL::Event2のサブクラスのインスタンスを返します。
+そのクラスは以下の通りである。
+
+==== SDL::Event2::Active
+ウィンドウ内のマウス/キーボードのフォーカスの出入りによって生じるイベント。
+===== メソッド
+--- SDL::Event2::Active#gain
+      フォーカスを得たならtrue、フォーカスを失ったならfalse。
+--- SDL::Event2::Active#state
+      イベントの種類を返す。
+        SDL::Event::APPMOUSEFOCUS マウスフォーカス
+        SDL::Event::APPINPUTFOCUS キーボードフォーカス
+        SDL::Event::APPACTIVE アイコン化/アイコン化解除
+
+==== SDL::Event2::KeyDown
+キーの押しさげで生じるイベント。
+===== メソッド
+--- SDL::Event2::KeyDown#press
+      つねにtrue
+--- SDL::Event2::KeyDown#sym
+      押したキーの種類。SDL::Key::ESCAPEなど。
+--- SDL::Event2::KeyDown#mod
+      ((<SDL::Key.modState>))と同じ。
+
+==== SDL::Event2::KeyUp
+キーを離したときに生じるイベント。
+--- SDL::Event2::KeyUp#press
+      つねにfalse
+--- SDL::Event2::KeyUp#sym
+      離されたキーの種類。SDL::Key::ESCAPEなど。
+--- SDL::Event2::KeyUp#mod
+      ((<SDL::Key.modState>))と同じ。
+
+==== SDL::Event2::MouseMotion
+マウスを動かしたときに生じるイベント。((<SDL::Mouse.warp>))でもこの
+イベントが生じる。
+===== メソッド
+--- SDL::Event2::MouseMotion#state
+      マウスのボタンの状態
+--- SDL::Event2::MouseMotion#x
+      マウスカーソルのx座標
+--- SDL::Event2::MouseMotion#y
+      マウスカーソルのy座標
+--- SDL::Event2::MouseMotion#xrel
+      マウスカーソルのx座標の変位
+--- SDL::Event2::MouseMotion#yrel
+      マウスカーソルのy座標の変位
+
+==== SDL::Event2::MouseButtonDown
+マウスのボタンを押し下げたときに生じるイベント。
+===== メソッド
+--- SDL::Event2::MouseButtonDown#button
+      どのボタンを押したのかを返す。
+        SDL::Mouse::BUTTON_LEFT
+        SDL::Mouse::BUTTON_MIDDLE
+        SDL::Mouse::BUTTON_RIGHT
+
+--- SDL::Event2::MouseButtonDown#press
+      常にtrue
+--- SDL::Event2::MouseButtonDown#x
+      マウスカーソルのx座標
+--- SDL::Event2::MouseButtonDown#y
+      マウスカーソルのy座標
+
+==== SDL::Event2::MouseButtonUp
+マウスのボタンを離したときに生じるイベント。
+===== メソッド
+--- SDL::Event2::MouseButtonUp#button
+      どのボタンを離したのかを返す。
+        SDL::Mouse::BUTTON_LEFT
+        SDL::Mouse::BUTTON_MIDDLE
+        SDL::Mouse::BUTTON_RIGHT
+
+--- SDL::Event2::MouseButtonUp#press
+      常にfalse
+--- SDL::Event2::MouseButtonUp#x
+      マウスカーソルのx座標
+--- SDL::Event2::MouseButtonUp#y
+      マウスカーソルのy座標
+
+==== SDL::Event2::JoyAxis
+アナログスティックを動かしたときに生じるイベント。
+((<SDL::Joystick>))の内容も参考になると思われる。
+===== メソッド
+--- SDL::Event2::JoyAxis#which
+      どのジョイスティックのものなのかを示す。
+--- SDL::Event2::JoyAxis#axis
+      どのアナログスティックのものなのかを示す。
+--- SDL::Event2::JoyAxis#value
+      アナログスティックの変量を示す(-32768 〜  32767)。
+==== SDL::Event2::JoyBall
+トラックボールを動かしたときに生じるイベント。
+===== メソッド
+--- SDL::Event2::JoyBall#which
+      どのジョイスティックのものなのかを示す。
+--- SDL::Event2::JoyBall#ball
+      どのボールのものなのかを示す。
+--- SDL::Event2::JoyBall#xrel
+--- SDL::Event2::JoyBall#yrel
+      トラックボールのx/y軸の変量
+
+==== SDL::Event2::JoyHat
+十字キーの入力があったときに生じるイベント。
+--- SDL::Event2::JoyHat#which
+      どのジョイスティックのものなのかを示す。
+--- SDL::Event2::JoyHat#hat
+      どの十字キーのものなのかを示す。      
+--- SDL::Event2::JoyHat#value
+      キーの入力状態。内容は以下の通り。
+        SDL::Joystick::HAT_CENTERED
+        SDL::Joystick::HAT_UP
+        SDL::Joystick::HAT_RIGHT
+        SDL::Joystick::HAT_DOWN
+        SDL::Joystick::HAT_LEFT
+        SDL::Joystick::HAT_RIGHTUP
+        SDL::Joystick::HAT_RIGHTDOWN
+        SDL::Joystick::HAT_LEFTUP
+        SDL::Joystick::HAT_LEFTDOWN
+
+==== SDL::Event2::JoyButtonUp
+ジョイスティックのボタンが離されたときに生じるイベント。n
+--- SDL::Event2::JoyButtonUp#which
+      どのジョイスティックのものなのかを示す。
+--- SDL::Event2::JoyButtonUp#button
+      どのボタンのものなのかを示す。
+--- SDL::Event2::JoyButtonUp#press
+       常にfalse
+
+==== SDL::Event2::JoyButtonDown
+ジョイスティックのボタンが押し下げられたときに生じるイベント。
+--- SDL::Event2::JoyButtonDown#which
+      どのジョイスティックのものなのかを示す。
+--- SDL::Event2::JoyButtonDown#button
+      どのボタンのものなのかを示す。
+--- SDL::Event2::JoyButtonDown#press
+       常にtrue
+
+==== SDL::Event2::Quit
+アプリケーションを終了しようとしたとき、つまりウィンドウの終了ボタンを
+押したときなどに生じるイベント。
+==== SDL::Event2::SysWM
+プラットフォームに依存したウィンドウ関係のイベント。
+このメソッドからその情報を取りだす手段は今のところ用意されていない。
+==== SDL::Event2::VideoResize
+ウィンドウの大きさを変えたときに生じるイベント。
+((<SDL.setVideoMode>))のflagsにSDL::RESIZABLEを与えたときのみこのイベント
+が生じる。
+===== メソッド
+--- SDL::Event2::VideoResize#w
+      変更後のウィンドウ幅
+--- SDL::Event2::VideoResize#h
+      変更後のウィンドウの高さ。
+
 === SDL::Key
 
 キーボードのキーに対応する定数を定義しているモジュール

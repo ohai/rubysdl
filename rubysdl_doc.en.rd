@@ -628,6 +628,214 @@ Object
       Returns true when this mouse event is SDL::Event::MOUSEBUTTONDOWN,
       otherwise returns false.
 
+=== SDL::Event2
+Another event handling class.
+
+==== super class
+
+Object
+
+==== class method
+
+--- SDL::Event2.poll
+    Polls for currently pending events, and returns the instance represents
+    that event.Returns nil if there is no pending event.
+    The class of that instance is following.
+      SDL::Event2::Active
+      SDL::Event2::KeyDown
+      SDL::Event2::KeyUp
+      SDL::Event2::MouseMotion
+      SDL::Event2::MouseButtonDown
+      SDL::Event2::MouseButtonUp
+      SDL::Event2::JoyAxis
+      SDL::Event2::JoyBall
+      SDL::Event2::JoyHat
+      SDL::Event2::JoyButtonUp
+      SDL::Event2::JoyButtonDown
+      SDL::Event2::Quit
+      SDL::Event2::SysWM
+      SDL::Event2::VideoResize
+    All of these classes are subclass of SDL::Event2.
+
+--- SDL::Event2.wait
+    Waits indefinitely for the next available event,returning the instance
+    represents that event.
+
+--- SDL::Event2.push(event)
+      Not documented yet.
+
+--- SDL::Event2.new
+      Not documented yet.
+
+==== method
+
+Nothing
+
+=== subclasses of SDL::Event2
+SDL::Event2.poll and SDL::Event2.wait return the instance of
+the subclasses of SDL::Event2.
+These classes and  following.
+
+==== SDL::Event2::Active
+This event occurs when mouse/keyboard focus gains/loss.
+===== Method
+--- SDL::Event2::Active#gain
+      Returns true focus gains, otherwise returns false
+--- SDL::Event2::Active#state
+      Returns the kind of event.
+        SDL::Event::APPMOUSEFOCUS 
+        SDL::Event::APPINPUTFOCUS
+        SDL::Event::APPACTIVE   iconify or restored.
+
+==== SDL::Event2::KeyDown
+This event occurs when a key is pressed.
+===== Method
+--- SDL::Event2::KeyDown#press
+      Returns true.
+--- SDL::Event2::KeyDown#sym
+      Returns the pressed key such as SDL::Key::ESCAPE.
+--- SDL::Event2::KeyDown#mod
+      Same as ((<SDL::Key.modState>)).
+
+==== SDL::Event2::KeyUp
+This event occurs when a key is released.
+===== Method
+--- SDL::Event2::KeyUp#press
+      Returns false.
+--- SDL::Event2::KeyUp#sym
+      Returns the released key such as SDL::Key::ESCAPE.
+--- SDL::Event2::KeyUp#mod
+      Same as ((<SDL::Key.modState>)).
+
+==== SDL::Event2::MouseMotion
+This event occurs when mouse is moved.
+===== Method
+--- SDL::Event2::MouseMotion#state
+      Returns the button state.
+--- SDL::Event2::MouseMotion#x
+      Returns x of mouse cursor.
+--- SDL::Event2::MouseMotion#y
+      Returns y of mouse cursor.
+--- SDL::Event2::MouseMotion#xrel
+      Returns relative x coordinates.
+--- SDL::Event2::MouseMotion#yrel
+      Returns relative y coordinates.
+
+==== SDL::Event2::MouseButtonDown
+This event occurs when a mouse button is pressed.
+===== Method
+--- SDL::Event2::MouseButtonDown#button
+      Returns the which button is pressed.
+        SDL::Mouse::BUTTON_LEFT
+        SDL::Mouse::BUTTON_MIDDLE
+        SDL::Mouse::BUTTON_RIGHT
+
+--- SDL::Event2::MouseButtonDown#press
+      Returns true.
+--- SDL::Event2::MouseButtonDown#x
+      Returns x of mouse cursor.
+--- SDL::Event2::MouseButtonDown#y
+      Returns y of mouse cursor.
+
+==== SDL::Event2::MouseButtonUp
+This event occurs when a mouse button is pressed.
+===== Method
+--- SDL::Event2::MouseButtonUp#button
+      Returns the which button is released.
+        SDL::Mouse::BUTTON_LEFT
+        SDL::Mouse::BUTTON_MIDDLE
+        SDL::Mouse::BUTTON_RIGHT
+
+--- SDL::Event2::MouseButtonUp#press
+      Returns false.
+--- SDL::Event2::MouseButtonUp#x
+      Returns x of mouse cursor.
+--- SDL::Event2::MouseButtonUp#y
+      Returns y of mouse cursor.
+
+==== SDL::Event2::JoyAxis
+This event occurs when axis of joystick is moved.
+===== Method
+--- SDL::Event2::JoyAxis#which
+      Returns joystick device index.
+--- SDL::Event2::JoyAxis#axis
+      Returns joystick axis index.
+--- SDL::Event2::JoyAxis#value
+      Returns axis value(from -32768 to 32767).
+
+==== SDL::Event2::JoyBall
+This event occurs when joystick trackball moves.
+===== Method
+--- SDL::Event2::JoyBall#which
+      Returns joystick device index.
+--- SDL::Event2::JoyBall#ball
+      Returns joystick trackball index.
+--- SDL::Event2::JoyBall#xrel
+      Returns the relative motion in the X direction.
+--- SDL::Event2::JoyBall#yrel
+      Returns the relative motion in the Y direction.
+
+==== SDL::Event2::JoyHat
+This event occurs when joystick hat moves.
+===== Method
+--- SDL::Event2::JoyHat#which
+      Returns joystick device index.
+--- SDL::Event2::JoyHat#hat
+      Returns joystick hat index.
+--- SDL::Event2::JoyHat#value
+      Returns hat position.
+      That values  is a logically OR'd combination
+      of the following values.
+        SDL::Joystick::HAT_CENTERED
+        SDL::Joystick::HAT_UP
+        SDL::Joystick::HAT_RIGHT
+        SDL::Joystick::HAT_DOWN
+        SDL::Joystick::HAT_LEFT
+
+      The following defines are also provided
+        SDL::Joystick::HAT_RIGHTUP
+        SDL::Joystick::HAT_RIGHTDOWN
+        SDL::Joystick::HAT_LEFTUP
+        SDL::Joystick::HAT_LEFTDOWN
+
+==== SDL::Event2::JoyButtonUp
+This event occurs when joystick button is released.
+===== Method
+--- SDL::Event2::JoyButtonUp#which
+      Returns joystick device index.
+--- SDL::Event2::JoyButtonUp#button
+      Returns joystick button index.
+--- SDL::Event2::JoyButtonUp#press
+      Returns false.
+
+==== SDL::Event2::JoyButtonDown
+This event occurs when joysick button is pressed.
+===== Method
+--- SDL::Event2::JoyButtonDown#which
+      Returns joystick device index.
+--- SDL::Event2::JoyButtonDown#button
+      Returns joystick button index.
+--- SDL::Event2::JoyButtonDown#press
+      Returns true.
+
+==== SDL::Event2::Quit
+This event occurs when quit requested, such as pressed exit button.
+
+==== SDL::Event2::SysWM
+This event occurs when platform-dependent window manager occurs.
+You can't get more information.
+
+==== SDL::Event2::VideoResize
+This event occurs when window are resized.
+You will get this event only when you call ((<SDL.setVideoMode>)) with
+SDL::RESIZABLE.
+
+===== Method
+--- SDL::Event2::VideoResize#w
+      Returns new width of window.
+--- SDL::Event2::VideoResize#h
+      Returns new height of window.
+
 === SDL::Key
 
 The module defines key constants.
