@@ -95,7 +95,14 @@ some functions need SGE or SDL_image
       Returns nil if there are no available dimensions.
       Returns true if any dimension is okay.
       Otherwise returns list of available dimensions in array.
-      
+
+--- setGamma(redgamma,greengamma,bluegamma)
+      Sets the "gamma function" for the display of each color component.
+      Gamma controls the brightness/contrast of colors displayed on
+      the screen. A gamma value of 1.0 is identity
+      (i.e., no adjustment is made).
+
+
 --- autoLock
       Needs SGE
 

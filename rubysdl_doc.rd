@@ -111,7 +111,12 @@ bpp=bit per pixelである。
       の横方向、縦方向の解像度の値をおさめた配列が1個以上入っている配列を返す。
       
       引数のflagは、setVideoModeで使用するものと同じである。
-      
+
+--- setGamma(redgamma,greengamma,bluegamma)
+      ガンマを設定します。
+      ガンマはスクリーン上での色の明るさやコントラストを調節します。
+      r,g,bそれぞれのガンマ値は1.0で無調整と同等になります。
+
 --- autoLock
       SGEが必要
 
