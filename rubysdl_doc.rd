@@ -118,10 +118,22 @@ bpp=bit per pixelである。
       
       引数のflagは、((<SDL.setVideoMode>))で使用するものと同じである。
 
+--- SDL.videoDriverName
+      初期化したビデオドライバーに対応する文字列を返す( x11 や windib など)。
+      初期化していなかったりしたら例外を発生させる。
+
 --- SDL.setGamma(redgamma,greengamma,bluegamma)
       ガンマを設定します。
       ガンマはスクリーン上での色の明るさやコントラストを調節します。
       r,g,bそれぞれのガンマ値は1.0で無調整と同等になります。
+
+--- SDL.getGammaRamp
+      ガンマ変換用のテーブルを返す。
+      その内容はR,G,Bそれぞれの256個の整数をもつ配列の配列である。
+
+--- SDL.setGammaRamp(table)
+      ガンマ変換用のテーブルを設定する。
+      テーブルの形式は((<SDL.getGammaRamp>))で得られるものと同じ。
 
 --- SDL.autoLock
       SGEが必要
@@ -280,6 +292,9 @@ Object
 
 ==== メソッド
 
+--- SDL::Surface#saveBMP(filename)
+      サーフェスの内容を指定したBMPファイルにセーブする。
+
 --- SDL::Surface#displayFormat
       selfをビデオフレームバッファのピクセルフォーマットと色に合わせた
       新しいサーフェスにコピーして返す。
@@ -288,6 +303,10 @@ Object
       カラーキーとα値に対するblitのアクセラレーションを利用したいのならば、
       この関数の呼び出しに先立ってカラーキーとα値の設定を行っておく
       必要がある。
+
+--- SDL::Surface#displayFormatAlpha
+      ビットごとのα値が有効であることを除いて
+      ((<SDL::Surface#displayFormat>))と同じ。
 
 --- SDL::Surface#setColorKey(flag,key)
       blit可能なサーフェスに対してカラーキー(透明なピクセル)を設定する。
@@ -308,7 +327,11 @@ Object
       クリッピングをする長方形を指定する。
       ((<SDL.blitSurface>)),((<SDL::Surface#put>))等でこのインスタンスに
       描画しようとしたとき、これで指定した長方形内部のみで描画される。
-      
+
+--- SDL::Surface#getClipRect
+      クリッピングの設定されている範囲を返す。
+      返り値はx,y,w,hの4つの値を持つ配列である。
+
 --- SDL::Surface#setAlpha(flag,alpha)
       アルファの設定をする。
       flagにSDL::SRCALPHAを設定することでアルファが有効になる。

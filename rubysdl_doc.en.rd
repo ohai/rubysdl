@@ -101,12 +101,25 @@ some functions need SGE or SDL_image
       Returns true if any dimension is okay.
       Otherwise returns list of available dimensions in array.
 
+--- SDL.videoDriverName
+      Returns the name of initialized video driver like "x11" or "windib".
+      Raise exeption if video have not been initialized.
+
 --- SDL.setGamma(redgamma,greengamma,bluegamma)
       Sets the "gamma function" for the display of each color component.
       Gamma controls the brightness/contrast of colors displayed on
       the screen. A gamma value of 1.0 is identity
       (i.e., no adjustment is made).
 
+--- SDL.getGammaRamp
+      Returns the gamma translation lookup tables currently used
+      by the display. Return value is array that has r, g, b table.
+      Each table is array that has 256 integer.
+
+--- SDL.setGammaRamp(table)
+      Sets the gamma lookup tables for the display for each color component.
+      table should be an array like what you can get
+      with ((<SDL.getGammaRamp>)).
 
 --- SDL.autoLock
       Needs SGE
@@ -266,6 +279,9 @@ Object
 
 ==== method
 
+--- SDL::Surface#saveBMP(filename)
+      Saves the surface as a Windows BMP file named file.
+
 --- SDL::Surface#displayFormat
       This method copies self to a new surface of the pixel
       format and colors of the video framebuffer, suitable for fast blitting
@@ -274,6 +290,10 @@ Object
       If you want to take advantage of hardware colorkey or alpha blit
       acceleration, you should set the colorkey and alpha value before calling
       this method.
+
+--- SDL::Surface#displayFormatAlpha
+      Same as ((<SDL::Surface#displayFormat>)), except respecting
+      alpha value per pixel.
 
 --- SDL::Surface#setColorKey(flag,key)
       Sets the color key (transparent pixel) in a blittable surface and enables
@@ -295,6 +315,9 @@ Object
       surface so that the clip rectangle for a surface can never fall
       outside the edges of the surface.
 
+--- SDL::Surface#getClipRect
+      Returns the clipping rectangle for this surface.
+      Return value is an array including x, y, r, w value.
 
 --- SDL::Surface#setAlpha(flag,alpha)
       SDL_SetAlpha is used for setting the per-surface alpha and/or enabling
