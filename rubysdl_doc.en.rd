@@ -20,7 +20,7 @@ In this module number starts 0,not 1.
 * ((<Mixer::Wave>))
 * ((<WM>)) (module)
 * ((<CD>))
-* ((<JoyStick>))
+* ((<Joystick>))
 * ((<TTF>))
 
 == Error
@@ -153,7 +153,7 @@ This class have image.
 
 Object
 
-==== 
+==== class method
 
 --- Surface.new(flag,w,h,format)
       Not documented yet
