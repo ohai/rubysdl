@@ -63,7 +63,7 @@ static VALUE sdl_eventKeyPressed(VALUE obj)
   SDL_Event *event;
   
   Data_Get_Struct(obj,SDL_Event,event);
-  eventCheck((event->type == SDL_KEYDOWN)||(event->type == SDL_KEYDOWN),"key");
+  eventCheck((event->type == SDL_KEYDOWN)||(event->type == SDL_KEYUP),"key");
   if( event->key.state==SDL_PRESSED )
     return Qtrue;
   else
@@ -74,7 +74,7 @@ static VALUE sdl_eventKeyMod(VALUE obj)
   SDL_Event *event;
   
   Data_Get_Struct(obj,SDL_Event,event);
-  eventCheck((event->type == SDL_KEYDOWN)||(event->type == SDL_KEYDOWN),"key");
+  eventCheck((event->type == SDL_KEYDOWN)||(event->type == SDL_KEYUP),"key");
   return INT2NUM(event->key.keysym.mod);
 }
 static VALUE sdl_eventKeySym(VALUE obj)
@@ -82,7 +82,7 @@ static VALUE sdl_eventKeySym(VALUE obj)
   SDL_Event *event;
   
   Data_Get_Struct(obj,SDL_Event,event);
-  eventCheck((event->type == SDL_KEYDOWN)||(event->type == SDL_KEYDOWN),"key");
+  eventCheck((event->type == SDL_KEYDOWN)||(event->type == SDL_KEYUP),"key");
   return INT2FIX(event->key.keysym.sym);
 }
 
