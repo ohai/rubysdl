@@ -1709,6 +1709,17 @@ SDLSKKライブラリが必要である。
 
 これに関するすべてのクラスはSDL::SKKの下にある。
 
+=== モジュール関数
+
+--- SDL::SKK.encoding=(encoding)
+      利用するエンコーディングを指定します。以下の3つが指定できます。
+      * SDL::SKK::EUCJP
+      * SDL::SKK::UTF8
+      * SDL::SKK::SJIS
+
+--- SDL::SKK.encoding
+      現在設定しているエンコーディングを返します。
+      
 === SDL::SKK::Context
 
 入力の状態を保持するクラス。

@@ -1696,6 +1696,17 @@ Object
       
 Needs SDLSKK library.
 
+=== module function
+
+--- SDL::SKK.encoding=(encoding)
+      Set encoding of SDLSKK.
+      * SDL::SKK::EUCJP
+      * SDL::SKK::UTF8
+      * SDL::SKK::SJIS
+
+--- SDL::SKK.encoding
+      Return encoding.
+      
 === SDL::SKK::Context
 
 This class represents the state of input.
