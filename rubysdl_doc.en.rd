@@ -682,6 +682,7 @@ nothing
 === SDL::Event
 
 The class handling event.
+You had better use ((<SDL::Event2>)) instead of this class.
 
 ==== super class
 
@@ -803,6 +804,7 @@ Object
 
 === SDL::Event2
 Another event handling class.
+I think ((<SDL::Event2>)) is easier to use than ((<SDL::Eevnt>))
 
 ==== super class
 
