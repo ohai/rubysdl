@@ -9,7 +9,6 @@ rubysdl.h
 rubysdl_const_list.txt
 rubysdl_doc.rd
 rubysdl_doc.en.rd
-event2_doc.rd
 rubysdl_event.c
 rubysdl_event_key.c
 rubysdl_main.c
