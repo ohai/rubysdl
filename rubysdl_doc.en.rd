@@ -1554,8 +1554,14 @@ Object
 
 Needs SMPEG library.
 
+If you will play mpeg with sound, you should call ((<SDL.init>)) with
+SDL::INIT_AUDIO, and call ((<SDL::Mixer.open>)).
+
 Don't touch the destination surface while playing mpeg, because smpeg uses
 native thread.
+
+Don't play sound with ((<SDL::Mixer>)) when playing mpeg, because smpeg
+hooks SDL_Mixer's playback functions.
 
 === SDL::MPEG
 
