@@ -4,6 +4,7 @@ README.en
 LICENSE
 depend
 extconf.rb
+lib/rubysdl_aliases.rb
 lib/sdl.rb
 rubysdl.h
 rubysdl_const_list.txt
