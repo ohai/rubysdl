@@ -708,7 +708,7 @@ SDL::Event2.poll,SDL::Event2.waitはSDL::Event2のサブクラスのインスタンスを返しま
 
 ==== SDL::Event2::Active
 ウィンドウ内のマウス/キーボードのフォーカスの出入りによって生じるイベント。
-===== メソッド
++ メソッド
 --- SDL::Event2::Active#gain
       フォーカスを得たならtrue、フォーカスを失ったならfalse。
 --- SDL::Event2::Active#state
@@ -719,7 +719,7 @@ SDL::Event2.poll,SDL::Event2.waitはSDL::Event2のサブクラスのインスタンスを返しま
 
 ==== SDL::Event2::KeyDown
 キーの押しさげで生じるイベント。
-===== メソッド
++ メソッド
 --- SDL::Event2::KeyDown#press
       つねにtrue
 --- SDL::Event2::KeyDown#sym
@@ -739,7 +739,7 @@ SDL::Event2.poll,SDL::Event2.waitはSDL::Event2のサブクラスのインスタンスを返しま
 ==== SDL::Event2::MouseMotion
 マウスを動かしたときに生じるイベント。((<SDL::Mouse.warp>))でもこの
 イベントが生じる。
-===== メソッド
++ メソッド
 --- SDL::Event2::MouseMotion#state
       マウスのボタンの状態
 --- SDL::Event2::MouseMotion#x
@@ -753,7 +753,7 @@ SDL::Event2.poll,SDL::Event2.waitはSDL::Event2のサブクラスのインスタンスを返しま
 
 ==== SDL::Event2::MouseButtonDown
 マウスのボタンを押し下げたときに生じるイベント。
-===== メソッド
++ メソッド
 --- SDL::Event2::MouseButtonDown#button
       どのボタンを押したのかを返す。
         SDL::Mouse::BUTTON_LEFT
@@ -769,7 +769,7 @@ SDL::Event2.poll,SDL::Event2.waitはSDL::Event2のサブクラスのインスタンスを返しま
 
 ==== SDL::Event2::MouseButtonUp
 マウスのボタンを離したときに生じるイベント。
-===== メソッド
++ メソッド
 --- SDL::Event2::MouseButtonUp#button
       どのボタンを離したのかを返す。
         SDL::Mouse::BUTTON_LEFT
@@ -786,7 +786,7 @@ SDL::Event2.poll,SDL::Event2.waitはSDL::Event2のサブクラスのインスタンスを返しま
 ==== SDL::Event2::JoyAxis
 アナログスティックを動かしたときに生じるイベント。
 ((<SDL::Joystick>))の内容も参考になると思われる。
-===== メソッド
++ メソッド
 --- SDL::Event2::JoyAxis#which
       どのジョイスティックのものなのかを示す。
 --- SDL::Event2::JoyAxis#axis
@@ -795,7 +795,7 @@ SDL::Event2.poll,SDL::Event2.waitはSDL::Event2のサブクラスのインスタンスを返しま
       アナログスティックの変量を示す(-32768 〜  32767)。
 ==== SDL::Event2::JoyBall
 トラックボールを動かしたときに生じるイベント。
-===== メソッド
++ メソッド
 --- SDL::Event2::JoyBall#which
       どのジョイスティックのものなのかを示す。
 --- SDL::Event2::JoyBall#ball
@@ -850,7 +850,7 @@ SDL::Event2.poll,SDL::Event2.waitはSDL::Event2のサブクラスのインスタンスを返しま
 ウィンドウの大きさを変えたときに生じるイベント。
 ((<SDL.setVideoMode>))のflagsにSDL::RESIZABLEを与えたときのみこのイベント
 が生じる。
-===== メソッド
++ メソッド
 --- SDL::Event2::VideoResize#w
       変更後のウィンドウ幅
 --- SDL::Event2::VideoResize#h

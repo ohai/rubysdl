@@ -447,7 +447,7 @@ Object
         [ [r0,g0,b0],[r1,g1,b1], ... ,[r255,g255,b255] ]
       Returns nil if the surface have no palette.
 
-=== Screen
+=== SDL::Screen
 
 SDL display the image that the instance of "Screen" have.
 Only ((<SDL.setVideoMode>)) makes this object.
