@@ -22,7 +22,10 @@
 #include <sdlskk.h>
 #include <SDL_ttf.h>
 
-static VALUE skk_Context_new(VALUE class,VALUE dict,VALUE rule_table)
+typedef SDL_Surface* (*Renderer)(SDLSKK_Context*,TTF_Font*,SDL_Color);
+
+static VALUE skk_Context_new(VALUE class,VALUE dict,VALUE rule_table,
+			     VALUE use_minibuffer )
 {
   SDLSKK_Context* c_context;
   SDLSKK_RomKanaRuleTable* c_table;
@@ -37,7 +40,7 @@ static VALUE skk_Context_new(VALUE class,VALUE dict,VALUE rule_table)
   Data_Get_Struct(dict,SDLSKK_Dictionary,c_dict);
   Data_Get_Struct(rule_table,SDLSKK_RomKanaRuleTable,c_table);
 
-  c_context = SDLSKK_Context_new( c_dict, c_table );
+  c_context = SDLSKK_Context_new( c_dict, c_table, RTEST(use_minibuffer) );
   if( c_context == NULL )
     rb_raise(eSDLError,"Couldn't create Context");
 
@@ -92,8 +95,8 @@ static VALUE skk_Context_get_str(VALUE obj)
   return rb_str_new2(cstr);
 }
 
-static VALUE skk_Context_render_str(VALUE obj,VALUE font,VALUE r,VALUE g,
-				    VALUE b)
+static VALUE render_str(VALUE obj,VALUE font,VALUE r,VALUE g,VALUE b,
+			Renderer func)
 {
   SDLSKK_Context* context;
   SDL_Surface* surface;
@@ -110,12 +113,41 @@ static VALUE skk_Context_render_str(VALUE obj,VALUE font,VALUE r,VALUE g,
   Data_Get_Struct(obj,SDLSKK_Context,context);
   Data_Get_Struct(font,TTF_Font,ttf_font);
   
-  surface = SDLSKK_Context_render_display_str(context,ttf_font,color);
+  surface = func(context,ttf_font,color);
 
   if( surface == NULL )
-    rb_raise(eSDLError,"Couldn't render string" );
+    return Qnil;
 
   return Data_Wrap_Struct(cSurface,0,SDL_FreeSurface,surface);  
+}
+
+static VALUE skk_Context_render_str(VALUE obj,VALUE font,VALUE r,VALUE g,
+				    VALUE b)
+{
+  return render_str(obj,font,r,g,b,SDLSKK_Context_render_display_str);
+}
+
+static VALUE skk_Context_render_minibuffer_str(VALUE obj,VALUE font,VALUE r,
+						VALUE g,VALUE b)
+{
+  return render_str(obj,font,r,g,b,SDLSKK_Context_render_minibuffer_str);
+}
+
+static VALUE skk_Context_get_basic_mode(VALUE obj)
+{
+  SDLSKK_Context* context;
+  
+  Data_Get_Struct(obj,SDLSKK_Context,context);
+  return BOOL(SDLSKK_Context_get_basic_mode(context));
+}
+
+static VALUE skk_Context_clear(VALUE obj)
+{
+  SDLSKK_Context* context;
+  
+  Data_Get_Struct(obj,SDLSKK_Context,context);
+  SDLSKK_Context_clear(context);
+  return Qnil;
 }
 
 static VALUE skk_Dictionary_new(VALUE class)
@@ -173,10 +205,13 @@ void init_sdlskk(void)
   cRomKanaRuleTable = rb_define_class_under(mSDLSKK,"RomKanaRuleTable",
 					    rb_cObject);
 
-  rb_define_singleton_method(cContext,"new",skk_Context_new,2);
+  rb_define_singleton_method(cContext,"new",skk_Context_new,3);
   rb_define_method(cContext,"input",skk_Context_input_event,1);
   rb_define_method(cContext,"str",skk_Context_get_str,0);
   rb_define_method(cContext,"render_str",skk_Context_render_str,4);
+  rb_define_method(cContext,"render_minibuffer_str",skk_Context_render_minibuffer_str,4);
+  rb_define_method(cContext,"get_basic_mode",skk_Context_get_basic_mode,0);
+  rb_define_method(cContext,"clear",skk_Context_clear,0);
   
   rb_define_singleton_method(cDictionary,"new",skk_Dictionary_new,0);
   rb_define_method(cDictionary,"load",skk_Dict_load,2);
