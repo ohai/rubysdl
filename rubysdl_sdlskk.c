@@ -24,6 +24,28 @@
 
 typedef SDL_Surface* (*Renderer)(SDLSKK_Context*,TTF_Font*,SDL_Color);
 
+static void skk_error_handler(SDLSKK_Error err)
+{
+  switch( err ){
+  case SDLSKK_NOERROR:
+    return;
+  case SDLSKK_MEMERROR:
+    rb_fatal("SDLSKK: memory allocation error");
+  }
+}
+
+static VALUE skk_set_encoding(VALUE mod,VALUE encoding)
+{
+  SDLSKK_set_encoding( NUM2INT(encoding) );
+  return Qnil;
+}
+
+static VALUE skk_get_encoding(VALUE mod)
+{
+  return INT2FIX(SDLSKK_get_encoding());
+}
+
+
 static VALUE skk_Context_new(VALUE class,VALUE dict,VALUE rule_table,
 			     VALUE use_minibuffer )
 {
@@ -197,6 +219,13 @@ static VALUE skk_RomKanaRuleTable_new(VALUE class,VALUE table_file)
   return Data_Wrap_Struct(class,0,SDLSKK_RomKanaRuleTable_delete,rule_table);
 }
 
+static void defineConstForSDLSKK(void)
+{
+  rb_define_const(mSDLSKK,"EUCJP",INT2NUM(SDLSKK_EUCJP));
+  rb_define_const(mSDLSKK,"UTF8",INT2NUM(SDLSKK_UTF8));
+  rb_define_const(mSDLSKK,"SJIS",INT2NUM(SDLSKK_SJIS));
+}
+
 void init_sdlskk(void)
 {
   mSDLSKK = rb_define_module_under(mSDL,"SKK");
@@ -205,6 +234,9 @@ void init_sdlskk(void)
   cRomKanaRuleTable = rb_define_class_under(mSDLSKK,"RomKanaRuleTable",
 					    rb_cObject);
 
+  rb_define_module_function(mSDLSKK,"encoding=",skk_set_encoding,1);
+  rb_define_module_function(mSDLSKK,"encoding",skk_get_encoding,0);
+  
   rb_define_singleton_method(cContext,"new",skk_Context_new,3);
   rb_define_method(cContext,"input",skk_Context_input_event,1);
   rb_define_method(cContext,"str",skk_Context_get_str,0);
@@ -218,6 +250,10 @@ void init_sdlskk(void)
   rb_define_method(cDictionary,"save",skk_Dict_save,1);
   
   rb_define_singleton_method(cRomKanaRuleTable,"new",
-			     skk_RomKanaRuleTable_new,1);  
+			     skk_RomKanaRuleTable_new,1);
+
+  SDLSKK_set_error_func(skk_error_handler);
+  
+  defineConstForSDLSKK();
 }
 #endif /* HAVE_SDLSKK */
