@@ -38,6 +38,7 @@ module SDL
     alias set_clip_rect setClipRect
     alias get_clip_rect getClipRect
     alias set_alpha setAlpha
+    alias save_bmp saveBMP
 #   alias h h
 #   alias w w
 #   alias flags flags
@@ -299,7 +300,7 @@ module SDL
       alias set_volume setVolume
       alias set_display setDisplay
       alias set_loop setLoop
-#     alias scaleXY scaleXY
+      alias scale_xy scaleXY
 #     alias scale scale
 #     alias move move
       alias set_display_region setDisplayRegion
