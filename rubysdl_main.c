@@ -42,7 +42,6 @@ static void defineConst()
 }
 
 
-
 void Init_rubysdl()
 {
   mSDL = rb_define_module("SDL");
@@ -65,6 +64,9 @@ void Init_rubysdl()
   init_mouse();
   init_time();
   init_wm();
+#ifdef HAVE_SDL_TTF
+  init_ttf();
+#endif
 #ifdef HAVE_SDL_MIXER
   init_mixer();
 #endif
