@@ -48,7 +48,7 @@ static VALUE sdl_putPixel(VALUE obj,VALUE x,VALUE y,VALUE color)
 {
   SDL_Surface *surface;
   Data_Get_Struct(obj,SDL_Surface,surface);
-  sge_PutPixel(surface,NUM2INT(x),NUM2INT(y),NUM2UINT(color));
+  sge_PutPixel(surface,NUM2INT(x),NUM2INT(y),VALUE2COLOR(color,surface->format));
   return Qnil;
 }
 static VALUE sdl_drawLine(VALUE obj,VALUE x1,VALUE y1,VALUE x2,VALUE y2,VALUE color)
@@ -56,7 +56,7 @@ static VALUE sdl_drawLine(VALUE obj,VALUE x1,VALUE y1,VALUE x2,VALUE y2,VALUE co
   SDL_Surface *surface;
   Data_Get_Struct(obj,SDL_Surface,surface);
   sge_Line( surface,NUM2INT(x1),NUM2INT(y1),NUM2INT(x2),NUM2INT(x2),
-	    NUM2UINT(color) );
+	    VALUE2COLOR(color,surface->format) );
   return Qnil;
 }
 static VALUE sdl_drawRect(VALUE obj,VALUE x,VALUE y,VALUE w,VALUE h,VALUE color)
@@ -64,21 +64,23 @@ static VALUE sdl_drawRect(VALUE obj,VALUE x,VALUE y,VALUE w,VALUE h,VALUE color)
   SDL_Surface *surface;
   Data_Get_Struct(obj,SDL_Surface,surface);
   sge_Rect( surface,NUM2INT(x),NUM2INT(y),NUM2INT(x)+NUM2INT(w),
-	    NUM2INT(y)+NUM2INT(h),NUM2UINT(color) );
+	    NUM2INT(y)+NUM2INT(h),VALUE2COLOR(color,surface->format) );
   return Qnil;
 }
 static VALUE sdl_drawCircle(VALUE obj,VALUE x,VALUE y,VALUE r,VALUE color)
 {
   SDL_Surface *surface;
   Data_Get_Struct(obj,SDL_Surface,surface);
-  sge_Circle( surface,NUM2INT(x),NUM2INT(y),NUM2INT(r),NUM2UINT(color) );
+  sge_Circle( surface,NUM2INT(x),NUM2INT(y),NUM2INT(r),
+	      VALUE2COLOR(color,surface->format) );
   return Qnil;
 }
 static VALUE sdl_drawFilledCircle(VALUE obj,VALUE x,VALUE y,VALUE r,VALUE color)
 {
   SDL_Surface *surface;
   Data_Get_Struct(obj,SDL_Surface,surface);
-  sge_FilledCircle( surface,NUM2INT(x),NUM2INT(y),NUM2INT(r),NUM2UINT(color) );
+  sge_FilledCircle( surface,NUM2INT(x),NUM2INT(y),NUM2INT(r),
+		    VALUE2COLOR(color,surface->format) );
   return Qnil;
 }
 
@@ -87,7 +89,7 @@ static VALUE sdl_rotateScaledSurface(VALUE obj,VALUE angle,VALUE scale,VALUE bgc
   SDL_Surface *surface,*result;
   Data_Get_Struct(obj,SDL_Surface,surface);
   result=sge_rotate_scaled_surface(surface,NUM2INT(angle),NUM2DBL(scale),
-			    NUM2UINT(bgcolor));
+				   VALUE2COLOR(bgcolor,surface->format) );
   if( result==NULL )
     rb_raise( eSDLError,"Couldn't Create Surface: %s",SDL_GetError() );
   return Data_Wrap_Struct(cSurface,0,SDL_FreeSurface,result);

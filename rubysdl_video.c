@@ -19,6 +19,22 @@
   */
 #include "rubysdl.h"
 
+Uint32 VALUE2COLOR(VALUE color,SDL_PixelFormat *format)
+{
+  if( rb_obj_is_kind_of( color, rb_cArray ) ){
+    if( RARRAY(color)->len != 3 ){
+      rb_raise(rb_eArgError,"type mismatch:color array needs 3 elements");
+    }else{
+      return SDL_MapRGB(format,
+			NUM2UINT(rb_ary_entry(color,0)),
+			NUM2UINT(rb_ary_entry(color,1)),
+			NUM2UINT(rb_ary_entry(color,2)) );
+    }
+  }else{
+    return NUM2UINT(color);
+  }
+}
+
 static VALUE sdl_checkVideoMode(VALUE mod,VALUE w,VALUE h,VALUE bpp,
 				VALUE flags)
 {
@@ -131,7 +147,8 @@ static VALUE sdl_setColorKey(VALUE obj,VALUE flag,VALUE key)
 {
   SDL_Surface *surface;
   Data_Get_Struct(obj,SDL_Surface,surface);
-  if( SDL_SetColorKey(surface,NUM2UINT(flag),NUM2UINT(key)) < 0 ){
+  if( SDL_SetColorKey(surface,NUM2UINT(flag),VALUE2COLOR(color,surface->format))
+      < 0 ){
     rb_raise(eSDLError,"setColorKey failed: %s",SDL_GetError());
   }
   return Qnil;
@@ -208,7 +225,7 @@ static VALUE sdl_fillRect(VALUE obj,VALUE x,VALUE y,VALUE w,VALUE h,
   
   SetRect(rect,x,y,w,h);
   Data_Get_Struct(obj,SDL_Surface,surface);
-  if( SDL_FillRect(surface,&rect,NUM2UINT(color)) < 0 ){
+  if( SDL_FillRect(surface,&rect,VALUE2COLOR(color,surface->format)) < 0 ){
     rb_raise(eSDLError,"fillRect fail: %s",SDL_GetError());
   }
   return Qnil;
