@@ -59,15 +59,22 @@ some functions need SGE or SDL_image
       Return the instanse of ((<Screen>)),if succeeded.
       Raise SDL::Error,if failed.
       * SWSURFACE
-          Create the video surface in system memory.
+        
+        Create the video surface in system memory.
+
       * HWSURFACE
-          Create the video surface in video memory.
+
+        Create the video surface in video memory.
+
       * FULLSCREEN
-          SDL will attempt to use a fullscreen mode.
+
+        SDL will attempt to use a fullscreen mode.
+
       * SDL_DOUBLEBUF
-          Enable double buffering.
-          Calling ((<Screen#flip>)) will flip the  buffers and update
-          the screen.
+
+        Enable double buffering.
+        Calling ((<Screen#flip>)) will flip the  buffers and update
+        the screen.
 
 --- checkVideoMode(w,h,bpp,flags)
       Check to see if a particular video mode is supported.
@@ -474,7 +481,7 @@ Needs SDL_mixer to use functions if this module.
 
 ==== module functions
 
---- open(frequency,format,channels,chunksize)
+--- open(frequency=Mixer::DEFAULT_FREQUENCY,format=Mixer::DEFAULT_FORMAT,cannels=Mixer::DEFAULT_CHANNELS,chunksize=4096)
       Initializes SDL_mixer.
 
 --- spec
