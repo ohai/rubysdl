@@ -20,6 +20,7 @@
 #ifdef HAVE_SMPEG
 #include "rubysdl.h"
 #include "smpeg/smpeg.h"
+#include "SDL_mixer.h"
 
 static SMPEG_Filter* filters[3];
 #define NULL_FILTER 0
@@ -46,18 +47,20 @@ static void setInfoToSMPEGInfo(VALUE obj,SMPEG_Info info)
 static VALUE smpeg_load(VALUE class,VALUE filename)
 {
   SMPEG *mpeg;
-  VALUE infoObj;
+  VALUE obj;
   char error_msg[2048];
     
-  mpeg = SMPEG_new(STR2CSTR(filename),NULL,SDL_WasInit(SDL_INIT_AUDIO));
+  mpeg = SMPEG_new(STR2CSTR(filename),NULL,0);
   if( SMPEG_error(mpeg) ){
     snprintf(error_msg,sizeof(error_msg),"Couldn't load %s: %s",
 	     STR2CSTR(filename),SMPEG_error(mpeg));
     SMPEG_delete(mpeg);
     rb_raise(eSDLError,"%s",error_msg);
   }
-  
-  return Data_Wrap_Struct(cMPEG,0,SMPEG_delete,mpeg);
+
+  obj = Data_Wrap_Struct(cMPEG,0,SMPEG_delete,mpeg);
+  rb_iv_set(obj,"enable_audio",Qfalse);
+  return obj;
 }
 
 static VALUE smpeg_getInfo(VALUE obj,VALUE infoObj)
@@ -80,6 +83,7 @@ static VALUE smpeg_enableAudio(VALUE obj,VALUE enable)
   SMPEG *mpeg;
   Data_Get_Struct(obj,SMPEG,mpeg);
   SMPEG_enableaudio(mpeg,RTEST(enable));
+  rb_iv_set(obj,"enable_audio",enable);
   return Qnil;
 }
 
@@ -163,7 +167,32 @@ static VALUE smpeg_setDisplayRegion(VALUE obj,VALUE x,VALUE y,VALUE w,
 static VALUE smpeg_play(VALUE obj)
 {
   SMPEG *mpeg;
+  int use_audio;
+  
   Data_Get_Struct(obj,SMPEG,mpeg);
+
+  use_audio = RTEST(rb_iv_get(obj,"enable_audio")) &&
+    Mix_QuerySpec( NULL, NULL, NULL );
+
+  if( use_audio ){
+    SDL_AudioSpec audiofmt;
+    Uint16 format;
+    int freq, channels;
+    
+    SMPEG_enableaudio(mpeg, 0);
+    /* Tell SMPEG what the audio format is */
+    Mix_QuerySpec(&freq, &format, &channels);
+    audiofmt.format = format;
+    audiofmt.freq = freq;
+    audiofmt.channels = channels;
+    SMPEG_actualSpec(mpeg, &audiofmt);
+
+    /* Hook in the MPEG music mixer */
+    Mix_HookMusic(NULL,NULL);
+    Mix_HookMusic(SMPEG_playAudioSDL, mpeg);
+    SMPEG_enableaudio(mpeg, 1);
+  }
+    
   SMPEG_play(mpeg);
   return Qnil;
 }
@@ -181,6 +210,7 @@ static VALUE smpeg_stop(VALUE obj)
   SMPEG *mpeg;
   Data_Get_Struct(obj,SMPEG,mpeg);
   SMPEG_stop(mpeg);
+  Mix_HookMusic(NULL,NULL);
   return Qnil;
 }
 
