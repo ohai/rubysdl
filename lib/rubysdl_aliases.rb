@@ -3,6 +3,7 @@ class <<SDL
   alias inited_system initedSystem
 end
 
+# rubysdl_video.c
 module SDL
   class Screen
     alias update_rect updateRect
@@ -17,21 +18,25 @@ class << SDL
   alias check_video_mode checkVideoMode
   alias list_modes listModes
   alias set_gamma setGamma
+  alias getGammaRamp get_gamma_ramp
+  alias setGammaRamp set_gamma_ramp
   alias video_info videoInfo
 end
 
 module SDL
   
   class << Surface
-    alias new new
+#   alias new new
     alias load_bmp loadBMP
   end
 
   class Surface
     alias display_format displayFormat
+    alias display_format_alpha displayFormatAlpha
     alias set_color_key setColorKey
     alias fill_rect fillRect
     alias set_clip_rect setClipRect
+    alias get_clip_rect getClipRect
     alias set_alpha setAlpha
 #   alias h h
 #   alias w w
@@ -52,7 +57,7 @@ module SDL
   end
 end
 
-
+# rubysdl_event.c
 class << SDL::Event
 # alias new new
   alias app_state appState
@@ -76,6 +81,7 @@ class SDL::Event
 # alias info info
 end
 
+# rubysdl_event2.c
 module SDL
   if defined?(Event2) then
     class Event2
@@ -136,10 +142,13 @@ class << SDL
 end
 
 # rubysdl_cdrom.c
-class SDL::CD
+class << SDL::CD
   alias num_drive numDrive
   alias name_index nameIndex
 # alias open open
+end
+
+class SDL::CD
 # alias status status
 # alias play play
   alias play_tracks playTracks
@@ -155,14 +164,17 @@ class SDL::CD
 end
 
 # rubysdl_joystick.c
-class SDL::Joystick
+class << SDL::Joystick
 #  alias poll poll
 #  alias poll= poll=
 # alias num num
-#  alias name name
+  alias index_name indexName
 # alias open open
 # alias open? open?
   alias update_all updateAll
+end
+
+class SDL::Joystick
 # alias index index
   alias num_axes numAxes
   alias num_balls numBalls
@@ -200,6 +212,7 @@ module SDL
       alias play_channel playChannel
 #     alias play? play?
       alias set_volume setVolume
+      aliaa allocate_channels allocateChannels
 #     alias halt halt
 #     alias pause pause
 #     alias resume resume
@@ -227,6 +240,27 @@ end
 
 # rubysdl_image.c
 # alias load load
+
+# rubysdl_ttf.c
+module SDL
+  if defined?(TTF) then
+    #alias init init
+    #alias open open
+
+    class TTF
+#     alias style style
+#     alias style= style=
+      alias text_size textSize
+#     alias faces faces
+      alias fixed_width? fixedWidth?
+      alias family_name familyName
+      alias style_name styleName
+      alias draw_solid_utf8 drawSolidUTF8
+      alias draw_blended_utf8 drawBlendedUTF8
+      alias draw_shaded_utf8 drawShadedUTF8
+    end
+  end
+end
 
 # rubysdl_smpeg.c
 module SDL
