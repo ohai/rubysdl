@@ -17,7 +17,7 @@ while true
   screen.fillRect(0,0,640,480,0)
 
   y = (y + 1) % 480
-  font.textout(screen,"BitMapFont Tesging..",40,y)
+  font.textout(screen,"BitMapFont Testing..",40,y)
   
   screen.updateRect(0,0,0,0)
   sleep 0.005
