@@ -212,6 +212,7 @@ module SDL
     alias mod_state modState
     alias enable_key_repeat enableKeyRepeat
     alias disable_key_repeat disableKeyRepeat
+    alias get_key_name getKeyName
   end
 end
 

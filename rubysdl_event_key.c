@@ -325,6 +325,10 @@ static VALUE sdl_disableKeyRepeat(VALUE mod)
     rb_raise(eSDLError,"disable key repeat fail: %s",SDL_GetError());
   }
 }
+static VALUE sdl_getKeyName(VALUE mod,VALUE key)
+{
+  return rb_str_new2( SDL_GetKeyName( NUM2UINT(key) ) );
+}
 void init_keyEvent()
 {
   mKey = rb_define_module_under(mSDL,"Key");
@@ -333,6 +337,7 @@ void init_keyEvent()
   rb_define_module_function(mKey,"modState",sdl_modState,0);
   rb_define_module_function(mKey,"enableKeyRepeat",sdl_enableKeyRepeat,2);
   rb_define_module_function(mKey,"disableKeyRepeat",sdl_disableKeyRepeat,0);
+  rb_define_module_function(mKey,"getKeyName",sdl_getKeyName,1);
   
   defineConstForKey();
 }
