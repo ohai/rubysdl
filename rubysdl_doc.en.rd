@@ -90,6 +90,12 @@ some functions need SGE or SDL_image
       The arguments to checkVideoMode are the same ones you would pass to
       ((<setVideoMode>)).
 
+--- listModes(flags)
+      Returns availanel screen demensions for the given flags.
+      Returns nil if there are no available dimensions.
+      Returns true if any dimension is okay.
+      Otherwise returns list of available dimensions in array.
+      
 --- autoLock
       Needs SGE
 

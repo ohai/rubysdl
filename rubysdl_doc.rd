@@ -104,6 +104,14 @@ bpp=bit per pixelである。
       checkVideoModeに対する引数は、setVideoMode()で使用するもの
       と同じである。
 
+--- listModes(flags)
+      利用可能な解像度を返す。
+      利用可能な解像度が存在しないときはnil返す。またあらゆる解像度が使用可
+      能なときはtrueを返す。利用可能な解像度が1個以上あるときはその解像度を
+      の横方向、縦方向の解像度の値をおさめた配列が1個以上入っている配列を返す。
+      
+      引数のflagは、setVideoModeで使用するものと同じである。
+      
 --- autoLock
       SGEが必要
 
