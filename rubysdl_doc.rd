@@ -1332,8 +1332,8 @@ Object
 
 === SDL::Mixer::Music
 
-音楽(.mod .s3m .it .xm .mid .mp3)を表す。
-ただしmidiファイルやMP3を演奏するためにはそのための設定が必要。
+音楽(.mod .s3m .it .xm .mid .mp3 .ogg)を表す。
+ただしmidiファイルやOggVorbis、MP3を演奏するためにはそのための設定が必要。
 
 ==== スーパークラス
 

@@ -1321,10 +1321,10 @@ Object
 ==== class method
 
 --- SDL::Mixer::Music.load(filename)
-      Loads a music (.mod .s3m .it .xm .mid .mp3) file and returns the
+      Loads a music (.mod .s3m .it .xm .mid .mp3, .ogg) file and returns the
       object of ((<Mixer::Music>)).
 
-      You have to setup your environment to play MIDI file and MP3 file.
+      You have to setup your environment to play MIDI, Ogg Vorbis, and MP3 file.
 
 == Window Manager 
 
