@@ -16,6 +16,9 @@
 # 
 require 'sdl.so'
 
+if !defined?(block_given?) then
+  alias block_given? iterator?
+end
 
 module SDL
   class Surface
@@ -71,3 +74,21 @@ module SDL
 
 end
 
+if defined?(GL) then
+  class << GL
+    alias Begin_imp Begin
+    private :Begin_imp
+    def Begin(mode)
+      if block_given? then
+	begin
+	  Begin_imp(mode)
+	  yield
+	ensure
+	  End()
+	end
+      else
+	Begin_imp(mode)
+      end
+    end
+  end
+end
