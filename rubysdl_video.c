@@ -44,6 +44,13 @@ static VALUE sdl_getVideoSurface(VALUE mod)
   return Data_Wrap_Struct(cSurface,0,0,surface);
 }
 
+static VALUE sdl_videoDriverName(VALUE mod)
+{
+  char namebuf[256];
+  SDL_VideoDriverName( namebuf, sizeof(namebuf) );
+  return rb_str_new2( namebuf );
+}
+
 static VALUE sdl_listModes(VALUE mod,VALUE flags)
 {
   SDL_Rect **modes;
@@ -138,6 +145,45 @@ static VALUE sdl_setGamma(VALUE mod,VALUE rgamma,VALUE ggamma,VALUE bgamma)
   return Qnil;
 }
 
+static VALUE sdl_getGammaRamp(VALUE mod)
+{
+  Uint16 table[3][256];
+  VALUE ary_table, ary_subtable;
+  int i,j;
+  
+  if( SDL_GetGammaRamp( table[0], table[1], table[2] ) == -1 ){
+    rb_raise(eSDLError,"cannot get gamma lookup table: %s",SDL_GetError());
+  }
+  
+  ary_table = rb_ary_new();
+  for( i=0; i<3; ++i ){
+    ary_subtable = rb_ary_new();
+    for( j=0; j<256; ++j ){
+      rb_ary_push( ary_subtable, INT2FIX(table[i][j]) );
+    }
+    rb_ary_push( ary_table, ary_subtable );
+  }
+  return ary_table;
+}
+
+static VALUE sdl_setGammaRamp(VALUE mod, VALUE ary_table)
+{
+  Uint16 table[3][256];
+  VALUE ary_subtable;
+  int i,j;
+
+  for( i=0; i<3; ++i ){
+    ary_subtable = rb_ary_entry( ary_table, i );
+    for( j=0; j<256; ++j ){
+      table[i][j] = NUM2INT( rb_ary_entry( ary_subtable, j ) );
+    }
+  }
+  if( SDL_SetGammaRamp( table[0], table[1], table[2] )==-1 ){
+    rb_raise(eSDLError,"cannot set gamma lookup table: %s",SDL_GetError());
+  }
+  return Qnil;
+}
+
 static VALUE sdl_createSurface(VALUE class,VALUE flags,VALUE w,VALUE h,
 			       VALUE format)
 {
@@ -170,12 +216,32 @@ static VALUE sdl_loadBMP(VALUE class,VALUE filename)
   }
   return Data_Wrap_Struct(class,0,SDL_FreeSurface,image);
 }
-
+static VALUE sdl_saveBMP(VALUE obj,VALUE filename)
+{
+  SDL_Surface *image;
+  Data_Get_Struct( obj, SDL_Surface, image );
+  if( SDL_SaveBMP( image, STR2CSTR(filename) )==-1 ){
+    rb_raise(eSDLError,"cannot save %s: %s",STR2CSTR(filename),SDL_GetError());
+  }
+  return Qnil;
+}
+  
 static VALUE sdl_displayFormat(VALUE obj)
 {
   SDL_Surface *srcImage,*destImage;
   Data_Get_Struct(obj,SDL_Surface,srcImage);
   destImage=SDL_DisplayFormat(srcImage);
+  if( destImage==NULL ){
+    rb_raise(eSDLError,"Couldn't convert surface format: %s",SDL_GetError());
+  }
+  return Data_Wrap_Struct(cSurface,0,SDL_FreeSurface,destImage);
+}
+
+static VALUE sdl_displayFormatAlpha(VALUE obj)
+{
+  SDL_Surface *srcImage,*destImage;
+  Data_Get_Struct(obj,SDL_Surface,srcImage);
+  destImage=SDL_DisplayFormatAlpha(srcImage);
   if( destImage==NULL ){
     rb_raise(eSDLError,"Couldn't convert surface format: %s",SDL_GetError());
   }
@@ -248,6 +314,24 @@ static VALUE sdl_setClipRect(VALUE obj,VALUE x,VALUE y,VALUE w,VALUE h)
   Data_Get_Struct(obj,SDL_Surface,surface);
   SetRect(rect,x,y,w,h);
   SDL_SetClipRect(surface,&rect);
+}
+
+static VALUE sdl_getClipRect(VALUE obj)
+{
+  SDL_Surface *surface;
+  SDL_Rect rect;
+  VALUE ary_rect;
+  
+  Data_Get_Struct( obj, SDL_Surface, surface );
+  SDL_GetClipRect( surface, &rect );
+  
+  ary_rect = rb_ary_new();
+  rb_ary_push( ary_rect, INT2FIX(rect.x) );
+  rb_ary_push( ary_rect, INT2FIX(rect.y) );
+  rb_ary_push( ary_rect, INT2FIX(rect.w) );
+  rb_ary_push( ary_rect, INT2FIX(rect.h) );
+  
+  return ary_rect;
 }
 
 static VALUE sdl_fillRect(VALUE obj,VALUE x,VALUE y,VALUE w,VALUE h,
@@ -462,11 +546,14 @@ static void defineConstForVideo()
 void init_video()
 {
   rb_define_module_function(mSDL,"getVideoSurface",sdl_getVideoSurface,0);
+  rb_define_module_function(mSDL,"videoDriverName",sdl_videoDriverName,0);
   rb_define_module_function(mSDL,"blitSurface",sdl_blitSurface,8);
   rb_define_module_function(mSDL,"setVideoMode",sdl_setVideoMode,4);
   rb_define_module_function(mSDL,"checkVideoMode",sdl_checkVideoMode,4);
   rb_define_module_function(mSDL,"listModes",sdl_listModes,1);
   rb_define_module_function(mSDL,"setGamma",sdl_setGamma,3);
+  rb_define_module_function(mSDL,"getGammaRamp",sdl_getGammaRamp,0);
+  rb_define_module_function(mSDL,"setGammaRamp",sdl_setGammaRamp,1);
   cVideoInfo=rb_define_class_under(mSDL,"VideoInfo",rb_cObject);
   rb_define_attr(cVideoInfo,"hw_available",1,0);
   rb_define_attr(cVideoInfo,"wm_available",1,0);
@@ -489,10 +576,13 @@ void init_video()
 
   rb_define_singleton_method(cSurface,"new",sdl_createSurface,4);
   rb_define_singleton_method(cSurface,"loadBMP",sdl_loadBMP,1);
+  rb_define_method(cSurface,"saveBMP",sdl_saveBMP,1);
   rb_define_method(cSurface,"displayFormat",sdl_displayFormat,0);
+  rb_define_method(cSurface,"displayFormatAlpha",sdl_displayFormatAlpha,0);
   rb_define_method(cSurface,"setColorKey",sdl_setColorKey,2);
   rb_define_method(cSurface,"fillRect",sdl_fillRect,5);
   rb_define_method(cSurface,"setClipRect",sdl_setClipRect,4);
+  rb_define_method(cSurface,"getClipRect",sdl_getClipRect,0);
   rb_define_method(cSurface,"setAlpha",sdl_setAlpha,2);
   rb_define_method(cSurface,"h",sdl_surfaceH,0);
   rb_define_method(cSurface,"w",sdl_surfaceW,0);
