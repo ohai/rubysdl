@@ -330,7 +330,7 @@ static void defineConstForVideo()
 {
   /* Available for Screen.setVideoMode */
   rb_define_const(mSDL,"SWSURFACE",UINT2NUM(SDL_SWSURFACE));
-  rb_define_const(mSDL,"HWSURFACW",UINT2NUM(SDL_HWSURFACE));
+  rb_define_const(mSDL,"HWSURFACE",UINT2NUM(SDL_HWSURFACE));
   rb_define_const(mSDL,"ASYNCBLIT",UINT2NUM(SDL_ASYNCBLIT));
   rb_define_const(mSDL,"ANYFORMAT",UINT2NUM(SDL_ANYFORMAT));
   rb_define_const(mSDL,"HWPALETTE",UINT2NUM(SDL_HWPALETTE));
