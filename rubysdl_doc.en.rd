@@ -9,32 +9,50 @@ nAll classes/modules in Ruby/SDL are in "module SDL".
 In this module number starts 0,not 1.
 
 == Class/Module
-* ((<SDL::Error>))
-* ((<SDL::Surface>))
-  * ((<SDL::Screen>))
-* ((<SDL::PixelFormat>))
-* ((<SDL::Event>))
-* ((<SDL::Event2>))
-* ((<SDL::Key>)) (module)
-* ((<SDL::Mouse>)) (module)
-* ((<SDL::Mixer>)) (module)
-* ((<SDL::Mixer::Wave>))
-* ((<SDL::WM>)) (module)
-* ((<SDL::CD>))
-* ((<SDL::Joystick>))
-* ((<SDL::TTF>))
-* ((<SDL::MPEG>))
-* ((<SDL::SKK::Context>))
-* ((<SDL::SKK::Dictionary>))
-* ((<SDL::SKK::RomKanaRuleTable>))
-* ((<SDL::SKK::Keybind>))
+* ((<Error handling>))
+  * ((<SDL::Error>))
+* ((<initialize>))
+* ((<video>))
+  * ((<SDL::Surface>))
+    * ((<SDL::Screen>))
+  * ((<SDL::CollisionMap>))
+  * ((<SDL::PixelFormat>))
+* ((<Event handling>))
+  * ((<SDL::Event>))
+  * ((<SDL::Event2>))
+  * ((<SDL::Key>)) (module)
+  * ((<SDL::Mouse>)) (module) 
+* ((<audio>))
+  * ((<SDL::Mixer>)) (module)
+  * ((<SDL::Mixer::Wave>))
+  * ((<SDL::Mixer::Music>))
+* ((<Window Manager>))
+  * ((<SDL::WM>)) (module)
+* ((<CDROM>))
+  * ((<SDL::CD>))
+* ((<Joystick handling>))
+  * ((<SDL::Joystick>))
+* ((<Font handling>))
+  * ((<SDL::BMFont>))
+  * ((<SDL::Kanji>))
+  * ((<SDL::TTF>))
+* ((<MPEG stream>))
+  * ((<SDL::MPEG>))
+* ((<Time>))
+* ((<Japanese input method with SDLSKK>))
+  * ((<SDL::SKK::Context>))
+  * ((<SDL::SKK::Dictionary>))
+  * ((<SDL::SKK::RomKanaRuleTable>))
+  * ((<SDL::SKK::Keybind>))
+* ((<Others>))
 
-== SDL::Error
+== Error handling
+=== SDL::Error
 
 SDL::Error is exception class. Almost all of errors in Ruby/SDL are
 reported by this class.
 
-=== super class
+==== super class
 
 StandardError
 
@@ -653,7 +671,7 @@ This is a map of which pixels in a surface are solid and which are
 transparent.  Its methods can quickly determine whether or not two
 surfaces would overlap if drawn at particular coordinates.
 
-Only ((<SDL::Surface.makeCollisionMap>)) makes this object.
+Only ((<SDL::Surface#makeCollisionMap>)) makes this object.
 
 ==== class method
 
@@ -691,7 +709,7 @@ singleton methods.
 
 ==== super class
 
-((<Surface>))
+((<SDL::Surface>))
 
 ==== class method
 
@@ -892,7 +910,7 @@ Object
 
 === SDL::Event2
 Another event handling class.
-I think ((<SDL::Event2>)) is easier to use than ((<SDL::Eevnt>))
+I think ((<SDL::Event2>)) is easier to use than ((<SDL::Event>))
 
 ==== super class
 
@@ -1165,7 +1183,7 @@ This module has some functions to get the key state.
 --- SDL::Key.get_key_name(key)
       Return the string of key name.
       
-== SDL::Mouse
+=== SDL::Mouse
 
 The module mouse constants and mouse functions.
 
@@ -1304,7 +1322,7 @@ Object
 ==== class method
 
 --- SDL::Mixer::Wave.load(filename)
-      Loads a wave file and returns the object of ((<Mixer::Wave>)).
+      Loads a wave file and returns the object of ((<SDL::Mixer::Wave>)).
 
 ==== method
 
@@ -1322,7 +1340,7 @@ Object
 
 --- SDL::Mixer::Music.load(filename)
       Loads a music (.mod .s3m .it .xm .mid .mp3, .ogg) file and returns the
-      object of ((<Mixer::Music>)).
+      object of ((<SDL::Mixer::Music>)).
 
       You have to setup your environment to play MIDI, Ogg Vorbis, and MP3 file.
 
@@ -1373,9 +1391,9 @@ certain number of "frames". Each frame is ~2K in size, and at normal
 playing speed, a CD plays 75 frames per second. SDL works with the
 number of frames on a CD.
 
-=== super class
+==== super class
 
-=== class method
+==== class method
 
 --- SDL::CD.numDrive
 --- SDL::CD.num_drive
@@ -1394,7 +1412,7 @@ number of frames on a CD.
       Drives are numbered starting with 0. Drive 0 is the system default
       CD-ROM.
 
-=== method
+==== method
 
 --- SDL::CD#status
       Stores the information of currentTrack,currentFrame,numTracks,trackType,
@@ -1836,7 +1854,7 @@ Object
 === SDL::MPEG::Info
 
 The instance of this class has the information of ((<SDL::MPEG>)).
-Get that with ((<SDL:MPEG#info>)).
+Get that with ((<SDL::MPEG#info>)).
 
 ==== super class
 
@@ -1875,7 +1893,7 @@ Object
       
 Needs SDLSKK library.
 
-You need calling ((<SDL::Event2.enableUnicode>)) after calling ((<SDL.init>))
+You need calling ((<SDL::Event2.enableUNICODE>)) after calling ((<SDL.init>))
 to use SDLSKK.
 
 === module function

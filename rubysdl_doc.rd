@@ -9,33 +9,52 @@
 このモジュール内では数はほぼすべて0から始まります。
 
 == クラス/モジュール構成
-* ((<SDL::Error>))
-* ((<SDL::Surface>))
-  * ((<SDL::Screen>))
-* ((<SDL::PixelFormat>))
-* ((<SDL::Event>))
-* ((<SDL::Event2>))
-* ((<SDL::Key>)) (module)
-* ((<SDL::Mouse>)) (module)
-* ((<SDL::Mixer>)) (module)
-* ((<SDL::Mixer::Wave>))
-* ((<SDL::Mixer::Music>))
-* ((<SDL::WM>)) (module)
-* ((<SDL::CD>))
-* ((<SDL::Joystick>))
-* ((<SDL::TTF>))
-* ((<SDL::MPEG>))
-* ((<SDL::SKK::Context>))
-* ((<SDL::SKK::Dictionary>))
-* ((<SDL::SKK::RomKanaRuleTable>))
-* ((<SDL::SKK::Keybind>))
 
-== SDL::Error
+* ((<エラー処理>))
+  * ((<SDL::Error>))
+* ((<初期化関連>))
+* ((<video関連>))
+  * ((<SDL::Surface>))
+    * ((<SDL::Screen>))
+  * ((<SDL::CollisionMap>))
+  * ((<SDL::PixelFormat>))
+* ((<Event関連>))
+  * ((<SDL::Event>))
+  * ((<SDL::Event2>))
+  * ((<SDL::Key>)) (module)
+  * ((<SDL::Mouse>)) (module) 
+* ((<audio関連>))
+  * ((<SDL::Mixer>)) (module)
+  * ((<SDL::Mixer::Wave>))
+  * ((<SDL::Mixer::Music>))
+* ((<Window Manager 関連>))
+  * ((<SDL::WM>)) (module)
+* ((<CDROM関係>))
+  * ((<SDL::CD>))
+* ((<ジョイスティック関連>))
+  * ((<SDL::Joystick>))
+* ((<フォント関係>))
+  * ((<SDL::BMFont>))
+  * ((<SDL::Kanji>))
+  * ((<SDL::TTF>))
+* ((<MPEG再生処理>))
+  * ((<SDL::MPEG>))
+* ((<時刻処理>))
+* ((<SDLSKKによる日本語入力機能>))
+  * ((<SDL::SKK::Context>))
+  * ((<SDL::SKK::Dictionary>))
+  * ((<SDL::SKK::RomKanaRuleTable>))
+  * ((<SDL::SKK::Keybind>))
+* ((<その他>))
+
+== エラー処理
+
+=== SDL::Error
 
 エラー通知用のクラスです。SDLモジュール内で生じるエラーほぼすべて
 このクラスを用いて通知されます。
 
-=== スーパークラス
+==== スーパークラス
 
 StandardError
 
@@ -159,7 +178,7 @@ bpp=bit per pixelである。
       サーフィスのロックが必要なとき自動的にロックしてくれるかどうか
       を返す。デフォルトはtrue。
 
-      さらに詳しいことを知りたければ((<Surface::lock>))を見てください。
+      さらに詳しいことを知りたければ((<SDL::Surface#lock>))を見てください。
 
 --- SDL.autoLock=(autolocking)
 --- SDL.auto_lock=(autolocking)
@@ -665,7 +684,7 @@ SGEが必要
 1ドットごとの衝突判定をするための情報を表わすクラス。
 これでふたつの画像が重なっているかどうかを簡単に判定できる。
 
-((<SDL::Surface.makeCollisionMap>)) によってのみインスタンスが得られる。
+((<SDL::Surface#makeCollisionMap>)) によってのみインスタンスが得られる。
 
 ==== クラスメソッド
 
@@ -1171,11 +1190,11 @@ SDL::Event2.poll,SDL::Event2.waitはSDL::Event2のサブクラスのインスタンスを返しま
 --- SDL::Key.get_key_name(key)
       与えたキーに対する名前を表わす文字列を返します。
       
-== SDL::Mouse
+=== SDL::Mouse
 
 マウス関連の定数と関数を定義しているモジュール
 
-=== モジュール関数
+==== モジュール関数
 
 --- SDL::Mouse.state
       マウスの状態を配列の形で返します。
@@ -1387,11 +1406,11 @@ CD#numTrack等の情報はCD#statusを呼びだすことによって更新される。
 1frame=2Kであり、
 通常の音楽CDにおいて75フレーム=1秒である。
 
-=== スーパークラス
+==== スーパークラス
 
 Object
 
-=== クラスメソッド
+==== クラスメソッド
 
 --- SDL::CD.numDrive
 --- SDL::CD.num_drive
@@ -1408,7 +1427,7 @@ Object
       ドライブの指定は0からCD.numDrive-1の整数で指定する。
       0ドライブがデフォルトのドライブである。
 
-=== メソッド
+==== メソッド
 
 --- SDL::CD#status
       currentTrack,currentFrame,numTracks,trackType,trackLenght
@@ -1476,11 +1495,11 @@ Object
 
 一つのジョイスティックを表すクラス
 
-=== スーパークラス
+==== スーパークラス
 
 Object
 
-=== クラスメソッド
+==== クラスメソッド
 
 --- SDL::Joystick.pall
       イベントのpollingに合わせて、((<SDL::Joystick.updateAll>))を呼び
@@ -1513,7 +1532,7 @@ Object
       全てのジョイスティックの情報を更新する。
       Joystick#button/ball/hat/axisの情報はこれで更新される。
 
-=== メソッド
+==== メソッド
 
 --- SDL::Joystick#index
       ジョイスティックに対応する整数を返す。
@@ -1746,7 +1765,7 @@ Object
 呼ぶことによって実現されている。そのため再生中は再生映像が描画されて
 いるサーフィスにアクセスしてはいけない。
 もう一つ、SDL_Mixerの音声再生機能をフックしているため、音声を伴うmpeg再生、
-つまり((<SDL::MPEG.enableAudio>))に真を与えて((<SDL::MPEG.play>))
+つまり((<SDL::MPEG#enableAudio>))に真を与えて((<SDL::MPEG#play>))
 を呼びだした場合には、((<SDL::Mixer>))の音声再生機能は同時には利用できない。
 
 これらの制限に対しては、一切のチェックをRuby/SDLでは行っていません。よって
@@ -1849,7 +1868,7 @@ Object
 === SDL::MPEG::Info
 
 ((<SDL::MPEG>))の情報を持つ。
-((<SDL:MPEG#info>))などでこのクラスのインスタンスを得る。
+((<SDL::MPEG#info>))などでこのクラスのインスタンスを得る。
 
 ==== スーパークラス
 
@@ -1890,7 +1909,7 @@ SDLSKKライブラリが必要である。
 
 これに関するすべてのクラスはSDL::SKKの下にある。
 
-これを使うためには((<SDL.init>))を呼んだ後に((<SDL::Event2.enableUnicode>))を
+これを使うためには((<SDL.init>))を呼んだ後に((<SDL::Event2.enableUNICODE>))を
 呼ぶ必要がある。
 
 === モジュール関数
