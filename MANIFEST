@@ -30,6 +30,7 @@ rubysdl_pixel.c
 rubysdl_event2.c
 rubysdl_smpeg.c
 rubysdl_sdlskk.c
+rubysdl_kanji.c
 SDL_kanji.c
 SDL_kanji.h
 sample/testsprite.rb
