@@ -35,6 +35,15 @@ Uint32 VALUE2COLOR(VALUE color,SDL_PixelFormat *format)
   }
 }
 
+static VALUE sdl_getVideoSurface(VALUE mod)
+{
+  SDL_Surface *surface;
+  surface = SDL_GetVideoSurface();
+  if(surface==NULL)
+    rb_raise(eSDLError,"Couldn't get video surface: %s",SDL_GetError());
+  return Data_Wrap_Struct(cSurface,0,0,surface);
+}
+
 static VALUE sdl_listModes(VALUE mod,VALUE flags)
 {
   SDL_Rect **modes;
@@ -326,6 +335,19 @@ static VALUE sdl_format_getBpp(VALUE obj)
   Data_Get_Struct(obj,SDL_PixelFormat,format);
   return INT2FIX(format->BitsPerPixel);
 }
+static VALUE sdl_format_getColorkey(VALUE obj)
+{
+  SDL_PixelFormat *format;
+  Data_Get_Struct(obj,SDL_PixelFormat,format);
+  return UINT2NUM(format->colorkey);
+}
+static VALUE sdl_format_getAlpha(VALUE obj)
+{
+  SDL_PixelFormat *format;
+  Data_Get_Struct(obj,SDL_PixelFormat,format);
+  return UINT2NUM(format->alpha);
+}
+
 static void defineConstForVideo()
 {
   /* Available for Screen.setVideoMode */
@@ -353,6 +375,7 @@ static void defineConstForVideo()
 
 void init_video()
 {
+  rb_define_module_function(mSDL,"getVideoSurface",sdl_getVideoSurface,0);
   rb_define_module_function(mSDL,"blitSurface",sdl_blitSurface,8);
   rb_define_module_function(mSDL,"setVideoMode",sdl_setVideoMode,4);
   rb_define_module_function(mSDL,"checkVideoMode",sdl_checkVideoMode,4);
@@ -396,6 +419,8 @@ void init_video()
   rb_define_method(cPixelFormat,"getRGB",sdl_format_getRGB,3);
   rb_define_method(cPixelFormat,"getRGBA",sdl_format_getRGBA,4);
   rb_define_method(cPixelFormat,"bpp",sdl_format_getBpp,0);
+  rb_define_method(cPixelFormat,"colorkey",sdl_format_getColorkey,0);
+  rb_define_method(cPixelFormat,"alpha",sdl_format_getAlpha,0);
   
   defineConstForVideo();
   return;
