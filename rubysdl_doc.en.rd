@@ -682,7 +682,7 @@ These classes and  following.
 
 ==== SDL::Event2::Active
 This event occurs when mouse/keyboard focus gains/loss.
-===== Method
++ Method
 --- SDL::Event2::Active#gain
       Returns true focus gains, otherwise returns false
 --- SDL::Event2::Active#state
@@ -693,7 +693,7 @@ This event occurs when mouse/keyboard focus gains/loss.
 
 ==== SDL::Event2::KeyDown
 This event occurs when a key is pressed.
-===== Method
++ Method
 --- SDL::Event2::KeyDown#press
       Returns true.
 --- SDL::Event2::KeyDown#sym
@@ -703,7 +703,7 @@ This event occurs when a key is pressed.
 
 ==== SDL::Event2::KeyUp
 This event occurs when a key is released.
-===== Method
++ Method
 --- SDL::Event2::KeyUp#press
       Returns false.
 --- SDL::Event2::KeyUp#sym
@@ -713,7 +713,7 @@ This event occurs when a key is released.
 
 ==== SDL::Event2::MouseMotion
 This event occurs when mouse is moved.
-===== Method
++ Method
 --- SDL::Event2::MouseMotion#state
       Returns the button state.
 --- SDL::Event2::MouseMotion#x
@@ -727,7 +727,7 @@ This event occurs when mouse is moved.
 
 ==== SDL::Event2::MouseButtonDown
 This event occurs when a mouse button is pressed.
-===== Method
++ Method
 --- SDL::Event2::MouseButtonDown#button
       Returns the which button is pressed.
         SDL::Mouse::BUTTON_LEFT
@@ -743,7 +743,7 @@ This event occurs when a mouse button is pressed.
 
 ==== SDL::Event2::MouseButtonUp
 This event occurs when a mouse button is pressed.
-===== Method
++ Method
 --- SDL::Event2::MouseButtonUp#button
       Returns the which button is released.
         SDL::Mouse::BUTTON_LEFT
@@ -759,7 +759,7 @@ This event occurs when a mouse button is pressed.
 
 ==== SDL::Event2::JoyAxis
 This event occurs when axis of joystick is moved.
-===== Method
++ Method
 --- SDL::Event2::JoyAxis#which
       Returns joystick device index.
 --- SDL::Event2::JoyAxis#axis
@@ -769,7 +769,7 @@ This event occurs when axis of joystick is moved.
 
 ==== SDL::Event2::JoyBall
 This event occurs when joystick trackball moves.
-===== Method
++ Method
 --- SDL::Event2::JoyBall#which
       Returns joystick device index.
 --- SDL::Event2::JoyBall#ball
@@ -781,7 +781,7 @@ This event occurs when joystick trackball moves.
 
 ==== SDL::Event2::JoyHat
 This event occurs when joystick hat moves.
-===== Method
++ Method
 --- SDL::Event2::JoyHat#which
       Returns joystick device index.
 --- SDL::Event2::JoyHat#hat
@@ -804,7 +804,7 @@ This event occurs when joystick hat moves.
 
 ==== SDL::Event2::JoyButtonUp
 This event occurs when joystick button is released.
-===== Method
++ Method
 --- SDL::Event2::JoyButtonUp#which
       Returns joystick device index.
 --- SDL::Event2::JoyButtonUp#button
@@ -814,7 +814,7 @@ This event occurs when joystick button is released.
 
 ==== SDL::Event2::JoyButtonDown
 This event occurs when joysick button is pressed.
-===== Method
++ Method
 --- SDL::Event2::JoyButtonDown#which
       Returns joystick device index.
 --- SDL::Event2::JoyButtonDown#button
@@ -834,7 +834,7 @@ This event occurs when window are resized.
 You will get this event only when you call ((<SDL.setVideoMode>)) with
 SDL::RESIZABLE.
 
-===== Method
++ Method
 --- SDL::Event2::VideoResize#w
       Returns new width of window.
 --- SDL::Event2::VideoResize#h
