@@ -341,7 +341,14 @@ Object
         システムメモリかビデオメモリのうちハードウェアによるアルファを利用
         できるほうにサーフィスを取ろうとする。
 
+--- SDL::Surface.new_from(pixels,w,h,depth,pitch,Rmask,Gmask,Bmask,Amask)
+      与えられたピクセルデータから((<SDL::Surface>))のインスタンスを
+      作成する。
 
+      pixelsはStringのインスタンスとして与える。pitchは各スキャンラインの
+      長さ(バイト数)です。[RGBA]maskやdepthは明示的に指定しなければ
+      ならない。
+      
 --- SDL::Surface.loadBMP(filename)
 --- SDL::Surface.load_bmp(filename)
       指定されたファイル名のWindows BMP形式のファイルから((<SDL::Surface>))

@@ -319,7 +319,12 @@ Object
         With this flag SDL will attempt to find the best
         location for this surface, either in system memory or
         video memory, to obtain hardware alpha support.
-
+        
+--- SDL::Surface.new_from(pixels,w,h,depth,pitch,Rmask,Gmask,Bmask,Amask)
+      Create a surface from pixel data.
+      ((|pixels|)) must be String. ((|pitch|)) is the length of
+      each scanline in bytes.
+      
 --- SDL::Surface.loadBMP(filename)
 --- SDL::Surface.load_bmp(filename)
       Loads a image from a named Windows BMP file and return
