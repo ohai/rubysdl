@@ -1258,9 +1258,13 @@ Object
 --- SDL::TTF.init
       TrueTypeFontを使うためには最初にこの関数を呼ばなければならない。
 
---- SDL::TTF.open(filename,size)
+--- SDL::TTF.open(filename,size,index=0)
       TrueTypeFontをファイルから読み出し、そのサイズをsizeで指定する。
-      
+
+      indexはそのフォントが複数のfaceを持っている場合にどのfaceを
+      使うかを指定するものである。この機能はSDL_ttf 2.0.4以降で
+      使用可能である。
+
 ==== メソッド
 
 --- SDL::TTF#style
@@ -1275,6 +1279,22 @@ Object
 
 --- SDL::TTF#textSize(text)
       textを描画したときの縦、横の必要な大きさを配列で返す
+
+--- SDL::TTF#faces
+      SDL_ttf 2.0.4 が必要
+      faceの数を返す。
+
+--- SDL::TTF#fixedWidth?
+      SDL_ttf 2.0.4 が必要
+      フォントが固定幅であるかどうかを返す。
+
+--- SDL::TTF#familyName
+      SDL_ttf 2.0.4 が必要
+      font family の名前を返す。
+
+--- SDL::TTF#styleName
+      SDL_ttf 2.0.4 が必要
+      フォントのstyleの名前を返す。
 
 --- SDL::TTF#drawSolidUTF8(dest,text,x,y,r,g,b)
       selfのフォント設定でdest(Surfaceのインスタンス)にString textを

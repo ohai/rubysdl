@@ -1241,8 +1241,11 @@ Object
 --- SDL::TTF.init
       You must call TTF.init first when you use True Type Font.
 
---- SDL::TTF.open(filename,size)
+--- SDL::TTF.open(filename,size,index=0)
       Open a font file and create a font of the specified point size.
+
+      And you can specify font face with index. Need SDL_ttf 2.0.4 or
+      later to use this feature.
 
 ==== method
 
@@ -1259,6 +1262,22 @@ Object
 
 --- SDL::TTF#textSize(text)
       Get Text size on image in array. Return [x,y].
+
+--- SDL::TTF#faces
+      Need SDL_ttf 2.0.4 or later
+      Returns the number of face.
+
+--- SDL::TTF#fixedWidth?
+      Need SDL_ttf 2.0.4 or later.
+      Returns whether this font has fixed width or not.
+
+--- SDL::TTF#familyName
+      Need SDL_ttf 2.0.4 or later
+      Returns the name of font family.
+
+--- SDL::TTF#styleName
+      Need SDL_ttf 2.0.4 or later
+      Returns the name of style.
 
 --- SDL::TTF#drawSolidUTF8(dest,text,x,y,r,g,b)
       Draw text on "dest" at ("x","y"). r,g,b are color elements of text.
