@@ -141,7 +141,7 @@ void init_cdrom()
 {
   cCD=rb_define_class_under(mSDL,"CD",rb_cObject);
   rb_define_singleton_method(cCD,"numDrive",sdl_cd_numDrive,0);
-  rb_define_singleton_method(cCD,"name",sdl_cd_name,1);
+  rb_define_singleton_method(cCD,"indexName",sdl_cd_name,1);
   rb_define_singleton_method(cCD,"open",sdl_cd_open,1);
   rb_define_method(cCD,"status",sdl_cd_status,0);
   rb_define_method(cCD,"play",sdl_cd_play,2);

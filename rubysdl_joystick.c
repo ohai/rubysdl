@@ -135,7 +135,7 @@ void init_joystick()
   rb_define_singleton_method(cJoystick,"poll",sdl_getJoyPolling,0);
   rb_define_singleton_method(cJoystick,"poll=",sdl_setJoyPolling,1);
   rb_define_singleton_method(cJoystick,"num",sdl_joystick_num,0);
-  rb_define_singleton_method(cJoystick,"name",sdl_joystick_name,1);
+  rb_define_singleton_method(cJoystick,"indexName",sdl_joystick_name,1);
   rb_define_singleton_method(cJoystick,"open",sdl_joystick_open,1);
   rb_define_singleton_method(cJoystick,"open?",sdl_joystick_opened,1);
   rb_define_singleton_method(cJoystick,"updateAll",sdl_joystick_update,0);
