@@ -55,6 +55,7 @@ StandardError
       version 0.3にて廃止。ライブラリから自動的によびだされる。
 
 --- SDL.initedSystem(flag)
+--- SDL.inited_system(flag)
       Not documented yet
 
 == video関連
@@ -66,9 +67,11 @@ bpp=bit per pixelである。
 === SDL内のモジュール関数
 
 --- SDL.getVideoSurface
+--- SDL.get_video_surface
       Not documented yet
 
 --- SDL.setVideoMode(w,h,bpp,flags)
+--- SDL.set_video_mode(w,h,bpp,flags)
       指定された画面の幅、高さ、bppの値でビデオモードを設定する。
       bppが0の場合、現在のディスプレイのbppの値が使用される。
       成功したときは((<SDL::Screen>))のオブジェクトを返す。
@@ -102,6 +105,7 @@ bpp=bit per pixelである。
       SDLのドキュメントを見てください。
 
 --- SDL.checkVideoMode(w,h,bpp,flags)
+--- SDL.check_video_mode(w,h,bpp,flags)
       指定されたビデオモードがサポートされているかどうかを調べる。
       指定サイズのスクリーンがどんなデプスでもサポートされていない場合は
       0を返し、いくつかのデプスで指定されたサイズがサポートされていれば、
@@ -114,6 +118,7 @@ bpp=bit per pixelである。
       と同じである。
 
 --- SDL.listModes(flags)
+--- SDL.list_modes(flags)
       利用可能な解像度を返す。
       利用可能な解像度が存在しないときはnil返す。またあらゆる解像度が使用可
       能なときはtrueを返す。利用可能な解像度が1個以上あるときはその解像度を
@@ -122,24 +127,30 @@ bpp=bit per pixelである。
       引数のflagは、((<SDL.setVideoMode>))で使用するものと同じである。
 
 --- SDL.videoDriverName
+--- SDL.video_driver_name
       初期化したビデオドライバーに対応する文字列を返す( x11 や windib など)。
       初期化していなかったりしたら例外を発生させる。
 
 --- SDL.setGamma(redgamma,greengamma,bluegamma)
+--- SDL.set_gamma(redgamma,greengamma,bluegamma)
       ガンマを設定します。
       ガンマはスクリーン上での色の明るさやコントラストを調節します。
       r,g,bそれぞれのガンマ値は1.0で無調整と同等になります。
 
 --- SDL.getGammaRamp
+--- SDL.get_gamma_ramp
       ガンマ変換用のテーブルを返す。
       その内容はR,G,Bそれぞれの256個の整数をもつ配列の配列である。
 
 --- SDL.setGammaRamp(table)
+--- SDL.set_gamma_ramp(table)
       ガンマ変換用のテーブルを設定する。
       テーブルの形式は((<SDL.getGammaRamp>))で得られるものと同じ。
 
 --- SDL.autoLock
+--- SDL.auto_lock
 --- SDL.autoLock?
+--- SDL.auto_lock?
       SGEが必要
 
       サーフィスのロックが必要なとき自動的にロックしてくれるかどうか
@@ -148,12 +159,16 @@ bpp=bit per pixelである。
       さらに詳しいことを知りたければ((<Surface::lock>))を見てください。
 
 --- SDL.autoLock=(autolocking)
+--- SDL.auto_lock=(autolocking)
 --- SDL.autoLockON
+--- SDL.auto_lock_on
 --- SDL.autoLockOFF
+--- SDL.auto_lock_off
       SGEが必要
       サーフィスのロックが必要なとき自動的にロックしてくれるように設定する。
       
 --- SDL.videoInfo
+--- SDL.video_info
       Videoの情報をVideoInfoのインスタンスで返す。その内容は以下の通り。
       真偽値を表すものはtrue,falseが入っている。
       詳しい意味はSDLのドキュメントを参照してください。
@@ -170,6 +185,7 @@ bpp=bit per pixelである。
         SDL::VideoInfo#bpp
 	
 --- SDL.blitSurface(src,srcX,srcY,srcW,srcH,dst,dstX,dstY)
+--- SDL.blit_surface(src,srcX,srcY,srcW,srcH,dst,dstX,dstY)
       srcで指定されたSurfaceからdstで指定されたSurfaceへの高速なblit
       を行う。
 
@@ -180,6 +196,7 @@ bpp=bit per pixelである。
       ロックしたサーフェスに対してこれをつかってはいけない。
 
 --- SDL.blitSurface2(src,srcRect,dst,dstRect)
+--- SDL.blit_surface2(src,src_rect,dst,dst_rect)
       blitSurface2(src,[0,32,32,32],dst,[100,200])
       のように使う。
       また、srcRect、dstRectとして x,y,z,wという名前のメソッドを
@@ -188,6 +205,7 @@ bpp=bit per pixelである。
       srcRectにnilを指定した場合はsrc全体をblitする。
 
 --- SDL.rotateXYScaled(src,dst,x,y,angle,xscale,yscale)
+--- SDL.rotate_xy_scaled(src,dst,x,y,angle,xscale,yscale)
       SGEが必要
 
       SGEのsge_rotate_xyscaled関数とはsrcとdstの順序が入れ替わっていることに
@@ -201,6 +219,7 @@ bpp=bit per pixelである。
       ((<SDL.transform>))や((<SDL.transformBlit>))を使うべきである。
 
 --- SDL.rotateScaled(src,dst,x,y,angle,scale)
+--- SDL.rotate_scaled(src,dst,x,y,angle,scale)
       ((<SDL.rotateXYScaled>))と同様、ただしxscaleとyscaleがともにscaleであると
       する。
 
@@ -209,11 +228,13 @@ bpp=bit per pixelである。
       する。
 
 --- SDL.rotateScaledBlit(src,dst,x,y,angle,scale)
+--- SDL.rotate_scaled_blit(src,dst,x,y,angle,scale)
       SGEが必要
       ColorKeyは有効となる。
       ((<SDL.rotateBlit>))も同様である。
 
 --- SDL.rotateBlit(src,dst,x,y,angle)
+--- SDL.rotate_blit(src,dst,x,y,angle)
       ((<SDL.rotateScaledBlit>))と同様、ただしscaleが1であるとする。
 
 --- SDL.transform(src,dst,angle,xscale,yscale,px,py,qx,qy,flags)
@@ -242,6 +263,7 @@ bpp=bit per pixelである。
         悪くなる。px、py、flagsは無視される。
 
 --- SDL.transformBlit(src,dst,angle,xscale,yscale,px,py,qx,qy,flags)
+--- SDL.transform_blit(src,dst,angle,xscale,yscale,px,py,qx,qy,flags)
       SGEが必要
 
       回転縮小拡大を描画する。
@@ -287,6 +309,7 @@ Object
         できるほうにサーフィスを取ろうとする。
         
 --- SDL::Surface.loadBMP(filename)
+--- SDL::Surface.load_bmp(filename)
       指定されたファイル名のWindows BMP形式のファイルから((<SDL::Surface>))
       のインスタンスを作成する。
       ファイルが開けない等のエラーが生じた場合は((<SDL::Error>))例外が生じる。
@@ -301,9 +324,11 @@ Object
 ==== メソッド
 
 --- SDL::Surface#saveBMP(filename)
+--- SDL::Surface#save_bmp(filename)
       サーフェスの内容を指定したBMPファイルにセーブする。
 
 --- SDL::Surface#displayFormat
+--- SDL::Surface#display_format
       selfをビデオフレームバッファのピクセルフォーマットと色に合わせた
       新しいサーフェスにコピーして返す。
       新しいsurfaceを使うことによってscreenへの高速なblitができる。
@@ -313,10 +338,12 @@ Object
       必要がある。
 
 --- SDL::Surface#displayFormatAlpha
+--- SDL::Surface#display_format_alpha
       ビットごとのα値が有効であることを除いて
       ((<SDL::Surface#displayFormat>))と同じ。
 
 --- SDL::Surface#setColorKey(flag,key)
+--- SDL::Surface#set_color_key(flag,key)
       blit可能なサーフェスに対してカラーキー(透明なピクセル)を設定する。
 
       flagにSDL::SRCCOLORKEYを指定すると、そのピクセルはblitでsrcになる
@@ -329,18 +356,22 @@ Object
       flagが0の場合は、color keyをクリアする。
 
 --- SDL::Surface#fillRect(x,y,w,h,color)
+--- SDL::Surface#fill_rect(x,y,w,h,color)
       指定された長方形の領域をcolorでぬりつぶす。
 
 --- SDL::Surface#setClipRect(x,y,w,h)
+--- SDL::Surface#set_clip_rect(x,y,w,h)
       クリッピングをする長方形を指定する。
       ((<SDL.blitSurface>)),((<SDL::Surface#put>))等でこのインスタンスに
       描画しようとしたとき、これで指定した長方形内部のみで描画される。
 
 --- SDL::Surface#getClipRect
+--- SDL::Surface#get_clip_rect
       クリッピングの設定されている範囲を返す。
       返り値はx,y,w,hの4つの値を持つ配列である。
 
 --- SDL::Surface#setAlpha(flag,alpha)
+--- SDL::Surface#set_alpha(flag,alpha)
       アルファの設定をする。
       flagにSDL::SRCALPHAを設定することでアルファが有効になる。
       SDL::RLEACCELとORをとって指定するとRLEによる高速化が有効になる。
@@ -379,16 +410,19 @@ Object
       ((<SDL::Surface#lock>))でロックしたのを解除する。
 
 --- SDL::Surface#mustLock?
+--- SDL::Surface#must_lock?
       ((<SDL::Surface#lock>))を呼びだす必要があるときはtrueを、
       ないときはfalseを返す。
 
 --- SDL::Surface#getPixel(x,y) 
+--- SDL::Surface#get_pixel(x,y) 
 --- SDL::Surface#[](x,y)
       SGEが必要 ロックが必要
 
       x,yの位置のピクセルの値を返す。
 
 --- SDL::Surface#putPixel(x,y,pixel)
+--- SDL::Surface#put_pixel(x,y,pixel)
 --- SDL::Surface#[]=(x,y,pixel)
       SGEが必要 ロックが必要
 
@@ -396,36 +430,43 @@ Object
       つまり、x,yの位置にpixelの色の点を打つ。
 
 --- SDL::Surface#drawLine(x1,y1,x2,y2,color)
+--- SDL::Surface#draw_line(x1,y1,x2,y2,color)
       SGEが必要 ロックが必要
 
       色がcolorの線を(x1,y1)から(x2,y2)まで描く。
 
 --- SDL::Surface#drawRect(x,y,w,h,color)
+--- SDL::Surface#draw_rect(x,y,w,h,color)
       SGEが必要 ロックが必要
 
       色がcolorの長方形を描く。中はぬりつぶさない。
 
 --- SDL::Surface#drawCircle(x,y,r,color)
+--- SDL::Surface#draw_circle(x,y,r,color)
       SGEが必要 ロックが必要
 
       色がcolorの円を描く。中はぬりつぶさない。
 
 --- SDL::Surface#drawFilledCircle(x,y,r,color)
+--- SDL::Surface#draw_filled_circle(x,y,r,color)
       SGEが必要 ロックが必要
 
       色がcolorの円を描き、中をぬりつぶす。
 
 --- SDL::Surface#drawEllispe(x,y,rx,ry,color)
+--- SDL::Surface#draw_ellispe(x,y,rx,ry,color)
       SGEが必要 ロックが必要
 
       色がcolorの楕円を描く。中はぬりつぶさない。
 
 --- SDL::Surface#drawFilledEllispe(x,y,rx,ry,color)
+--- SDL::Surface#draw_filled_ellispe(x,y,rx,ry,color)
       SGEが必要 ロックが必要
 
       色がcolorの楕円を描く。中をぬりつぶす。。
 
 --- SDL::Surface#rotateScaledSurface(angle,scale,bgcolor)
+--- SDL::Surface#rotate_scaled_surface(angle,scale,bgcolor)
       SGEが必要 
 
       これは、selfをangle度傾け、scale倍した画像を持つSurfaceのインスタンスを
@@ -435,27 +476,33 @@ Object
       ((<SDL::Surface#transformSurface>))を使ったほうがよい。
 
 --- SDL::Surface#rotateSurface(angle,bgcolor)
+--- SDL::Surface#rotate_surface(angle,bgcolor)
       ((<SDL::Surface#rotateScaledSurface>))と同様。
       ただしscaleは1としたことになる。
 
 --- SDL::Surface#transformSurface(bgcolor,angle,xscale,yscale,flags)
+--- SDL::Surface#transform_surface(bgcolor,angle,xscale,yscale,flags)
       selfをangle度回転し、X方向にxscale倍、Y方向にyscale倍して、生じた
       すきまをbgcolorで塗りつぶした画像を持つDSL::Surfaceのインスタンス
       を生成するメソッド。
       flagは((<SDL.transform>))と同じ。
 
 --- SDL::Surface#mapRGB(r,g,b)
+--- SDL::Surface#map_rgb(r,g,b)
       selfのサーフィスのフォーマット(bppなど)に従ってr,g,bによって
       あらわされる色に対応したpixelの値を返す。
 
 --- SDL::Surface#mapRGBA(r,g,b,a)
+--- SDL::Surface#map_rgba(r,g,b,a)
       ((<SDL::Surface#mapRGB>))と同様。ただしアルファ値も含めることができる。
 
 --- SDL::Surface#getRGB(pixel)
+--- SDL::Surface#get_rgb(pixel)
       ((<SDL::Surface#mapRGB>))と逆の変換をする。返り値は [r,g,b]
       という内容の配列を返す。
 
 --- SDL::Surface#getRGBA(pixel)
+--- SDL::Surface#get_rgba(pixel)
       ((<SDL::Surface#getRGB>))と同様。ただし返り値にアルファも含んでいる。
       返り値は[r,g,b,a]という内容の配列である。
 
@@ -472,6 +519,7 @@ Object
       サーフィスに設定されたフラグを返す。
       
 --- SDL::Surface#setPalette(flag,colors,firstcolor)
+--- SDL::Surface#set_palette(flag,colors,firstcolor)
       8bppのサーフェスにパレットを設定する。
       
       ((<SDL.setVideoMode>))でflagにSDL::HWPALETTE、bppに8を指定して得た
@@ -491,10 +539,12 @@ Object
       パレットの変更が成功したときはtrue、失敗したときはfalseを返す。
 
 --- SDL::Surface#setColors(colors,firstcolor)
+--- SDL::Surface#set_colors(colors,firstcolor)
       ((<SDL::Surface#setColors>))のflagにSDL::LOGPAL|SDL::PHYSPALを指定
       するのと同じ。
 
 --- SDL::Surface#getPalette
+--- SDL::Surface#get_palette
       パレットを配列で返す。その内容は以下の様になっている。
         [ [r0,g0,b0],[r1,g1,b1], ... ,[r255,g255,b255] ]
       サーフィスがパレットを持っていないときはnilを返す。
@@ -517,6 +567,7 @@ Object
 ==== メソッド
 
 --- SDL::Screen#updateRect(x,y,w,h)
+--- SDL::Screen#update_rect(x,y,w,h)
     この関数を呼び出すと、与えられた画面上の指定された長方形領域のリストが
     確実に更新される。
     x、y、w、hがすべて0の場合、全画面を更新する。画面がロックされてい
@@ -602,20 +653,24 @@ Object
       新しい((<SDL::Event>))のオブジェクトを生成する。
 
 --- SDL::Event.appState
+--- SDL::Event.app_state
       現在のアプリケーションの状態を返す。返値は以下の値のORをとったもの。
         SDL::Event::APPMOUSEFOCUS
         SDL::Event::APPINPUTFOCUS
         SDL::Event::APPACTIVE
 
 --- SDL::Event.enableUNICODE
+--- SDL::Event.enable_unicode
       イベント処理時にキー入力からUCSでの表現を生成する機能を有効にする。
       デフォルトでは無効になっている。
       SDLSKKの機能を利用するときにはこれを有効にする必要がある。
       
 --- SDL::Event.disableUNICODE
+--- SDL::Event.disable_unicode
       イベント処理時にキー入力からUCSでの表現を生成する機能を無効にする。
       
 --- SDL::Event.enableUNICODE?
+--- SDL::Event.enable_unicode?
       イベント処理時にキー入力からUCSでの表現を生成する機能が有効であるか
       どうかを返す。
 
@@ -654,12 +709,15 @@ Object
       このメソッドは、これ以下のメソッドをすべて代用できる。
 
 --- SDL::Event#keyPress?
+--- SDL::Event#key_press?
       キーイベントでキーが押し下げられていればtrueを、いなければfalseを返す。
 
 --- SDL::Event#keySym
+--- SDL::Event#key_sym
       キーイベントで押し下げ/上げられたキーをを返す。
 
 --- SDL::Event#keyMod
+--- SDL::Event#key_mod
       キーイベントでの修飾キー(SHIFT,CTRLなど)の状態を返す。
 
 --- SDL::Event#gain?
@@ -667,6 +725,7 @@ Object
       失なったならばfalseを返す。
 
 --- SDL::Event#appState
+--- SDL::Event#app_state
       ACTIVEEVENTイベントでのイベントの種類を返す。
       その内容は以下のいずれか。
         SDL::Event::APPMOUSEFOCUS
@@ -674,18 +733,23 @@ Object
         SDL::Event::APPACTIVE
 
 --- SDL::Event#mouseX
+--- SDL::Event#mouse_x
       マウスイベントでのマウスカーソルのX座標を返す。
 
 --- SDL::Event#mouseY
+--- SDL::Event#mouse_y
       マウスイベントでのマウスカーソルのY座標を返す。      
 
 --- SDL::Event#mouseXrel
+--- SDL::Event#mouse_xrel
       マウスイベントでのマウスカーソルのX座標の変化量を返す。
 
 --- SDL::Event#mouseYrel
+--- SDL::Event#mouse_yrel
       マウスイベントでのマウスカーソルのX座標の変化量を返す。
 
 --- SDL::Event#mouseButton
+--- SDL::Event#mouse_button
       マウスイベントでどのボタンのイベントであるかをかえす。
       それは以下の定数でしめされる。
 
@@ -694,6 +758,7 @@ Object
         SDL::Mouse::BUTTON_RIGHT 右ボタン
 
 --- SDL::Event#mousePress?
+--- SDL::Event#mouse_press?
       MOUSEBUTTONDOWN,MOUSEBUTTONUPイベントにおいて、マウスボタンが
       押されたならtrue、離されたならfalseを返す。
 
@@ -739,15 +804,19 @@ Object
       Not documented yet
 
 --- SDL::Event2.appState
+--- SDL::Event2.app_state
       ((<SDL::Event.appState>))と同じ。
 
 --- SDL::Event2.enableUNICODE
+--- SDL::Event2.enable_unicode
       ((<SDL::Event.enableUNICODE>))と同じ
       
 --- SDL::Event2.disableUNICODE
+--- SDL::Event2.disable_unicode
       ((<SDL::Event2.disableUNICODE>))と同じ
       
 --- SDL::Event2.enableUNICODE?
+--- SDL::Event2.enable_unicode?
       ((<SDL::Event.enableUNICODE?>))と同じ
       
 ==== method
@@ -926,6 +995,7 @@ SDL::Event2.poll,SDL::Event2.waitはSDL::Event2のサブクラスのインスタンスを返しま
       scan で得た状態を得ます。trueで押している、falseで離しているです。
 
 --- SDL::Key.modState
+--- SDL::Key.mod_state
       修飾キー(CTRL,ATL,など)の状態を返す。
       返り値は以下の定数でORをとったもので表される。
         SDL::Key::MOD_NONE
@@ -947,10 +1017,12 @@ SDL::Event2.poll,SDL::Event2.waitはSDL::Event2のサブクラスのインスタンスを返しま
         SDL::Key::MOD_META = SDL::Key::MOD_LMETA|SDL::Key::MOD_RMETA
 
 --- SDL::Key.enableKeyRepeat(delay,interval)
+--- SDL::Key.enable_key_repeat(delay,interval)
       キーリピートの設定を変える。
       
 
 --- SDL::Key.disableKeyRepeat
+--- SDL::Key.disable_key_repeat
       キーリピートを無効にする。
     
 == SDL::Mouse
@@ -975,6 +1047,7 @@ SDL::Event2.poll,SDL::Event2.waitはSDL::Event2のサブクラスのインスタンスを返しま
       マウスカーソルを消す。
 
 --- SDL::Mouse.setCursor(bitmap,white,black,transparent,inverted,hot_x=0,hot_y=0)
+--- SDL::Mouse.set_cursor(bitmap,white,black,transparent,inverted,hot_x=0,hot_y=0)
       マウスカーソルを変える。
       bitmapとして((<SDL::Surface>))のインスタンスを与える。
       カーソルの色は白黒で生成される。
@@ -1007,6 +1080,7 @@ SDL::Event2.poll,SDL::Event2.waitはSDL::Event2のサブクラスのインスタンスを返しま
         [ rate,format,channels ]
 
 --- SDL::Mixer.allocateChannels(numchannels)
+--- SDL::Mixer.allocate_channels(numchannels)
       Ruby/SDLで利用できるチャンネルの数を動的に変更する。
       もし指定したチャンネルの数が指定まえのものより小さければ
       それより上のチャンネルでの再生は止まる。
@@ -1014,6 +1088,7 @@ SDL::Event2.poll,SDL::Event2.waitはSDL::Event2のサブクラスのインスタンスを返しま
       これは新しく確保できたチャンネルの数を返す。
 
 --- SDL::Mixer.playChannel(channel,wave,loop)
+--- SDL::Mixer.play_channel(channel,wave,loop)
       指定したchannelでwaveを演奏する。
       channelに-1を指定すると、あいているchannelが適当にえらばれる。
       loops指定した回数繰り返す。
@@ -1027,6 +1102,7 @@ SDL::Event2.poll,SDL::Event2.waitはSDL::Event2のサブクラスのインスタンスを返しま
       falseを返す。
 
 --- SDL::Mixer.setVolume(channel,volume)
+--- SDL::Mixer.set_volume(channel,volume)
       指定したchannelのボリュームを設定する。
       channel=-1を指定するとすべてのchannelに対しボリュームを指定する。
 
@@ -1046,36 +1122,46 @@ SDL::Event2.poll,SDL::Event2.waitはSDL::Event2のサブクラスのインスタンスを返しま
       返す。
 
 --- SDL::Mixer.playMusic(music,loops)
+--- SDL::Mixer.play_music(music,loops)
       musicで指定した音楽を演奏する。
       loopsは((<SDL::Mixer.playChannel>))と同じ。
 
 --- SDL::Mixer.fadeInMusic(music,loops,ms)
+--- SDL::Mixer.fade_in_music(music,loops,ms)
       musicで指定した音楽をフェードインして演奏する。
       loopsは((<SDL::Mixer.playChannel>))と同じ。
       フェードインはmsは指定したミリ秒だけかける
 
 --- SDL::Mixer.setVolumeMusic(volume)
+--- SDL::Mixer.set_volume_music(volume)
       音楽のボリュームを指定する。
 
 --- SDL::Mixer.haltMusic
+--- SDL::Mixer.halt_music
       音楽を止める。
 
 --- SDL::Mixer.fadeOutMusic(ms)
+--- SDL::Mixer.fade_out_music(ms)
       音楽を指定したミリ秒かけてフェードアウトする。
 
 --- SDL::Mixer.pauseMusic
+--- SDL::Mixer.pause_music
       音楽を一時停止する。
       
 --- SDL::Mixer.resumeMusic
+--- SDL::Mixer.resume_music
       一時停止している音楽の再生を再開する。
 
 --- SDL::Mixer.rewindMusic
+--- SDL::Mixer.rewind_music
       音楽の再生位置を一番最初にする。
 
 --- SDL::Mixer.pauseMusic?
+--- SDL::Mixer.pause_music?
       音楽が一時停止していればtrue、いなければfalseを返す。
 
 --- SDL::Mixer.playMusic?
+--- SDL::Mixer.play_music?
       音楽が演奏されていればtrue、していなければfalseを返す。
 
 === SDL::Mixer::Wave
@@ -1095,6 +1181,7 @@ Object
 ==== メソッド
 
 --- SDL::Mixer::Wave#setVolume(volume)
+--- SDL::Mixer::Wave#set_volume(volume)
       selfのボリュームを返す。
 
 === SDL::Mixer::Music
@@ -1126,9 +1213,11 @@ Window関連の処理をまとめたモジュール
         [ ウィンドウのタイトル , アイコンのタイトル ]
 
 --- SDL::WM.setCaption(title,icon)
+--- SDL::WM.set_caption(title,icon)
       上記の内容を変更する。
 
 --- SDL::WM.icon=(iconImage)
+--- SDL::WM.icon=(icon_image)
       ウィンドウのアイコンの絵を指定する。
       setVideoModeの呼びだし前に呼びださなければならない。
       
@@ -1155,9 +1244,11 @@ Object
 === クラスメソッド
 
 --- SDL::CD.numDrive
+--- SDL::CD.num_drive
       いくつのCDROMドライブが使用できるかを返す。
 
 --- SDL::CD.indexName(drive)
+--- SDL::CD.index_name(drive)
       指定したドライブの名前を文字列で返す。
       ドライブの指定は0からCD.numDrive-1の整数で指定する。
 
@@ -1183,6 +1274,7 @@ Object
       CDをstartフレームからlengthフレームの間演奏する。
 
 --- SDL::CD#playTrack(start_track,start_frame,ntracks,nframes)
+--- SDL::CD#play_track(start_track,start_frame,ntracks,nframes)
       CDをstart_trackのstart_frameから、ntracks先のトラックのnframeのところ
       まで演奏する。
       なお、このライブラリ内ではトラックのインデックスは0からはじまる。
@@ -1206,21 +1298,26 @@ Object
       CDをイジェクトする。
 
 --- SDL::CD#numTracks
+--- SDL::CD#num_tracks
       CDのトラック数を返す。
 
 --- SDL::CD#currentTrack
+--- SDL::CD#current_track
       現在演奏しているトラックを返す。
 
 --- SDL::CD#currentFrame
+--- SDL::CD#current_frame
       現在演奏している位置をフレーム数で返す。
       この値は現在のトラックの最初からの値である。
 
 --- SDL::CD#trackType(track)
+--- SDL::CD#track_type(track)
       指定したトラックがなんであるかを返す。その値は以下のとおり。
         SDL::CD::AUDIO_TRACK
         SDL::CD::DATA_TRACK
 
 --- SDL::CD#trackLength(track)
+--- SDL::CD#track_length(track)
       指定したトラックの長さをフレーム数で返す。
 
 == ジョイスティック関連
@@ -1250,6 +1347,7 @@ Object
       利用可能なジョイスティックの数を返す。
 
 --- SDL::Joystick.indexName(index)
+--- SDL::Joystick.index_name(index)
       指定したジョイスティックの名前を文字列で返す。
       0からJoystick.num-1の整数で指定する。
 
@@ -1261,6 +1359,7 @@ Object
       指定したジョイスティックがすでに開かれているかを返す。
 
 --- SDL::Joystick.updateAll
+--- SDL::Joystick.update_all
       全てのジョイスティックの情報を更新する。
       Joystick#button/ball/hat/axisの情報はこれで更新される。
 
@@ -1270,13 +1369,16 @@ Object
       ジョイスティックに対応する整数を返す。
 
 --- SDL::Joystick#numAxes
+--- SDL::Joystick#num_axes
       いわゆるアナログ入力装置の数を返す。
       ただし、2軸のアナログティックは2個の装置があると数えられる。
 
 --- SDL::Joystick#numBalls
+--- SDL::Joystick#num_balls
       トラックボールの数を返す。
 
 --- SDL::Joystick#numButtons
+--- SDL::Joystick#num_buttons
       ボタンの数を返す。
 
 --- SDL::Joystick#axis(axis_index)
@@ -1340,6 +1442,7 @@ Object
         SDL::TTF::STYLE_UNDERLINE
 
 --- SDL::TTF#textSize(text)
+--- SDL::TTF#text_size(text)
       textを描画したときの縦、横の必要な大きさを配列で返す
 
 --- SDL::TTF#faces
@@ -1347,38 +1450,47 @@ Object
       faceの数を返す。
 
 --- SDL::TTF#fixedWidth?
+--- SDL::TTF#fixed_width?
       SDL_ttf 2.0.4 が必要
       フォントが固定幅であるかどうかを返す。
 
 --- SDL::TTF#familyName
+--- SDL::TTF#family_name
       SDL_ttf 2.0.4 が必要
       font family の名前を返す。
 
 --- SDL::TTF#styleName
+--- SDL::TTF#style_name
       SDL_ttf 2.0.4 が必要
       フォントのstyleの名前を返す。
 
 --- SDL::TTF#drawSolidUTF8(dest,text,x,y,r,g,b)
+--- SDL::TTF#draw_solid_utf8(dest,text,x,y,r,g,b)
       selfのフォント設定でdest(Surfaceのインスタンス)にString textを
       destの位置(x,y)の所に書きこむ。色はr,g,bで決められる。
       透明色(ColorKey)は有効である。textはUTF-8を使う。
 
 --- SDL::TTF#drawBlendedUTF8(dest,text,x,y,r,g,b)
+--- SDL::TTF#draw_blended_utf8(dest,text,x,y,r,g,b)
       drawSolidUTF8と同様。drawSolidUTF8よりも高品質な描画ができる。
 
 --- SDL::TTF#drawShadedUTF8(dest,text,x,y,fg_r,fg_g,fg_b,bg_r,bg_g,bg_b)
+--- SDL::TTF#draw_shaded_utf8(dest,text,x,y,fg_r,fg_g,fg_b,bg_r,bg_g,bg_b)
       drawSolidUTF8と同様。字を書いた部分の後側がbg_r,bg_g,bg_bで指定した
       色で塗り潰されることがdrawSolidUTF8と異なる。
 
 --- SDL::TTF#renderSolidUTF8(text,r,g,b)
+--- SDL::TTF#render_solid_utf88(text,r,g,b)
       drawSolidUTF8で描画される文字が描かれたサーフェスを生成する。
       失敗時にはnilを返す。
             
 --- SDL::TTF#renderBlendedUTF8(text,r,g,b)
+--- SDL::TTF#render_blended_utf8(text,r,g,b)
       ((<SDL::TTF#renderSolidUTF8>))と同様、drawSolidUTF8が
       drawBlendedUTF8になる。
       
 --- SDL::TTF#renderShadedUTF8(text,fg_r,fg_g,fg_b,bg_r,bg_g,bg_b)
+--- SDL::TTF#render_shaded_utf8(text,fg_r,fg_g,fg_b,bg_r,bg_g,bg_b)
       ((<SDL::TTF#renderSolidUTF8>))と同様、drawSolidUTF8が
       drawShadedUTF8になる。
       
@@ -1411,10 +1523,12 @@ Object
       MPEGの現在の情報を返す。返り値はSDL::MPEG::Infoのインスタンス
 
 --- SDL::MPEG#enableAudio(enable)
+--- SDL::MPEG#enable_audio(enable)
       音声の再生をするかどうか指定する。trueで再生、falseで再生しないを
       指定できる。
 
 --- SDL::MPEG#enableVideo(enable)
+--- SDL::MPEG#enable_video(enable)
       映像の再生をするかどうか指定する。trueで再生、falseで再生しないを
       指定できる。
 
@@ -1425,16 +1539,20 @@ Object
         SDL::MPEG::PLAYING
 
 --- SDL::MPEG#setVolume(volume)
+--- SDL::MPEG#set_volume(volume)
       ボリュームを指定する。0から100までが有効。
 
 --- SDL::MPEG#setDisplay(surface)
+--- SDL::MPEG#set_display(surface)
       再生した映像を実際に描画するサーフィスを指定する。
 
 --- SDL::MPEG#setLoop(repeat)
+--- SDL::MPEG#set_loop(repeat)
       再生がループするかどうか設定する。trueでループする、falseでループしな
       いとなる。
 
 --- SDL::MPEG#scaleXY(w,h)
+--- SDL::MPEG#scale_xy(w,h)
       再生映像の大きさを幅 w 、高さ h に指定する。
 
 --- SDL::MPEG#scale(scale)
@@ -1444,6 +1562,7 @@ Object
       再生画像の左上の位置を(x,y)に指定する。
 
 --- SDL::MPEG#setDisplayRegion(x,y,w,h)
+--- SDL::MPEG#set_display_region(x,y,w,h)
       再生画像のsetDisplayで指定したサーフィス内での描画範囲を指定する。
 
 --- SDL::MPEG#play
@@ -1468,9 +1587,11 @@ Object
       seconds秒再生位置を前方に移動させる。
 
 --- SDL::MPEG#renderFrame(framenum)
+--- SDL::MPEG#render_frame(framenum)
       framenum目のフレームを描画する。
 
 --- SDL::MPEG#setFilter(filter)
+--- SDL::MPEG#set_filter(filter)
       再生映像にかけるフィルタを指定する。以下のフィルタを指定可能。
         SDL::MPEG::NULL_FILTER  フィルタなし
         SDL::MPEG::BILINEAR_FILTER  バイリニアフィルタ 
@@ -1505,6 +1626,7 @@ Object
 === モジュール関数
 
 --- SDL.getTicks
+--- SDL.get_ticks
       ((<SDL.init>))が呼ばれてからの時間をミリ秒で返す。
       49日ほどスクリプトを走らせつづけると0にもどるのに注意。
 

@@ -50,6 +50,7 @@ StandardError
         SDL::INIT_JOYSTICK
 
 --- SDL.initedSystem(flag)
+--- SDL.inited_system(flag)
       Not documented yet
 
 == video
@@ -59,9 +60,11 @@ some functions need SGE or SDL_image
 === functions in module SDL
 
 --- SDL.getVideoSurface
+--- SDL.get_video_surface
       Not documented yet
 
 --- SDL.setVideoMode(w,h,bpp,flags)
+--- SDL.set_video_mode(w,h,bpp,flags)
       Set up a video mode with the specified width, height and bits-per-pixel.
       If bpp is 0, it is treated as the current display bits per pixel.
       Return the instanse of ((<SDL::Screen>)), if succeeded.
@@ -85,6 +88,7 @@ some functions need SGE or SDL_image
         the screen.
 
 --- SDL.checkVideoMode(w,h,bpp,flags)
+--- SDL.check_video_mode(w,h,bpp,flags)
       Check to see if a particular video mode is supported.
       Returns 0 if the requested mode is not supported under any
       bit depth, or returns the bits-per-pixel of the closest available mode
@@ -99,33 +103,40 @@ some functions need SGE or SDL_image
       ((<SDL.setVideoMode>)).
 
 --- SDL.listModes(flags)
+--- SDL.list_modes(flags)
       Returns availanel screen demensions for the given flags.
       Returns nil if there are no available dimensions.
       Returns true if any dimension is okay.
       Otherwise returns list of available dimensions in array.
 
 --- SDL.videoDriverName
+--- SDL.video_driver_name
       Returns the name of initialized video driver like "x11" or "windib".
       Raise exeption if video have not been initialized.
 
 --- SDL.setGamma(redgamma,greengamma,bluegamma)
+--- SDL.set_gamma(redgamma,greengamma,bluegamma)
       Sets the "gamma function" for the display of each color component.
       Gamma controls the brightness/contrast of colors displayed on
       the screen. A gamma value of 1.0 is identity
       (i.e., no adjustment is made).
 
 --- SDL.getGammaRamp
+--- SDL.get_gamma_ramp
       Returns the gamma translation lookup tables currently used
       by the display. Return value is array that has r, g, b table.
       Each table is array that has 256 integer.
 
 --- SDL.setGammaRamp(table)
+--- SDL.set_gamma_ramp(table)
       Sets the gamma lookup tables for the display for each color component.
       table should be an array like what you can get
       with ((<SDL.getGammaRamp>)).
 
 --- SDL.autoLock
+--- SDL.auto_lock
 --- SDL.autoLock?
+--- SDL.auto_lock?
       Needs SGE
 
       Returns whether Ruby/SDL locks surface automatically when
@@ -134,14 +145,18 @@ some functions need SGE or SDL_image
       Please see ((<SDL::Surface#lock>)) to know more.
 
 --- SDL.autoLock=(autolocking)
+--- SDL.auto_lock=(autolocking)
 --- SDL.autoLockON
+--- SDL.auto_lock_on
 --- SDL.autoLockOFF
+--- SDL.auto_lock_off
       Needs SGE
 
       Set whether Ruby/SDL locks surface automatically when
       needed.
 
 --- SDL.videoInfo
+--- SDL.video_info
       Return  video information in the object of VideoInfo .
       The contents are following.
       Values represent boolean value are true/false .
@@ -159,6 +174,7 @@ some functions need SGE or SDL_image
         SDL::VideoInfo#bpp
 	
 --- SDL.blitSurface(src,srcX,srcY,srcW,srcH,dst,dstX,dstY)
+--- SDL.blit_surface(src,srcX,srcY,srcW,srcH,dst,dstX,dstY)
       This performs a fast blit from the source surface to the destination
       surface.
 
@@ -167,6 +183,7 @@ some functions need SGE or SDL_image
       The blit function should not be called on a locked surface.
 
 --- SDL.blitSurface2(src,srcRect,dst,dstRect)
+--- SDL.blit_surface2(src,src_rect,dst,dst_rect)
       You use this function like:
         blitSurface2(src,[0,32,32,32],dst,[100,200])
       or
@@ -177,6 +194,7 @@ some functions need SGE or SDL_image
         blitSurface2( src, rect1, dst, rect2 )
       
 --- SDL.rotateXYScaled(src,dst,x,y,angle,xscale,yscale)
+--- SDL.rotateXY_scaled(src,dst,x,y,angle,xscale,yscale)
       Needs SGE
 
       Note that this function is different from SGE sge_rotate_xyscaled API
@@ -190,17 +208,20 @@ some functions need SGE or SDL_image
       ((<SDL.transformBlit>))
 
 --- SDL.rotateScaled(src,dst,x,y,angle,scale)
+--- SDL.rotate_scaled(src,dst,x,y,angle,scale)
       Same as above, but with xscale=yscale.
 
 --- SDL.rotate(src,dst,x,y,angle)
       Same as above, but with xscale=yscale=1.0.
 
 --- SDL.rotateScaledBlit(src,dst,x,y,angle,scale)
+--- SDL.rotate_scaled_blit(src,dst,x,y,angle,scale)
       Needs SGE
 
       Same as rotateScaled,but respect colorkey.
 
 --- SDL.rotateBlit(src,dst,x,y,angle)
+--- SDL.rotate_blit(src,dst,x,y,angle)
       Same as rotateScaledBlit,but with scale=1.0;
 
 --- SDL.transform(src,dst,angle,xscale,yscale,px,py,qx,qy,flags)
@@ -230,6 +251,7 @@ some functions need SGE or SDL_image
          coordinates and the other flags.
 
 --- SDL.transformBlit(src,dst,angle,xscale,yscale,px,py,qx,qy,flags)
+--- SDL.transform_blit(src,dst,angle,xscale,yscale,px,py,qx,qy,flags)
       Need SGE
 
       Blit src surface to dst surface with scaling and rotation.
@@ -277,6 +299,7 @@ Object
         video memory, to obtain hardware alpha support.
 
 --- SDL::Surface.loadBMP(filename)
+--- SDL::Surface.load_bmp(filename)
       Loads a image from a named Windows BMP file and return
       the instance of ((<SDL::Screen>)).
 
@@ -292,9 +315,11 @@ Object
 ==== method
 
 --- SDL::Surface#saveBMP(filename)
+--- SDL::Surface#save_bmp(filename)
       Saves the surface as a Windows BMP file named file.
 
 --- SDL::Surface#displayFormat
+--- SDL::Surface#display_format
       This method copies self to a new surface of the pixel
       format and colors of the video framebuffer, suitable for fast blitting
       onto the display surface.
@@ -304,10 +329,12 @@ Object
       this method.
 
 --- SDL::Surface#displayFormatAlpha
+--- SDL::Surface#display_format_alpha
       Same as ((<SDL::Surface#displayFormat>)), except respecting
       alpha value per pixel.
 
 --- SDL::Surface#setColorKey(flag,key)
+--- SDL::Surface#set_color_key(flag,key)
       Sets the color key (transparent pixel) in a blittable surface and enables
       or disables RLE blit acceleration.
       If flag is SDL::SRCCOLORKEY then key is the transparent pixel
@@ -316,9 +343,11 @@ Object
       using RLE acceleration when drawn with blitting.
 
 --- SDL::Surface#fillRect(x,y,w,h)
+--- SDL::Surface#fill_rect(x,y,w,h)
       This function performs a fast fill of the given rectangle with color.
 
 --- SDL::Surface#setClipRect(x,y,w,h)
+--- SDL::Surface#set_clip_rect(x,y,w,h)
       Sets the clipping rectangle for a surface. When this surface is the
       destination of a blit, only the area within the clip rectangle will
       be drawn into.
@@ -328,10 +357,12 @@ Object
       outside the edges of the surface.
 
 --- SDL::Surface#getClipRect
+--- SDL::Surface#get_clip_rect
       Returns the clipping rectangle for this surface.
       Return value is an array including x, y, r, w value.
 
 --- SDL::Surface#setAlpha(flag,alpha)
+--- SDL::Surface#set_alpha(flag,alpha)
       SDL_SetAlpha is used for setting the per-surface alpha and/or enabling
       and disabling per-pixel alpha blending.
       
@@ -384,36 +415,44 @@ Object
       Unlock the surface.
 
 --- SDL::Surface#mustLock?
+--- SDL::Surface#must_lock?
       Returns true if you must lock surface for directly accessing the pixels,
       otherwise returns false.
 
 --- SDL::Surface#getPixel(x,y) 
+--- SDL::Surface#get_pixel(x,y) 
 --- SDL::Surface#[](x,y)
       Needs SGE ,Needs lock
       Gets the color of the specified pixel.
 
 --- SDL::Surface#putPixel(x,y,pixel)
+--- SDL::Surface#put_pixel(x,y,pixel)
 --- SDL::Surface#[]=(x,y,pixel)
       Needs SGE ,Needs lock
       Writes a pixel to the specified position.
 
 --- SDL::Surface#drawLine(x1,y1,x2,y2,color)
+--- SDL::Surface#draw_line(x1,y1,x2,y2,color)
       Needs SGE ,Needs lock
       Draws a line from (x1,y1) to (x2,y2).
 
 --- SDL::Surface#drawRect(x,y,w,h,color)
+--- SDL::Surface#draw_rect(x,y,w,h,color)
       Needs SGE ,Needs lock
       Draws a rectangle.
 
 --- SDL::Surface#drawCircle(x,y,r,color)
+--- SDL::Surface#draw_circle(x,y,r,color)
       Needs SGE ,Needs lock
       Draws a circle.
 
 --- SDL::Surface#drawFilledCircle(x,y,r,color)
+--- SDL::Surface#draw_filled_circle(x,y,r,color)
       Needs SGE ,Needs lock
       Draws a filled circle.
 
 --- SDL::Surface#rotateScaledSurface(angle,scale,bgcolor)
+--- SDL::Surface#rotate_scaled_surface(angle,scale,bgcolor)
       Needs SGE
       This function makes the instance of Surface with a rotated and scaled
       copy of "self". "angle" is the rotation angle in degrees.
@@ -422,26 +461,32 @@ Object
       This method is obsolete. Please use ((<SDL::Surface#transformSurface>)).
 
 --- SDL::Surface#rotateSurface(angle,bgcolor)
+--- SDL::Surface#rotate_surface(angle,bgcolor)
       Same as above,but with scale=1.0 .
 
 --- SDL::Surface#transformSurface(bgcolor,angle,xscale,yscale,flags)
+--- SDL::Surface#transform_surface(bgcolor,angle,xscale,yscale,flags)
       Creates a rotated and scaled image of src. See ((<SDL.transform>))
       for more information.
 
       * bgcolor - What background color should the new surface have.
       
 --- SDL::Surface#mapRGB(r,g,b)
+--- SDL::Surface#map_rgb(r,g,b)
     Maps the RGB color value to the pixel format of specified surface
     and returns the pixel value as a integer.
 
 --- SDL::Surface#mapRGBA(r,g,b,a)
+--- SDL::Surface#map_rgba(r,g,b,a)
       Same as above,but includes alpha value.
 
 --- SDL::Surface#getRGB(pixel)
+--- SDL::Surface#get_rgb(pixel)
       Get RGB component values from a pixel stored in the specified pixel
       format.Returns r,g,b value in array as [r,g,b].
 
 --- SDL::Surface#getRGBA(pixel)
+--- SDL::Surface#get_rgba(pixel)
       Same as above, but return value includes alplah value.
       Returns r,g,b,a in arrary as [r,g,b,a].
 
@@ -458,6 +503,7 @@ Object
       Returns flags on this surface.
 
 --- SDL::Surface#setPalette(flag,colors,firstcolor)
+--- SDL::Surface#set_palette(flag,colors,firstcolor)
       Sets a portion of the palette for the given 8-bit surface.
 
       Palettized (8-bit) screen surfaces with the SDL_HWPALETTE flag have two
@@ -473,10 +519,12 @@ Object
         [ [rX,gX,bX],[rX+1,gX+1,bX+1], ... ,[rY,gY,bY] ]
 
 --- SDL::Surface#setColors(colors,firstcolor)
+--- SDL::Surface#set_colors(colors,firstcolor)
       Same as ((<SDL::Surface#setPalette>)), but flag is
       SDL::LOGPAL|SDL::PHYSPAL.
 
 --- SDL::Surface#getPalette
+--- SDL::Surface#get_palette
       Returns the palette of the specified surface. Return value is array
       as following.
         [ [r0,g0,b0],[r1,g1,b1], ... ,[r255,g255,b255] ]
@@ -500,6 +548,7 @@ singleton methods.
 ==== method
 
 --- SDL::Screen#updateRect(x,y,w,h)
+--- SDL::Screen#update_rect(x,y,w,h)
       Makes sure the given  rectangle is updated on the given screen.
       Thhis function should not be called while screen is locked.
 
@@ -581,6 +630,7 @@ Object
       Create a new ((<SDL::Event>)) Object. 
 
 --- SDL::Event.appState
+--- SDL::Event.app_state
       Returns the current state of the application. The value returned
       is a bitwise combination of:
         SDL::Event::APPMOUSEFOCUS
@@ -588,14 +638,17 @@ Object
         SDL::Event::APPACTIVE
         
 --- SDL::Event.enableUNICODE
+--- SDL::Event.enable_unicode
       Enables UNICODE keyboard translation.
       UNICODE translation is disabled by default.
       If you will use SDLSKK on Ruby/SDL, you should enable translation.
       
 --- SDL::Event.disableUNICODE
+--- SDL::Event.disable_unicode
       Disable UNICODE keyboard translation.
       
 --- SDL::Event.enableUNICODE?
+--- SDL::Event.enable_unicode?
       Returns whether UNICODE keyboard translation is enabled.
       
 ==== method
@@ -633,13 +686,16 @@ Object
       This method can handle all event.
 
 --- SDL::Event#keyPress?
+--- SDL::Event#key_press?
       Returns true when you got key event and a key pressed down,
       otherwise returns false.
 
 --- SDL::Event#keySym
+--- SDL::Event#key_sym
       Returns SDL vertual keysym.
 
 --- SDL::Event#keyMod
+--- SDL::Event#key_mod
       Returns Current Key modifiers.
 
 --- SDL::Event#gain?
@@ -647,6 +703,7 @@ Object
       returns true when gaining focus in this event,otherwise retursn false.
 
 --- SDL::Event#appState
+--- SDL::Event#app_state
       Returns the kind of ActiveEvent.
       This value is following.
         SDL::Event::APPMOUSEFOCUS
@@ -654,24 +711,30 @@ Object
         SDL::Event::APPACTIVE
 
 --- SDL::Event#mouseX
+--- SDL::Event#mouse_x
       Returns the X coordinate of the mouse.
 
 --- SDL::Event#mouseY
+--- SDL::Event#mouse_y
       Returns the Y coordinate of the mouse.
 
 --- SDL::Event#mouseXrel
+--- SDL::Event#mouse_xrel
       Returns the relative motion in the X direction.
 
 --- SDL::Event#mouseYrel
+--- SDL::Event#mouse_yrel
       Returns the relative motion in the Y direction.
 
 --- SDL::Event#mouseButton
+--- SDL::Event#mouse_button
       Returns the mouse button index.
         SDL::Mouse::BUTTON_LEFT  
         SDL::Mouse::BUTTON_MIDDLE  
         SDL::Mouse::BUTTON_RIGHT 
 
 --- SDL::Event#mousePress?
+--- SDL::Event#mouse_press?
       Returns true when this mouse event is SDL::Event::MOUSEBUTTONDOWN,
       otherwise returns false.
 
@@ -715,15 +778,19 @@ Object
       Not documented yet.
 
 --- SDL::Event2.appState
+--- SDL::Event2.app_state
       Same as ((<SDL::Event.appState>)).
 
 --- SDL::Event2.enableUNICODE
+--- SDL::Event2.enable_unicode
       Same as ((<SDL::Event.enableUNICODE>)).
       
 --- SDL::Event2.disableUNICODE
+--- SDL::Event2.disable_unicode
       Same as ((<SDL::Event2.disableUNICODE>)).
       
 --- SDL::Event2.enableUNICODE?
+--- SDL::Event2.enable_unicode?
       Same as ((<SDL::Event.enableUNICODE?>)).
       
 ==== method
@@ -912,6 +979,7 @@ This module has some functions to get the key state.
       return true if "key" is pressed and return false if "key" is released.
 
 --- SDL::Key.modState
+--- SDL::Key.mod_state
       Returns the current of the modifier keys (CTRL,ATL,etc.).
       The return value can be an OR'd combination of following constants.  
         SDL::Key::MOD_NONE
@@ -933,9 +1001,11 @@ This module has some functions to get the key state.
         SDL::Key::MOD_META = SDL::Key::MOD_LMETA|SDL::Key::MOD_RMETA
 
 --- SDL::Key.enableKeyRepeat(delay,interval)
+--- SDL::Key.enable_key_repeat(delay,interval)
       Set keyboard repeat rate.
 
 --- SDL::Key.disableKeyRepeat
+--- SDL::Key.disable_key_repeat
       Disables key repeat.
 
 == SDL::Mouse
@@ -959,6 +1029,7 @@ The module mouse constants and mouse functions.
       Hide mouse cursor.
 
 --- SDL::Mouse.setCursor(bitmap,white,black,transparent,inverted,hot_x=0,hot_y=0)
+--- SDL::Mouse.set_cursor(bitmap,white,black,transparent,inverted,hot_x=0,hot_y=0)
       Change mouse cursor. bitmap is form of cursor,instance of
       ((<SDL::Surface>)).The cursor width must be a multiple of 8.
       The cursor is created in black and white according to
@@ -984,12 +1055,14 @@ Needs SDL_mixer to use functions if this module.
         [ rate,format,channels ]
 
 --- SDL::Mixer.allocateChannels(numchannels)
+--- SDL::Mixer.allocate_channels(numchannels)
       Dynamically change the number of channels managed by the mixer.
       If decreasing the number of channels, the upper channels are
       stopped.
       This method returns the new number of allocated channels.
 
 --- SDL::Mixer.playChannel(channel,wave,looping)
+--- SDL::Mixer.play_channel(channel,wave,looping)
       Play a wave on a specific channel.
 
       If the specified channel is -1, play on the first free channel.
@@ -1004,6 +1077,7 @@ Needs SDL_mixer to use functions if this module.
       If the specified channel is -1, check all channels.
 
 --- SDL::Mixer.setVolume(channel,volume)
+--- SDL::Mixer.set_volume(channel,volume)
       Set the volume in the range of 0-128 of a specific channel.
       If the specified channel is -1, set volume for all channels.
       Returns the original volume.
@@ -1022,34 +1096,44 @@ Needs SDL_mixer to use functions if this module.
       Returns whether a particular channel is pausing.
 
 --- SDL::Mixer.playMusic(music,loops)
+--- SDL::Mixer.play_music(music,loops)
       Play a music.
       
 --- SDL::Mixer.fadeInMusic(music,loops,ms)
+--- SDL::Mixer.fade_in_music(music,loops,ms)
       Fade in the given music in ms milliseconds.
       The meaning of loops is same as in ((<SDL::Mixer.playChannel>))
 
 --- SDL::Mixer.setVolumeMusic(volume)
+--- SDL::Mixer.set_volume_music(volume)
       Sets the volume of music.
 
 --- SDL::Mixer.haltMusic
+--- SDL::Mixer.halt_music
       Halts music.
 
 --- SDL::Mixer.fadeOutMusic(ms)
+--- SDL::Mixer.fade_out_music(ms)
       Fade out the music in ms milliseconds.
 
 --- SDL::Mixer.pauseMusic
+--- SDL::Mixer.pause_music
       Pauses music.
 
 --- SDL::Mixer.resumeMusic
+--- SDL::Mixer.resume_music
       Resumes music.
 
 --- SDL::Mixer.rewindMusic
+--- SDL::Mixer.rewind_music
       Rewinds music.
 
 --- SDL::Mixer.pauseMusic?
+--- SDL::Mixer.pause_music?
       Returns whether the music is pausing.
 
 --- SDL::Mixer.playMusic?
+--- SDL::Mixer.play_music?
       Returns whether the music is playing.
 
 === SDL::Mixer::Wave
@@ -1068,6 +1152,7 @@ Object
 ==== method
 
 --- SDL::Mixer::Wave#setVolume(volume)
+--- SDL::Mixer::Wave#set_volume(volume)
       Set volume of self.
 
 === SDL::Mixer::Music
@@ -1096,9 +1181,11 @@ The module that have the functions for window management.
       Returns captions of the window title and icon name.
 
 --- SDL::WM.setCaption(title,icon)
+--- SDL::WM.set_caption(title,icon)
       Set captions of the window title and icon name.
 
 --- SDL::WM.icon=(iconImage)
+--- SDL::WM.icon=(icon_image)
       Sets the icon for the display window.
       
       This function must be called before the first call to
@@ -1130,9 +1217,11 @@ number of frames on a CD.
 === class method
 
 --- SDL::CD.numDrive
+--- SDL::CD.num_drive
       Returns the number of CD-ROM drives on the system.
 
 --- SDL::CD.indexName(drive)
+--- SDL::CD.index_name(drive)
       Returns a human-readable, system-dependent identifier for the CD-ROM.
       drive is the index of the drive. Drive indices start to 0 and end at
       SDL::CD.numDrive-1
@@ -1161,6 +1250,7 @@ number of frames on a CD.
       Plays the given cdrom, starting a frame start for length frames.
 
 --- SDL::CD#playTrack(start_track,start_frame,ntracks,nframes)
+--- SDL::CD#play_track(start_track,start_frame,ntracks,nframes)
       SDL_CDPlayTracks plays the given CD starting at track start_track, for
       ntracks tracks.
       
@@ -1184,20 +1274,25 @@ number of frames on a CD.
       Ejects cdrom.
 
 --- SDL::CD#numTracks
+--- SDL::CD#num_tracks
       Returns the number of tracks on the CD.
 
 --- SDL::CD#currentTrack
+--- SDL::CD#current_track
       Returns current track.
 
 --- SDL::CD#currentFrame
+--- SDL::CD#current_frame
       Returns current frame.
 
 --- SDL::CD#trackType(track)
+--- SDL::CD#track_type(track)
       Returns the track type of given track.
       SDL::CD::AUDIO_TRACK
       SDL::CD::DATA_TRACK
 
 --- SDL::CD#trackLength(track)
+--- SDL::CD#track_length(track)
       Returns the track length in frame,of given track.
 
 == Joystick handling
@@ -1224,6 +1319,7 @@ Object
       Returns the number of attached joysticks.
 
 --- SDL::Joystick.indexName(index)
+--- SDL::Joystick.index_name(index)
       Get the implementation dependent name of joystick. The index parameter
       refers to the N'th joystick on the system.
 
@@ -1238,6 +1334,7 @@ Object
       application. index refers to the N'th joystick on the system.
 
 --- SDL::Joystick.updateAll
+--- SDL::Joystick.update_all
       Updates the state(position, buttons, etc.) of all open joysticks.
 
 === method
@@ -1246,13 +1343,16 @@ Object
       Returns the index of self.
 
 --- SDL::Joystick#numAxes
+--- SDL::Joystick#num_axes
       Return the number of axes available from a previously opened 
       joystick.
 
 --- SDL::Joystick#numBalls
+--- SDL::Joystick#num_balls
       Return the number of trackballs available.
 
 --- SDL::Joystick#numButtons
+--- SDL::Joystick#num_buttons
       Returns the number of buttons available.
 
 --- SDL::Joystick#axis(axis_index)
@@ -1324,6 +1424,7 @@ Object
         SDL::TTF::STYLE_UNDERLINE
 
 --- SDL::TTF#textSize(text)
+--- SDL::TTF#text_size(text)
       Get Text size on image in array. Return [x,y].
 
 --- SDL::TTF#faces
@@ -1331,41 +1432,50 @@ Object
       Returns the number of face.
 
 --- SDL::TTF#fixedWidth?
+--- SDL::TTF#fixed_width?
       Need SDL_ttf 2.0.4 or later.
       Returns whether this font has fixed width or not.
 
 --- SDL::TTF#familyName
+--- SDL::TTF#family_name
       Need SDL_ttf 2.0.4 or later
       Returns the name of font family.
 
 --- SDL::TTF#styleName
+--- SDL::TTF#style_name
       Need SDL_ttf 2.0.4 or later
       Returns the name of style.
 
 --- SDL::TTF#drawSolidUTF8(dest,text,x,y,r,g,b)
+--- SDL::TTF#draw_solid_utf8(dest,text,x,y,r,g,b)
       Draw text on "dest" at ("x","y"). r,g,b are color elements of text.
       This function use colorkey internally.
       Text must be UTF-8 (you can use ASCII code).
 
 --- SDL::TTF#drawBlendedUTF8(dest,text,x,y,r,g,b)
+--- SDL::TTF#draw_blended_utf8(dest,text,x,y,r,g,b)
       Similar to drawSolidUTF8.
       More beautiful than drawSolidUTF8,but more slowly than drawSolidUTF8.
 
 --- SDL::TTF#drawShadedUTF8(dest,text,x,y,fg_r,fg_g,fg_b,bg_r,bg_g,bg_b)
+--- SDL::TTF#draw_shaded_utf8(dest,text,x,y,fg_r,fg_g,fg_b,bg_r,bg_g,bg_b)
       Similar to drawSolidUTF8.
       This method is defferent from drawSolidUTF8 in that this method
       fills the background of text with specified color.
 
 --- SDL::TTF#renderSolidUTF8(text,r,g,b)
+--- SDL::TTF#render_solid_utf8(text,r,g,b)
       Draws text on the new surface and returns it.
       If this method fails to render, you'll get nil.
       This method draws text like drawSolidUTF8.
       
 --- SDL::TTF#renderBlendedUTF8(text,r,g,b)
+--- SDL::TTF#render_blended_utf8(text,r,g,b)
       Same as ((<SDL::TTF#renderSolidUTF8>)), but this method draws
       like ((<SDL::TTF#drawBlendedUTF8>)).
       
 --- SDL::TTF#renderShadedUTF8(text,fg_r,fg_g,fg_b,bg_r,bg_g,bg_b)
+--- SDL::TTF#render_shaded_utf8(text,fg_r,fg_g,fg_b,bg_r,bg_g,bg_b)
       Same as ((<SDL::TTF#renderSolidUTF8>)), but this method draws
       like ((<SDL::TTF#drawShadedUTF8>)).
       
@@ -1397,9 +1507,11 @@ Object
       Return value is a instance of ((<SDL::MPEG::Info>))
 
 --- SDL::MPEG#enableAudio(enable)
+--- SDL::MPEG#enable_audio(enable)
       Enable or disable audio playback in MPEG stream.
       
 --- SDL::MPEG#enableVideo(enable)
+--- SDL::MPEG#enable_video(enable)
       Enable or disable video playback in MPEG stream.
 
 --- SDL::MPEG#status
@@ -1409,15 +1521,19 @@ Object
         SDL::MPEG::PLAYING
 
 --- SDL::MPEG#setVolume(volume)
+--- SDL::MPEG#set_volume(volume)
       Set the audio volume of an MPEG stream, in the range 0-100.
 
 --- SDL::MPEG#setDisplay(surface)
+--- SDL::MPEG#set_display(surface)
       Set the destination surface for MPEG video playback.
 
 --- SDL::MPEG#setLoop(repeat)
+--- SDL::MPEG#set_loop(repeat)
       Set or clear looping play.
       
 --- SDL::MPEG#scaleXY(w,h)
+--- SDL::MPEG#scale_xy(w,h)
       Scale pixel display.
 
 --- SDL::MPEG#scale(scale)
@@ -1427,6 +1543,7 @@ Object
       Move the video display area within the destination surface.
 
 --- SDL::MPEG#setDisplayRegion(x,y,w,h)
+--- SDL::MPEG#set_display_region(x,y,w,h)
       Set the region of the video to be shown.
 
 --- SDL::MPEG#play
@@ -1450,9 +1567,11 @@ Object
       Skip 'seconds' seconds in the MPEG stream.
 
 --- SDL::MPEG#renderFrame(framenum)
+--- SDL::MPEG#render_frame(framenum)
       Render a particular frame in the MPEG video.
 
 --- SDL::MPEG#setFilter(filter)
+--- SDL::MPEG#set_filter(filter)
       Set video filter. Available filter is following.
         SDL::MPEG::NULL_FILTER  No filter
         SDL::MPEG::BILINEAR_FILTER  Bilinear filter
@@ -1487,6 +1606,7 @@ Object
 === module function
 
 --- SDL.getTicks
+--- SDL.get_ticks
       Get the number of milliseconds since the SDL library initialization.
       Note that this value wraps if the program runs for more than ~49 days.
 
