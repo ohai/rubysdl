@@ -122,6 +122,7 @@ some functions need SGE or SDL_image
       with ((<SDL.getGammaRamp>)).
 
 --- SDL.autoLock
+--- SDL.autoLock?
       Needs SGE
 
       Returns whether Ruby/SDL locks surface automatically when
@@ -130,10 +131,12 @@ some functions need SGE or SDL_image
       Please see ((<SDL::Surface#lock>)) to know more.
 
 --- SDL.autoLock=(autolocking)
+--- SDL.autoLockON
+--- SDL.autoLockOFF
       Needs SGE
 
       Set whether Ruby/SDL locks surface automatically when
-      need.
+      needed.
 
 --- SDL.videoInfo
       Return  video information in the object of VideoInfo .

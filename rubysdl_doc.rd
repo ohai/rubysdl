@@ -136,6 +136,7 @@ bpp=bit per pixelである。
       テーブルの形式は((<SDL.getGammaRamp>))で得られるものと同じ。
 
 --- SDL.autoLock
+--- SDL.autoLock?
       SGEが必要
 
       サーフィスのロックが必要なとき自動的にロックしてくれるかどうか
@@ -144,6 +145,8 @@ bpp=bit per pixelである。
       さらに詳しいことを知りたければ((<Surface::lock>))を見てください。
 
 --- SDL.autoLock=(autolocking)
+--- SDL.autoLockON
+--- SDL.autoLockOFF
       SGEが必要
       サーフィスのロックが必要なとき自動的にロックしてくれるように設定する。
       
