@@ -394,6 +394,11 @@ Object
       selfの位置(x,y)にimageを描画する。
       ((<SDL.blitSurface>))で実装されている。
 
+--- SDL::Surface#copyRect(x,y,w,h)
+--- SDL::Surface#copy_rect(x,y,w,h)
+      selfの(x,y,w,h)の長方形の部分を複製したサーフェスを生成し、
+      それを返す
+      
 --- SDL::Surface#lock
       getPixel,setPixelやdrawLine等のメソッドを使って描画する
       ための準備をする。

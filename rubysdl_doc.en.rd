@@ -392,6 +392,10 @@ Object
       Draw image on (x,y) in self.
       This method are implemented using blitSurface.
 
+--- SDL::Surface#copyRect(x,y,w,h)
+--- SDL::Surface#copy_rect(x,y,w,h)
+      Copy given rect and return copyed surface.
+      
 --- SDL::Surface#lock
       This method sets up a surface for directly accessing the pixels.You call
       this before calling ((<SDL::Surface#getPixel>)) ,
