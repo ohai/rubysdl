@@ -417,9 +417,9 @@ Object
       バッファの交換を要求して返る。ハードウェアによって次の垂直帰線期間まで
       待ってから、次のビデオサーフェスへのblitやロック操作の呼び出しが返る前
       にビデオバッファの交換が行われる。ダブルバッファをサポートしない
-      ハードウェア上では、この呼び出しは((<Screen#updateRect>))(0, 0, 0, 0)
+      ハードウェア上では、この呼び出しは((<SDL::Screen#updateRect>))(0,0,0,0)
       としているのと同じである。このメソッドを使用してハードウェアによる画面の
-      交換を行うためには、((<setVideoMode>))の引数でDOUBLEBUFフラグを設
+      交換を行うためには、((<SDL.setVideoMode>))の引数でDOUBLEBUFフラグを設
       定しておくことが必要である。
 
 === SDL::PixelFormat
@@ -697,11 +697,11 @@ Object
 
 --- SDL::Mixer.playMusic(music,loops)
       musicで指定した音楽を演奏する。
-      loopsは((<playChannel>))と同じ。
+      loopsは((<SDL::Mixer.playChannel>))と同じ。
 
 --- SDL::Mixer.fadeInMusic(music,loops,ms)
       musicで指定した音楽をフェードインして演奏する。
-      loopsは((<playChannel>))と同じ。
+      loopsは((<SDL::Mixer.playChannel>))と同じ。
       フェードインはmsは指定したミリ秒だけかける
 
 --- SDL::Mixer.setVolumeMusic(volume)
@@ -954,7 +954,7 @@ Object
 
 == フォント関係
 
-=== TTF
+=== SDL::TTF
 
 ＴｒｕｅＴｙｐｅフォントを表すクラス
 

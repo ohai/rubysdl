@@ -112,7 +112,7 @@ some functions need SGE or SDL_image
       Returns whether Ruby/SDL locks surface automatically when
       need.Default is true.
 
-      Please see ((<SDL::Surface::lock>)) to know more.
+      Please see ((<SDL::Surface#lock>)) to know more.
 
 --- SDL.autoLock=(autolocking)
       Needs SGE
@@ -298,7 +298,7 @@ Object
       Once you are done accessing the surface, you
       should use ((<SDL::Surface#unlock>)) to release it.
       
-      Not all surfaces require locking. If ((<Surface#mustLock?>))  returns
+      Not all surfaces require locking. If ((<SDL::Surface#mustLock?>)) returns
       false, then you can read and write to the surface at any time, and the
       pixel format of the surface will not change.
       
@@ -762,7 +762,7 @@ The module that have the functions for window management.
 The class represents CDROM drive.
 
 Note that the information that you get with ((<SDL::CD#numTracks>)) is stored
-when you call ((<SDL::CD#status.>))
+when you call ((<SDL::CD#status>)).
 
 A CD-ROM is organized into one or more tracks, each consisting of a
 certain number of "frames". Each frame is ~2K in size, and at normal
