@@ -423,6 +423,12 @@ static VALUE sdl_getAlpha(VALUE obj)
   Data_Get_Struct(obj,SDL_Surface,surface);
   return UINT2NUM(surface->format->alpha);
 }
+static VALUE sdl_getFlags(VALUE obj)
+{
+  SDL_Surface *surface;
+  Data_Get_Struct(obj,SDL_Surface,surface);
+  return UINT2NUM(surface->flags);
+}
 
 static void defineConstForVideo()
 {
@@ -490,7 +496,8 @@ void init_video()
   rb_define_method(cSurface,"setAlpha",sdl_setAlpha,2);
   rb_define_method(cSurface,"h",sdl_surfaceH,0);
   rb_define_method(cSurface,"w",sdl_surfaceW,0);
-
+  rb_define_method(cSurface,"flags",sdl_getFlags,0);
+  
   rb_define_method(cSurface,"setPalette",sdl_setPalette,3);
   rb_define_method(cSurface,"setColors",sdl_setColors,2);
   rb_define_method(cSurface,"getPalette",sdl_getPalette,0);
@@ -506,7 +513,7 @@ void init_video()
   rb_define_method(cSurface,"bpp",sdl_getBpp,0);
   rb_define_method(cSurface,"colorkey",sdl_getColorkey,0);
   rb_define_method(cSurface,"alpha",sdl_getAlpha,0);
-  
+
   defineConstForVideo();
   return;
 }
