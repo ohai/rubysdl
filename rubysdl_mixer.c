@@ -149,7 +149,7 @@ static VALUE mix_fadeInMusic(VALUE mod,VALUE music,VALUE loops,VALUE ms)
   if( ! rb_obj_is_kind_of(music,cMusic) )
     rb_raise(rb_eArgError,"type mismatch");
   Data_Get_Struct(music,Mix_Music,mus);
-  Mix_fadeInMusic(mus,NUM2INT(loops),NUM2INT(ms));
+  Mix_FadeInMusic(mus,NUM2INT(loops),NUM2INT(ms));
   return Qnil;
 }
 
