@@ -45,11 +45,12 @@ StandardError
 --- SDL.init(flag)
       Initialize SDL. This should be called before all other SDL functions. The
       flags parameter specifies what part(s) of SDL to initialize.
-        SDL::INIT_AUDIO
-        SDL::INIT_VIDEO
-        SDL::INIT_CDROM
-        SDL::INIT_JOYSTICK
-
+        SDL::INIT_AUDIO  initialize audio output functions
+        SDL::INIT_VIDEO  initialize video output functions and input functions
+        SDL::INIT_CDROM  initialize CD playback fucntions
+        SDL::INIT_JOYSTICK  initialize joystick input functions
+      You should call this method before calling other Ruby/SDL methods.
+      
 --- SDL.initedSystem(flag)
 --- SDL.inited_system(flag)
       Not documented yet

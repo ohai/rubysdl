@@ -44,12 +44,14 @@ StandardError
 === SDL内のモジュール関数
 
 --- SDL.init(flag)
-      SDLを初期化する。flagとして与えられる定数は以下のとおり。
-        INIT_AUDIO
-        INIT_VIDEO
-        INIT_CDROM
-        INIT_JOYSTICK
+      SDLを初期化する。flagとして与えられるのは以下の定数のORを取ったもの。
+        INIT_AUDIO  オーディオ機能(音声出力機能)を初期化
+        INIT_VIDEO  ビデオ機能(画像出力)機能とキーボード、マウス入力機能を初期化
+        INIT_CDROM  CDROM再生機能を初期化
+        INIT_JOYSTICK  ジョイスティック入力機能を初期化
 
+      このメソッドはRuby/SDLの他のメソッドを呼ぶ前に呼んでください
+      
 --- SDL.quit
       at_exit{ SDL.quit; } というように使ってください。
 
