@@ -27,7 +27,7 @@ static VALUE sdl_checkVideoMode(VALUE mod,VALUE w,VALUE h,VALUE bpp,
 }
 static VALUE sdl_getVideoInfo(VALUE mod)
 {
-  SDL_VideoInfo *info;
+  const SDL_VideoInfo *info;
   info = SDL_GetVideoInfo();
   return rb_ary_new3(11,
 		     BOOL(info->hw_available),
@@ -152,9 +152,24 @@ static VALUE sdl_blitSurface(VALUE obj,VALUE src,VALUE srcX,VALUE srcY,
   }
   Data_Get_Struct(src,SDL_Surface,srcSurface);
   Data_Get_Struct(dest,SDL_Surface,destSurface);
-  SetRect(srcRect,srcX,srcY,srcW,srcH);
-  SetRect(destRect,destX,destY,srcW,srcH);
-  result = SDL_BlitSurface(srcSurface,&srcRect,destSurface,&destRect);
+
+  if (NUM2INT(srcX)==0&&NUM2INT(srcY)==0&&NUM2INT(srcW)==0&&NUM2INT(srcH)==0){
+    if (NUM2INT(destX)==0&&NUM2INT(destY)==0&&NUM2INT(srcW)==0&&NUM2INT(srcH)==0){
+      result = SDL_BlitSurface(srcSurface,NULL,destSurface,NULL);
+    }else{
+      SetRect(destRect,destX,destY,srcW,srcH);
+      result = SDL_BlitSurface(srcSurface,NULL,destSurface,&destRect);
+    }
+  }else{
+    SetRect(srcRect,srcX,srcY,srcW,srcH);
+    if (NUM2INT(destX)==0&&NUM2INT(destY)==0&&NUM2INT(srcW)==0&&NUM2INT(srcH)==0){
+      result = SDL_BlitSurface(srcSurface,&srcRect,destSurface,NULL);
+    }else{
+      SetRect(destRect,destX,destY,srcW,srcH);
+      result = SDL_BlitSurface(srcSurface,&srcRect,destSurface,&destRect);
+    }
+  }
+
   if( result == -1 ){
     rb_raise(eSDLError,"SDL_BlitSurface fail: %s",SDL_GetError());
   }
