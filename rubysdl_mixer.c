@@ -44,7 +44,7 @@ static VALUE mix_loadWav(VALUE class,VALUE filename)
   Check_Type(filename,T_STRING);
   wave = Mix_LoadWAV( STR2CSTR(filename) );
   if( wave == NULL ){
-    rb_raise( eSDLError,"Couldn't load wave file %s: %s"
+    rb_raise( eSDLError,"Couldn't load wave file %s: %s",
 	      STR2CSTR(filename),SDL_GetError() );
   }
   return Data_Wrap_Struct(class,0,Mix_FreeChunk,wave);
@@ -53,8 +53,6 @@ void init_mixer()
 {
   mMixer = rb_define_module_under(mSDL,"Mixer");
   rb_define_module_function(mMixer,"open",mix_openAudio,4);
-  rb_define_module_function(mMixer,"instance",mix_instance,0);
-  rb_define_module_function(mMixer,"close",mix_freeAudio,0);
 
   rb_define_module_function(mMixer,"playChannel",mix_playChannel,3);
   rb_define_module_function(mMixer,"play?",mix_playing,1);
