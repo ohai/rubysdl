@@ -151,7 +151,7 @@ module SDL
     end
   end
 
-  if denined?(MPEG)
+  if defined?(MPEG)
     class MPEG
       alias info_imp info
       private :info_imp
