@@ -13,3 +13,4 @@ rubysdl_joystick.o: rubysdl_joystick.c rubysdl.h
 rubysdl_cdrom.o: rubysdl_cdrom.c rubysdl.h
 rubysdl_pixel.o: rubysdl_pixel.c rubysdl.h
 rubysdl_smpeg.o: rubysdl_smpeg.c rubysdl.h
+rubysdl_sdlskk.o: rubysdl_sdlskk.c rubysdl.h
