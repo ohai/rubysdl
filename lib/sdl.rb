@@ -221,3 +221,5 @@ if defined?(GL) then
     end
   end
 end
+
+require 'rubysdl_aliases.rb'
