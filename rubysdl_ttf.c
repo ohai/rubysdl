@@ -24,7 +24,13 @@
 typedef SDL_Surface* (*RenderFunc)(TTF_Font *,const char *,SDL_Color,SDL_Color);
 
 static int ttf_initialized=0;
+static int ttf_finalized=0;
 
+static VALUE ttf_closeFont(TTF_Font *font)
+{
+  if( !ttf_finalized )
+    TTF_CloseFont(font);
+}
 static VALUE sdl_ttf_init(VALUE class)
 {
   if( TTF_Init()== -1 )
@@ -49,7 +55,7 @@ static VALUE sdl_ttf_open(int argc, VALUE *argv, VALUE class)
   if( font==NULL )
     rb_raise(eSDLError,"Couldn't open font %s: %s",STR2CSTR(filename),
 	     TTF_GetError());
-  return Data_Wrap_Struct(class,0,TTF_CloseFont,font);
+  return Data_Wrap_Struct(class,0,ttf_closeFont,font);
 }
 static VALUE sdl_ttf_getFontStyle(VALUE obj)
 {
@@ -254,8 +260,10 @@ void init_ttf()
 }
 void quit_ttf()
 {
-  if(ttf_initialized)
+  if(ttf_initialized){
     TTF_Quit();
+    ttf_finalized=1;
+  }
 }
 
 #endif /* HAVE_SDL_TTF */
