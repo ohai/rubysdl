@@ -147,7 +147,7 @@ static VALUE skk_Dict_save(VALUE obj, VALUE filename)
 
   Data_Get_Struct(obj,SDLSKK_Dictionary,dict);
 
-  if( !SDLSKK_Dict_save_user_jisyo(dict,STR2CSTR(filename)) )
+  if( !SDLSKK_Dict_save_user_dict(dict,STR2CSTR(filename)) )
     rb_raise(eSDLError,"Couldn't save %s",STR2CSTR(filename));
   
   return Qnil;
