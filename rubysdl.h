@@ -63,3 +63,5 @@ do{ \
 #define SDL_VERSION_ATLEAST(X, Y, Z) (SDL_COMPILEDVERSION >= SDL_VERSIONNUM(X, Y, Z))
      
 #endif
+
+Uint32 VALUE2COLOR(VALUE color,SDL_PixelFormat *format);
