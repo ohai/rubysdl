@@ -89,6 +89,7 @@ static VALUE sdl_getVideoInfo(VALUE mod)
   rb_iv_set(obj,"@blit_sw_A",BOOL(info->blit_sw_A));
   rb_iv_set(obj,"@blit_fill",BOOL(info->blit_fill));
   rb_iv_set(obj,"@video_mem",UINT2NUM(info->video_mem));
+  rb_iv_set(obj,"@bpp",UINT2NUM(info->vfmt->BitsPerPixel));
 #if 0
   rb_iv_set(obj,"@vfmt",Data_Wrap_Struct(cPixelFormat,0,0,info->vfmt));
 #endif
@@ -328,6 +329,30 @@ static VALUE sdl_setColors(VALUE obj,VALUE colors,VALUE firstcolor)
   return BOOL(SDL_SetColors( surface, palette,
 			     NUM2INT(firstcolor), RARRAY(colors)->len));
 }
+
+static VALUE sdl_getPalette(VALUE obj)
+{
+  SDL_Surface *surface;
+  int i;
+  VALUE palette;
+  SDL_Color *colors;
+  VALUE color;
+  
+  Data_Get_Struct(obj,SDL_Surface,surface);
+
+  if( surface->format->palette == NULL )
+    return Qnil;
+
+  palette = rb_ary_new();
+  colors = surface->format->palette->colors;
+  
+  for( i=0; i < surface->format->palette->ncolors; ++i ){
+    color = rb_ary_new3( 3, colors[i].r, colors[i].g, colors[i].b );
+    rb_ary_push( palette, color );
+  }
+  return palette;
+}
+
 /* surface lock methods */
 static VALUE sdl_mustlock(VALUE obj)
 {
@@ -443,6 +468,7 @@ void init_video()
   rb_define_attr(cVideoInfo,"blit_sw_A",1,0);
   rb_define_attr(cVideoInfo,"blit_fill",1,0);
   rb_define_attr(cVideoInfo,"video_mem",1,0);
+  rb_define_attr(cVideoInfo,"bpp",1,0);
 #if 0
   rb_define_attr(cVideoInfo,"vfmt",1,0);
 #endif
@@ -461,6 +487,10 @@ void init_video()
   rb_define_method(cSurface,"h",sdl_surfaceH,0);
   rb_define_method(cSurface,"w",sdl_surfaceW,0);
 
+  rb_define_method(cSurface,"setPalette",sdl_setPalette,3);
+  rb_define_method(cSurface,"setColors",sdl_setColors,2);
+  rb_define_method(cSurface,"getPalette",sdl_getPalette,0);
+  
   rb_define_method(cSurface,"mustLock?",sdl_mustlock,0);
   rb_define_method(cSurface,"lock",sdl_lockSurface,0);
   rb_define_method(cSurface,"unlock",sdl_unlockSurface,0);
