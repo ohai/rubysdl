@@ -252,6 +252,7 @@ static VALUE skk_Keybind_set_default_key(VALUE obj)
   
   Data_Get_Struct(obj,SDLSKK_Keybind,keybind);
   SDLSKK_Keybind_set_default_key(keybind);
+  return Qnil;
 }
 
 static VALUE skk_Keybind_unset_key(VALUE obj,VALUE key_str)
