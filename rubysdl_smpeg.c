@@ -43,14 +43,13 @@ static void setInfoToSMPEGInfo(VALUE obj,SMPEG_Info info)
   rb_iv_set(obj,"@total_time",UINT2NUM(info.total_time));
 }
 
-static VALUE smpeg_load(VALUE class,VALUE filename,VALUE sdl_audio)
+static VALUE smpeg_load(VALUE class,VALUE filename)
 {
   SMPEG *mpeg;
-  SMPEG_Info info;
   VALUE infoObj;
   char error_msg[2048];
     
-  mpeg = SMPEG_new(STR2CSTR(filename),&info,RTEST(sdl_audio));
+  mpeg = SMPEG_new(STR2CSTR(filename),NULL,0);
   if( SMPEG_error(mpeg) ){
     snprintf(error_msg,sizeof(error_msg),"Couldn't load %s: %s",
 	     STR2CSTR(filename),SMPEG_error(mpeg));
@@ -58,11 +57,8 @@ static VALUE smpeg_load(VALUE class,VALUE filename,VALUE sdl_audio)
     SMPEG_delete(mpeg);
     rb_raise(eSDLError,"%s",error_msg);
   }
-  infoObj = rb_obj_alloc(cMPEGInfo);
-  setInfoToSMPEGInfo(infoObj,info);
   
-  return rb_ary_new3(2,Data_Wrap_Struct(cMPEG,0,SMPEG_delete,mpeg),
-		     infoObj);
+  return Data_Wrap_Struct(cMPEG,0,SMPEG_delete,mpeg);
 }
 
 static VALUE smpeg_getInfo(VALUE obj,VALUE infoObj)
@@ -266,8 +262,8 @@ void init_smpeg()
   rb_define_attr(cMPEGInfo,"current_time",1,0);
   rb_define_attr(cMPEGInfo,"total_time",1,0);
 
-  rb_define_singleton_method(cMPEG,"load",smpeg_load,2);
-  rb_define_singleton_method(cMPEG,"new",smpeg_load,2);
+  rb_define_singleton_method(cMPEG,"load",smpeg_load,1);
+  rb_define_singleton_method(cMPEG,"new",smpeg_load,1);
 
   rb_define_method(cMPEG,"info",smpeg_getInfo,1);
   rb_define_method(cMPEG,"enableAudio",smpeg_enableAudio,1);
