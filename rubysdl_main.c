@@ -70,7 +70,6 @@ static VALUE sdl_init(VALUE obj,VALUE flags)
   flag= NUM2UINT(flags);
   if( SDL_Init(flag) < 0 )
     rb_raise(eSDLError,"Couldn't initialize SDL: %s",SDL_GetError());
-  atexit(sdl_quit);
   return Qnil;
 }
 
@@ -147,7 +146,11 @@ void Init_sdl()
 #ifdef HAVE_SMPEG
   init_smpeg();
 #endif
-  
+#ifdef HAVE_SDLSKK
+  init_sdlskk();
+#endif
+  /* rb_set_end_proc(sdl_quit,0); */
+  atexit(sdl_quit); 
 }
 
 
