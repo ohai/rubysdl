@@ -45,8 +45,8 @@ module SDL
     def format
       return PixelFormat.new(self)
     end
-    
-    if defined?(rotateScaledSurface) then
+
+    if method_defined?(:rotateScaledSurface) then
       def rotateSurface(angle,bgcolor)
 	rotateScaledSurface(angle,1.0,bgcolor)
       end
@@ -126,7 +126,10 @@ module SDL
       rotateScaledBlit(src,dst,x,y,angle,1)
     end
 
-    alias autoLock? autoLock
+    def autoLock?
+      autoLock
+    end
+    
     def autoLockON
       self.autoLock = true
     end
@@ -156,7 +159,7 @@ module SDL
   Rect = Struct.new( :x, :y, :w, :h )
   
   def convertRect(rect)
-    case srcRect
+    case rect
     when NilClass
       return Rect.new( 0, 0, 0, 0 )
     when Array

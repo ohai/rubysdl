@@ -114,7 +114,7 @@ end
 
 # rubysdl_sge_video.c
 class << SDL
-  if defined?(autoLock)
+  if method_defined?(:autoLock)
     alias auto_lock autoLock
     alias auto_lock? autoLock?
     alias auto_lock= autoLock=
@@ -132,7 +132,7 @@ module SDL
     # shared with rubysdl_sge_video.c and rubysdl_pixel.c
     alias get_pixel getPixel
     alias put_pixel putPixel
-    if defined?(drawLine)
+    if method_defined?(:drawLine) then
       #  alias [] []
       #  alias []= []=
       alias draw_line drawLine
@@ -317,20 +317,23 @@ end
 
 # sdl.rb
 
-class << SDL
-  if defined?(rotateScaledSurface) then
-    alias rotate_scaled_surface rotateScaledSurface
+module  SDL
+  class Surface
+    if method_defined?(:rotateScaledSurface) then
+      alias rotate_scaled_surface rotateScaledSurface
+      alias rotate_surface rotateSurface
+    end
   end
 end
 
 class << SDL
-  if defined?(rotateScaled) then
+  if method_defined?(:rotateScaled) then
     alias rotate_scaled rotateScaled 
 #   alias rotate
     alias rotate_blit rotateBlit
   end
 
-  if defined?(transform) then
+  if method_defined?(:transform) then
     alias transform_blit transformBlit
   end
 
