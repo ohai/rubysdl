@@ -147,7 +147,7 @@ static VALUE sdl_setColorKey(VALUE obj,VALUE flag,VALUE key)
 {
   SDL_Surface *surface;
   Data_Get_Struct(obj,SDL_Surface,surface);
-  if( SDL_SetColorKey(surface,NUM2UINT(flag),VALUE2COLOR(color,surface->format))
+  if( SDL_SetColorKey(surface,NUM2UINT(flag),VALUE2COLOR(key,surface->format))
       < 0 ){
     rb_raise(eSDLError,"setColorKey failed: %s",SDL_GetError());
   }
