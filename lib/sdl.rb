@@ -51,6 +51,14 @@ module SDL
 	rotateScaledSurface(angle,1.0,bgcolor)
       end
     end
+
+    
+    def copyRect(x,y,w,h)
+      flagbase=SDL::SWSURFACE|SDL::HWSURFACE|SDL::SRCCOLORKEY|SDL::SRCALPHA
+      new_surface=Surface.new(flagbase&self.flags,w,h,self)
+      SDL.blitSurface(self,x,y,w,h,new_surface,0,0)
+      return new_surface
+    end
   end
 
   def color2int(color,format)
