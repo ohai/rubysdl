@@ -124,7 +124,7 @@ void init_kanji(void)
   rb_define_method(cKanji,"add",kanji_addFont,1);
   rb_define_method(cKanji,"setCodingSystem",kanji_setCodingSystem,1);
   rb_define_method(cKanji,"textwidth",kanji_textwidth,1);
-  rb_define_method(cKanji,"witth",kanji_width,0);
+  rb_define_method(cKanji,"width",kanji_width,0);
   rb_define_method(cKanji,"height",kanji_height,0);
   rb_define_method(cKanji,"put",kanji_putText,7);
   rb_define_method(cKanji,"putTate",kanji_putTextTate,7);
