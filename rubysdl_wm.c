@@ -22,7 +22,7 @@ static VALUE sdl_wm_setIcon(VALUE mod,VALUE icon)
 }
 static VALUE sdl_wm_iconifyWindow(VALUE mod)
 {
-  if( ! SDL_IconifyWindow() )
+  if( ! SDL_WM_IconifyWindow() )
     rb_raise( eSDLError,"iconify failed: %s",SDL_GetError() );
   return Qnil;
 }
