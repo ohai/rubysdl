@@ -1,0 +1,84 @@
+#ifdef HAVE_SDL_TTF
+#include "rubysdl.h"
+#include <SDL_ttf.h>
+
+static VALUE sdl_ttf_init(VALUE class)
+{
+  if( TTF_Init()== -1 )
+    rb_raise(eSDLError,"Couldn't initialize TTF engine: %s",TTF_GetError());
+  return Qnil;
+}
+static VALUE sdl_ttf_open(VALUE class,VALUE filename,VALUE size)
+{
+  TTF_Font *font;
+  font=TTF_OpenFont( STR2CSTR(filename),NUM2INT(size) );
+  if( font==NULL )
+    rb_raise(eSDLError,"Couldn't open font %s: %s",STR2CSTR(filename),
+	     TTF_GetError());
+  return Data_Wrap_Struct(class,0,TTF_CloseFont,font);
+}
+static VALUE sdl_ttf_getFontStyle(VALUE obj)
+{
+  TTF_Font *font;
+  Data_Get_Struct(obj,TTF_Font,font);
+  return INT2FIX( TTF_GetFontStyle(font) );
+}
+static VALUE sdl_ttf_setFontStyle(VALUE obj,VALUE style)
+{
+  TTF_Font *font;
+  Data_Get_Struct(obj,TTF_Font,font);
+  TTF_SetFontStyle(font,NUM2UINT(style));
+  return Qnil;
+}
+static VALUE sdl_ttf_drawSolidUTF8(VALUE obj,VALUE dest,VALUE text,VALUE x,
+				   VALUE y,VALUE r,VALUE g,VALUE b)
+{
+  TTF_Font *font;
+  SDL_Surface *destSurface, *tmpSurface;
+  SDL_Color fg;
+  SDL_Rect destRect;
+  int result;
+  char *ctext=STR2CSTR(text);
+  /* If text=="" , TTF_RenderUTF8_Solid() fail to render */
+  if( ctext[0]=='\0' )return INT2FIX(0);
+  
+  if( !rb_obj_is_kind_of( dest,cSurface ) )
+    rb_raise( rb_eArgError,"type mismatch(expect Surface)");
+  Data_Get_Struct(obj,TTF_Font,font);
+  Data_Get_Struct(dest,SDL_Surface,destSurface);
+  fg.r=NUM2UINT(r); fg.g=NUM2UINT(g); fg.b=NUM2UINT(b);
+  SetRect(destRect,x,y,1,1);
+  
+  tmpSurface=TTF_RenderUTF8_Solid(font,ctext,fg);
+  if( tmpSurface==NULL )
+    rb_raise(eSDLError,"Text Render fail: %s",TTF_GetError());
+  
+  result=SDL_BlitSurface(tmpSurface,NULL,destSurface,&destRect);
+  SDL_FreeSurface(tmpSurface);
+  if( result == -1 ){
+    rb_raise(eSDLError,"SDL_BlitSurface fail: %s",SDL_GetError());
+  }
+  return INT2NUM(result);
+}
+
+static void defineConstForTTF()
+{
+  rb_define_const(cTTF,"STYLE_NORMAL",UINT2NUM(TTF_STYLE_NORMAL));
+  rb_define_const(cTTF,"STYLE_BOLD",UINT2NUM(TTF_STYLE_BOLD));
+  rb_define_const(cTTF,"STYLE_ITALIC",UINT2NUM(TTF_STYLE_ITALIC));
+  rb_define_const(cTTF,"STYLE_UNDERLINE",UINT2NUM(TTF_STYLE_UNDERLINE));
+}
+void init_ttf()
+{
+  cTTF=rb_define_class_under(mSDL,"TTF",rb_cObject);
+  rb_define_singleton_method(cTTF,"init",sdl_ttf_init,0);
+  rb_define_singleton_method(cTTF,"open",sdl_ttf_open,2);
+  rb_define_method(cTTF,"style",sdl_ttf_getFontStyle,0);
+  rb_define_method(cTTF,"style=",sdl_ttf_setFontStyle,1);
+  
+  rb_define_method(cTTF,"drawSolidUTF8",sdl_ttf_drawSolidUTF8,7);
+  
+  defineConstForTTF();
+}
+
+#endif /* HAVE_SDL_TTF */
