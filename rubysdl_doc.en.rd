@@ -1311,6 +1311,11 @@ Object
       Similar to drawSolidUTF8.
       More beautiful than drawSolidUTF8,but more slowly than drawSolidUTF8.
 
+--- SDL::TTF#drawShadedUTF8(dest,text,x,y,fg_r,fg_g,fg_b,bg_r,bg_g,bg_b)
+      Similar to drawSolidUTF8.
+      This method is defferent from drawSolidUTF8 in that this method
+      fills the background of text with specified color.
+
 == MPEG stream
 
 Needs SMPEG library.

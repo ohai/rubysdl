@@ -21,7 +21,7 @@
 #include "rubysdl.h"
 #include <SDL_ttf.h>
 
-typedef SDL_Surface* (*RenderFunc)(TTF_Font *,const char *,SDL_Color);
+typedef SDL_Surface* (*RenderFunc)(TTF_Font *,const char *,SDL_Color,SDL_Color);
 
 static int ttf_initialized=0;
 
@@ -116,11 +116,12 @@ static VALUE sdl_ttf_sizeText(VALUE obj,VALUE text)
   return rb_ary_new3(2,INT2FIX(w),INT2FIX(h));
 }
 static VALUE ttf_draw(VALUE obj,VALUE dest,VALUE text,VALUE x,
-		      VALUE y,VALUE r,VALUE g,VALUE b,RenderFunc render)
+		      VALUE y,VALUE fgr,VALUE fgg,VALUE fgb,
+		      VALUE bgr,VALUE bgg,VALUE bgb,RenderFunc render)
 {
   TTF_Font *font;
   SDL_Surface *destSurface, *tmpSurface;
-  SDL_Color fg;
+  SDL_Color fg,bg;
   SDL_Rect destRect;
   int result;
   char *ctext=STR2CSTR(text);
@@ -131,10 +132,11 @@ static VALUE ttf_draw(VALUE obj,VALUE dest,VALUE text,VALUE x,
     rb_raise( rb_eArgError,"type mismatch(expect Surface)");
   Data_Get_Struct(obj,TTF_Font,font);
   Data_Get_Struct(dest,SDL_Surface,destSurface);
-  fg.r=NUM2UINT(r); fg.g=NUM2UINT(g); fg.b=NUM2UINT(b);
+  fg.r=NUM2UINT(fgr); fg.g=NUM2UINT(fgg); fg.b=NUM2UINT(fgb);
+  bg.r=NUM2UINT(bgr); bg.g=NUM2UINT(bgg); bg.b=NUM2UINT(bgb);
   SetRect(destRect,x,y,1,1);
   
-  tmpSurface=render(font,ctext,fg);
+  tmpSurface=render(font,ctext,fg,bg);
   if( tmpSurface==NULL )
     rb_raise(eSDLError,"Text Render fail: %s",TTF_GetError());
   
@@ -146,17 +148,41 @@ static VALUE ttf_draw(VALUE obj,VALUE dest,VALUE text,VALUE x,
   return INT2NUM(result);
 }
 
+static SDL_Surface* ttf_wrap_RenderUTF8_Solid(TTF_Font *font,
+					      const char *text,
+					      SDL_Color fg,
+					      SDL_Color bg)
+{
+  return TTF_RenderUTF8_Solid(font,text,fg);
+}
+
 static VALUE sdl_ttf_drawSolidUTF8(VALUE obj,VALUE dest,VALUE text,VALUE x,
 				   VALUE y,VALUE r,VALUE g,VALUE b)
 {
-  return ttf_draw(obj,dest,text,x,y,r,g,b,TTF_RenderUTF8_Solid);
+  return ttf_draw(obj,dest,text,x,y,r,g,b,1,1,1,ttf_wrap_RenderUTF8_Solid);
 }
+
+static SDL_Surface* ttf_wrap_RenderUTF8_Blended(TTF_Font *font,
+						const char *text,
+						SDL_Color fg,
+						SDL_Color bg)
+{
+  return TTF_RenderUTF8_Blended(font,text,fg);
+}
+
 static VALUE sdl_ttf_drawBlendedUTF8(VALUE obj,VALUE dest,VALUE text,VALUE x,
 				   VALUE y,VALUE r,VALUE g,VALUE b)
 {
-  return ttf_draw(obj,dest,text,x,y,r,g,b,TTF_RenderUTF8_Blended);
+  return ttf_draw(obj,dest,text,x,y,r,g,b,1,1,1,ttf_wrap_RenderUTF8_Blended);
 }
 
+static VALUE sdl_ttf_drawShadedUTF8(VALUE obj,VALUE dest, VALUE text,VALUE x,
+				    VALUE y,VALUE fgr,VALUE fgg,VALUE fgb,
+				    VALUE bgr,VALUE bgg,VALUE bgb)
+{
+  return ttf_draw(obj,dest,text,x,y,fgr,fgg,fgb,bgr,bgg,bgb,
+		  TTF_RenderUTF8_Shaded);
+}
 static void defineConstForTTF()
 {
   rb_define_const(cTTF,"STYLE_NORMAL",UINT2NUM(TTF_STYLE_NORMAL));
@@ -180,6 +206,7 @@ void init_ttf()
 
   rb_define_method(cTTF,"drawSolidUTF8",sdl_ttf_drawSolidUTF8,7);
   rb_define_method(cTTF,"drawBlendedUTF8",sdl_ttf_drawBlendedUTF8,7);
+  rb_define_method(cTTF,"drawShadedUTF8",sdl_ttf_drawShadedUTF8,10);
   
   defineConstForTTF();
 }

@@ -1327,6 +1327,10 @@ Object
 --- SDL::TTF#drawBlendedUTF8(dest,text,x,y,r,g,b)
       drawSolidUTF8と同様。drawSolidUTF8よりも高品質な描画ができる。
 
+--- SDL::TTF#drawShadedUTF8(dest,text,x,y,fg_r,fg_g,fg_b,bg_r,bg_g,bg_b)
+      drawSolidUTF8と同様。字を書いた部分の後側がbg_r,bg_g,bg_bで指定した
+      色で塗り潰されることがdrawSolidUTF8と異なる。
+
 == MPEG再生処理
 
 この機能はsmpegというライブラリによって提供されている。
