@@ -1632,6 +1632,7 @@ Object
 --- SDL::Kanji#putTate(surface,text,x,y,r,g,b)
 --- SDL::Kanji#put_tate(surface,text,x,y,r,g,b)
       surfaceのx,yに指定した文字列を縦書きで描画する。
+      ASCII文字の縦書きはできない。
       
 === SDL::TTF
 
