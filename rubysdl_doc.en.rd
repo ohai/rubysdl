@@ -39,12 +39,13 @@ StandardError
 --- init(flag)
       Initialize SDL.This should be called before all other SDL functions. The
       flags parameter specifies what part(s) of SDL to initialize.
-      INIT_AUDIO
-      INIT_VIDEO
-      INIT_CDROM
-      INIT_JOYSTICK
+        INIT_AUDIO
+        INIT_VIDEO
+        INIT_CDROM
+        INIT_JOYSTICK
 
 --- initializedSystem(flag)
+      Not documented yet
 
 == video
 
@@ -57,15 +58,16 @@ some functions need SGE or SDL_image
       If bpp is 0, it is treated as the current display bits per pixel.
       Return the instanse of ((<Screen>)),if succeeded.
       Raise SDL::Error,if failed.
-      SWSURFACE
-        Create the video surface in system memory.
-      HWSURFACE
-        Create the video surface in video memory.
-      FULLSCREEN
-        SDL will attempt to use a fullscreen mode.
-      SDL_DOUBLEBUF
-        Enable double buffering.
-        Calling ((<Screen#flip>)) will flip the  buffers and update the screen.
+      * SWSURFACE
+          Create the video surface in system memory.
+      * HWSURFACE
+          Create the video surface in video memory.
+      * FULLSCREEN
+          SDL will attempt to use a fullscreen mode.
+      * SDL_DOUBLEBUF
+          Enable double buffering.
+          Calling ((<Screen#flip>)) will flip the  buffers and update
+          the screen.
 
 --- checkVideoMode(w,h,bpp,flags)
       Check to see if a particular video mode is supported.
@@ -91,23 +93,25 @@ some functions need SGE or SDL_image
       Return  video information in array. The contents are following.
       Values represent boolean value are true/false .
       Please read SDL document to know about this information.
-      [ hw_available,
-        wm_available,
-	blit_hw,
-	blit_hw_CC,
-	blit_hw_A,
-	blit_sw,
-	blit_sw_CC,
-	blit_sw_A,
-	blit_fill,
-	video_mem,
-	vfmt,
-	]
+        [ hw_available,
+          wm_available,
+          blit_hw,
+          blit_hw_CC,
+          blit_hw_A,
+          blit_sw,
+          blit_sw_CC,
+          blit_sw_A,
+          blit_fill,
+          video_mem,
+          vfmt,
+        ]
 	
 --- blitSurface(src,srcX,srcY,srcW,srcH,dst,dstX,dstY)
       This performs a fast blit from the source surface to the destination
       surface.
+
       If srcX=srcY=srcW=srcH=0,the entire surface is copied.
+
       The blit function should not be called on a locked surface.
 
 --- blitSurface2(src,srcRect,dst,dstRect)
@@ -119,10 +123,12 @@ some functions need SGE or SDL_image
 
 --- rotateXYScaled(src,dst,x,y,angle,xscale,yscale)
       Needs SGE
+
       Note that this function is different from SGE sge_rotate_xyscaled API
       in that src and dst are changing.
       Following two functions are same.
       This is equal to blitSurface.
+
       And note that this function ignores colorkey.
 
 --- rotateScaled(src,dst,x,y,angle,scale)
@@ -133,6 +139,7 @@ some functions need SGE or SDL_image
 
 --- rotateScaledBlit(src,dst,x,y,angle,scale)
       Needs SGE
+
       Same as rotateScaled,but respect colorkey.
 
 --- rotateBlit(src,dst,x,y,angle)
@@ -149,16 +156,19 @@ Object
 ==== 
 
 --- Surface.new(flag,w,h,format)
+      Not documented yet
 
 --- Surface.loadBMP(filename)
       Loads a image from a named Windows BMP file and return
       the instance of ((<Screen>)).
+
       Raise SDL::Error if you have an error,for example file didn't exist.
       
 --- Surface.load(filename)
       Needs SDL_image
       Loads a image from a named Windows BMP file and return
       the instance of ((<Screen>)).
+
       Available formats are BMP,PPX,XPM,PCX,GIF,JPEG,PNG,TGA.
 
 ==== method
@@ -184,8 +194,10 @@ Object
       This function performs a fast fill of the given rectangle with color.
 
 --- Surface#setClipRect(x,y,w,h)
+      Not documented yet
 
 --- Surface#setAlpha(flag,alpha)
+      Not documented yet
 
 --- Surface#h
       Return height.
@@ -202,10 +214,13 @@ Object
       This method are implemented using blitSurface.
 
 --- Surface#lock
+      Not documented yet
 
 --- Surface#unlock
+      Not documented yet
 
 --- Surface#mustLock?
+      Not documented yet
 
 --- Surface#getPixel(x,y) 
 --- Surface#[](x,y)
@@ -301,13 +316,16 @@ nothing
 ==== method
 
 --- PixelFormat#MapRGB(r,g,b)
+      Not documented yet
 
 --- PixelFormat#MapRGBA(r,g,b,a)
+      Not documented yet
 
 --- PixelFormat#getRGB(pixel)
       Returns r,g,b value in array.
 
 --- PixelFormat#getRGBA(pixel)
+      Not documented yet
 
 --- PixelFormat#bpp
       Return bits per pixel on this format.
@@ -341,47 +359,57 @@ Object
 
 --- Event#type
       Returns the type of stored event.
-
-      Event::ACTIVEEVENT 
-      Event::KEYDOWN
-      Event::KEYUP
-      Event::MOUSEMOTION
-      Event::MOUSEBUTTONDOWN
-      Event::MOUSEBUTTONUP
-      Event::JOYAXISMOTION
-      Event::JOYBALLMOTION
-      Event::JOYHATMOTION
-      Event::JOYBUTTONDOWN
-      Event::JOYBUTTONUP
-      Event::QUIT
-      Event::SYSWMEVENT
-      Event::VIDEORESIZE
+        Event::ACTIVEEVENT 
+        Event::KEYDOWN
+        Event::KEYUP
+        Event::MOUSEMOTION
+        Event::MOUSEBUTTONDOWN
+        Event::MOUSEBUTTONUP
+        Event::JOYAXISMOTION
+        Event::JOYBALLMOTION
+        Event::JOYHATMOTION
+        Event::JOYBUTTONDOWN
+        Event::JOYBUTTONUP
+        Event::QUIT
+        Event::SYSWMEVENT
+        Event::VIDEORESIZE
 
 --- Event#info
       Return event information in array.
       This method can handle all event.
 
 --- Event#keyPress?
+      Not documented yet
 
 --- Event#keySym
+      Not documented yet
 
 --- Event#keyMod
+      Not documented yet
 
 --- Event#gain?
+      Not documented yet
 
 --- Event#appState
+      Not documented yet
 
 --- Event#mouseX
+      Not documented yet
 
 --- Event#mouseY
+      Not documented yet
 
 --- Event#mouseXrel
+      Not documented yet
 
 --- Event#mouseYrel
+      Not documented yet
 
 --- Event#mouseButton
+      Not documented yet
 
 --- Event#mousePress?
+      Not documented yet
 
 === Key
 
@@ -400,27 +428,29 @@ This module has some functions to get the key state.
 --- modState
       Returns the current of the modifier keys (CTRL,ATL,etc.).
       The return value can be an OR'd combination of following constants.  
-      Key::MOD_NONE
-      Key::MOD_LSHIFT
-      Key::MOD_RSHIFT
-      Key::MOD_LCTRL
-      Key::MOD_RCTRL
-      Key::MOD_LALT
-      Key::MOD_RALT
-      Key::MOD_LMETA
-      Key::MOD_RMETA
-      Key::MOD_NUM
-      Key::MOD_CAPS
-      Key::MOD_MODE
-      Key::MOD_RESERVED
-      Key::MOD_CTRL = Key::MOD_LCTRL|Key::MOD_RCTRL
-      Key::MOD_SHIFT = Key::MOD_LSHIFT|Key::MOD_RSHIFT
-      Key::MOD_ALT = Key::MOD_LALT|Key::MOD_RALT
-      Key::MOD_META = Key::MOD_LMETA|Key::MOD_RMETA
+        Key::MOD_NONE
+        Key::MOD_LSHIFT
+        Key::MOD_RSHIFT
+        Key::MOD_LCTRL
+        Key::MOD_RCTRL
+        Key::MOD_LALT
+        Key::MOD_RALT
+        Key::MOD_LMETA
+        Key::MOD_RMETA
+        Key::MOD_NUM
+        Key::MOD_CAPS
+        Key::MOD_MODE
+        Key::MOD_RESERVED
+        Key::MOD_CTRL = Key::MOD_LCTRL|Key::MOD_RCTRL
+        Key::MOD_SHIFT = Key::MOD_LSHIFT|Key::MOD_RSHIFT
+        Key::MOD_ALT = Key::MOD_LALT|Key::MOD_RALT
+        Key::MOD_META = Key::MOD_LMETA|Key::MOD_RMETA
 
 --- enableKeyRepeat(delay,interval)
+      Not documented yet
 
 --- disableKeyRepeat
+      Not documented yet
 
 == Mouse
 
@@ -431,8 +461,7 @@ The module mouse constants and mouse functions.
 --- state
       Return mouse state in array.
       Return value is following,
-
-      [ x , y , pressLButton? , pressMButton? , pressRButton? ]
+        [ x , y , pressLButton? , pressMButton? , pressRButton? ]
 
 
 == audio
@@ -450,17 +479,20 @@ Needs SDL_mixer to use functions if this module.
 
 --- spec
       Returns the audio spec in array.
-      [ rate,format,channels ]
+        [ rate,format,channels ]
 
 --- playChannel(channel,wave,looping)
       Play a wave on a specific channel.
+
       If the specified channel is -1, play on the first free channel.
       If 'loops' is greater than zero, loop the sound that many times.
       If 'loops' is -1, loop inifinitely (~65000 times).
+
       Returns which channel was used to play the sound.
 
 --- play?(channel)
       Returns whether specific channel is playing or not.
+
       If the specified channel is -1, check all channels.
 
 --- setVolume(channel,volume)
@@ -485,22 +517,31 @@ Needs SDL_mixer to use functions if this module.
       Play a music.
       
 --- fadeInMusic(music,loops,ms)
+      Not documented yet
 
 --- setVolumeMusic(volume)
+      Not documented yet
 
 --- haltMusic
+      Not documented yet
 
 --- fadeOutMusic(ms)
+      Not documented yet
 
 --- pauseMusic
+      Not documented yet
 
 --- resumeMusic
+      Not documented yet
 
 --- rewindMusic
+      Not documented yet
 
 --- pauseMusic?
+      Not documented yet
 
 --- playMusic?
+      Not documented yet
 
 === Mixer::Wave
 
@@ -514,12 +555,13 @@ Object
 
 --- Mixer::Wave.load(filename)
       Loads a wave file and returns the object of ((<Mixer::Wave>)).
+
 ==== method
 
 --- Mixer::Wave#setVolume(volume)
       Set volume of self.
 
-=== Music
+=== Mixer::Music
 
 ==== super class
 
@@ -563,6 +605,7 @@ The module that have the functions for window management.
 === CD
 
 The class represents CDROM drive.
+
 Note that the information that you get with CD#numTracks is stored
 when you call CD#status.
 
@@ -597,11 +640,11 @@ number of frames on a CD.
       trackLenght .
       This function returns the current status.
       Status is described like so:
-      TRAYEMPTY
-      STOPPED
-      PLAYING
-      PAUSED
-      ERROR
+        TRAYEMPTY
+        STOPPED
+        PLAYING
+        PAUSED
+        ERROR
 
 --- CD#play(start,length)
       Plays the given cdrom, starting a frame start for length frames.
@@ -711,15 +754,15 @@ Object
 --- Joystick#hat(hat)
       The current state is returned as a 8bit unsigned integer
       which is defined as an OR'd combination of one or more of the following
-      Joystick::HAT_CENTERED
-      Joystick::HAT_UP
-      Joystick::HAT_RIGHT
-      Joystick::HAT_DOWN
-      Joystick::HAT_LEFT
-      Joystick::HAT_RIGHTUP
-      Joystick::HAT_RIGHTDOWN
-      Joystick::HAT_LEFTUP
-      Joystick::HAT_LEFTDOWN
+        Joystick::HAT_CENTERED
+        Joystick::HAT_UP
+        Joystick::HAT_RIGHT
+        Joystick::HAT_DOWN
+        Joystick::HAT_LEFT
+        Joystick::HAT_RIGHTUP
+        Joystick::HAT_RIGHTDOWN
+        Joystick::HAT_LEFTUP
+        Joystick::HAT_LEFTDOWN
 
 --- Joystick#button(button)
       Returns the current state of the given button.
@@ -758,10 +801,10 @@ Object
 --- TTF#style=(style)
       Set font style.
       style is an OR'd conbination of one or more of the following
-      TTF::STYLE_NORMAL
-      TTF::STYLE_BOLD
-      TTF::STYLE_ITALIC
-      TTF::STYLE_UNDERLINE
+        TTF::STYLE_NORMAL
+        TTF::STYLE_BOLD
+        TTF::STYLE_ITALIC
+        TTF::STYLE_UNDERLINE
 
 --- TTF#textSize(text)
       Get Text size on image in array. Return [x,y].

@@ -21,7 +21,7 @@
 * ((<Mixer::Music>))
 * ((<WM>)) (module)
 * ((<CD>))
-* ((<JoyStick>))
+* ((<Joystick>))
 * ((<TTF>))
 
 == Error
@@ -39,20 +39,23 @@ StandardError
 
 --- init(flag)
       SDLを初期化する。flagとして与えられる定数は以下のとおり。
-      INIT_AUDIO
-      INIT_VIDEO
-      INIT_CDROM
-      INIT_JOYSTICK
+        INIT_AUDIO
+        INIT_VIDEO
+        INIT_CDROM
+        INIT_JOYSTICK
 
 --- quit
       at_exit{ SDL.quit; } というように使ってください。
+
       version 0.3にて廃止。ライブラリから自動的によびだされる。
 
 --- initializedSystem(flag)
+      Not documented yet
 
 == video関連
 
 一部の機能は、SGEライブラリやSDL_imageが必要である。
+
 bpp=bit per pixelである。
 
 === SDL内のモジュール関数
@@ -63,19 +66,19 @@ bpp=bit per pixelである。
       成功したときは((<Screen>))のオブジェクトを返す。
       失敗したときはSDL::Error例外が生じる。
       flagsの意味は以下のとおり。
-      SWSURFACE
-        システムのメモリ内にバッファをとる。
-      HWSURFACE
-        ビデオメモリにバッファをとる。
-      FULLSCREEN
-        フルスクリーンモードで動作しようとする。
-      DOUBLEBUF
-        ダブルバッファリングができるようにする。
-        Screen#flipをよびだすことによってバッファの切り替えができる。
-      ANYFORMAT
-        SDLライブラリは要求されたbppでの設定を試みるが、それと異なっても利用
-        可能なモードがあればそれを返してくる。デフォルトの動作では、要求され
-        たモードが直接サポートされていない場合はエミュレーションを行う。
+      * SWSURFACE
+          システムのメモリ内にバッファをとる。
+      * HWSURFACE
+          ビデオメモリにバッファをとる。
+      * FULLSCREEN
+          フルスクリーンモードで動作しようとする。
+      * DOUBLEBUF
+          ダブルバッファリングができるようにする。
+          Screen#flipをよびだすことによってバッファの切り替えができる。
+      * ANYFORMAT
+          SDLライブラリは要求されたbppでの設定を試みるが、それと異なっても利用
+          可能なモードがあればそれを返してくる。デフォルトの動作では、要求され
+          たモードが直接サポートされていない場合はエミュレーションを行う。
       flagはそのほかにもある。さらに詳しく知る必要があれば
       SDLのドキュメントを見てください。
 
@@ -101,23 +104,25 @@ bpp=bit per pixelである。
       Videoの情報を配列で返す。その内容は以下の通り。
       真偽値を表すものはtrue,falseが入っている。
       詳しい意味はSDLのドキュメントを参照してください。
-      [ hw_available,
-        wm_available,
-	blit_hw,
-	blit_hw_CC,
-	blit_hw_A,
-	blit_sw,
-	blit_sw_CC,
-	blit_sw_A,
-	blit_fill,
-	video_mem,
-	vfmt,
-	]
+        [ hw_available,
+          wm_available,
+          blit_hw,
+          blit_hw_CC,
+          blit_hw_A,
+          blit_sw,
+          blit_sw_CC,
+          blit_sw_A,
+          blit_fill,
+          video_mem,
+          vfmt,
+        ]
 	
 --- blitSurface(src,srcX,srcY,srcW,srcH,dst,dstX,dstY)
       srcで指定されたSurfaceからdstで指定されたSurfaceへの高速なblit
       を行う。
+
       srcX,srcY,srcW,srcHにすべて0を指定した場合はsrc全体をblitする。
+
       失敗時には例外SDL::Errorが生じる。      
       
       ロックしたサーフェスに対してこれをつかってはいけない。
@@ -125,6 +130,7 @@ bpp=bit per pixelである。
 --- blitSurface2(src,srcRect,dst,dstRect)
       blitSurface2(src,[0,32,32,32],dst,[100,200])
       のように使う。
+
       srcRectにnilを指定した場合はsrc全体をblitする。
 
 --- warpMouse(x,y)
@@ -132,10 +138,12 @@ bpp=bit per pixelである。
 
 --- rotateXYScaled(src,dst,x,y,angle,xscale,yscale)
       SGEが必要
+
       SGEのsge_rotate_xyscaled関数とはsrcとdstの順序が入れ替わっていることに
       注意するように。下の2つの関数も同様である。
       これは、blitSurfaceに合わせたためである。
       また、この仕様は変更する可能性がある。
+
       また、ColorKeyは無視される。
 
 --- rotateScaled(src,dst,x,y,angle,scale)
@@ -165,6 +173,7 @@ Object
 ==== クラスメソッド
 
 --- Surface.new(flag,w,h,format)
+      Not documented yet
 
 --- Surface.loadBMP(filename)
       指定されたファイル名のWindows BMP形式のファイルから((<Surface>))
@@ -173,6 +182,7 @@ Object
 
 --- Surface.load(filename)
       SDL_imageが必要
+
       指定されたファイル名の画像ファイルから((<Surface>))
       のインスタンスを作成する。
       BMP,PPX,XPM,PCX,GIF,JPEG,PNG,TGAなどをロードできる。
@@ -204,8 +214,10 @@ Object
       指定された長方形の領域をcolorでぬりつぶす。
 
 --- Surface#setClipRect(x,y,w,h)
+      Not documented yet
       
 --- Surface#setAlpha(flag,alpha)
+      Not documented yet
 
 --- Surface#h
       selfの高さを返す。
@@ -222,40 +234,50 @@ Object
       blitSurfaceで実装されている。
 
 --- Surface#lock
+      Not documented yet
 
 --- Surface#unlock
+      Not documented yet
 
 --- Surface#mustLock?
+      Not documented yet
 
 --- Surface#getPixel(x,y) 
 --- Surface#[](x,y)
       SGEが必要
+
       x,yの位置のピクセルの値を返す。
 
 --- Surface#putPixel(x,y,pixel)
 --- Surface#[]=(x,y,pixel)
       SGEが必要
+
       x,yの位置のピクセルの値をpixelにする。
       つまり、x,yの位置にpixelの色の点を打つ。
 
 --- Surface#drawLine(x1,y1,x2,y2,color)
       SGEが必要
+
       色がcolorの線を(x1,y1)から(x2,y2)まで描く。
 
 --- Surface#drawRect(x,y,w,h,color)
       SGEが必要
+
       色がcolorの長方形を描く。中はぬりつぶさない。
 
 --- Surface#drawCircle(x,y,r,color)
       SGEが必要
+
       色がcolorの円を描く。中はぬりつぶさない。
 
 --- Surface#drawFilledCircle(x,y,r,color)
       SGEが必要
+
       色がcolorの円を描き、中をぬりつぶす。
 
 --- Surface#rotateScaledSurface(angle,scale,bgcolor)
       SGEが必要
+
       これは、selfをangle度傾け、scale倍した画像を持つSurfaceのインスタンスを
       生成するメソッドである。回転によって生じる隙間はbgcolorで埋められる。
 
@@ -290,7 +312,7 @@ SDL::setVideoModeによってのみ生成される。
       バッファの交換を要求して返る。ハードウェアによって次の垂直帰線期間まで
       待ってから、次のビデオサーフェスへのblitやロック操作の呼び出しが返る前
       にビデオバッファの交換が行われる。ダブルバッファをサポートしない
-      ハードウェア上では、この呼び出しは((<Screen#UpdateRect>))(0, 0, 0, 0)
+      ハードウェア上では、この呼び出しは((<Screen#updateRect>))(0, 0, 0, 0)
       としているのと同じである。このメソッドを使用してハードウェアによる画面の
       交換を行うためには、((<setVideoMode>))の引数でDOUBLEBUFフラグを設
       定しておくことが必要である。
@@ -325,10 +347,13 @@ Object
       pixelの値を返す。
 
 --- PixelFormat#MapRGBA(r,g,b,a)
+      Not documented yet
 
 --- PixelFormat#getRGB(pixel)
+      Not documented yet
 
 --- PixelFormat#getRGBA(pixel)
+      Not documented yet
 
 --- PixelFormat#bpp
       フォーマトの1ピクセルあたりのビット数を返す。
@@ -362,46 +387,57 @@ Object
       格納されているイベントがいかなる種類のものであるかを返す。
       その種類は以下の定数で示される。
       
-      Event::ACTIVEEVENT 
-      Event::KEYDOWN
-      Event::KEYUP
-      Event::MOUSEMOTION
-      Event::MOUSEBUTTONDOWN
-      Event::MOUSEBUTTONUP
-      Event::JOYAXISMOTION
-      Event::JOYBALLMOTION
-      Event::JOYHATMOTION
-      Event::JOYBUTTONDOWN
-      Event::JOYBUTTONUP
-      Event::QUIT
-      Event::SYSWMEVENT
-      Event::VIDEORESIZE
+        Event::ACTIVEEVENT 
+        Event::KEYDOWN
+        Event::KEYUP
+        Event::MOUSEMOTION
+        Event::MOUSEBUTTONDOWN
+        Event::MOUSEBUTTONUP
+        Event::JOYAXISMOTION
+        Event::JOYBALLMOTION
+        Event::JOYHATMOTION
+        Event::JOYBUTTONDOWN
+        Event::JOYBUTTONUP
+        Event::QUIT
+        Event::SYSWMEVENT
+        Event::VIDEORESIZE
 
 --- Event#info
       イベントの情報を配列で返す。
       このメソッドは、これ以下のメソッドをすべて代用できる。
 
 --- Event#keyPress?
+      Not documented yet
 
 --- Event#keySym
+      Not documented yet
 
 --- Event#keyMod
+      Not documented yet
 
 --- Event#gain?
+      Not documented yet
 
 --- Event#appState
+      Not documented yet
 
 --- Event#mouseX
+      Not documented yet
 
 --- Event#mouseY
+      Not documented yet
 
 --- Event#mouseXrel
+      Not documented yet
 
 --- Event#mouseYrel
+      Not documented yet
 
 --- Event#mouseButton
+      Not documented yet
 
 --- Event#mousePress?
+      Not documented yet
 
 === Key
 
@@ -420,27 +456,29 @@ Object
 --- modState
       修飾キー(CTRL,ATL,など)の状態を返す。
       返り値は以下の定数でORをとったもので表される。
-      Key::MOD_NONE
-      Key::MOD_LSHIFT
-      Key::MOD_RSHIFT
-      Key::MOD_LCTRL
-      Key::MOD_RCTRL
-      Key::MOD_LALT
-      Key::MOD_RALT
-      Key::MOD_LMETA
-      Key::MOD_RMETA
-      Key::MOD_NUM
-      Key::MOD_CAPS
-      Key::MOD_MODE
-      Key::MOD_RESERVED
-      Key::MOD_CTRL = Key::MOD_LCTRL|Key::MOD_RCTRL
-      Key::MOD_SHIFT = Key::MOD_LSHIFT|Key::MOD_RSHIFT
-      Key::MOD_ALT = Key::MOD_LALT|Key::MOD_RALT
-      Key::MOD_META = Key::MOD_LMETA|Key::MOD_RMETA
+        Key::MOD_NONE
+        Key::MOD_LSHIFT
+        Key::MOD_RSHIFT
+        Key::MOD_LCTRL
+        Key::MOD_RCTRL
+        Key::MOD_LALT
+        Key::MOD_RALT
+        Key::MOD_LMETA
+        Key::MOD_RMETA
+        Key::MOD_NUM
+        Key::MOD_CAPS
+        Key::MOD_MODE
+        Key::MOD_RESERVED
+        Key::MOD_CTRL = Key::MOD_LCTRL|Key::MOD_RCTRL
+        Key::MOD_SHIFT = Key::MOD_LSHIFT|Key::MOD_RSHIFT
+        Key::MOD_ALT = Key::MOD_LALT|Key::MOD_RALT
+        Key::MOD_META = Key::MOD_LMETA|Key::MOD_RMETA
 
 --- enableKeyRepeat(delay,interval)
+      Not documented yet
 
 --- disableKeyRepeat
+      Not documented yet
     
 == Mouse
 
@@ -451,9 +489,7 @@ Object
 --- state
       マウスの状態を配列の形で返します。
       配列の内容は
-
-      [ x , y , pressLButton? , pressMButton? , pressRButton? ]
-
+        [ x , y , pressLButton? , pressMButton? , pressRButton? ]
       となっています。
 
 == audio関連
@@ -479,7 +515,7 @@ Object
 --- spec
       初期化したオーディオの性能を配列で返す。
       その内容は、
-      [ rate,format,channels ]
+        [ rate,format,channels ]
 
 --- playChannel(channel,wave,loop)
       指定したchannelでwaveを演奏する。
@@ -487,6 +523,7 @@ Object
       loops指定した回数繰り返す。
       loopsが-1のときは際限なくくりかえす。
       loopsが0のときは一度のみ演奏する。
+
       どのチャンネルを演奏に利用したかを返す。
 
 --- play?(channel)
@@ -496,6 +533,7 @@ Object
 --- setVolume(channel,volume)
       指定したchannelのボリュームを設定する。
       channel=-1を指定するとすべてのchannelに対しボリュームを指定する。
+
       volume=-1とすると、現在のボリュームが返る。
 
 --- halt(channel)
@@ -530,12 +568,16 @@ Object
       音楽を指定したミリ秒かけてフェードアウトする。
 
 --- pauseMusic
+      Not documented yet
       
 --- resumeMusic
+      Not documented yet
 
 --- rewindMusic
+      Not documented yet
 
 --- pauseMusic?
+      Not documented yet
 
 --- playMusic?
       音楽が演奏されていればtrue、していなければfalseを返す。
@@ -556,7 +598,7 @@ Object
 
 --- Mixer::Wave#setVolume(volume)
 
-=== Music
+=== Mixer::Music
 
 音楽(.mod .s3m .it .xm)を表す。
 
@@ -578,7 +620,8 @@ Window関連の処理をまとめたモジュール
 
 --- caption
       captionの文字列を配列で返してくる。
-      内容は、[ ウィンドウのタイトル , アイコンのタイトル ]
+      内容は、
+        [ ウィンドウのタイトル , アイコンのタイトル ]
 
 --- setCaption(title,icon)
       上記の内容を変更する。
@@ -596,7 +639,9 @@ Window関連の処理をまとめたモジュール
 === CD
 
 CDROMドライブを表すクラス
+
 CD#numTrack等の情報はCD#statusを呼びだすことによって更新される。
+
 ここではCDの位置、演奏時間の長さを表すためにフレームという単位を用いる。
 1frame=2Kであり、
 通常の音楽CDにおいて75フレーム=1秒である。
@@ -626,11 +671,11 @@ Object
       currentTrack,currentFrame,numTracks,trackType,trackLenght
       の情報を更新する。
       現在のCDの状態を返す。その内容は以下のとおり。
-      TRAYEMPTY
-      STOPPED
-      PLAYING
-      PAUSED
-      ERROR
+        TRAYEMPTY
+        STOPPED
+        PLAYING
+        PAUSED
+        ERROR
 
 --- CD#play(start,length)
       CDをstartフレームからlengthフレームの間演奏する。
@@ -641,9 +686,9 @@ Object
       なお、このライブラリ内ではトラックのインデックスは0からはじまる。
       このメソッドは((<CD#status>))を呼びだしたあとに呼びださなければならない。
 
-      例
-      cd.playTrack(0,0,1,0) # 最初のトラックを演奏する。
-      cd.playTrack(1,0,0,SDL::CD::FPS*15) # 2トラック目を最初から15秒演奏する。
+        例
+        cd.playTrack(0,0,1,0) # 最初のトラックを演奏する。
+        cd.playTrack(1,0,0,SDL::CD::FPS*15) # 2トラック目を最初から15秒演奏する。
 
 --- CD#pause
       CDの演奏を一時停止する。
@@ -669,8 +714,8 @@ Object
 
 --- CD#trackType(track)
       指定したトラックがなんであるかを返す。その値は以下のとおり。
-      AUDIO_TRACK
-      DATA_TRACK
+        AUDIO_TRACK
+        DATA_TRACK
 
 --- CD#trackLength(track)
       指定したトラックの長さをフレーム数で返す。
@@ -698,7 +743,7 @@ Object
 
 --- Joystick.name(index)
       指定したジョイスティックの名前を文字列で返す。
-      0からJoystick-1の整数で指定する。
+      0からJoystick.num-1の整数で指定する。
 
 --- Joystick.open(index)
       指定したジョイスティックを開く。
@@ -733,15 +778,15 @@ Object
 
 --- Joystick#hat(hat)
       いわゆる十字キーの入力状態を返す。その内容は以下のとおり。
-      Joystick::HAT_CENTERED
-      Joystick::HAT_UP
-      Joystick::HAT_RIGHT
-      Joystick::HAT_DOWN
-      Joystick::HAT_LEFT
-      Joystick::HAT_RIGHTUP
-      Joystick::HAT_RIGHTDOWN
-      Joystick::HAT_LEFTUP
-      Joystick::HAT_LEFTDOWN
+        Joystick::HAT_CENTERED
+        Joystick::HAT_UP
+        Joystick::HAT_RIGHT
+        Joystick::HAT_DOWN
+        Joystick::HAT_LEFT
+        Joystick::HAT_RIGHTUP
+        Joystick::HAT_RIGHTDOWN
+        Joystick::HAT_LEFTUP
+        Joystick::HAT_LEFTDOWN
 
 --- Joystick#button(button)
       ボタンの押下情報を返す。
@@ -777,10 +822,10 @@ Object
 
 --- TTF#style=(style)
       フォントのスタイルを設定する。指定できるのは以下の定数でORをとったもの。
-      TTF::STYLE_NORMAL
-      TTF::STYLE_BOLD
-      TTF::STYLE_ITALIC
-      TTF::STYLE_UNDERLINE
+        TTF::STYLE_NORMAL
+        TTF::STYLE_BOLD
+        TTF::STYLE_ITALIC
+        TTF::STYLE_UNDERLINE
 
 --- TTF#textSize(text)
       textを描画したときの縦、横の必要な大きさを配列で返す
