@@ -22,6 +22,8 @@ if have_library("SDL_ttf","TTF_Init") then
   $CFLAGS+= " -D HAVE_SDL_TTF "
 end
 if enable_config("opengl",false) then
+  dir_config('x11')
+  
   $CFLAGS+= " -D DEF_OPENGL "
   if arg_config("--linkoglmodule",false) then
     $CFLAGS+= " -D INIT_OGLMODULE_FROM_SDL "
