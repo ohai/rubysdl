@@ -1,6 +1,7 @@
 MANIFEST
 README.ja
 README.en
+LICENCE
 depend
 extconf.rb
 lib/sdl.rb
@@ -8,6 +9,7 @@ rubysdl.h
 rubysdl_const_list.txt
 rubysdl_doc.rd
 rubysdl_doc.en.rd
+event2_doc.rd
 rubysdl_event.c
 rubysdl_event_key.c
 rubysdl_main.c
@@ -20,6 +22,10 @@ rubysdl_wm.c
 rubysdl_ttf.c
 rubysdl_cdrom.c
 rubysdl_joystick.c
+rubysdl_image.c
+rubysdl_opengl.c
+rubysdl_pixel.c
+rubysdl_event2.c
 sample/testsprite.rb
 sample/playwave.rb
 sample/movesp.rb
@@ -29,3 +35,6 @@ sample/font.rb
 sample/cdrom.rb
 sample/rotate.rb
 sample/joy.rb
+sample/playmod.rb
+sample/testgl.rb
+sample/icon.bmp
