@@ -58,11 +58,14 @@ static VALUE sdl_rotateScaledSurface(VALUE obj,VALUE angle,VALUE scale,VALUE bgc
   Data_Get_Struct(obj,SDL_Surface,surface);
   result=sge_rotate_scaled_surface(surface,NUM2INT(angle),NUM2DBL(scale),
 			    NUM2UINT(bgcolor));
+  if( result==NULL )
+    rb_raise( eSDLError,"Couldn't Create Surface: %s",SDL_GetError() );
   return Data_Wrap_Struct(cSurface,0,SDL_FreeSurface,result);
 }
-static VALUE sdl_rotateXYScaledBlit(VALUE mod,VALUE src,VALUE dst,VALUE x,
-				    VALUE y,VALUE angle,VALUE xscale,
-				    VALUE yscale)
+/* doesn't respect ColorKey */
+static VALUE sdl_rotateXYScaled(VALUE mod,VALUE src,VALUE dst,VALUE x,
+				VALUE y,VALUE angle,VALUE xscale,
+				VALUE yscale)
 {
   SDL_Surface *srcSurface,*dstSurface;
   if( !rb_obj_is_kind_of(src,cSurface) || !rb_obj_is_kind_of(dst,cSurface) )
@@ -73,7 +76,34 @@ static VALUE sdl_rotateXYScaledBlit(VALUE mod,VALUE src,VALUE dst,VALUE x,
 		      NUM2INT(angle),NUM2DBL(xscale),NUM2DBL(yscale));
   return Qnil;
 }
-
+static VALUE sdl_rotateScaledBlit(VALUE mod,VALUE src,VALUE dst,VALUE x,
+				  VALUE y,VALUE angle,VALUE scale)
+{
+  SDL_Surface *srcSurface,*dstSurface,*tmpSurface;
+  SDL_Rect destRect;
+  Uint32 colorkey;
+  int result;
+  
+  if( !rb_obj_is_kind_of(src,cSurface) || !rb_obj_is_kind_of(dst,cSurface) )
+    rb_raise(rb_eArgError,"type mismatch(expect Surface)");
+  Data_Get_Struct(src,SDL_Surface,srcSurface);
+  Data_Get_Struct(dst,SDL_Surface,dstSurface);
+  colorkey=srcSurface->format->colorkey;
+  tmpSurface = sge_rotate_scaled_surface(srcSurface,NUM2INT(angle),
+					 NUM2DBL(scale),colorkey);
+  if( tmpSurface==NULL )
+    rb_raise(eSDLError,"SDL memory allocate failed :%s",SDL_GetError());
+  SDL_SetColorKey(tmpSurface,SDL_SRCCOLORKEY|SDL_RLEACCEL,colorkey);
+  destRect.x=NUM2INT(x)-tmpSurface->h/2;
+  destRect.y=NUM2INT(y)-tmpSurface->w/2;
+  result = SDL_BlitSurface(tmpSurface,NULL,dstSurface,&destRect);
+  SDL_FreeSurface(tmpSurface);
+  if( result == -1 ){
+    rb_raise(eSDLError,"SDL_BlitSurface fail: %s",SDL_GetError());
+  }
+  return INT2NUM(result);
+}
+  
 void init_sge_video()
 {
   sge_Update_OFF();
@@ -94,7 +124,7 @@ void init_sge_video()
   rb_define_method(cSurface,"drawFilledCircle",sdl_drawFilledCircle,4);
 
   rb_define_method(cSurface,"rotateScaledSurface",sdl_rotateScaledSurface,3);
-
-  rb_define_module_function(mSDL,"rotateXYScaledBlit",sdl_rotateXYScaledBlit,7);
+  rb_define_module_function(mSDL,"rotateScaledBlit",sdl_rotateScaledBlit,6);
+  rb_define_module_function(mSDL,"rotateXYScaled",sdl_rotateXYScaled,7);
 }
 #endif /* HAVE_SGE */
