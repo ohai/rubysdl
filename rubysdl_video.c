@@ -89,7 +89,9 @@ static VALUE sdl_getVideoInfo(VALUE mod)
   rb_iv_set(obj,"@blit_sw_A",BOOL(info->blit_sw_A));
   rb_iv_set(obj,"@blit_fill",BOOL(info->blit_fill));
   rb_iv_set(obj,"@video_mem",UINT2NUM(info->video_mem));
+#if 0
   rb_iv_set(obj,"@vfmt",Data_Wrap_Struct(cPixelFormat,0,0,info->vfmt));
+#endif
   return obj;
 }
 
@@ -139,12 +141,14 @@ static VALUE sdl_createSurface(VALUE class,VALUE flags,VALUE w,VALUE h,
 			       VALUE format)
 {
   SDL_Surface *newSurface;
+  SDL_Surface *formatSurface;
   SDL_PixelFormat *pixFormat;
-  if( rb_obj_is_kind_of( format,cPixelFormat ) ){
-    Data_Get_Struct(format,SDL_PixelFormat,pixFormat);
+  if( rb_obj_is_kind_of( format,cSurface ) ){
+    Data_Get_Struct(format,SDL_Surface,formatSurface);
   }else{
-    rb_raise( rb_eArgError,"type mismatch(expect PixelFormat)" );
+    rb_raise( rb_eArgError,"type mismatch(expect Surface)" );
   }
+  pixFormat = formatSurface->format;
   newSurface = SDL_CreateRGBSurface( NUM2UINT(flags),NUM2INT(w),NUM2INT(h),
 				     pixFormat->BitsPerPixel,
 				     pixFormat->Rmask,pixFormat->Gmask,
@@ -244,15 +248,6 @@ static VALUE sdl_setClipRect(VALUE obj,VALUE x,VALUE y,VALUE w,VALUE h)
   SetRect(rect,x,y,w,h);
   SDL_SetClipRect(surface,&rect);
 }
-static VALUE sdl_surface_format(VALUE obj)
-{
-  SDL_Surface *surface;
-  SDL_PixelFormat *format;
-  Data_Get_Struct(obj,SDL_Surface,surface);
-  format = xmalloc( sizeof(SDL_PixelFormat) );
-  *format = *(surface->format);
-  return Data_Wrap_Struct(cPixelFormat,0,free,format);
-}
 
 static VALUE sdl_fillRect(VALUE obj,VALUE x,VALUE y,VALUE w,VALUE h,
 		      VALUE color)
@@ -316,7 +311,7 @@ static VALUE sdl_setPalette(VALUE obj,VALUE flags,VALUE colors,VALUE firstcolor)
   
   Data_Get_Struct(obj,SDL_Surface,surface);
 
-  set_color_to_array(colors,palette);
+  set_colors_to_array(colors,palette);
   
   return BOOL(SDL_SetPalette( surface, NUM2UINT(flags), palette,
 			      NUM2INT(firstcolor), RARRAY(colors)->len));
@@ -329,7 +324,7 @@ static VALUE sdl_setColors(VALUE obj,VALUE colors,VALUE firstcolor)
 
   check_given_colors(colors,firstcolor);
   Data_Get_Struct(obj,SDL_Surface,surface);
-  set_color_to_array(colors,palette);
+  set_colors_to_array(colors,palette);
   return BOOL(SDL_SetColors( surface, palette,
 			     NUM2INT(firstcolor), RARRAY(colors)->len));
 }
@@ -353,53 +348,55 @@ static VALUE sdl_unlockSurface(VALUE obj)
   SDL_UnlockSurface(surface);
   return Qnil;
 }
-/* class PixelFormat methods */
-static VALUE sdl_format_mapRGB(VALUE obj,VALUE r,VALUE g,VALUE b)
+
+/* methods to get infomation from SDL_PixelFormat */
+static VALUE sdl_mapRGB(VALUE obj,VALUE r,VALUE g,VALUE b)
 {
-  SDL_PixelFormat *format;
-  Data_Get_Struct(obj,SDL_PixelFormat,format);
-  return UINT2NUM( SDL_MapRGB( format,NUM2INT(r),NUM2INT(g),NUM2INT(b) ) );
+  SDL_Surface *surface;
+  Data_Get_Struct(obj,SDL_Surface,surface);
+  return UINT2NUM( SDL_MapRGB( surface->format,NUM2INT(r),NUM2INT(g),
+			       NUM2INT(b) ) );
 }
-static VALUE sdl_format_mapRGBA(VALUE obj,VALUE r,VALUE g,VALUE b,VALUE a)
+static VALUE sdl_mapRGBA(VALUE obj,VALUE r,VALUE g,VALUE b,VALUE a)
 {
-  SDL_PixelFormat *format;
-  Data_Get_Struct(obj,SDL_PixelFormat,format);
-  return UINT2NUM( SDL_MapRGBA( format,NUM2INT(r),NUM2INT(g),NUM2INT(b),
+  SDL_Surface *surface;
+  Data_Get_Struct(obj,SDL_Surface,surface);
+  return UINT2NUM( SDL_MapRGBA( surface->format,NUM2INT(r),NUM2INT(g),NUM2INT(b),
 				NUM2INT(a) ) );
 }
-static VALUE sdl_format_getRGB(VALUE obj,VALUE pixel)
+static VALUE sdl_getRGB(VALUE obj,VALUE pixel)
 {
-  SDL_PixelFormat *format;
+  SDL_Surface *surface;
   Uint8 r,g,b;
-  Data_Get_Struct(obj,SDL_PixelFormat,format);
-  SDL_GetRGB(NUM2UINT(pixel),format,&r,&g,&b);
+  Data_Get_Struct(obj,SDL_Surface,surface);
+  SDL_GetRGB(NUM2UINT(pixel),surface->format,&r,&g,&b);
   return rb_ary_new3( 3,UINT2NUM(r),UINT2NUM(g),UINT2NUM(b) );
 }
-static VALUE sdl_format_getRGBA(VALUE obj,VALUE pixel)
+static VALUE sdl_getRGBA(VALUE obj,VALUE pixel)
 {
-  SDL_PixelFormat *format;
+  SDL_Surface *surface;
   Uint8 r,g,b,a;
-  Data_Get_Struct(obj,SDL_PixelFormat,format);
-  SDL_GetRGBA(NUM2UINT(pixel),format,&r,&g,&b,&a);
+  Data_Get_Struct(obj,SDL_Surface,surface);
+  SDL_GetRGBA(NUM2UINT(pixel),surface->format,&r,&g,&b,&a);
   return rb_ary_new3( 4,UINT2NUM(r),UINT2NUM(g),UINT2NUM(b),UINT2NUM(a) );
 }
-static VALUE sdl_format_getBpp(VALUE obj)
+static VALUE sdl_getBpp(VALUE obj)
 {
-  SDL_PixelFormat *format;
-  Data_Get_Struct(obj,SDL_PixelFormat,format);
-  return INT2FIX(format->BitsPerPixel);
+  SDL_Surface *surface;
+  Data_Get_Struct(obj,SDL_Surface,surface);
+  return INT2FIX(surface->format->BitsPerPixel);
 }
-static VALUE sdl_format_getColorkey(VALUE obj)
+static VALUE sdl_getColorkey(VALUE obj)
 {
-  SDL_PixelFormat *format;
-  Data_Get_Struct(obj,SDL_PixelFormat,format);
-  return UINT2NUM(format->colorkey);
+  SDL_Surface *surface;
+  Data_Get_Struct(obj,SDL_Surface,surface);
+  return UINT2NUM(surface->format->colorkey);
 }
-static VALUE sdl_format_getAlpha(VALUE obj)
+static VALUE sdl_getAlpha(VALUE obj)
 {
-  SDL_PixelFormat *format;
-  Data_Get_Struct(obj,SDL_PixelFormat,format);
-  return UINT2NUM(format->alpha);
+  SDL_Surface *surface;
+  Data_Get_Struct(obj,SDL_Surface,surface);
+  return UINT2NUM(surface->format->alpha);
 }
 
 static void defineConstForVideo()
@@ -446,8 +443,10 @@ void init_video()
   rb_define_attr(cVideoInfo,"blit_sw_A",1,0);
   rb_define_attr(cVideoInfo,"blit_fill",1,0);
   rb_define_attr(cVideoInfo,"video_mem",1,0);
+#if 0
   rb_define_attr(cVideoInfo,"vfmt",1,0);
-
+#endif
+  
   rb_define_module_function(mSDL,"videoInfo",sdl_getVideoInfo,0);
   
   cSurface = rb_define_class_under(mSDL,"Surface",rb_cObject);
@@ -461,20 +460,18 @@ void init_video()
   rb_define_method(cSurface,"setAlpha",sdl_setAlpha,2);
   rb_define_method(cSurface,"h",sdl_surfaceH,0);
   rb_define_method(cSurface,"w",sdl_surfaceW,0);
-  rb_define_method(cSurface,"format",sdl_surface_format,0);
 
   rb_define_method(cSurface,"mustLock?",sdl_mustlock,0);
   rb_define_method(cSurface,"lock",sdl_lockSurface,0);
   rb_define_method(cSurface,"unlock",sdl_unlockSurface,0);
 
-  cPixelFormat = rb_define_class_under(mSDL,"PixelFormat",rb_cObject);
-  rb_define_method(cPixelFormat,"mapRGB",sdl_format_mapRGB,3);
-  rb_define_method(cPixelFormat,"mapRGBA",sdl_format_mapRGBA,4);
-  rb_define_method(cPixelFormat,"getRGB",sdl_format_getRGB,3);
-  rb_define_method(cPixelFormat,"getRGBA",sdl_format_getRGBA,4);
-  rb_define_method(cPixelFormat,"bpp",sdl_format_getBpp,0);
-  rb_define_method(cPixelFormat,"colorkey",sdl_format_getColorkey,0);
-  rb_define_method(cPixelFormat,"alpha",sdl_format_getAlpha,0);
+  rb_define_method(cSurface,"mapRGB",sdl_mapRGB,3);
+  rb_define_method(cSurface,"mapRGBA",sdl_mapRGBA,4);
+  rb_define_method(cSurface,"getRGB",sdl_getRGB,3);
+  rb_define_method(cSurface,"getRGBA",sdl_getRGBA,4);
+  rb_define_method(cSurface,"bpp",sdl_getBpp,0);
+  rb_define_method(cSurface,"colorkey",sdl_getColorkey,0);
+  rb_define_method(cSurface,"alpha",sdl_getAlpha,0);
   
   defineConstForVideo();
   return;

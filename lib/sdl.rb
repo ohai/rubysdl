@@ -15,6 +15,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 # 
 require 'sdl.so'
+require 'forwardable'
 
 if !defined?(block_given?) then
   alias block_given? iterator?
@@ -23,12 +24,28 @@ end
 module SDL
 
   VERSION = "0.6"
+
+  class PixelFormat
+
+    extend Forwardable
+    
+    def initialize(surface)
+      @surface = surface
+    end
+
+    def_delegators( :@surface, :mapRGB, :mapRGBA, :getRGB, :getRGBA, :bpp,
+		    :colorkey, :alpha )
+  end
   
   class Surface
     def put(surface,x,y)
       SDL::blitSurface(surface,0,0,surface.w,surface.h,self,x,y)
     end
 
+    def format
+      return PixelFormat.new(self)
+    end
+    
     if defined?(rotateScaledSurface) then
       def rotateSurface(angle,bgcolor)
 	rotateScaledSurface(angle,1.0,bgcolor)
@@ -39,7 +56,7 @@ module SDL
   def color2int(color,format)
     case color
     when Integer
-      return i
+      return color
     when Array
       return format.mapRGB(*color)
     else
@@ -56,10 +73,10 @@ module SDL
 	raise SDL::Error,"width of cursor must be muliple of 8"
       end
 
-      white=color2int(white,bitmap.format)
-      black=color2int(black,bitmap.format)
-      transparent=color2int(transparent,bitmap.format)
-      inverted=color2int(inverted,bitmap.format)
+      white=SDL.color2int(white,bitmap.format)
+      black=SDL.color2int(black,bitmap.format)
+      transparent=SDL.color2int(transparent,bitmap.format)
+      inverted=SDL.color2int(inverted,bitmap.format)
       
       data=[]
       mask=[]
