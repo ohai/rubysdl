@@ -335,8 +335,8 @@ void init_event2(void)
   cSysWMEvent=rb_define_class_under(cEvent2,"SysWM",cEvent2);
   
   cVideoResizeEvent=rb_define_class_under(cEvent2,"VideoResize",cEvent2);
-  rb_define_attr(cVideoResizeEvent,"x",1,1);
-  rb_define_attr(cVideoResizeEvent,"y",1,1);
+  rb_define_attr(cVideoResizeEvent,"w",1,1);
+  rb_define_attr(cVideoResizeEvent,"h",1,1);
 
   for(i=0;i<SDL_NUMEVENTS;++i)
     createEventObj[i]=createNoEvent;
