@@ -200,6 +200,7 @@ bpp=bit per pixelである。
       回転縮小拡大を描画する。
       src全体をpx,pyを中心にangle度回転、X方向にxscale倍、Y方向にyscale倍して
       px、pyがdstのqx、qyに一致するように描画する。
+      このメソッドはColor keyを無視する。
       flagの意味は以下の通り。これらのORをとってもよい。
 
       * 0
@@ -219,12 +220,13 @@ bpp=bit per pixelである。
         テクスチャーマッピングを使用する。ほんの少しはやいがみためが少し
         悪くなる。px、py、flagsは無視される。
 
---- SDL.transformBlit(src,dst,x,y,angle,xscale,yscale,flags)
+--- SDL.transformBlit(src,dst,angle,xscale,yscale,px,py,qx,qy,flags)
       SGEが必要
 
-      srcの画像をX方向にxscale倍、Y方向にyscale倍して、
-      画像の真中を中心にしてangle度回転した画像をdstの(x,y)を中心に描画する。
-      flagsは((<SDL.transform>))と同じ。
+      回転縮小拡大を描画する。
+      引数は((<SDL.transform>))と同じ。
+      ((<SDL.transform>))との違いはこのメソッドがカラーキーによる
+      抜きが有効になることである。
 
 === SDL::Surface
 

@@ -180,6 +180,9 @@ some functions need SGE or SDL_image
 --- SDL.transform(src,dst,angle,xscale,yscale,px,py,qx,qy,flags)
       Need SGE
 
+      Draw src surface to dst surface with scaling and rotation.
+      Ignore colorkey.
+
       *src - The surface to be rotated and scaled
       *src - The surface to be rotated and scaled
       *angle - The rotation angle in degrees.
@@ -200,12 +203,11 @@ some functions need SGE or SDL_image
          as nice as in the normal mode. This mode will also ignore the px/py
          coordinates and the other flags.
 
---- SDL.transformBlit(src,dst,x,y,angle,xscale,yscale,flags)
+--- SDL.transformBlit(src,dst,angle,xscale,yscale,px,py,qx,qy,flags)
       Need SGE
 
-      Blit src surface to dst surface.
-      * x, y - drawed point in dst surface.
-      * angle, xscale, yscale, flags - same as ((<SDL.transform>)).
+      Blit src surface to dst surface with scaling and rotation.
+      Same as ((<SDL.transform>)) , but respect colorkey.
 
 === SDL::Surface
 
