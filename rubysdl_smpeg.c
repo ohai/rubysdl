@@ -107,6 +107,7 @@ static VALUE smpeg_setVolume(VALUE obj,VALUE volume)
   SMPEG *mpeg;
   Data_Get_Struct(obj,SMPEG,mpeg);
   SMPEG_setvolume(mpeg,NUM2INT(volume));
+  return Qnil;
 }
 
 static VALUE smpeg_setDisplay(VALUE obj,VALUE dst)
