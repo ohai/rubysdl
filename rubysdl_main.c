@@ -4,7 +4,7 @@
 #include "rubysdl.h"
 #include <signal.h>
 #include <stdio.h>
-static VALUE sdl_quit();
+static void sdl_quit();
 static VALUE sdl_init(VALUE obj,VALUE flags)
 {
   Uint32 flag;
@@ -22,7 +22,7 @@ static VALUE sdl_wasInit(VALUE mod,VALUE flags)
   return UINT2NUM( SDL_WasInit(NUM2UINT(flags)) );
 }
 
-static VALUE sdl_quit()
+static void sdl_quit()
 {
 #ifdef HAVE_SDL_MIXER
   quit_mixer();
@@ -31,7 +31,7 @@ static VALUE sdl_quit()
   quit_ttf();
 #endif
   SDL_Quit();
-  return Qnil;
+  return ;
 }
 
 static void defineConst()
