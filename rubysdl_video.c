@@ -185,6 +185,10 @@ static void defineConstForVideo()
   rb_define_const(mSDL,"RLEACCEL",UINT2NUM(SDL_RLEACCEL));
   rb_define_const(mSDL,"SRCALPHA",UINT2NUM(SDL_SRCALPHA));
   rb_define_const(mSDL,"PREALLOC",UINT2NUM(SDL_PREALLOC));
+
+  /*Transparency definitions: These define alpha as the opacity of a surface*/
+  rb_define_const(mSDL,"ALPHA_OPAQUE",INT2NUM(SDL_ALPHA_OPAQUE));
+  rb_define_const(mSDL,"ALPHA_TRANSPARENT",INT2NUM(SDL_ALPHA_TRANSPARENT));
 }
 
 void init_video()
