@@ -17,5 +17,5 @@ end
 if have_library("SDL_ttf","TTF_Init") then
   $CFLAGS+= " -D HAVE_SDL_TTF "
 end
-create_makefile("rubysdl")
+create_makefile("sdl")
 
