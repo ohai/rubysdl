@@ -708,10 +708,11 @@ Object
 
 === class method
 
---- Joystick.pall?
+--- Joystick.pall
       Return whether Joystick.updateAll are called automatically.
       
-#--- JoyStick.pall?=(polling)
+--- JoyStick.pall=(polling)
+      Set whether Joystick.updateAll are called automatically.
 
 --- Joystick.num
       Returns the number of attached joysticks.

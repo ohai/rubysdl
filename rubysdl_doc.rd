@@ -744,11 +744,13 @@ Object
 
 === クラスメソッド
 
---- Joystick.pall?
+--- Joystick.pall
       イベントのpollingに合わせて、Joystick.updateAllを呼びだすかどうか
       を得る。
       
-#--- Joystick.pall?=(polling)
+--- Joystick.pall=(polling)
+      イベントのpollingに合わせて、Joystick.updateAllを呼びだすかどうか
+      を設定する。
 
 --- Joystick.num
       利用可能なジョイスティックの数を返す。
