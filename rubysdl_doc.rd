@@ -351,11 +351,11 @@ Object
 
 ==== メソッド
 
---- PixelFormat#MapRGB(r,g,b)
+--- PixelFormat#mapRGB(r,g,b)
       selfのフォーマットに従ってr,g,bによってあらわされる色に対応した
       pixelの値を返す。
 
---- PixelFormat#MapRGBA(r,g,b,a)
+--- PixelFormat#mapRGBA(r,g,b,a)
       Not documented yet
 
 --- PixelFormat#getRGB(pixel)

@@ -319,10 +319,10 @@ nothing
 
 ==== method
 
---- PixelFormat#MapRGB(r,g,b)
+--- PixelFormat#mapRGB(r,g,b)
       Not documented yet
 
---- PixelFormat#MapRGBA(r,g,b,a)
+--- PixelFormat#mapRGBA(r,g,b,a)
       Not documented yet
 
 --- PixelFormat#getRGB(pixel)
