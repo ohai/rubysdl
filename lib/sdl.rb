@@ -128,13 +128,19 @@ module SDL
   end
 
   if defined?(transform) then
-    def transformBlit(src,dst,x,y,angle,xscale,yscale,flags)
+    def transformBlit(src,dst,angle,xscale,yscale,px,py,qx,qy,flags)
       colorkey = src.colorkey
       transformed = src.transformSurface( colorkey, angle,
 					 xscale, yscale, flags )
       transformed.setColorKey( SDL::SRCCOLORKEY|SDL::RLEACCEL, colorkey )
-      blitSurface( transformed, 0, 0, 0, 0, dst, x-transformed.w/2,
-		  y-transformed.h/2 )
+      rad = Math::PI*angle/180.0
+      x = px - src.w/2.0 ; y = py - src.h/2.0
+      x *= xscale ; y *= yscale
+      dst_x = x*Math.cos(rad)-y*Math.sin(rad) 
+      dst_y = x*Math.sin(rad)+y*Math.cos(rad) 
+      dst_x += transformed.w/2
+      dst_y += transformed.h/2
+      blitSurface( transformed, 0, 0, 0, 0, dst, qx-dst_x, qy-dst_y )
     end      
   end
   
