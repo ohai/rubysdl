@@ -25,6 +25,9 @@ static VALUE sdl_quit(VALUE obj)
 #ifdef HAVE_SDL_MIXER
   quit_mixer();
 #endif
+#ifdef HAVE_SDL_TTF
+  quit_ttf();
+#endif
   SDL_Quit();
   return Qnil;
 }
@@ -62,6 +65,8 @@ void Init_rubysdl()
   init_event();
   init_keyEvent();
   init_mouse();
+  init_joystick();
+  init_cdrom();
   init_time();
   init_wm();
 #ifdef HAVE_SDL_TTF
