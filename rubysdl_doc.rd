@@ -791,12 +791,12 @@ Object
 --- Joystick#numButtons
       ボタンの数を返す。
 
---- Joystick#axis(axis)
+--- Joystick#axis(axis_index)
       アナログ入力装置の入力状態を返す。
       その値は-32768から32768である。
       通常0にはx軸、1にはy軸があてられる。
 
---- Joystick#hat(hat)
+--- Joystick#hat(hat_index)
       いわゆる十字キーの入力状態を返す。その内容は以下のとおり。
         Joystick::HAT_CENTERED
         Joystick::HAT_UP
@@ -808,11 +808,11 @@ Object
         Joystick::HAT_LEFTUP
         Joystick::HAT_LEFTDOWN
 
---- Joystick#button(button)
+--- Joystick#button(button_index)
       ボタンの押下情報を返す。
       押していればtrue、いなければfalseを返す。
 
---- Joystick#ball(ball)
+--- Joystick#ball(ball_index)
       トラックボールの入力情報を返す。
       その内容は最後にこのメソッドを呼び出してからX軸、Y軸にどれだけ
       動かしたかを配列 [dx,dy] で返す。

@@ -753,7 +753,7 @@ Object
 --- Joystick#numButtons
       Returns the number of buttons available.
 
---- Joystick#axis(axis)
+--- Joystick#axis(axis_index)
       Returns a 16-bit signed integer representing the current position of the
       axis.
       On most modern joysticks the X axis is usually represented by axis 0 and
@@ -763,7 +763,7 @@ Object
       values to account for jitter. It is worth noting that some joysticks use
       axes 2 and 3 for extra buttons.
 
---- Joystick#hat(hat)
+--- Joystick#hat(hat_index)
       The current state is returned as a 8bit unsigned integer
       which is defined as an OR'd combination of one or more of the following
         Joystick::HAT_CENTERED
@@ -776,11 +776,11 @@ Object
         Joystick::HAT_LEFTUP
         Joystick::HAT_LEFTDOWN
 
---- Joystick#button(button)
+--- Joystick#button(button_index)
       Returns the current state of the given button.
       Returns true if the button is pressed,otherwise 0.
 
---- Joystick#ball(ball)
+--- Joystick#ball(ball_index)
       Returns the motion deltas in array, [ dx,dy ] .
       Trackballs can only return relative motion since the last call to
       Joystick#ball, these motion deltas a placed into dx and dy.
