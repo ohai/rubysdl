@@ -99,8 +99,16 @@ some functions need SGE or SDL_image
 --- autoLock
       Needs SGE
 
+      Returns whether Ruby/SDL locks surface automatically when
+      need.Default is true.
+
+      Please see ((<Surface::lock>)) to know more.
+
 --- autoLock=(autolocking)
       Needs SGE
+
+      Set whether Ruby/SDL locks surface automatically when
+      need.
 
 --- videoInfo
       Return  video information in the object of VideoInfo .
@@ -204,10 +212,29 @@ Object
       This function performs a fast fill of the given rectangle with color.
 
 --- Surface#setClipRect(x,y,w,h)
-      Not documented yet
+      Sets the clipping rectangle for a surface. When this surface is the
+      destination of a blit, only the area within the clip rectangle will
+      be drawn into.
+      
+      The rectangle pointed to by rect will be clipped to the edges of the
+      surface so that the clip rectangle for a surface can never fall
+      outside the edges of the surface.
+
 
 --- Surface#setAlpha(flag,alpha)
-      Not documented yet
+      SDL_SetAlpha is used for setting the per-surface alpha and/or enabling
+      and disabling per-pixel alpha blending.
+      
+      flags is used to specify whether alpha blending should be used
+      (SDL::SRCALPHA) and whether the surface should use RLE acceleration
+      for blitting (SDL::RLEACCEL). flags can be an OR'd combination of these
+      two options, one of these options or 0. If SDL_SRCALPHA is not passed
+      as a flag then all alpha information is ignored when blitting
+      the surface. The alpha parameter is the per-surface alpha value,
+      a surface need not have an alpha channel to use
+      per-surface alpha and blitting can still be accelerated with
+      SDL_RLEACCEL. Setting the per-surface alpha value to 0 disables
+      per-surface alpha blending.
 
 --- Surface#h
       Return height.
@@ -224,38 +251,56 @@ Object
       This method are implemented using blitSurface.
 
 --- Surface#lock
-      Not documented yet
+      This method sets up a surface for directly accessing the pixels.You call
+      this before calling ((<Surface#getPixel>)) , ((<Surface#drawLine>)) or
+      some other mehtods of Surface.
+
+      Between calls to Surface#lock and Surface#unlock, you can use
+      methods that 'need locking'.
+      Once you are done accessing the surface, you
+      should use SDL_UnlockSurface to release it.
+      
+      Not all surfaces require locking. If ((<Surface#mustLock?>))  returns
+      false, then you can read and write to the surface at any time, and the
+      pixel format of the surface will not change.
+      
+      No operating system or library calls should be made between lock/unlock
+      pairs, as critical system locks may be held during this time.
+      
+      If ((<autoLock>)) returns true,you don't have to call this methods
+      because this library locks surface automatically.
 
 --- Surface#unlock
-      Not documented yet
+      Unlock the surface.
 
 --- Surface#mustLock?
-      Not documented yet
+      Returns true if you must lock surface for directly accessing the pixels,
+      otherwise returns false.
 
 --- Surface#getPixel(x,y) 
 --- Surface#[](x,y)
-      Needs SGE
+      Needs SGE ,Needs lock
       Gets the color of the specified pixel.
 
 --- Surface#putPixel(x,y,pixel)
 --- Surface#[]=(x,y,pixel)
-      Needs SGE
+      Needs SGE ,Needs lock
       Writes a pixel to the specified position.
 
 --- Surface#drawLine(x1,y1,x2,y2,color)
-      Needs SGE
+      Needs SGE ,Needs lock
       Draws a line from (x1,y1) to (x2,y2).
 
 --- Surface#drawRect(x,y,w,h,color)
-      Needs SGE
+      Needs SGE ,Needs lock
       Draws a rectangle.
 
 --- Surface#drawCircle(x,y,r,color)
-      Needs SGE
+      Needs SGE ,Needs lock
       Draws a circle.
 
 --- Surface#drawFilledCircle(x,y,r,color)
-      Needs SGE
+      Needs SGE ,Needs lock
       Draws a filled circle.
 
 --- Surface#rotateScaledSurface(angle,scale,bgcolor)
@@ -326,16 +371,19 @@ nothing
 ==== method
 
 --- PixelFormat#mapRGB(r,g,b)
-      Not documented yet
+    Maps the RGB color value to the specified pixel format and returns the
+    pixel value as a integer.
 
 --- PixelFormat#mapRGBA(r,g,b,a)
-      Not documented yet
+      Same as above,but includes alpha value.
 
 --- PixelFormat#getRGB(pixel)
-      Returns r,g,b value in array.
+      Get RGB component values from a pixel stored in the specified pixel
+      format.Returns r,g,b value in array as [r,g,b].
 
 --- PixelFormat#getRGBA(pixel)
-      Not documented yet
+      Same as above, but return value includes alplah value.
+      Returns r,g,b,a in arrary as [r,g,b,a].
 
 --- PixelFormat#bpp
       Return bits per pixel on this format.
@@ -399,10 +447,15 @@ Object
       Returns Current Key modifiers.
 
 --- Event#gain?
-      Not documented yet
+      On ACTIVEEVENT,
+      returns true when gaining focus in this event,otherwise retursn false.
 
 --- Event#appState
-      Not documented yet
+      Returns the kind of ActiveEvent.
+      This value is following.
+        Event::APPMOUSEFOCUS
+        Event::APPINPUTFOCUS
+        Event::APPACTIVE
 
 --- Event#mouseX
       Returns the X coordinate of the mouse.
@@ -462,10 +515,10 @@ This module has some functions to get the key state.
         Key::MOD_META = Key::MOD_LMETA|Key::MOD_RMETA
 
 --- enableKeyRepeat(delay,interval)
-      Not documented yet
+      Set keyboard repeat rate.
 
 --- disableKeyRepeat
-      Not documented yet
+      Disables key repeat.
 
 == Mouse
 
@@ -548,31 +601,32 @@ Needs SDL_mixer to use functions if this module.
       Play a music.
       
 --- fadeInMusic(music,loops,ms)
-      Not documented yet
+      Fade in the given music in ms milliseconds.
+      The meaning of loops is same as in ((<Mixer::playChannel>))
 
 --- setVolumeMusic(volume)
-      Not documented yet
+      Sets the volume of music.
 
 --- haltMusic
-      Not documented yet
+      Halts music.
 
 --- fadeOutMusic(ms)
-      Not documented yet
+      Fade out the music in ms milliseconds.
 
 --- pauseMusic
-      Not documented yet
+      Pauses music.
 
 --- resumeMusic
-      Not documented yet
+      Resumes music.
 
 --- rewindMusic
-      Not documented yet
+      Rewinds music.
 
 --- pauseMusic?
-      Not documented yet
+      Returns whether the music is pausing.
 
 --- playMusic?
-      Not documented yet
+      Returns whether the music is playing.
 
 === Mixer::Wave
 

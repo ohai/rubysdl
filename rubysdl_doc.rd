@@ -115,9 +115,15 @@ bpp=bit per pixelである。
 --- autoLock
       SGEが必要
 
+      サーフィスのロックが必要なとき自動的にロックしてくれるかどうか
+      を返す。デフォルトはtrue。
+
+      さらに詳しいことを知りたければ((<Surface::lock>))を見てください。
+
 --- autoLock=(autolocking)
       SGEが必要
-
+      サーフィスのロックが必要なとき自動的にロックしてくれるように設定する。
+      
 --- videoInfo
       Videoの情報をVideoInfoのインスタンスで返す。その内容は以下の通り。
       真偽値を表すものはtrue,falseが入っている。
@@ -228,10 +234,17 @@ Object
       指定された長方形の領域をcolorでぬりつぶす。
 
 --- Surface#setClipRect(x,y,w,h)
-      Not documented yet
+      クリッピングをする長方形を指定する。
+      ((<blitSurface>)),((<Surface#put>))等でこのインスタンスに描画しようと
+      したとき、これで指定した長方形内部のみで描画される。
       
 --- Surface#setAlpha(flag,alpha)
-      Not documented yet
+      アルファの設定をする。
+      flagにSDL::SRCALPHAを設定することでアルファが有効になる。
+      SDL::RLEACCELとORをとって指定するとRLEによる高速化が有効になる。
+      alphaはアルファ値を意味し、0で透明、255で通常と同等となる。
+
+      flagに0を指定すればアルファは無効となる。
 
 --- Surface#h
       selfの高さを返す。
@@ -248,49 +261,60 @@ Object
       blitSurfaceで実装されている。
 
 --- Surface#lock
-      Not documented yet
+      getPixel,setPixelやdrawLine等のメソッドを使って描画する
+      ための準備をする。
+
+      ((<Surface#mustLock?>))がtrueを返したインスタンスのみこの操作
+      が必要となる。
+
+      ((<Surface#unlock>))を呼びだすまで、他ライブラリの呼びだしや
+      OSに対する操作をしてはならない。
+
+      ((<autoLock>))がtrueを返すときはライブラリが自動的にこの操作を
+      してくれるのでこのメソッドを呼びだす必要はない。
 
 --- Surface#unlock
-      Not documented yet
+      ((<Surface#lock>))でロックしたのを解除する。
 
 --- Surface#mustLock?
-      Not documented yet
+      ((<Surface#lock>))を呼びだす必要があるときはtrueを、
+      ないときはfalseを返す。
 
 --- Surface#getPixel(x,y) 
 --- Surface#[](x,y)
-      SGEが必要
+      SGEが必要 ロックが必要
 
       x,yの位置のピクセルの値を返す。
 
 --- Surface#putPixel(x,y,pixel)
 --- Surface#[]=(x,y,pixel)
-      SGEが必要
+      SGEが必要 ロックが必要
 
       x,yの位置のピクセルの値をpixelにする。
       つまり、x,yの位置にpixelの色の点を打つ。
 
 --- Surface#drawLine(x1,y1,x2,y2,color)
-      SGEが必要
+      SGEが必要 ロックが必要
 
       色がcolorの線を(x1,y1)から(x2,y2)まで描く。
 
 --- Surface#drawRect(x,y,w,h,color)
-      SGEが必要
+      SGEが必要 ロックが必要
 
       色がcolorの長方形を描く。中はぬりつぶさない。
 
 --- Surface#drawCircle(x,y,r,color)
-      SGEが必要
+      SGEが必要 ロックが必要
 
       色がcolorの円を描く。中はぬりつぶさない。
 
 --- Surface#drawFilledCircle(x,y,r,color)
-      SGEが必要
+      SGEが必要 ロックが必要
 
       色がcolorの円を描き、中をぬりつぶす。
 
 --- Surface#rotateScaledSurface(angle,scale,bgcolor)
-      SGEが必要
+      SGEが必要 
 
       これは、selfをangle度傾け、scale倍した画像を持つSurfaceのインスタンスを
       生成するメソッドである。回転によって生じる隙間はbgcolorで埋められる。
@@ -364,13 +388,15 @@ Object
       pixelの値を返す。
 
 --- PixelFormat#mapRGBA(r,g,b,a)
-      Not documented yet
+      ((<PixelFormat#mapRGB>))と同様。ただしアルファ値も含めることができる。
 
 --- PixelFormat#getRGB(pixel)
-      Not documented yet
+      ((<PixelFormat#mapRGB>))と逆の変換をする。返り値は [r,g,b]
+      という内容の配列を返す。
 
 --- PixelFormat#getRGBA(pixel)
-      Not documented yet
+      ((<PixelFormat#getRGB>))と同様。ただし返り値にアルファも含んでいる。
+      返り値は[r,g,b,a]という内容の配列である。
 
 --- PixelFormat#bpp
       フォーマトの1ピクセルあたりのビット数を返す。
@@ -433,10 +459,15 @@ Object
       キーイベントでの修飾キー(SHIFT,CTRLなど)の状態を返す。
 
 --- Event#gain?
-      Not documented yet
+      ACTIVEEVENTイベントでウィンドウがフォーカスを得たならtrueを、
+      失なったならばfalseを返す。
 
 --- Event#appState
-      Not documented yet
+      ACTIVEEVENTイベントでのイベントの種類を返す。
+      その内容は以下のいずれか。
+        Event::APPMOUSEFOCUS
+        Event::APPINPUTFOCUS
+        Event::APPACTIVE
 
 --- Event#mouseX
       マウスイベントでのマウスカーソルのX座標を返す。
@@ -459,8 +490,8 @@ Object
         SDL::Mouse::BUTTON_RIGHT 右ボタン
 
 --- Event#mousePress?
-      このイベントがマウスの押し下げのイベントであればtrue、
-      そうでなければfalseを返す。
+      MOUSEBUTTONDOWN,MOUSEBUTTONUPイベントにおいて、マウスボタンが
+      押されたならtrue、離されたならfalseを返す。
 
 === Key
 
@@ -498,10 +529,11 @@ Object
         Key::MOD_META = Key::MOD_LMETA|Key::MOD_RMETA
 
 --- enableKeyRepeat(delay,interval)
-      Not documented yet
+      キーリピートの設定を変える。
+      
 
 --- disableKeyRepeat
-      Not documented yet
+      キーリピートを無効にする。
     
 == Mouse
 
@@ -536,8 +568,8 @@ Object
 === Mixer
 
 音をだしたりするのに使うモジュール
-ボリュームは0から128が有効です。
-このモジュールの機能を使うためには、SDL_mixerライブラリが必要です。
+ボリュームは0から128が有効である。
+このモジュールの機能を使うためには、SDL_mixerライブラリが必要である。
 このモジュール内の機能を使うためには、initでINIT_AUDIOを有効にしな
 ければならない。
 
@@ -546,8 +578,8 @@ Object
 --- open(frequency=Mixer::DEFAULT_FREQUENCY,format=Mixer::DEFAULT_FORMAT,cannels=Mixer::DEFAULT_CHANNELS,chunksize=4096)
       このモジュールの機能の初期化関数。
       frequencyは周波数、formatはサウンドの形式、
-      channelsは1でモノラル、2でステレオ、
-      chunksizeはバッファの大きさ。
+      channelsは1でモノラル、2でステレオ
+      chunksizeはバッファの大きさ、をそれぞれ指定する。
       chunksizeは2の階乗を使うようにする。
       ここでいうchannelsとplayChannelなどでのchannelは別物である。
 
@@ -607,16 +639,16 @@ Object
       音楽を指定したミリ秒かけてフェードアウトする。
 
 --- pauseMusic
-      Not documented yet
+      音楽を一時停止する。
       
 --- resumeMusic
-      Not documented yet
+      一時停止している音楽の再生を再開する。
 
 --- rewindMusic
-      Not documented yet
+      音楽の再生位置を一番最初にする。
 
 --- pauseMusic?
-      Not documented yet
+      音楽が一時停止していればtrue、いなければfalseを返す。
 
 --- playMusic?
       音楽が演奏されていればtrue、していなければfalseを返す。
@@ -632,10 +664,13 @@ Object
 ==== クラスメソッド
 
 --- Mixer::Wave.load(filename)
+      waveファイルをロードし、それに対応するMixer::Waveクラスの
+      インスタンスを返す。
 
 ==== メソッド
 
 --- Mixer::Wave#setVolume(volume)
+      selfのボリュームを返す。
 
 === Mixer::Music
 
@@ -649,6 +684,8 @@ Object
 ==== クラスメソッド
 
 --- Mixer::Music.load(filename)
+      音楽(.mod .s3m .it .xm .mid .mp3)をファイルからロードし、
+      そのデータに対応するMixer::Musicクラスのインスタンスを返す。
 
 == Window Manager 関連
 
