@@ -18,11 +18,11 @@ module SDL
     rotateXYScaled(src,dst,x,y,angle,scale,scale)
   end
   def rotate(src,dst,x,y,angle)
-    rotateXYScaled(src,dst,x,y,angle,1.0,1.0)
+    rotateXYScaled(src,dst,x,y,angle,1,1)
   end
 
   def rotateBlit(src,dst,x,y,angle)
-    rotateScaledBlit(src,dst,x,y,angle,1.0)
+    rotateScaledBlit(src,dst,x,y,angle,1)
   end
 end
 
