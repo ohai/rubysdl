@@ -80,6 +80,12 @@ void Init_sdl()
 #ifdef HAVE_SGE
   init_sge_video();
 #endif
+#ifdef DEF_OPENGL
+  init_opengl();
+#ifdef INIT_OGLMODULE_FROM_SDL
+  Init_opengl();
+#endif
+#endif
 #ifdef HAVE_SDL_IMAGE
   init_sdl_image();
 #endif
