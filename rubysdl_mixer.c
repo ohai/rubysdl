@@ -24,9 +24,14 @@
 
 static int mix_opened=0;
 
+static VALUE playing_wave[MIX_CHANNELS] =
+{ Qnil,Qnil,Qnil,Qnil,Qnil,Qnil,Qnil,Qnil };
+static VALUE playing_music=Qnil;
+
 static VALUE mix_openAudio(VALUE mod,VALUE frequency,VALUE format,
 			   VALUE channels,VALUE chunksize)
 {
+  int i;
   if( mix_opened ){
     rb_raise(eSDLError,"already initialize SDL::Mixer");
   }
@@ -35,6 +40,11 @@ static VALUE mix_openAudio(VALUE mod,VALUE frequency,VALUE format,
     rb_raise(eSDLError,"Couldn't open audio: %s",SDL_GetError());
   }
 
+  /* to avoid to do garbage collect when playing */
+  for( i=0; i<MIX_CHANNELS; ++i)
+    rb_global_variable( &(playing_wave[i]) );
+  rb_global_variable( &playing_music );
+  
   return Qnil;
 }
 
@@ -56,6 +66,7 @@ static VALUE mix_playChannel(VALUE mod,VALUE channel,VALUE wave,VALUE loops)
   if( ! rb_obj_is_kind_of(wave,cWave) )
     rb_raise(rb_eArgError,"type mismatch");
   Data_Get_Struct(wave,Mix_Chunk,chunk);
+  playing_wave[NUM2INT(channel)]=wave; /* to avoid gc problem */
   return INT2FIX( Mix_PlayChannel(NUM2INT(channel),chunk,NUM2INT(loops) ) );
 }
 
@@ -127,6 +138,7 @@ static VALUE mix_playMusic(VALUE mod,VALUE music,VALUE loops)
   if( ! rb_obj_is_kind_of(music,cMusic) )
     rb_raise(rb_eArgError,"type mismatch");
   Data_Get_Struct(music,Mix_Music,mus);
+  playing_music=music; /* to avoid gc problem */
   Mix_PlayMusic(mus,NUM2INT(loops));
   return Qnil;
 }
