@@ -83,7 +83,24 @@ static VALUE sdl_drawFilledCircle(VALUE obj,VALUE x,VALUE y,VALUE r,VALUE color)
 		    VALUE2COLOR(color,surface->format) );
   return Qnil;
 }
-
+static VALUE sdl_drawEllipse(VALUE obj,VALUE x,VALUE y,VALUE rx,VALUE ry,
+			     VALUE color)
+{
+  SDL_Surface *surface;
+  Data_Get_Struct(obj,SDL_Surface,surface);
+  sge_Ellipse( surface,NUM2INT(x),NUM2INT(y),NUM2INT(rx),NUM2INT(ry),
+	       VALUE2COLOR(color,surface->format) );
+  return Qnil;
+}
+static VALUE sdl_drawFilledEllipse(VALUE obj,VALUE x,VALUE y,VALUE rx,VALUE ry,
+				   VALUE color)
+{
+  SDL_Surface *surface;
+  Data_Get_Struct(obj,SDL_Surface,surface);
+  sge_FilledEllipse( surface,NUM2INT(x),NUM2INT(y),NUM2INT(rx),NUM2INT(ry),
+		     VALUE2COLOR(color,surface->format) );
+  return Qnil;
+}
 static VALUE sdl_rotateScaledSurface(VALUE obj,VALUE angle,VALUE scale,VALUE bgcolor)
 {
   SDL_Surface *surface,*result;
@@ -155,7 +172,9 @@ void init_sge_video()
   rb_define_method(cSurface,"drawRect",sdl_drawRect,5);
   rb_define_method(cSurface,"drawCircle",sdl_drawCircle,4);
   rb_define_method(cSurface,"drawFilledCircle",sdl_drawFilledCircle,4);
-
+  rb_define_method(cSurface,"drawEllispe",sdl_drawEllipse,5);
+  rb_define_method(cSurface,"drawFilledEllispe",sdl_drawFilledEllipse,5);
+  
   rb_define_method(cSurface,"rotateScaledSurface",sdl_rotateScaledSurface,3);
   rb_define_module_function(mSDL,"rotateScaledBlit",sdl_rotateScaledBlit,6);
   rb_define_module_function(mSDL,"rotateXYScaled",sdl_rotateXYScaled,7);
