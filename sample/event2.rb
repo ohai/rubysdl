@@ -16,6 +16,7 @@ loop do
 	e.sym=3333
 	e.mod=3333
 	e.press=true
+        e.unicode=200
 	SDL::Event2.push(e)
       end
     when SDL::Event2::KeyUp
