@@ -142,7 +142,6 @@ static VALUE sdl_setVideoMode(VALUE mod,VALUE w,VALUE h,VALUE bpp,
        VALUE flags)
 {
   SDL_Surface *screen;
-  VALUE screenObject;
   screen=SDL_SetVideoMode(NUM2INT(w),NUM2INT(h),NUM2INT(bpp),
 			  NUM2UINT(flags));
   if( screen==NULL ){
@@ -317,6 +316,7 @@ static VALUE sdl_setAlpha(VALUE obj,VALUE flag,VALUE alpha)
 
   Data_Get_Struct(obj,SDL_Surface,surface);
   SDL_SetAlpha(surface,NUM2UINT(flag),NUM2INT(alpha));
+  return Qnil;
 }
 
 static VALUE sdl_setClipRect(VALUE obj,VALUE x,VALUE y,VALUE w,VALUE h)
@@ -327,6 +327,7 @@ static VALUE sdl_setClipRect(VALUE obj,VALUE x,VALUE y,VALUE w,VALUE h)
   Data_Get_Struct(obj,SDL_Surface,surface);
   SetRect(rect,x,y,w,h);
   SDL_SetClipRect(surface,&rect);
+  return Qnil;
 }
 
 static VALUE sdl_getClipRect(VALUE obj)
