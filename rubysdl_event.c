@@ -20,6 +20,16 @@ static VALUE sdl_pollEvent(VALUE obj)
   Data_Get_Struct(obj,SDL_Event,event);
   return INT2NUM(SDL_PollEvent(event));
 }
+static VALUE sdl_waitEvent(VALUE obj)
+{
+  SDL_Event *event;
+
+  Data_Get_Struct(obj,SDL_Event,event);
+  if( SDL_WaitEvent(event)==0 )
+    rb_raise(eSDLError,"SDL_WaitEvent Failed :%s",SDL_GetError());
+  return Qnil;
+}
+
 static VALUE sdl_eventType(VALUE obj)
 {
   SDL_Event *event;
@@ -145,6 +155,76 @@ static VALUE sdl_eventMousePressed(VALUE obj)
   return (event->button.state==SDL_PRESSED)?Qtrue:Qfalse;
 }
 
+static VALUE sdl_eventInfo(VALUE obj)
+{
+  SDL_Event *event;
+  
+  Data_Get_Struct(obj,SDL_Event,event);
+  switch(event->type){
+  case SDL_ACTIVEEVENT:
+    return rb_ary_new3(3,INT2FIX(SDL_ACTIVEEVENT),TORF(event->active.gain),
+		       INT2FIX(event->active.state));
+  case SDL_KEYDOWN:
+  case SDL_KEYUP:
+    return rb_ary_new3( 4, INT2FIX(event->type),
+			TORF(event->key.state==SDL_PRESSED),
+			INT2FIX(event->key.keysym.sym),
+			UINT2NUM(event->key.keysym.mod)
+			);
+  case SDL_MOUSEMOTION:
+    return rb_ary_new3( 6, INT2FIX(SDL_MOUSEMOTION),
+			INT2FIX(event->motion.state),
+			INT2FIX(event->motion.x),
+			INT2FIX(event->motion.y),
+			INT2FIX(event->motion.xrel),
+			INT2FIX(event->motion.yrel)
+			);
+  case SDL_MOUSEBUTTONDOWN:
+  case SDL_MOUSEBUTTONUP:
+    return rb_ary_new3( 5, INT2FIX(event->type),
+			INT2FIX(event->button.button),
+			TORF(event->button.state==SDL_PRESSED),
+			INT2FIX(event->button.x),
+			INT2FIX(event->button.y)
+			);
+  case SDL_JOYAXISMOTION:
+    return rb_ary_new3( 4, INT2FIX(SDL_JOYAXISMOTION),
+			INT2FIX(event->jaxis.which),
+			INT2FIX(event->jaxis.axis),
+			INT2FIX(event->jaxis.value)
+			);
+  case SDL_JOYBALLMOTION:
+    return rb_ary_new3( 5, INT2FIX(SDL_JOYBALLMOTION),
+			INT2FIX(event->jball.which),
+			INT2FIX(event->jball.ball),
+			INT2FIX(event->jball.xrel),
+			INT2FIX(event->jball.yrel)
+			);
+  case SDL_JOYHATMOTION:
+    return rb_ary_new3( 4, INT2FIX(SDL_JOYHATMOTION),
+			INT2FIX(event->jhat.which),
+			INT2FIX(event->jhat.hat),
+			INT2FIX(event->jhat.value)
+			);
+  case SDL_JOYBUTTONDOWN:
+  case SDL_JOYBUTTONUP:
+    return rb_ary_new3( 4, INT2FIX(event->type),
+			INT2FIX(event->jbutton.which),
+			INT2FIX(event->jbutton.button),
+			TORF(event->jbutton.state==SDL_PRESSED)
+			);
+  case SDL_QUIT:
+    return rb_ary_new3( 1, INT2FIX(SDL_QUIT));
+  case SDL_SYSWMEVENT:
+    return rb_ary_new3( 1, INT2FIX(SDL_SYSWMEVENT));
+  case SDL_VIDEORESIZE:
+    return rb_ary_new3( 3, INT2FIX(SDL_VIDEORESIZE),
+			INT2FIX(event->resize.w),
+			INT2FIX(event->resize.h)
+			);
+  }
+  return Qnil;
+}
 static void defineConstForEvent()
 {
   rb_define_const(cEvent,"NOEVENT",INT2NUM(SDL_NOEVENT));
@@ -190,6 +270,7 @@ void init_event()
   cEvent = rb_define_class_under(mSDL,"Event",rb_cObject);
   rb_define_singleton_method(cEvent,"new",createEventObject,0);
   rb_define_method(cEvent,"poll",sdl_pollEvent,0);
+  rb_define_method(cEvent,"wait",sdl_waitEvent,0);
   
   rb_define_method(cEvent,"type",sdl_eventType,0);
   
@@ -207,7 +288,8 @@ void init_event()
 
   rb_define_method(cEvent,"mouseButton",sdl_eventMouseButton,0);
   rb_define_method(cEvent,"mousePress?",sdl_eventMousePressed,0);
-  
+
+  rb_define_method(cEvent,"info",sdl_eventInfo,0);
   defineConstForEvent();
   
 }
