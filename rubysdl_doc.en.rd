@@ -1781,6 +1781,9 @@ Object
       
 Needs SDLSKK library.
 
+You need calling ((<SDL::Event2.enableUnicode>)) after calling ((<SDL.init>))
+to use SDLSKK.
+
 === module function
 
 --- SDL::SKK.encoding=(encoding)

@@ -1793,6 +1793,9 @@ SDLSKKライブラリが必要である。
 
 これに関するすべてのクラスはSDL::SKKの下にある。
 
+これを使うためには((<SDL.init>))を呼んだ後に((<SDL::Event2.enableUnicode>))を
+呼ぶ必要がある。
+
 === モジュール関数
 
 --- SDL::SKK.encoding=(encoding)
