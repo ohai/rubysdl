@@ -30,15 +30,15 @@ static VALUE sdl_getVideoInfo(VALUE mod)
   SDL_VideoInfo *info;
   info = SDL_GetVideoInfo();
   return rb_ary_new3(11,
-		     TORF(info->hw_available),
-		     TORF(info->wm_available),
-		     TORF(info->blit_hw),
-		     TORF(info->blit_hw_CC),
-		     TORF(info->blit_hw_A),
-		     TORF(info->blit_sw),
-		     TORF(info->blit_sw_CC),
-		     TORF(info->blit_sw_A),
-		     TORF(info->blit_fill),
+		     BOOL(info->hw_available),
+		     BOOL(info->wm_available),
+		     BOOL(info->blit_hw),
+		     BOOL(info->blit_hw_CC),
+		     BOOL(info->blit_hw_A),
+		     BOOL(info->blit_sw),
+		     BOOL(info->blit_sw_CC),
+		     BOOL(info->blit_sw_A),
+		     BOOL(info->blit_fill),
 		     UINT2NUM(info->video_mem),
 		     Data_Wrap_Struct(cPixelFormat,0,0,info->vfmt)
 		     );

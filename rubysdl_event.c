@@ -181,12 +181,12 @@ static VALUE sdl_eventInfo(VALUE obj)
   Data_Get_Struct(obj,SDL_Event,event);
   switch(event->type){
   case SDL_ACTIVEEVENT:
-    return rb_ary_new3(3,INT2FIX(SDL_ACTIVEEVENT),TORF(event->active.gain),
+    return rb_ary_new3(3,INT2FIX(SDL_ACTIVEEVENT),BOOL(event->active.gain),
 		       INT2FIX(event->active.state));
   case SDL_KEYDOWN:
   case SDL_KEYUP:
     return rb_ary_new3( 4, INT2FIX(event->type),
-			TORF(event->key.state==SDL_PRESSED),
+			BOOL(event->key.state==SDL_PRESSED),
 			INT2FIX(event->key.keysym.sym),
 			UINT2NUM(event->key.keysym.mod)
 			);
@@ -202,7 +202,7 @@ static VALUE sdl_eventInfo(VALUE obj)
   case SDL_MOUSEBUTTONUP:
     return rb_ary_new3( 5, INT2FIX(event->type),
 			INT2FIX(event->button.button),
-			TORF(event->button.state==SDL_PRESSED),
+			BOOL(event->button.state==SDL_PRESSED),
 			INT2FIX(event->button.x),
 			INT2FIX(event->button.y)
 			);
@@ -230,7 +230,7 @@ static VALUE sdl_eventInfo(VALUE obj)
     return rb_ary_new3( 4, INT2FIX(event->type),
 			INT2FIX(event->jbutton.which),
 			INT2FIX(event->jbutton.button),
-			TORF(event->jbutton.state==SDL_PRESSED)
+			BOOL(event->jbutton.state==SDL_PRESSED)
 			);
   case SDL_QUIT:
     return rb_ary_new3( 1, INT2FIX(SDL_QUIT));
