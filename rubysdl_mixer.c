@@ -192,7 +192,7 @@ static void defineConstForAudio()
 
   rb_define_const(mMixer,"CHANNELS",INT2NUM(MIX_CHANNELS));
   rb_define_const(mMixer,"DEFAULT_FREQUENCY",INT2NUM(MIX_DEFAULT_FREQUENCY));
-  rb_define_const(mMixer,"DEFAULT_FORMAT",UINT2NUM(MIXDEFAULT_FORMAT));
+  rb_define_const(mMixer,"DEFAULT_FORMAT",UINT2NUM(MIX_DEFAULT_FORMAT));
   rb_define_const(mMixer,"DEFAULT_CHANNELS",UINT2NUM(MIX_DEFAULT_CHANNELS));
   rb_define_const(mMixer,"MAX_VOLUME",INT2NUM(MIX_MAX_VOLUME));
 
