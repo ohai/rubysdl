@@ -161,7 +161,6 @@ static VALUE sdl_ttf_drawSolidUTF8(VALUE obj,VALUE dest,VALUE text,VALUE x,
 {
   return ttf_draw(obj,dest,text,x,y,r,g,b,1,1,1,ttf_wrap_RenderUTF8_Solid);
 }
-
 static SDL_Surface* ttf_wrap_RenderUTF8_Blended(TTF_Font *font,
 						const char *text,
 						SDL_Color fg,
@@ -183,6 +182,45 @@ static VALUE sdl_ttf_drawShadedUTF8(VALUE obj,VALUE dest, VALUE text,VALUE x,
   return ttf_draw(obj,dest,text,x,y,fgr,fgg,fgb,bgr,bgg,bgb,
 		  TTF_RenderUTF8_Shaded);
 }
+
+static VALUE ttf_render(VALUE obj,VALUE text,VALUE fgr,VALUE fgg,VALUE fgb,
+			VALUE bgr,VALUE bgg,VALUE bgb,RenderFunc render)
+{
+  TTF_Font *font;
+  SDL_Surface *surface;
+  SDL_Color fg,bg;
+  
+  Data_Get_Struct(obj,TTF_Font,font);
+  fg.r=NUM2UINT(fgr); fg.g=NUM2UINT(fgg); fg.b=NUM2UINT(fgb);
+  bg.r=NUM2UINT(bgr); bg.g=NUM2UINT(bgg); bg.b=NUM2UINT(bgb);
+  
+  surface = render( font, STR2CSTR(text), fg, bg );
+
+  if( surface == NULL )
+    return Qnil;
+
+  return Data_Wrap_Struct(cSurface,0,SDL_FreeSurface,surface);
+}
+
+static VALUE sdl_ttf_renderSolidUTF8(VALUE obj,VALUE text,VALUE r,
+				     VALUE g,VALUE b)
+{
+  return ttf_render(obj,text,r,g,b,1,1,1,ttf_wrap_RenderUTF8_Solid);
+}
+
+static VALUE sdl_ttf_renderBlendedUTF8(VALUE obj,VALUE text,VALUE r,
+				     VALUE g,VALUE b)
+{
+  return ttf_render(obj,text,r,g,b,1,1,1,ttf_wrap_RenderUTF8_Blended);
+}
+
+static VALUE sdl_ttf_renderShadedUTF8(VALUE obj,VALUE text,
+				      VALUE fgr,VALUE fgg,VALUE fgb,
+				      VALUE bgr,VALUE bgg,VALUE bgb)
+{
+  return ttf_render(obj,text,fgr,fgg,fgb,bgr,bgg,bgb,TTF_RenderUTF8_Shaded);
+}
+
 static void defineConstForTTF()
 {
   rb_define_const(cTTF,"STYLE_NORMAL",UINT2NUM(TTF_STYLE_NORMAL));
@@ -207,6 +245,10 @@ void init_ttf()
   rb_define_method(cTTF,"drawSolidUTF8",sdl_ttf_drawSolidUTF8,7);
   rb_define_method(cTTF,"drawBlendedUTF8",sdl_ttf_drawBlendedUTF8,7);
   rb_define_method(cTTF,"drawShadedUTF8",sdl_ttf_drawShadedUTF8,10);
+
+  rb_define_method(cTTF,"renderSolidUTF8",sdl_ttf_renderSolidUTF8,4);
+  rb_define_method(cTTF,"renderBlendedUTF8",sdl_ttf_renderBlendedUTF8,4);
+  rb_define_method(cTTF,"renderShadedUTF8",sdl_ttf_renderShadedUTF8,7);
   
   defineConstForTTF();
 }
