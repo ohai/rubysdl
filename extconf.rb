@@ -5,12 +5,6 @@ sdl_config = with_config('sdl-config', 'sdl-config')
 $CFLAGS += ' ' + `#{sdl_config} --cflags`.chomp
 $LOCAL_LIBS += ' ' + `#{sdl_config} --libs`.chomp
 
-have_func("TTF_OpenFontIndex","SDL_ttf.h")
-have_func("TTF_FontFaces","SDL_ttf.h")
-have_func("TTF_FontFaceIsFixedWidth","SDL_ttf.h")
-have_func("TTF_FontFaceFamilyName","SDL_ttf.h")
-have_func("TTF_FontFaceStyleName","SDL_ttf.h")
-
 if enable_config("event2",true) then
   $CFLAGS+= " -D DEF_EVENT2"
 end
@@ -27,6 +21,13 @@ end
 if have_library("SDL_ttf","TTF_Init") then
   $CFLAGS+= " -D HAVE_SDL_TTF "
 end
+
+have_func("TTF_OpenFontIndex","SDL_ttf.h")
+have_func("TTF_FontFaces","SDL_ttf.h")
+have_func("TTF_FontFaceIsFixedWidth","SDL_ttf.h")
+have_func("TTF_FontFaceFamilyName","SDL_ttf.h")
+have_func("TTF_FontFaceStyleName","SDL_ttf.h")
+
 if have_library("smpeg","SMPEG_new") then
   $CFLAGS+= " -D HAVE_SMPEG "
 end
