@@ -115,11 +115,12 @@ FreeBSDにはPortがあるのでそれを利用してください。
   * FreeBSDでの動作確認をし、Portsを作っていただいたAkinori MUSHAさん。
   * さまざまな意見を送ってくださり、いくつものパッチを送ってくださったり
     したたむらさん。
-  * そしてもうひとつのSDLのRuby拡張ライブラリ"RULD"の作者である
+  * そしてもうひとつのSDLのRuby拡張ライブラリ"RUDL"の作者である
     Danny van Bruggen さん(いくつかのアイデアをこのライブラリから得ました)。
   * rubysdl_ttf.cの機能拡張パッチやVine、Debianのパッケージ作成などを
     していただいたやまだあきらさん。
-  * いくつかのパッチを下さった Wayne Conrad さん、Christian Neukirchenさん。
+  * いくつかのパッチを下さった Wayne Conrad さん、Christian Neukirchenさん、
+    Keffin Barnabyさん。
   * サンプルを提供してくださった Simon Strandgaard さん。
   * 有用な情報、バグレポートをくださった Rorien Dunnさん、Dennis Rankeさん、
     Keita Urashimaさん。
