@@ -272,6 +272,7 @@ class << SDL::WM
   alias set_caption setCaption
 # alias icon= icon=
 # alias iconify iconify
+  alias grab_input grabInput
 end
 
 # rubysdl_mixer.c
