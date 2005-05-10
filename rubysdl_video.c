@@ -493,7 +493,7 @@ static VALUE sdl_getPalette(VALUE obj)
   colors = surface->format->palette->colors;
   
   for( i=0; i < surface->format->palette->ncolors; ++i ){
-    color = rb_ary_new3( 3, colors[i].r, colors[i].g, colors[i].b );
+    color = rb_ary_new3( 3, INT2NUM(colors[i].r), INT2NUM(colors[i].g), INT2NUM(colors[i].b) );
     rb_ary_push( palette, color );
   }
   return palette;
