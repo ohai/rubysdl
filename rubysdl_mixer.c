@@ -68,7 +68,7 @@ static VALUE mix_querySpec(VALUE mod)
   return rb_ary_new3( 3,INT2NUM(rate),UINT2NUM(format),INT2NUM(channels) );
 }
 
-static VALUE mix_allocateCannels(VALUE mod,VALUE numchannels)
+static VALUE mix_allocateChannels(VALUE mod,VALUE numchannels)
 {
   return INT2FIX( Mix_AllocateChannels(NUM2INT(numchannels)) );  
 }
@@ -241,7 +241,7 @@ void init_mixer()
   rb_define_module_function(mMixer,"playChannel",mix_playChannel,3);
   rb_define_module_function(mMixer,"play?",mix_playing,1);
   rb_define_module_function(mMixer,"setVolume",mix_volume,2);
-  rb_define_module_function(mMixer,"allocateChannels",mix_allocateCannels,1);
+  rb_define_module_function(mMixer,"allocateChannels",mix_allocateChannels,1);
   rb_define_module_function(mMixer,"halt",mix_halt,1);
   rb_define_module_function(mMixer,"pause",mix_pause,1);
   rb_define_module_function(mMixer,"resume",mix_resume,1);
