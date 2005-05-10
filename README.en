@@ -101,7 +101,8 @@ install on Linux
   Danny van Bruggen : some ideas are from his library "RUDL"
   akira yamada : patch of SDL::TTF, making packages of Vine and Debian.
   Wayne Conrad : some patches
-  Christian Neukirchen : send a patch
+  Christian Neukirchen, Kent Dahl : send a patch
+  Keffin Barnaby : some patches
   Rorien Dunn, Dennis Ranke, Keita Urashima : bug reports and useful information
   Yusuke TABATA : introduce me into SDL world
 
