@@ -46,6 +46,18 @@ static VALUE sdl_wm_iconifyWindow(VALUE mod)
   return Qnil;
 }
 
+static void defineConstForWM()
+{
+  rb_define_const(mWM,"GRAB_QUERY",INT2NUM(SDL_GRAB_QUERY));
+  rb_define_const(mWM,"GRAB_OFF",INT2NUM(SDL_GRAB_OFF));
+  rb_define_const(mWM,"GRAB_ON",INT2NUM(SDL_GRAB_ON));
+}
+
+static VALUE sdl_wm_grabInput(VALUE mod, VALUE flag)
+{
+   return INT2FIX(SDL_WM_GrabInput(flag));
+}
+
 void init_wm()
 {
   mWM=rb_define_module_under(mSDL,"WM");
@@ -53,4 +65,7 @@ void init_wm()
   rb_define_module_function(mWM,"setCaption",sdl_wm_setCaption,2);
   rb_define_module_function(mWM,"icon=",sdl_wm_setIcon,1);
   rb_define_module_function(mWM,"iconify",sdl_wm_iconifyWindow,0);
+  rb_define_module_function(mWM,"grabInput",sdl_wm_grabInput,1);
+
+  defineConstForWM();
 }
