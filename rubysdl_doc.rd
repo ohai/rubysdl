@@ -73,14 +73,28 @@ StandardError
       このメソッドはRuby/SDLの他のメソッドを呼ぶ前に呼んでください
       
 --- SDL.quit
-      at_exit{ SDL.quit; } というように使ってください。
-
-      version 0.3にて廃止。ライブラリから自動的によびだされる。
+      SDLを止める。ライブラリから呼ばれるので基本的に呼ぶ必要はありません。
+      SDLの仕様を理解して必要な場合のみ使ってください。
+      これを呼んだ後SDLの機能を使わないでください。
 
 --- SDL.initedSystem(flag)
 --- SDL.inited_system(flag)
       Not documented yet
 
+--- SDL.getenv(name)
+      ((|name|))で指定した文字列に対応する環境変数を得る。
+      返値は文字列であたえられる。
+--- SDL.putenv(envstr)
+      環境変数を変更する。
+      
+      Windows上ででSDL_WINDOWIDやSDL_VIDEODRIVERといった環境変数を使って
+      SDLの実行に影響を与えたいときに利用する。
+      
+      引数として"name=value"という形式の文字列を与える。
+      
+      Unix上では組み込み定数ENVを利用するのと同じです。
+      失敗時は例外SDL::Errorを発生する。
+      
 == video関連
 
 一部の機能は、SGEライブラリやSDL_imageが必要である。

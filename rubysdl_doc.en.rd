@@ -69,11 +69,27 @@ StandardError
         SDL::INIT_CDROM  initialize CD playback fucntions
         SDL::INIT_JOYSTICK  initialize joystick input functions
       You should call this method before calling other Ruby/SDL methods.
+
+--- SDL.quit
+      Quit SDL system. You needn't call this function normally because
+      this library call this function automatically when the process 
+      stops.
+
       
 --- SDL.initedSystem(flag)
 --- SDL.inited_system(flag)
       Not documented yet
 
+--- SDL.getenv
+--- SDL.putenv(envstr)
+      Change or add an environment variable on Win32. On other platforms
+      this method is equal to ENV.
+      
+      ((|envstr|)) should be of the form "name=value".
+
+      Returns nil, raise exception `SDL::Error' when it fails.
+
+      You should use this method to set SDL_WINDOWID or SDL_VIDEODRIVER.
 == video
 
 some functions need SGE or SDL_image
