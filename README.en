@@ -74,7 +74,7 @@ install on Linux
   You can use OpenGL with this library.
 
   (1) Setup OpenGL and SDL.
-  (2) Get OpenGL Interface (http://raa.ruby-lang.org/projects/opengl/)
+  (2) Get OpenGL Interface (http://raa.ruby-lang.org/project/opengl/)
   (3) Install OpenGL Interface
   (4) Run "ruby extconf.rb" with "--enable-opengl".
   (5) Run "make" and "make install"

@@ -88,7 +88,7 @@ FreeBSDにはPortがあるのでそれを利用してください。
   このライフラリによってOpenGLへのアクセスが可能になります。
 
   (1) SDLからOpenGLを使えるように設定する。
-  (2) http://raa.ruby-lang.org/projects/opengl/ からRuby用の
+  (2) http://raa.ruby-lang.org/project/opengl/ からRuby用の
       OpenGL Interface を取ってきてインストールする。
   (3) ruby extconf.rb をするときに、--enable-opengl を指定する。
   (4) make ; make install する。
