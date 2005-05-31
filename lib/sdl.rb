@@ -55,7 +55,13 @@ module SDL
     
     def copyRect(x,y,w,h)
       flagbase=SDL::SWSURFACE|SDL::HWSURFACE|SDL::SRCCOLORKEY|SDL::SRCALPHA
-      new_surface=Surface.new(flagbase&self.flags,w,h,self)
+      alpha_flag = self.flags & (SDL::SRCCOLORKEY|SDL::RLEACCEL)
+      self.setAlpha(0,self.alpha)
+      begin
+        new_surface=Surface.new(flagbase&self.flags,w,h,self)
+      ensure
+        self.setAlpha(alpha_flag,self.alpha)
+      end
       SDL.blitSurface(self,x,y,w,h,new_surface,0,0)
       new_surface.setColorKey(self.flags & (SDL::SRCCOLORKEY|SDL::RLEACCEL),
                               self.colorkey )
