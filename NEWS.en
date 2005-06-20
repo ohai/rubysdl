@@ -1,3 +1,9 @@
+version 0.9.5
+Fix bugs in SDL::Surface#getPalette and SDL::Surface#copyRect
+Add SDL::WM.grubInput, SDL.quit, SDL.putenv and SDL.getenv
+Fix trivial typo
+Fix documentation of SDL::TTF#textSize
+
 version 0.9.4
 Add SDL::Surface#pixels, SDL::Surface#[RGBA]mask and SDL::Surface.new_from
 Modyfy SDL::Surface.new

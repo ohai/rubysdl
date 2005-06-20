@@ -1,3 +1,15 @@
+version 0.9.5
+以下のメソッドのバグを修正
+  SDL::Surface#getPalette
+  SDL::Surface#copyRect
+以下のメソッドを追加
+  SDL::WM.grubInput
+  SDL.quit
+  SDL.putenv
+  SDL.getenv
+ささいなtypoを修正
+ドキュメントを一部修正(SDL::TTF#textSize)
+
 version 0.9.4
 SDL::Surface#pixels, SDL::Surface#[RGBA]mask, SDL::Surface.new_fromを追加
 SDL::Surface.newを拡張
