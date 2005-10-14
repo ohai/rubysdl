@@ -12,9 +12,9 @@ SDL::Mouse.setCursor image,image[0,0],image[1,1],image[7,0],543
 
 while true
   
-  while event = SDL::Event2.poll
+  while event = SDL::Event.poll
     case event
-    when SDL::Event2::KeyDown, SDL::Event2::Quit
+    when SDL::Event::KeyDown, SDL::Event::Quit
       exit
     end
   end

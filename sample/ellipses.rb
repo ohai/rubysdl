@@ -4,7 +4,7 @@
 require 'sdl'
 
 def show(function)
-  event = SDL::Event.new
+  event = SDL::EventOld.new
   screen = SDL::setVideoMode(640, 480, 16, SDL::SWSURFACE|SDL::ANYFORMAT)
   loop do
     color = screen.mapRGB(rand(256),rand(256),rand(256))
@@ -15,11 +15,11 @@ def show(function)
     eval("screen.#{function}(x, y, xr, yr, color)")
     if event.poll != 0 then
       case event.type
-      when SDL::Event::QUIT
+      when SDL::EventOld::QUIT
         exit
-      when SDL::Event::MOUSEBUTTONDOWN
+      when SDL::EventOld::MOUSEBUTTONDOWN
         break
-      when SDL::Event::KEYDOWN
+      when SDL::EventOld::KEYDOWN
         exit if event.keySym == SDL::Key::ESCAPE
         break
       end

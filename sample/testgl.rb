@@ -21,7 +21,7 @@ GL::DepthFunc(GL::LESS);
 
 GL::ShadeModel(GL::SMOOTH);
 
-event=SDL::Event.new
+event=SDL::EventOld.new
 shadedCube=true
 
 color =
@@ -48,10 +48,10 @@ cube =
 loop do
 
   if  event.poll != 0 then
-    if event.type==SDL::Event::QUIT then
+    if event.type==SDL::EventOld::QUIT then
       break
     end
-    if event.type==SDL::Event::KEYDOWN then
+    if event.type==SDL::EventOld::KEYDOWN then
       exit
     end
   end

@@ -17,7 +17,7 @@ use_minibuffer = (ARGV[0]=='-m')
   
 SDL.init( SDL::INIT_VIDEO )
 SDL::TTF.init
-SDL::Event2.enableUNICODE
+SDL::Event.enableUNICODE
 
 font = SDL::TTF.open( 'nihongo.ttf', 14 )
 
@@ -35,11 +35,11 @@ SDL::WM.setCaption( $0, $0 )
 BLACK = screen.mapRGB( 0, 0, 0 )
 loop do
 
-  while event = SDL::Event2.poll do
+  while event = SDL::Event.poll do
     case event
-    when SDL::Event2::Quit
+    when SDL::Event::Quit
       exit
-    when SDL::Event2::KeyDown
+    when SDL::Event::KeyDown
       if event.sym == SDL::Key::ESCAPE then
 	exit
       end

@@ -71,11 +71,11 @@ end
 sprites << MovableSp.new
 
 while true
-  while event = SDL::Event2.poll
+  while event = SDL::Event.poll
     case event
-    when SDL::Event2::Quit
+    when SDL::Event::Quit
       exit
-    when SDL::Event2::KeyDown
+    when SDL::Event::KeyDown
       exit if event.sym == SDL::Key::ESCAPE
     end
   end

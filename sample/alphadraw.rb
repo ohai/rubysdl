@@ -14,9 +14,9 @@ screen.drawEllipseAlpha(320,240,100,200,[200,255,0],rand(64)+128)
 screen.flip
 
 while true
-  while event = SDL::Event2.poll
+  while event = SDL::Event.poll
     case event
-    when SDL::Event2::KeyDown, SDL::Event2::Quit
+    when SDL::Event::KeyDown, SDL::Event::Quit
       exit
     end
   end

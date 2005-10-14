@@ -21,11 +21,11 @@ mpeg.play
 
 loop do
 
-  case event = SDL::Event2.poll
-  when SDL::Event2::Quit
+  case event = SDL::Event.poll
+  when SDL::Event::Quit
     mpeg.stop
     exit
-  when SDL::Event2::KeyDown
+  when SDL::Event::KeyDown
     case event.sym
     when SDL::Key::S
       mpeg.stop

@@ -16,11 +16,11 @@ angle = 0
 
 while true
 
-  event = SDL::Event2.poll
+  event = SDL::Event.poll
   case event
-  when SDL::Event2::Quit
+  when SDL::Event::Quit
     exit
-  when SDL::Event2::KeyDown
+  when SDL::Event::KeyDown
     exit if event.sym == SDL::Key::ESCAPE
   end
 

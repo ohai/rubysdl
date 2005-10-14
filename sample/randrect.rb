@@ -26,11 +26,11 @@ srand
   screen.fillRect rand(src_w-dst_w), rand(src_h-dst_h), dst_w, dst_h, color
   screen.updateRect 0,0,0,0
 
-  while event = SDL::Event2.poll
+  while event = SDL::Event.poll
     case event
-    when SDL::Event2::Quit
+    when SDL::Event::Quit
       exit
-    when SDL::Event2::KeyDown
+    when SDL::Event::KeyDown
       exit if event.sym == SDL::Key::ESCAPE
     end
   end

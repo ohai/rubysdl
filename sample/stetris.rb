@@ -231,10 +231,10 @@ loop do
   rotate = false
   
   # handle keystrokes
-  while event = SDL::Event2.poll
+  while event = SDL::Event.poll
     case event
-    when SDL::Event2::Quit then exit
-    when SDL::Event2::KeyDown
+    when SDL::Event::Quit then exit
+    when SDL::Event::KeyDown
       case event.sym
       when SDL::Key::ESCAPE then exit 
       when SDL::Key::UP     then rotate = true
