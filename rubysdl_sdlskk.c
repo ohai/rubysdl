@@ -22,7 +22,7 @@
 #include <sdlskk.h>
 #include <SDL_ttf.h>
 
-static VALUE cEventOld, cEvent;
+static VALUE  cEvent, cKeyDownEvent;
 
 typedef SDL_Surface* (*Renderer)(SDLSKK_Context*,TTF_Font*,SDL_Color);
 
@@ -82,23 +82,17 @@ static VALUE skk_Context_new(VALUE class,VALUE dict,VALUE rule_table,
 static VALUE skk_Context_input_event(VALUE obj,VALUE event)
 {
   SDLSKK_Context* context;
-  SDL_Event *ev;
   
   Data_Get_Struct(obj,SDLSKK_Context,context);
-  if( rb_obj_is_kind_of( event,cEventOld ) ){
-    Data_Get_Struct(event,SDL_Event,ev);
-    SDLSKK_Context_input_event( context, ev );
-    return Qnil;
-  }
   
   if( rb_obj_is_kind_of( event,cEvent ) ){
     if( rb_obj_is_kind_of( event,cKeyDownEvent ) ){
-      SDL_Event ev2;
-      ev2.type = SDL_KEYDOWN;
-      ev2.key.keysym.sym = NUM2INT( rb_iv_get(event,"@sym") );
-      ev2.key.keysym.unicode = NUM2UINT( rb_iv_get(event,"@unicode") );
-      ev2.key.keysym.mod = NUM2INT( rb_iv_get(event,"@mod"));
-      SDLSKK_Context_input_event( context, &ev2 );
+      SDL_Event ev;
+      ev.type = SDL_KEYDOWN;
+      ev.key.keysym.sym = NUM2INT( rb_iv_get(event,"@sym") );
+      ev.key.keysym.unicode = NUM2UINT( rb_iv_get(event,"@unicode") );
+      ev.key.keysym.mod = NUM2INT( rb_iv_get(event,"@mod"));
+      SDLSKK_Context_input_event( context, &ev );
       return Qnil;
     }else{
       return Qnil;
@@ -274,8 +268,8 @@ static void defineConstForSDLSKK(void)
 
 void init_sdlskk(void)
 {
-  cEventOld = rb_const_get(mSDL, rb_intern("EventOld"));
   cEvent = rb_const_get(mSDL, rb_intern("Event"));
+  cKeyDownEvent = rb_const_get(cEvent, rb_intern("KeyDown"));
   
   mSDLSKK = rb_define_module_under(mSDL,"SKK");
   cContext = rb_define_class_under(mSDLSKK,"Context",rb_cObject);
