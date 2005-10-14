@@ -332,11 +332,13 @@ module SDL
 end
 
 # rubysdl_opengl.c
-class <<  SDL
-  if method_defined?(:getGLAttr)
-    alias get_GL_attr getGLAttr
-    alias set_GL_attr setGLAttr
-    alias GL_swap_buffers GLSwapBuffers
+module SDL
+  if defined?(GL)
+    class << GL
+      alias set_attr setAttr
+      alias get_attr getAttr
+      alias swap_buffers swapBuffers
+    end
   end
 end
 
