@@ -1571,6 +1571,7 @@ Object
 
 --- SDL::Joystick.updateAll
 --- SDL::Joystick.update_all
+--- SDL::Joystick.update
       全てのジョイスティックの情報を更新する。
       Joystick#button/ball/hat/axisの情報はこれで更新される。
 
