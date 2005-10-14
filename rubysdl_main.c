@@ -20,8 +20,6 @@
 
 #define DEF_GLOBAL
 #include "rubysdl.h"
-#include <signal.h>
-#include <stdio.h>
 
 /* declaration of initialize functions */
 void init_video();
@@ -30,32 +28,24 @@ void init_sge_video();
 #else
 void init_pixel();
 #endif
-#ifdef DEF_OPENGL
-void init_opengl();
-#ifdef INIT_OGLMODULE_FROM_SDL
-void Init_opengl();
-#endif
-#endif
+void rubysdl_init_GL();
 #ifdef HAVE_SDL_IMAGE
 void init_sdl_image();
 #endif
-void rubysdl_init_EventOld();
-void rubysdl_init_Event();
-void init_keyEvent();
+void rubysdl_init_Event(void);
+void rubysdl_init_Key(void);
 void init_mouse();
 void rubysdl_init_Joystick(void);
 void init_cdrom();
-void init_time();
+void rubysdl_init_time(void);
 void init_wm();
 void init_kanji(void);
 #ifdef HAVE_SDL_TTF
 void init_ttf();
 void quit_ttf();
 #endif
-#ifdef HAVE_SDL_MIXER
-void  init_mixer();
-void quit_mixer();
-#endif
+void rubysdl_init_Mixer(void);
+void rubysdl_quit_Mixer(void);
 #ifdef HAVE_SMPEG
 void init_smpeg();
 #endif
@@ -112,9 +102,7 @@ int rubysdl_is_quit(void)
 }
 static void sdl_quit()
 {
-#ifdef HAVE_SDL_MIXER
-  quit_mixer();
-#endif
+  rubysdl_quit_Mixer();
 #ifdef HAVE_SDL_TTF
   quit_ttf();
 #endif
@@ -162,30 +150,22 @@ void Init_sdl()
 #else
   init_pixel();
 #endif
-#ifdef DEF_OPENGL
-  init_opengl();
-#ifdef INIT_OGLMODULE_FROM_SDL
-  Init_opengl();
-#endif
-#endif
+  rubysdl_init_GL();
 #ifdef HAVE_SDL_IMAGE
   init_sdl_image();
 #endif
-  rubysdl_init_EventOld();
   rubysdl_init_Event();
-  init_keyEvent();
+  rubysdl_init_Key();
   init_mouse();
   rubysdl_init_Joystick();
   init_cdrom();
-  init_time();
+  rubysdl_init_time();
   init_wm();
   init_kanji();
 #ifdef HAVE_SDL_TTF
   init_ttf();
 #endif
-#ifdef HAVE_SDL_MIXER
-  init_mixer();
-#endif
+  rubysdl_init_Mixer();
 #ifdef HAVE_SMPEG
   init_smpeg();
 #endif
