@@ -2,11 +2,11 @@ require 'sdl'
 require 'opengl'
 
 SDL.init SDL::INIT_VIDEO
-SDL.setGLAttr SDL::GL_RED_SIZE,5
-SDL.setGLAttr SDL::GL_GREEN_SIZE,5
-SDL.setGLAttr SDL::GL_BLUE_SIZE,5
-SDL.setGLAttr SDL::GL_DEPTH_SIZE,16
-SDL.setGLAttr SDL::GL_DOUBLEBUFFER,1
+SDL::GL.setAttr SDL::GL::RED_SIZE,5
+SDL::GL.setAttr SDL::GL::GREEN_SIZE,5
+SDL::GL.setAttr SDL::GL::BLUE_SIZE,5
+SDL::GL.setAttr SDL::GL::DEPTH_SIZE,16
+SDL::GL.setAttr SDL::GL::DOUBLEBUFFER,1
 SDL.setVideoMode 640,400,16,SDL::OPENGL
 GL::Viewport( 0, 0, 640, 400 );
 GL::MatrixMode( GL::PROJECTION );
@@ -21,7 +21,6 @@ GL::DepthFunc(GL::LESS);
 
 GL::ShadeModel(GL::SMOOTH);
 
-event=SDL::EventOld.new
 shadedCube=true
 
 color =
@@ -47,16 +46,14 @@ cube =
 
 loop do
 
-  if  event.poll != 0 then
-    if event.type==SDL::EventOld::QUIT then
-      break
-    end
-    if event.type==SDL::EventOld::KEYDOWN then
+  while event = SDL::Event.poll
+    case event
+    when SDL::Event::Quit, SDL::Event::KeyDown
       exit
     end
   end
 
-    GL.ClearColor(0.0, 0.0, 0.0, 1.0);
+  GL.ClearColor(0.0, 0.0, 0.0, 1.0);
   GL.Clear(GL::COLOR_BUFFER_BIT|GL::DEPTH_BUFFER_BIT);
 
 
@@ -161,6 +158,6 @@ loop do
   GL::MatrixMode(GL::MODELVIEW);
   GL::Rotate(5.0, 1.0, 1.0, 1.0);
   
-  SDL.GLSwapBuffers
+  SDL::GL.swapBuffers
 
 end
