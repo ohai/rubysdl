@@ -36,7 +36,7 @@ void rubysdl_init_Event(void);
 void rubysdl_init_Key(void);
 void init_mouse();
 void rubysdl_init_Joystick(void);
-void init_cdrom();
+void rubysdl_init_CD(void);
 void rubysdl_init_time(void);
 void init_wm();
 void init_kanji(void);
@@ -158,7 +158,7 @@ void Init_sdl()
   rubysdl_init_Key();
   init_mouse();
   rubysdl_init_Joystick();
-  init_cdrom();
+  rubysdl_init_CD();
   rubysdl_init_time();
   init_wm();
   init_kanji();
