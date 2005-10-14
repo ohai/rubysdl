@@ -19,6 +19,8 @@
   */
 #include "rubysdl.h"
 
+static VALUE cEvent;
+
 void eventCheck(int pred,char *msg)
 {
   if(!pred) 
@@ -312,7 +314,7 @@ static void defineConstForEvent()
 
 void init_event()
 {
-  cEvent = rb_define_class_under(mSDL,"Event",rb_cObject);
+  cEvent = rb_define_class_under(mSDL,"EventOld",rb_cObject);
   rb_define_singleton_method(cEvent,"new",createEventObject,0);
   
   rb_define_singleton_method(cEvent,"appState",sdl_getAppState,0);
