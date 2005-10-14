@@ -19,8 +19,6 @@
   */
 #include "rubysdl.h"
 
-#define INT2BOOL(x) ((x)?Qtrue:Qfalse)
-
 /* basic */
 typedef struct{
   SDL_Joystick* joystick;
