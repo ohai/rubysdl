@@ -40,10 +40,6 @@ if enable_config("static-libs",false) then
   have_library("SDL")
 end
 
-if enable_config("event2",true) then
-  $CFLAGS+= " -D DEF_EVENT2"
-end
-
 if have_library("smpeg","SMPEG_new") then
   $CFLAGS+= " -D HAVE_SMPEG "
 end
@@ -72,7 +68,7 @@ end
 if enable_config("opengl",true) then
   dir_config('x11','/usr/X11R6')
   
-  $CFLAGS+= " -D DEF_OPENGL "
+  $CFLAGS+= " -D ENABLE_OPENGL "
   if arg_config("--linkoglmodule",false) then
     $CFLAGS+= " -D INIT_OGLMODULE_FROM_SDL "
   end
