@@ -43,9 +43,6 @@ GLOBAL VALUE cVideoInfo;
 GLOBAL VALUE cSurface;
 GLOBAL VALUE cScreen;
 GLOBAL VALUE mKey;
-GLOBAL VALUE mMixer;
-GLOBAL VALUE cWave;
-GLOBAL VALUE cMusic;
 GLOBAL VALUE mWM;
 GLOBAL VALUE mMouse;
 GLOBAL VALUE cTTF;
@@ -63,22 +60,6 @@ GLOBAL VALUE cCollisionMap;
 GLOBAL VALUE cBMFont;
 #endif /* ifdef HAVE_SGE */
 
-#ifdef DEF_EVENT2
-GLOBAL VALUE cActiveEvent;
-GLOBAL VALUE cKeyDownEvent;
-GLOBAL VALUE cKeyUpEvent;
-GLOBAL VALUE cMouseMotionEvent;
-GLOBAL VALUE cMouseButtonDownEvent;
-GLOBAL VALUE cMouseButtonUpEvent;
-GLOBAL VALUE cJoyAxisEvent;
-GLOBAL VALUE cJoyBallEvent;
-GLOBAL VALUE cJoyHatEvent;
-GLOBAL VALUE cJoyButtonUpEvent;
-GLOBAL VALUE cJoyButtonDownEvent;
-GLOBAL VALUE cQuitEvent;
-GLOBAL VALUE cSysWMEvent;
-GLOBAL VALUE cVideoResizeEvent;
-#endif
 
 #define SetRect(Rect,X,Y,W,H) \
 do{ \
