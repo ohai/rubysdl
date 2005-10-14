@@ -275,8 +275,6 @@ static void define_const(void)
   rb_define_const(mKey, "POWER", INT2NUM(SDLK_POWER));
   rb_define_const(mKey, "EURO", INT2NUM(SDLK_EURO));
 
-  /* Add any other keys here */
-  
   rb_define_const(mKey, "LAST", INT2NUM(SDLK_LAST));
 
   /* key mods */
@@ -300,7 +298,6 @@ static void define_const(void)
   rb_define_const(mKey, "MOD_META", UINT2NUM(KMOD_META));
 }
 
-/* under 2 function is for testing */
 static VALUE Key_s_scan(VALUE mod)
 {
   rb_secure(4);
@@ -308,6 +305,7 @@ static VALUE Key_s_scan(VALUE mod)
   mod_state=SDL_GetModState();
   return Qnil;
 }
+
 static VALUE Key_s_press_p(VALUE mod, VALUE keysym)
 {
   int sym = NUM2INT(keysym);
@@ -319,11 +317,13 @@ static VALUE Key_s_press_p(VALUE mod, VALUE keysym)
              "You should call SDL::Key#scan before calling SDL::Key#press?");
   return INT2BOOL(key_state[sym]==SDL_PRESSED);
 }
+
 static VALUE Key_s_modState(VALUE mod)
 {
   rb_secure(4);
   return UINT2NUM(mod_state);
 }
+
 static VALUE Key_s_enableKeyRepeat(VALUE mod, VALUE delay, VALUE interval)
 {
   rb_secure(4);
@@ -332,6 +332,7 @@ static VALUE Key_s_enableKeyRepeat(VALUE mod, VALUE delay, VALUE interval)
   }
   return Qnil;
 }
+
 static VALUE Key_s_disableKeyRepeat(VALUE mod)
 {
   rb_secure(4);
@@ -340,10 +341,12 @@ static VALUE Key_s_disableKeyRepeat(VALUE mod)
   }
   return Qnil;
 }
+
 static VALUE Key_s_getKeyName(VALUE mod, VALUE key)
 {
   return rb_str_new2(SDL_GetKeyName(NUM2UINT(key)));
 }
+
 void rubysdl_init_Key()
 {
   mKey = rb_define_module_under(mSDL, "Key");
