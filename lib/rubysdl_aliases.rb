@@ -61,50 +61,12 @@ module SDL
 end
 
 # rubysdl_event.c
-class << SDL::EventOld
-# alias new new
-  alias app_state appState
-end
-
 module SDL
-  class <<EventOld
+  class << Event
+    alias app_state appState
     alias enable_unicode enableUNICODE
     alias disable_unicode disableUNICODE
     alias enable_unicode? enableUNICODE?
-  end
-  
-  class EventOld
-# alias poll poll
-# alias wait wait
-# alias type type
-    alias key_press? keyPress?
-    alias key_sym keySym
-    alias key_mod keyMod
-# alias gain? gain?
-    alias app_state appState
-    alias mouse_x mouseX
-    alias mouse_y mouseY
-    alias mouse_xrel mouseXrel
-    alias mouse_yrel mouseYrel
-    alias mouse_button mouseButton
-    alias mouse_press? mousePress?
-# alias info info
-  end
-end
-
-# rubysdl_event2.c
-module SDL
-  if defined?(Event) then
-    class << Event
-#     alias poll poll
-#     alias wait wait
-#     alias new new
-#     alias push push
-      alias app_state appState
-      alias enable_unicode enableUNICODE
-      alias disable_unicode disableUNICODE
-      alias enable_unicode? enableUNICODE?
-    end
   end
 end
 
