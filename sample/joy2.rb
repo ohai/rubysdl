@@ -79,3 +79,5 @@ while true
   display_axis_state screen, joy
   screen.updateRect(0, 0, 0, 0)
 end
+
+joy.close
