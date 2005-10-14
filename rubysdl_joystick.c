@@ -51,7 +51,12 @@ static SDL_Joystick* Get_SDL_Joystick(VALUE obj)
 
 static void Joystick_free(Joystick* joy)
 {
-  free(joy);
+  if(rubysdl_is_quit() || joy->joystick == NULL){
+    free(joy);
+  }else{
+    SDL_JoystickClose(joy->joystick);
+    free(joy);
+  }
 }
 
 /* initialize methods */
@@ -224,7 +229,7 @@ static VALUE Joystick_getBall(VALUE self, VALUE ball)
   return rb_ary_new3(2, INT2FIX(dx), INT2FIX(dy));
 }
 
-void init_joystick(void)
+void rubysdl_init_joystick(void)
 {
   cJoystick = rb_define_class_under(mSDL, "Joystick", rb_cObject);
   
