@@ -37,14 +37,16 @@ static VALUE createEventObject(VALUE class)
 static VALUE sdl_pollEvent(VALUE obj)
 {
   SDL_Event *event;
-
+  rb_secure(4);
+  
   Data_Get_Struct(obj,SDL_Event,event);
   return INT2NUM(SDL_PollEvent(event));
 }
 static VALUE sdl_waitEvent(VALUE obj)
 {
   SDL_Event *event;
-
+  rb_secure(4);
+  
   Data_Get_Struct(obj,SDL_Event,event);
   if( SDL_WaitEvent(event)==0 )
     rb_raise(eSDLError,"SDL_WaitEvent Failed :%s",SDL_GetError());
@@ -54,7 +56,7 @@ static VALUE sdl_waitEvent(VALUE obj)
 static VALUE sdl_eventType(VALUE obj)
 {
   SDL_Event *event;
-
+  
   Data_Get_Struct(obj,SDL_Event,event);
   return INT2FIX(event->type);
 }
@@ -254,17 +256,19 @@ static VALUE sdl_getAppState(VALUE class)
 
 static VALUE sdl_enableUNICODE(VALUE class)
 {
+  rb_secure(4);
   SDL_EnableUNICODE(1);
   return Qnil;
 }
 static VALUE sdl_disableUNICODE(VALUE class)
 {
+  rb_secure(4);
   SDL_EnableUNICODE(0);
   return Qnil;
 }
 static VALUE sdl_is_enableUNICODE(VALUE class)
 {
-  return BOOL(SDL_EnableUNICODE(-1));
+  return INT2BOOL(SDL_EnableUNICODE(-1));
 }
 
 static void defineConstForEvent()
@@ -312,7 +316,7 @@ static void defineConstForEvent()
 }
 
 
-void init_event()
+void rubysdl_init_EventOld()
 {
   cEvent = rb_define_class_under(mSDL,"EventOld",rb_cObject);
   rb_define_singleton_method(cEvent,"new",createEventObject,0);

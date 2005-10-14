@@ -162,6 +162,7 @@ static VALUE createVideoResizeEvent(SDL_Event *event)
 static VALUE Event_s_poll(VALUE class)
 {
   SDL_Event event;
+  rb_secure(4);
   if( SDL_PollEvent(&event)==1)
     return event_creators[event.type](&event);
   else
@@ -170,6 +171,7 @@ static VALUE Event_s_poll(VALUE class)
 static VALUE Event_s_wait(VALUE class)
 {
   SDL_Event event;
+  rb_secure(4);
   if( SDL_WaitEvent(&event)==1)
     return event_creators[event.type](&event);
   else
@@ -183,6 +185,7 @@ static VALUE Event_s_new(VALUE class)
 static VALUE Event_s_push(VALUE class,VALUE event)
 {
   SDL_Event e;
+  rb_secure(4);
   VALUE eventClass=CLASS_OF(event);
   if(eventClass==cActiveEvent){
     e.type=SDL_ACTIVEEVENT;
@@ -267,20 +270,22 @@ static VALUE Event_s_getAppState(VALUE class)
 
 static VALUE Event_s_enableUNICODE(VALUE class)
 {
+  rb_secure(4);
   SDL_EnableUNICODE(1);
   return Qnil;
 }
 static VALUE Event_s_disableUNICODE(VALUE class)
 {
+  rb_secure(4);
   SDL_EnableUNICODE(0);
   return Qnil;
 }
 static VALUE Event_s_is_enableUNICODE(VALUE class)
 {
-  return BOOL(SDL_EnableUNICODE(-1));
+  return INT2BOOL(SDL_EnableUNICODE(-1));
 }
 
-void init_event2(void)
+void rubysdl_init_Event(void)
 {
   int i;
   

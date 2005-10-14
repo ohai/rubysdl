@@ -229,7 +229,7 @@ static VALUE Joystick_getBall(VALUE self, VALUE ball)
   return rb_ary_new3(2, INT2FIX(dx), INT2FIX(dy));
 }
 
-void rubysdl_init_joystick(void)
+void rubysdl_init_Joystick(void)
 {
   cJoystick = rb_define_class_under(mSDL, "Joystick", rb_cObject);
   

@@ -39,13 +39,11 @@ void Init_opengl();
 #ifdef HAVE_SDL_IMAGE
 void init_sdl_image();
 #endif
-void init_event();
-#ifdef DEF_EVENT2
-void init_event2();
-#endif
+void rubysdl_init_EventOld();
+void rubysdl_init_Event();
 void init_keyEvent();
 void init_mouse();
-void init_joystick();
+void rubysdl_init_Joystick(void);
 void init_cdrom();
 void init_time();
 void init_wm();
@@ -173,13 +171,11 @@ void Init_sdl()
 #ifdef HAVE_SDL_IMAGE
   init_sdl_image();
 #endif
-  init_event();
-#ifdef DEF_EVENT2
-  init_event2();
-#endif
+  rubysdl_init_EventOld();
+  rubysdl_init_Event();
   init_keyEvent();
   init_mouse();
-  init_joystick();
+  rubysdl_init_Joystick();
   init_cdrom();
   init_time();
   init_wm();
