@@ -76,8 +76,8 @@ static VALUE Mixer_s_open(VALUE mod, VALUE frequency, VALUE format,
   if( mix_opened ){
     rb_raise(eSDLError, "already initialize SDL::Mixer");
   }
-  if( Mix_OpenAudio( NUM2INT(frequency), NUM2UINT(format), NUM2INT(channels), 
-		     NUM2INT(chunksize) ) < 0 ){
+  if( Mix_OpenAudio(NUM2INT(frequency), NUM2UINT(format), NUM2INT(channels), 
+                    NUM2INT(chunksize)) < 0 ){
     rb_raise(eSDLError, "Couldn't open audio: %s", SDL_GetError());
   }
 
@@ -126,16 +126,17 @@ static VALUE Mixer_s_play_p(VALUE mod, VALUE channel)
   
 static VALUE Wave_s_load(VALUE class, VALUE filename)
 {
-  Mix_Chunk *wave;
+  Mix_Chunk *chunk;
+  
   rb_secure(4);
   SafeStringValue(filename);
   
-  wave = Mix_LoadWAV(RSTRING(filename)->ptr);
-  if( wave == NULL ){
+  chunk = Mix_LoadWAV(RSTRING(filename)->ptr);
+  if( chunk == NULL ){
     rb_raise(eSDLError, "Couldn't load wave file %s: %s",
              RSTRING(filename)->ptr, SDL_GetError());
   }
-  return Data_Wrap_Struct(class, 0, mix_FreeChunk, wave);
+  return Data_Wrap_Struct(class, 0, mix_FreeChunk, chunk);
 }
 
 /* Volume setting functions and methods : volume in 0..128 */
@@ -248,7 +249,7 @@ static VALUE Music_s_load(VALUE class, VALUE filename)
 }
 
 
-void rubysdl_init_Mixer()
+void rubysdl_init_Mixer(void)
 {
   mMixer = rb_define_module_under(mSDL, "Mixer");
   rb_define_module_function(mMixer, "open", Mixer_s_open, 4);
@@ -306,10 +307,17 @@ void rubysdl_init_Mixer()
   return;
 }
 
-void rubysdl_quit_Mixer()
+void rubysdl_quit_Mixer(void)
 {
   if( mix_opened ){
     Mix_CloseAudio();
   }
+}
+#else /* HAVE_SDL_MIXER */
+void rubysdl_init_Mixer(void)
+{
+}
+void rubysdl_quit_Mixer(void)
+{
 }
 #endif  /* HAVE_SDL_MIXER */
