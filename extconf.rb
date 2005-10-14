@@ -69,9 +69,6 @@ if enable_config("opengl",true) then
   dir_config('x11','/usr/X11R6')
   
   $CFLAGS+= " -D ENABLE_OPENGL "
-  if arg_config("--linkoglmodule",false) then
-    $CFLAGS+= " -D INIT_OGLMODULE_FROM_SDL "
-  end
 
   if /linux/ =~ CONFIG["arch"] then
     have_library("GL","glVertex3d")
