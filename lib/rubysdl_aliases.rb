@@ -61,19 +61,19 @@ module SDL
 end
 
 # rubysdl_event.c
-class << SDL::Event
+class << SDL::EventOld
 # alias new new
   alias app_state appState
 end
 
 module SDL
-  class <<Event
+  class <<EventOld
     alias enable_unicode enableUNICODE
     alias disable_unicode disableUNICODE
     alias enable_unicode? enableUNICODE?
   end
   
-  class Event
+  class EventOld
 # alias poll poll
 # alias wait wait
 # alias type type
@@ -94,8 +94,8 @@ end
 
 # rubysdl_event2.c
 module SDL
-  if defined?(Event2) then
-    class << Event2
+  if defined?(Event) then
+    class << Event
 #     alias poll poll
 #     alias wait wait
 #     alias new new

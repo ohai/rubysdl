@@ -22,6 +22,8 @@
 #include <sdlskk.h>
 #include <SDL_ttf.h>
 
+static VALUE cEventOld, cEvent;
+
 typedef SDL_Surface* (*Renderer)(SDLSKK_Context*,TTF_Font*,SDL_Color);
 
 static void skk_error_handler(SDLSKK_Error err)
@@ -83,14 +85,13 @@ static VALUE skk_Context_input_event(VALUE obj,VALUE event)
   SDL_Event *ev;
   
   Data_Get_Struct(obj,SDLSKK_Context,context);
-  if( rb_obj_is_kind_of( event,cEvent ) ){
+  if( rb_obj_is_kind_of( event,cEventOld ) ){
     Data_Get_Struct(event,SDL_Event,ev);
     SDLSKK_Context_input_event( context, ev );
     return Qnil;
   }
   
-#ifdef DEF_EVENT2
-  if( rb_obj_is_kind_of( event,cEvent2 ) ){
+  if( rb_obj_is_kind_of( event,cEvent ) ){
     if( rb_obj_is_kind_of( event,cKeyDownEvent ) ){
       SDL_Event ev2;
       ev2.type = SDL_KEYDOWN;
@@ -104,7 +105,6 @@ static VALUE skk_Context_input_event(VALUE obj,VALUE event)
     }
   }
     
-#endif
   rb_raise( rb_eArgError,"type mismatch(expect SDL::Event or SDL::Event2)");
 
   /* NOT REACHED */
@@ -274,6 +274,9 @@ static void defineConstForSDLSKK(void)
 
 void init_sdlskk(void)
 {
+  cEventOld = rb_const_get(mSDL, rb_intern("EventOld"));
+  cEvent = rb_const_get(mSDL, rb_intern("Event"));
+  
   mSDLSKK = rb_define_module_under(mSDL,"SKK");
   cContext = rb_define_class_under(mSDLSKK,"Context",rb_cObject);
   cDictionary = rb_define_class_under(mSDLSKK,"Dictionary",rb_cObject);

@@ -42,7 +42,6 @@ GLOBAL VALUE eSDLError;
 GLOBAL VALUE cVideoInfo;
 GLOBAL VALUE cSurface;
 GLOBAL VALUE cScreen;
-GLOBAL VALUE cEvent;
 GLOBAL VALUE mKey;
 GLOBAL VALUE mMixer;
 GLOBAL VALUE cWave;
@@ -65,7 +64,6 @@ GLOBAL VALUE cBMFont;
 #endif /* ifdef HAVE_SGE */
 
 #ifdef DEF_EVENT2
-GLOBAL VALUE cEvent2;
 GLOBAL VALUE cActiveEvent;
 GLOBAL VALUE cKeyDownEvent;
 GLOBAL VALUE cKeyUpEvent;
@@ -91,6 +89,7 @@ do{ \
 }while(0) \
 
 #define BOOL(x) (x)?Qtrue:Qfalse
+#define INT2BOOL(x) ((x)?Qtrue:Qfalse)
 
 #ifndef SDL_VERSION_ATLEAST
 #define SDL_COMPILEDVERSION SDL_VERSIONNUM(SDL_MAJOR_VERSION, SDL_MINOR_VERSION, SDL_PATCHLEVEL)
