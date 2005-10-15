@@ -37,6 +37,20 @@
 #define GETCSTR(v) STR2CSTR(v)
 #endif
 
+#define DEFINE_GET_STRUCT(struct_name, fun, klass, klassstr) \
+static struct_name* fun(VALUE obj) \
+{ \
+  struct_name* st; \
+  \
+  if(!rb_obj_is_kind_of(obj, klass)){ \
+    rb_raise(rb_eTypeError, "wrong argument type %s (expected " klassstr ")", \
+             rb_obj_classname(obj)); \
+  } \
+  Data_Get_Struct(obj, struct_name, st); \
+  return st; \
+} 
+
+
 GLOBAL VALUE mSDL;
 GLOBAL VALUE eSDLError;
 GLOBAL VALUE cVideoInfo;

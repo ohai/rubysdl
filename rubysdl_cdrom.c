@@ -25,20 +25,6 @@ typedef struct{
   SDL_CD* cd;
 } CD;
 
-#define DEFINE_GET_STRUCT(struct_name, fun, klass, klassstr) \
-static struct_name* fun(VALUE obj) \
-{ \
-  struct_name* st; \
-  \
-  if(!rb_obj_is_kind_of(obj, klass)){ \
-    rb_raise(rb_eTypeError, "wrong argument type %s (expected " klassstr ")", \
-             rb_obj_classname(obj)); \
-  } \
-  Data_Get_Struct(obj, struct_name, st); \
-  return st; \
-} 
-
-
 DEFINE_GET_STRUCT(CD, GetCD, cCD, "SDL::CD");
 
 static SDL_CD* Get_SDL_CD(VALUE obj)
