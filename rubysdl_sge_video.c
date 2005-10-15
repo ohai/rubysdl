@@ -535,6 +535,7 @@ void init_sge_video()
   defineConstForSGE();
 }
 #else /* HAVE_SGE */
+#include "rubysdl.h"
 static VALUE sdl_getPixel(VALUE obj,VALUE x,VALUE y)
 {
   SDL_Surface *surface;
