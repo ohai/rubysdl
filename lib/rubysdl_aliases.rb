@@ -10,24 +10,22 @@ module SDL
     alias flip flip
     alias toggle_fullscreen toggleFullScreen
   end
+  class << Screen
+    alias check_mode checkMode
+    alias list_modes listModes
+    alias set_gamma setGamma
+    alias get_gamma_ramp getGammaRamp
+    alias set_gamma_ramp setGammaRamp
+  end
 end
 
 class << SDL
-  alias get_video_surface getVideoSurface
-  alias blit_surface blitSurface
-  alias set_video_mode setVideoMode
-  alias check_video_mode checkVideoMode
-  alias list_modes listModes
-  alias set_gamma setGamma
-  alias get_gamma_ramp getGammaRamp
-  alias set_gamma_ramp setGammaRamp
-  alias video_info videoInfo
+  
 end
 
 module SDL
   
   class << Surface
-#   alias new new
     alias load_bmp loadBMP
   end
 
@@ -45,20 +43,18 @@ module SDL
 #   alias flags flags
     alias set_palette setPalette
     alias set_colors setColors
-    alias get_palette getPalette
     alias must_lock? mustLock?
-#   alias lock lock
-#   alias unlock unlock
+    alias copy_rect copyRect
+  end
+
+  class PixelFormat
     alias map_rgb mapRGB
     alias map_rgba mapRGBA
     alias get_rgb getRGB
     alias get_rgba getRGBA
-#   alias bpp bpp
-#   alias colorkey colorkey
-#   alias alpha alpha
-    alias copy_rect copyRect
   end
 end
+
 
 # rubysdl_event.c
 module SDL

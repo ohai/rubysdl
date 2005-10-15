@@ -25,25 +25,13 @@ module SDL
 
   VERSION = "0.9.5"
 
-  class PixelFormat
-
-    extend Forwardable
-    
-    def initialize(surface)
-      @surface = surface
-    end
-
-    def_delegators( :@surface, :mapRGB, :mapRGBA, :getRGB, :getRGBA, :bpp,
-		    :colorkey, :alpha )
-  end
-
+  
   class Surface
+    extend Forwardable
+    # for compatible TODO: delete this
+    def_delegator :format, :mapRGB
     def put(surface,x,y)
-      SDL::blitSurface(surface,0,0,surface.w,surface.h,self,x,y)
-    end
-
-    def format
-      return PixelFormat.new(self)
+      SDL::Surface.blit(surface,0,0,surface.w,surface.h,self,x,y)
     end
 
     if method_defined?(:rotateScaledSurface) then
@@ -142,6 +130,14 @@ module SDL
   end # of module Mouse
   
   module_function
+
+  # for compatible TODO: delete this
+  def setVideoMode(*args)
+    SDL::Screen.open(*args)
+  end
+  def blitSurface(*args)
+    SDL::Screen.blit(*args)
+  end
 
   if defined?(rotateXYScaled) then
     def rotateScaled(src,dst,x,y,angle,scale)
