@@ -730,6 +730,7 @@ void init_video()
   rb_define_singleton_method(cSurface,"loadBMP",Surface_s_loadBMP,1);
   
   rb_define_method(cSurface,"saveBMP",Surface_saveBMP,1);
+  rb_define_method(cSurface,"destroy",Surface_destroy,0);
   rb_define_method(cSurface,"displayFormat",Surface_displayFormat,0);
   rb_define_method(cSurface,"displayFormatAlpha",Surface_displayFormatAlpha,0);
   rb_define_method(cSurface,"setColorKey",Surface_setColorKey,2);
