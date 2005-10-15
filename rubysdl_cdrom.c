@@ -19,126 +19,157 @@
   */
 #include "rubysdl.h"
 
-static VALUE CD_s_numDrive(VALUE class)
+static VALUE cCD;
+
+typedef struct{
+  SDL_CD* cd;
+} CD;
+
+#define DEFINE_GET_STRUCT(struct_name, fun, klass, klassstr) \
+static struct_name* fun(VALUE obj) \
+{ \
+  struct_name* st; \
+  \
+  if(!rb_obj_is_kind_of(obj, klass)){ \
+    rb_raise(rb_eTypeError, "wrong argument type %s (expected " klassstr ")", \
+             rb_obj_classname(obj)); \
+  } \
+  Data_Get_Struct(obj, struct_name, st); \
+  return st; \
+} 
+
+
+DEFINE_GET_STRUCT(CD, GetCD, cCD, "SDL::CD");
+
+static SDL_CD* Get_SDL_CD(VALUE obj)
+{
+  CD* cd = GetCD(obj);
+  if(cd->cd == NULL)
+    rb_raise(rb_eRuntimeError, "CD is closed");
+  return cd->cd;
+}
+
+static void CD_free(CD* cd)
+{
+  if( !rubysdl_is_quit() && cd->cd )
+    SDL_CDClose(cd->cd);
+  free(cd);
+}
+
+static VALUE CD_s_alloc(VALUE klass)
+{
+  CD* cd = ALLOC(CD);
+  cd->cd = NULL;
+  return Data_Wrap_Struct(cCD, 0, CD_free, cd);
+}
+
+static VALUE CD_initialize(VALUE self, VALUE drive)
+{
+  CD* cd = GetCD(self);
+  rb_secure(4);
+  
+  cd->cd = SDL_CDOpen(NUM2INT(drive));
+  if(cd->cd == NULL)
+    rb_raise(eSDLError, "Couldn't open drive %d: %s", 
+	     NUM2INT(drive), SDL_GetError());
+  return Qnil;
+}
+
+static VALUE CD_s_numDrive(VALUE klass)
 {
   rb_secure(4);
   return INT2FIX(SDL_CDNumDrives());
 }
-static VALUE CD_s_name(VALUE class, VALUE drive)
+static VALUE CD_s_name(VALUE klass, VALUE drive)
 {
   rb_secure(4);
   return rb_str_new2(SDL_CDName(NUM2INT(drive)));
 }
-static VALUE CD_s_open(VALUE class, VALUE drive)
+static VALUE CD_s_open(VALUE klass, VALUE drive)
 {
-  SDL_CD *cd;
-  rb_secure(4);
-  cd=SDL_CDOpen(NUM2INT(drive));
-  if(cd==NULL)
-    rb_raise(eSDLError, "Couldn't open drive %d: %s", 
-	     NUM2INT(drive), SDL_GetError());
-  return Data_Wrap_Struct(class, 0, SDL_CDClose, cd);
+  VALUE newobj = CD_s_alloc(klass);
+  CD_initialize(newobj, drive);
+  return newobj;
 }
-static VALUE CD_status(VALUE obj)
+static VALUE CD_status(VALUE self)
 {
-  SDL_CD *cd;
   rb_secure(4);
-  Data_Get_Struct(obj, SDL_CD, cd);
-  return INT2FIX(SDL_CDStatus(cd));
+  return INT2FIX(SDL_CDStatus(Get_SDL_CD(self)));
 }
-static VALUE CD_play(VALUE obj, VALUE start, VALUE length)
+static VALUE CD_play(VALUE self, VALUE start, VALUE length)
 {
-  SDL_CD *cd;
   rb_secure(4);
-  Data_Get_Struct(obj, SDL_CD, cd);
-  if( SDL_CDPlay(cd, NUM2INT(start), NUM2INT(length))==-1 )
+  if( SDL_CDPlay(Get_SDL_CD(self), NUM2INT(start), NUM2INT(length))==-1 )
     rb_raise(eSDLError, "Couldn't play cd :%s", SDL_GetError() );
   return Qnil;
 }
-static VALUE CD_playTracks(VALUE obj, VALUE start_track, VALUE start_frame, 
+static VALUE CD_playTracks(VALUE self, VALUE start_track, VALUE start_frame, 
 			       VALUE ntracks, VALUE nframes)
 {
-  SDL_CD *cd;
   rb_secure(4);
-  Data_Get_Struct(obj, SDL_CD, cd);
-  if( SDL_CDPlayTracks(cd, NUM2INT(start_track), NUM2INT(start_frame), 
-		       NUM2INT(ntracks), NUM2INT(nframes))==-1 )
+  if( SDL_CDPlayTracks(Get_SDL_CD(self), NUM2INT(start_track),
+                       NUM2INT(start_frame), NUM2INT(ntracks),
+		       NUM2INT(nframes))==-1 )
     rb_raise(eSDLError, "Couldn't play cd :%s", SDL_GetError() );
   return Qnil;
 }
-static VALUE CD_pause(VALUE obj)
+static VALUE CD_pause(VALUE self)
 {
-  SDL_CD *cd;
   rb_secure(4);
-  Data_Get_Struct(obj, SDL_CD, cd);
-  if( SDL_CDPause(cd)==-1 )
+  if( SDL_CDPause(Get_SDL_CD(self))==-1 )
     rb_raise(eSDLError, "cd pause failed :%s", SDL_GetError());
   return Qnil;
 }
-static VALUE CD_resume(VALUE obj)
+static VALUE CD_resume(VALUE self)
 {
-  SDL_CD *cd;
   rb_secure(4);
-  Data_Get_Struct(obj, SDL_CD, cd);
-  if( SDL_CDResume(cd)==-1 )
+  if( SDL_CDResume(Get_SDL_CD(self))==-1 )
     rb_raise(eSDLError, "cd resume failed :%s", SDL_GetError());
   return Qnil;
 }
-static VALUE CD_stop(VALUE obj)
+static VALUE CD_stop(VALUE self)
 {
-  SDL_CD *cd;
   rb_secure(4);
-  Data_Get_Struct(obj, SDL_CD, cd);
-  if( SDL_CDStop(cd)==-1 )
+  if( SDL_CDStop(Get_SDL_CD(self))==-1 )
     rb_raise(eSDLError, "cd pause failed :%s", SDL_GetError());
   return Qnil;
 }
-static VALUE CD_eject(VALUE obj)
+static VALUE CD_eject(VALUE self)
 {
-  SDL_CD *cd;
   rb_secure(4);
-  Data_Get_Struct(obj, SDL_CD, cd);
-  if( SDL_CDEject(cd)==-1 )
+  if( SDL_CDEject(Get_SDL_CD(self))==-1 )
     rb_raise(eSDLError, "cd eject failed :%s", SDL_GetError());
   return Qnil;
 }
 
-static VALUE CD_numTracks(VALUE obj)
+static VALUE CD_numTracks(VALUE self)
 {
-  SDL_CD *cd;
-  Data_Get_Struct(obj, SDL_CD, cd);
-  return INT2NUM(cd->numtracks);
+  return INT2NUM(Get_SDL_CD(self)->numtracks);
 }
-static VALUE CD_currentTrack(VALUE obj)
+static VALUE CD_currentTrack(VALUE self)
 {
-  SDL_CD *cd;
-  Data_Get_Struct(obj, SDL_CD, cd);
-  return INT2NUM(cd->cur_track);
+  return INT2NUM(Get_SDL_CD(self)->cur_track);
 }
-static VALUE CD_currentFrame(VALUE obj)
+static VALUE CD_currentFrame(VALUE self)
 {
-  SDL_CD *cd;
-  Data_Get_Struct(obj, SDL_CD, cd);
-  return INT2NUM(cd->cur_frame);
+  return INT2NUM(Get_SDL_CD(self)->cur_frame);
 }
-static VALUE CD_trackType(VALUE obj, VALUE track)
+static VALUE CD_trackType(VALUE self, VALUE track)
 {
-  SDL_CD *cd;
-  int index=NUM2INT(track);
-  Data_Get_Struct(obj, SDL_CD, cd);
-  return INT2FIX(cd->track[index].type);
+  return INT2FIX(Get_SDL_CD(self)->track[NUM2INT(track)].type);
 }
-static VALUE CD_trackLength(VALUE obj, VALUE track)
+static VALUE CD_trackLength(VALUE self, VALUE track)
 {
-  SDL_CD *cd;
-  int index=NUM2INT(track);
-  Data_Get_Struct(obj, SDL_CD, cd);
-  return INT2FIX(cd->track[index].length);
+  return INT2FIX(Get_SDL_CD(self)->track[NUM2INT(track)].length);
 }
 
 void rubysdl_init_CD()
 {
-  VALUE cCD = rb_define_class_under(mSDL, "CD", rb_cObject);
+  cCD = rb_define_class_under(mSDL, "CD", rb_cObject);
+  
+  rb_define_alloc_func(cCD, CD_s_alloc);
+  rb_define_private_method(cCD, "initialize", CD_initialize, 1);
+  
   rb_define_singleton_method(cCD, "numDrive", CD_s_numDrive, 0);
   rb_define_singleton_method(cCD, "indexName", CD_s_name, 1);
   rb_define_singleton_method(cCD, "open", CD_s_open, 1);
