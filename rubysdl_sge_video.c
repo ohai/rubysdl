@@ -536,17 +536,16 @@ void init_sge_video()
 }
 #else /* HAVE_SGE */
 #include "rubysdl.h"
-static VALUE sdl_getPixel(VALUE obj,VALUE x,VALUE y)
+static VALUE sdl_getPixel(VALUE self, VALUE x, VALUE y)
 {
-  SDL_Surface *surface;
-  Data_Get_Struct(obj,SDL_Surface,surface);
-  return UINT2NUM( rubysdl_getPixel(surface,NUM2INT(x),NUM2INT(y)) );
+  return UINT2NUM(rubysdl_getPixel(Get_SDL_Surface(self),
+                                   NUM2INT(x), NUM2INT(y)));
 }
-static VALUE sdl_putPixel(VALUE obj,VALUE x,VALUE y,VALUE color)
+static VALUE sdl_putPixel(VALUE self, VALUE x, VALUE y, VALUE color)
 {
-  SDL_Surface *surface;
-  Data_Get_Struct(obj,SDL_Surface,surface);
-  rubysdl_putPixel(surface,NUM2INT(x),NUM2INT(y),VALUE2COLOR(color,surface->format));
+  SDL_Surface* surface = Get_SDL_Surface(self);
+  rubysdl_putPixel(surface,
+                   NUM2INT(x), NUM2INT(y), VALUE2COLOR(color,surface->format));
   return Qnil;
 }
 
