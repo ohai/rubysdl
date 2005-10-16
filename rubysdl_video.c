@@ -60,7 +60,7 @@ static VALUE Surface_s_alloc(VALUE klass)
   return Data_Wrap_Struct(klass, 0, Surface_free, sur);
 }
 
-static VALUE Surface_create(SDL_Surface* surface)
+VALUE Surface_create(SDL_Surface* surface)
 {
   VALUE newobj = Surface_s_alloc(cSurface);
   GetSurface(newobj)->surface = surface;

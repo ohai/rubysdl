@@ -94,5 +94,7 @@ do{ \
 Uint32 VALUE2COLOR(VALUE color,SDL_PixelFormat *format);
 void rubysdl_putPixel(SDL_Surface *surface, Sint16 x, Sint16 y, Uint32 color);
 Uint32 rubysdl_getPixel(SDL_Surface *surface, Sint16 x, Sint16 y);
-void sdl_freeSurface(SDL_Surface* surface);
 int rubysdl_is_quit(void);
+
+#define Surface_create rubysdl_Surface_create
+VALUE Surface_create(SDL_Surface* surface);
