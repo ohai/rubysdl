@@ -660,7 +660,7 @@ static VALUE Surface_pixels(VALUE self)
                     surface->w * surface->h * surface->format->BytesPerPixel);
 }
 
-static void defineConstForVideo()
+static void defineConstForVideo(void)
 {
   /* Available for Screen.setVideoMode */
   rb_define_const(mSDL,"SWSURFACE",UINT2NUM(SDL_SWSURFACE));
@@ -689,7 +689,7 @@ static void defineConstForVideo()
   rb_define_const(mSDL,"PHYSPAL",INT2NUM(SDL_PHYSPAL));
 }
 
-void init_video()
+void rubysdl_init_video(void)
 {
   cSurface = rb_define_class_under(mSDL,"Surface",rb_cObject);
   cScreen = rb_define_class_under(mSDL,"Screen",cSurface);

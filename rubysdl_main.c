@@ -22,7 +22,7 @@
 #include "rubysdl.h"
 
 /* declaration of initialize functions */
-void init_video();
+void rubysdl_init_video(void);
 #ifdef HAVE_SGE
 void init_sge_video();
 #else
@@ -144,7 +144,7 @@ void Init_sdl()
   defineConst();
 
 
-  init_video();
+  rubysdl_init_video();
 #ifdef HAVE_SGE
   init_sge_video();
 #else
