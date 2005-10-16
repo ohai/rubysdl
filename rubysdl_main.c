@@ -29,9 +29,7 @@ void init_sge_video();
 void init_pixel();
 #endif
 void rubysdl_init_GL();
-#ifdef HAVE_SDL_IMAGE
-void init_sdl_image();
-#endif
+void rubysdl_init_image(void);
 void rubysdl_init_Event(void);
 void rubysdl_init_Key(void);
 void init_mouse();
@@ -151,9 +149,7 @@ void Init_sdl()
   init_pixel();
 #endif
   rubysdl_init_GL();
-#ifdef HAVE_SDL_IMAGE
-  init_sdl_image();
-#endif
+  rubysdl_init_image();
   rubysdl_init_Event();
   rubysdl_init_Key();
   init_mouse();

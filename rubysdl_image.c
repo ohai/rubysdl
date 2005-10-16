@@ -35,8 +35,12 @@ static VALUE Surface_s_load(VALUE klass, VALUE filename)
   return Surface_create(surface);
 }
 
-void init_sdl_image()
+void rubysdl_init_image(void)
 {
   rb_define_singleton_method(cSurface, "load", Surface_s_load, 1);
+}
+#else /* HAVE_SDL_IMAGE */
+void rubysdl_init_image(void)
+{
 }
 #endif /* HAVE_SDL_IMAGE */
