@@ -36,7 +36,7 @@ void rubysdl_init_Mouse(void);
 void rubysdl_init_Joystick(void);
 void rubysdl_init_CD(void);
 void rubysdl_init_time(void);
-void init_wm();
+void rubysdl_init_WM(void);
 void init_kanji(void);
 #ifdef HAVE_SDL_TTF
 void init_ttf();
@@ -100,6 +100,8 @@ int rubysdl_is_quit(void)
 }
 static void sdl_quit()
 {
+  if(rubysdl_is_quit())
+    return;
   rubysdl_quit_Mixer();
 #ifdef HAVE_SDL_TTF
   quit_ttf();
@@ -156,7 +158,7 @@ void Init_sdl()
   rubysdl_init_Joystick();
   rubysdl_init_CD();
   rubysdl_init_time();
-  init_wm();
+  rubysdl_init_WM();
   init_kanji();
 #ifdef HAVE_SDL_TTF
   init_ttf();
