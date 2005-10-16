@@ -98,14 +98,14 @@ module SDL
       i=-1
       for y in 0..(bitmap.h-1)
 	for x in 0..(bitmap.w-1)
-	  if x%8 != 0 then
+	  if x%8 == 0 then
+            i+=1
+	    data[i]=mask[i]=0
+          else
 	    data[i] <<= 1
 	    mask[i] <<= 1
-	  else
-	    i+=1
-	    data[i]=mask[i]=0
 	  end
-	  
+
 	  case bitmap.getPixel(x,y)
 	  when white
 	    mask[i] |= 0x01
@@ -117,7 +117,6 @@ module SDL
 	  when inverted
 	    data[i] |= 0x01
 	  end
-
 	end
       end
 
