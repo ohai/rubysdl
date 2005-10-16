@@ -98,3 +98,7 @@ int rubysdl_is_quit(void);
 
 #define Surface_create rubysdl_Surface_create
 VALUE Surface_create(SDL_Surface* surface);
+
+#define Get_SDL_Surface rubysdl_Get_SDL_Surface
+SDL_Surface* Get_SDL_Surface(VALUE obj);
+

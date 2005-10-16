@@ -28,7 +28,7 @@ typedef struct {
 DEFINE_GET_STRUCT(Surface, GetSurface, cSurface, "SDL::Surface");
 DEFINE_GET_STRUCT(SDL_PixelFormat, Get_SDL_PixelFormat, cPixelFormat, "SDL::PixelFormat");
 
-static SDL_Surface* Get_SDL_Surface(VALUE obj)
+SDL_Surface* Get_SDL_Surface(VALUE obj)
 {
   Surface* sur = GetSurface(obj);
   if(sur->surface == NULL)
