@@ -1,4 +1,5 @@
 require 'sdl'
+require 'sdl1_compatible'
 require 'opengl'
 
 SDL.init SDL::INIT_VIDEO
