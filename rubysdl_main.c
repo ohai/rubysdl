@@ -28,11 +28,11 @@ void init_sge_video();
 #else
 void init_pixel();
 #endif
-void rubysdl_init_GL();
+void rubysdl_init_GL(void);
 void rubysdl_init_image(void);
 void rubysdl_init_Event(void);
 void rubysdl_init_Key(void);
-void init_mouse();
+void rubysdl_init_Mouse(void);
 void rubysdl_init_Joystick(void);
 void rubysdl_init_CD(void);
 void rubysdl_init_time(void);
@@ -152,7 +152,7 @@ void Init_sdl()
   rubysdl_init_image();
   rubysdl_init_Event();
   rubysdl_init_Key();
-  init_mouse();
+  rubysdl_init_Mouse();
   rubysdl_init_Joystick();
   rubysdl_init_CD();
   rubysdl_init_time();
