@@ -10,22 +10,24 @@ module SDL
     alias flip flip
     alias toggle_fullscreen toggleFullScreen
   end
-  class << Screen
-    alias check_mode checkMode
-    alias list_modes listModes
-    alias set_gamma setGamma
-    alias get_gamma_ramp getGammaRamp
-    alias set_gamma_ramp setGammaRamp
-  end
 end
 
 class << SDL
-  
+  alias get_video_surface getVideoSurface
+  alias blit_surface blitSurface
+  alias set_video_mode setVideoMode
+  alias check_video_mode checkVideoMode
+  alias list_modes listModes
+  alias set_gamma setGamma
+  alias get_gamma_ramp getGammaRamp
+  alias set_gamma_ramp setGammaRamp
+  alias video_info videoInfo
 end
 
 module SDL
   
   class << Surface
+#   alias new new
     alias load_bmp loadBMP
   end
 
@@ -43,26 +45,66 @@ module SDL
 #   alias flags flags
     alias set_palette setPalette
     alias set_colors setColors
+    alias get_palette getPalette
     alias must_lock? mustLock?
-    alias copy_rect copyRect
-  end
-
-  class PixelFormat
+#   alias lock lock
+#   alias unlock unlock
     alias map_rgb mapRGB
     alias map_rgba mapRGBA
     alias get_rgb getRGB
     alias get_rgba getRGBA
+#   alias bpp bpp
+#   alias colorkey colorkey
+#   alias alpha alpha
+    alias copy_rect copyRect
   end
 end
 
-
 # rubysdl_event.c
+class << SDL::Event
+# alias new new
+  alias app_state appState
+end
+
 module SDL
-  class << Event
-    alias app_state appState
+  class <<Event
     alias enable_unicode enableUNICODE
     alias disable_unicode disableUNICODE
     alias enable_unicode? enableUNICODE?
+  end
+  
+  class Event
+# alias poll poll
+# alias wait wait
+# alias type type
+    alias key_press? keyPress?
+    alias key_sym keySym
+    alias key_mod keyMod
+# alias gain? gain?
+    alias app_state appState
+    alias mouse_x mouseX
+    alias mouse_y mouseY
+    alias mouse_xrel mouseXrel
+    alias mouse_yrel mouseYrel
+    alias mouse_button mouseButton
+    alias mouse_press? mousePress?
+# alias info info
+  end
+end
+
+# rubysdl_event2.c
+module SDL
+  if defined?(Event2) then
+    class << Event2
+#     alias poll poll
+#     alias wait wait
+#     alias new new
+#     alias push push
+      alias app_state appState
+      alias enable_unicode enableUNICODE
+      alias disable_unicode disableUNICODE
+      alias enable_unicode? enableUNICODE?
+    end
   end
 end
 
@@ -125,7 +167,10 @@ module SDL
       alias draw_aa_circle_alpha drawAACircleAlpha
       alias draw_aa_ellipse_alpha drawAAEllipseAlpha
 
-      
+      alias draw_bezier drawBezier
+      alias draw_aa_bezier drawAABezier
+      alias draw_bezier_alpha drawBezierAlpha
+      alias draw_aa_bezier_alpha drawAABezierAlpha
     end
   end
 
@@ -328,13 +373,11 @@ module SDL
 end
 
 # rubysdl_opengl.c
-module SDL
-  if defined?(GL)
-    class << GL
-      alias set_attr setAttr
-      alias get_attr getAttr
-      alias swap_buffers swapBuffers
-    end
+class <<  SDL
+  if method_defined?(:getGLAttr)
+    alias get_GL_attr getGLAttr
+    alias set_GL_attr setGLAttr
+    alias GL_swap_buffers GLSwapBuffers
   end
 end
 

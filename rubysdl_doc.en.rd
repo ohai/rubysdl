@@ -599,7 +599,40 @@ Object
       Needs SGE ,Needs lock
 
       Draws an antialiased ellipse with alpha blending.
+
+--- SDL::Surface#drawBezier(x1,y1,x2,y2,x3,y3,x4,y4,level,color)
+--- SDL::Surface#draw_bezier(x1,y1,x2,y2,x3,y3,x4,y4,level,color)
+      Needs SGE ,Needs lock
       
+      Draws a bezier curve from (x1,y1) to (x4,y4) with the control
+      points (x2,y2) and (x3,y3). level indicates how good precision
+      the function should use, 4-7 is normal.
+      
+--- SDL::Surface#drawAABezier(x1,y1,x2,y2,x3,y3,x4,y4,level,color)
+--- SDL::Surface#draw_aa_bezier(x1,y1,x2,y2,x3,y3,x4,y4,level,color)
+      Needs SGE ,Needs lock
+      
+      Draws a antialiased bezier curve from (x1,y1) to (x4,y4) with the control
+      points (x2,y2) and (x3,y3). level indicates how good precision
+      the function should use, 4-7 is normal.
+      
+--- SDL::Surface#drawBezierAlpha(x1,y1,x2,y2,x3,y3,x4,y4,level,color,alpha)
+--- SDL::Surface#draw_bezier_alpha(x1,y1,x2,y2,x3,y3,x4,y4,level,color,alpha)
+      Needs SGE ,Needs lock
+      
+      Draws an alpha bezier curve from (x1,y1) to (x4,y4) with the control
+      points (x2,y2) and (x3,y3). level indicates how good precision
+      the function should use, 4-7 is normal.
+      
+--- SDL::Surface#drawAABezierAlpha(x1,y1,x2,y2,x3,y3,x4,y4,level,color,alpha)
+--- SDL::Surface#draw_aa_bezier_alpha(x1,y1,x2,y2,x3,y3,x4,y4,level,color,alpha)
+      Needs SGE ,Needs lock
+      
+      Draws an antialiased alpha bezier curve from (x1,y1) to (x4,y4)
+       with the control
+      points (x2,y2) and (x3,y3). level indicates how good precision
+      the function should use, 4-7 is normal.
+
 --- SDL::Surface#rotateScaledSurface(angle,scale,bgcolor)
 --- SDL::Surface#rotate_scaled_surface(angle,scale,bgcolor)
       Needs SGE
@@ -1519,10 +1552,10 @@ Object
 === class method
 
 --- SDL::Joystick.pall
-      Return whether ((<SDL::Joystick.updateAll>)) is called automatically.
+      Return whether Joystick.updateAll is called automatically.
       
 --- SDL::JoyStick.pall=(polling)
-      Set whether ((<SDL::Joystick.updateAll>)) is called automatically and
+      Set whether Joystick.updateAll is called automatically and
       whether joystick events are processed.
       Default is true, and you shouldn't change.
 
@@ -1546,7 +1579,6 @@ Object
 
 --- SDL::Joystick.updateAll
 --- SDL::Joystick.update_all
---- SDL::Joystick.update
       Updates the state(position, buttons, etc.) of all open joysticks.
 
 === method

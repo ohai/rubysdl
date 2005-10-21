@@ -616,7 +616,38 @@ Object
       SGEが必要 ロックが必要
 
       アルファブレンド、アンチエリアスした楕円を描く。
+
+--- SDL::Surface#drawBezier(x1,y1,x2,y2,x3,y3,x4,y4,level,color)
+--- SDL::Surface#draw_bezier(x1,y1,x2,y2,x3,y3,x4,y4,level,color)
+      SGEが必要 ロックが必要
+
+      (x1,y1)から(x4,y4)へのベジエ曲線を(x2,y2),(x3,y3)をコントロール
+      ポイントとしてcolorで指定した色で描く。levelは4から7くらいが普通。
       
+--- SDL::Surface#drawAABezier(x1,y1,x2,y2,x3,y3,x4,y4,level,color)
+--- SDL::Surface#draw_aa_bezier(x1,y1,x2,y2,x3,y3,x4,y4,level,color)
+      SGEが必要 ロックが必要
+
+      (x1,y1)から(x4,y4)へのアンチエイリアスしたベジエ曲線を(x2,y2),
+      (x3,y3)をコントロールポイントとしてcolorで指定した色で描く。
+      levelは4から7くらいが普通。
+      
+--- SDL::Surface#drawBezierAlpha(x1,y1,x2,y2,x3,y3,x4,y4,level,color,alpha)
+--- SDL::Surface#draw_bezier_alpha(x1,y1,x2,y2,x3,y3,x4,y4,level,color,alpha)
+      SGEが必要 ロックが必要
+
+      (x1,y1)から(x4,y4)へのベジエ曲線を(x2,y2),
+      (x3,y3)をコントロールポイントとしてcolorで指定した色、alphaで指定した
+      アルファ値で描く。levelは4から7くらいが普通。
+
+--- SDL::Surface#drawAABezierAlpha(x1,y1,x2,y2,x3,y3,x4,y4,level,color,alpha)
+--- SDL::Surface#draw_aa_bezier_alpha(x1,y1,x2,y2,x3,y3,x4,y4,level,color,alpha)
+      SGEが必要 ロックが必要
+
+      (x1,y1)から(x4,y4)へのアンチエイリアスしたベジエ曲線を(x2,y2),
+      (x3,y3)をコントロールポイントとしてcolorで指定した色、alphaで指定した
+      アルファ値で描く。levelは4から7くらいが普通。
+
 --- SDL::Surface#rotateScaledSurface(angle,scale,bgcolor)
 --- SDL::Surface#rotate_scaled_surface(angle,scale,bgcolor)
       SGEが必要 
@@ -1571,7 +1602,6 @@ Object
 
 --- SDL::Joystick.updateAll
 --- SDL::Joystick.update_all
---- SDL::Joystick.update
       全てのジョイスティックの情報を更新する。
       Joystick#button/ball/hat/axisの情報はこれで更新される。
 

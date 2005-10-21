@@ -230,6 +230,56 @@ static VALUE sdl_drawFilledEllipseAlpha(VALUE obj,VALUE x,VALUE y,VALUE rx,VALUE
   return Qnil;
 }
 
+static VALUE sdl_drawBezier(VALUE obj,VALUE x1,VALUE y1,VALUE x2,VALUE y2,
+                            VALUE x3,VALUE y3,VALUE x4,VALUE y4,
+                            VALUE level,VALUE color)
+{
+  SDL_Surface *surface;
+  Data_Get_Struct(obj,SDL_Surface,surface);
+  sge_Bezier(surface,NUM2INT(x1),NUM2INT(y1),NUM2INT(x2),NUM2INT(y2),
+             NUM2INT(x3),NUM2INT(y3),NUM2INT(x4),NUM2INT(y4),
+             NUM2INT(level),VALUE2COLOR(color,surface->format));
+  return Qnil;
+}
+
+static VALUE sdl_drawBezierAlpha(VALUE obj,VALUE x1,VALUE y1,VALUE x2,VALUE y2,
+                                 VALUE x3,VALUE y3,VALUE x4,VALUE y4,
+                                 VALUE level,VALUE color,VALUE alpha)
+{
+  SDL_Surface *surface;
+  Data_Get_Struct(obj,SDL_Surface,surface);
+  sge_BezierAlpha(surface,NUM2INT(x1),NUM2INT(y1),NUM2INT(x2),NUM2INT(y2),
+                  NUM2INT(x3),NUM2INT(y3),NUM2INT(x4),NUM2INT(y4),
+                  NUM2INT(level),VALUE2COLOR(color,surface->format),
+                  NUM2UINT(alpha));
+  return Qnil;
+}
+
+static VALUE sdl_drawAABezier(VALUE obj,VALUE x1,VALUE y1,VALUE x2,VALUE y2,
+                              VALUE x3,VALUE y3,VALUE x4,VALUE y4,
+                              VALUE level,VALUE color)
+{
+  SDL_Surface *surface;
+  Data_Get_Struct(obj,SDL_Surface,surface);
+  sge_AABezier(surface,NUM2INT(x1),NUM2INT(y1),NUM2INT(x2),NUM2INT(y2),
+               NUM2INT(x3),NUM2INT(y3),NUM2INT(x4),NUM2INT(y4),
+               NUM2INT(level),VALUE2COLOR(color,surface->format));
+  return Qnil;
+}
+
+static VALUE sdl_drawAABezierAlpha(VALUE obj,VALUE x1,VALUE y1,VALUE x2,VALUE y2,
+                                 VALUE x3,VALUE y3,VALUE x4,VALUE y4,
+                                 VALUE level,VALUE color,VALUE alpha)
+{
+  SDL_Surface *surface;
+  Data_Get_Struct(obj,SDL_Surface,surface);
+  sge_AABezierAlpha(surface,NUM2INT(x1),NUM2INT(y1),NUM2INT(x2),NUM2INT(y2),
+                    NUM2INT(x3),NUM2INT(y3),NUM2INT(x4),NUM2INT(y4),
+                    NUM2INT(level),VALUE2COLOR(color,surface->format),
+                    NUM2UINT(alpha));
+  return Qnil;
+}
+
 static VALUE sdl_rotateScaledSurface(VALUE obj,VALUE angle,VALUE scale,VALUE bgcolor)
 {
   SDL_Surface *surface,*result;
@@ -482,14 +532,16 @@ void init_sge_video()
   rb_define_method(cSurface,"drawFilledEllispe",sdl_drawFilledEllipse,5);
   rb_define_method(cSurface,"drawEllipse",sdl_drawEllipse,5);
   rb_define_method(cSurface,"drawFilledEllipse",sdl_drawFilledEllipse,5);
-
+  rb_define_method(cSurface,"drawBezier",sdl_drawBezier,10);
+    
   /* antialiased primitive drawing */
   rb_define_method(cSurface,"drawAALine",sdl_drawAALine,5);
   rb_define_method(cSurface,"drawAACircle",sdl_drawAACircle,4);
   rb_define_method(cSurface,"drawAAFilledCircle",sdl_drawAAFilledCircle,4);
   rb_define_method(cSurface,"drawAAEllipse",sdl_drawAAEllipse,5);
   rb_define_method(cSurface,"drawAAFilledEllipse",sdl_drawAAFilledEllipse,5);
-
+  rb_define_method(cSurface,"drawAABezier",sdl_drawAABezier,10);
+    
   /* primitive drawing with alpha */
   rb_define_method(cSurface,"drawLineAlpha",sdl_drawLineAlpha,6);
   rb_define_method(cSurface,"drawRectAlpha",sdl_drawRectAlpha,6);
@@ -498,12 +550,14 @@ void init_sge_video()
   rb_define_method(cSurface,"drawFilledCircleAlpha",sdl_drawFilledCircleAlpha,5);
   rb_define_method(cSurface,"drawEllipseAlpha",sdl_drawEllipseAlpha,6);
   rb_define_method(cSurface,"drawFilledEllipseAlpha",sdl_drawFilledEllipseAlpha,6);
-
+  rb_define_method(cSurface,"drawBezierAlpha",sdl_drawBezierAlpha,11);
+    
   /* antialiased primitive drawing with alpha */
   rb_define_method(cSurface,"drawAALineAlpha",sdl_drawAALineAlpha,6);
   rb_define_method(cSurface,"drawAACircleAlpha",sdl_drawAACircleAlpha,5);
   rb_define_method(cSurface,"drawAAEllipseAlpha",sdl_drawAAEllipseAlpha,6);
-
+  rb_define_method(cSurface,"drawAABezierAlpha",sdl_drawAABezierAlpha,11);
+    
   /* rotation and scaling */
   rb_define_method(cSurface,"rotateScaledSurface",sdl_rotateScaledSurface,3);
   rb_define_module_function(mSDL,"rotateScaledBlit",sdl_rotateScaledBlit,6);
@@ -534,27 +588,4 @@ void init_sge_video()
 
   defineConstForSGE();
 }
-#else /* HAVE_SGE */
-#include "rubysdl.h"
-static VALUE sdl_getPixel(VALUE self, VALUE x, VALUE y)
-{
-  return UINT2NUM(rubysdl_getPixel(Get_SDL_Surface(self),
-                                   NUM2INT(x), NUM2INT(y)));
-}
-static VALUE sdl_putPixel(VALUE self, VALUE x, VALUE y, VALUE color)
-{
-  SDL_Surface* surface = Get_SDL_Surface(self);
-  rubysdl_putPixel(surface,
-                   NUM2INT(x), NUM2INT(y), VALUE2COLOR(color,surface->format));
-  return Qnil;
-}
-
-void init_pixel()
-{
-  rb_define_method(cSurface,"getPixel",sdl_getPixel,2);
-  rb_define_method(cSurface,"putPixel",sdl_putPixel,3);
-  rb_define_method(cSurface,"[]",sdl_getPixel,2);
-  rb_define_method(cSurface,"[]=",sdl_putPixel,3);
-}
-
 #endif /* HAVE_SGE */

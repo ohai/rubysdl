@@ -121,6 +121,7 @@ static VALUE smpeg_setDisplay(VALUE obj,VALUE dst)
   Data_Get_Struct(dst,SDL_Surface,surface);
 
   SMPEG_setdisplay(mpeg,surface,NULL,NULL);
+  rb_iv_set(obj,"surface",dst);
   return Qnil;
 }
 
