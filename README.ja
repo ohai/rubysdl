@@ -1,14 +1,11 @@
 
-Ruby/SDL 0.9.5
+Ruby/SDL 1.0.0
 大林一平
 
 1 概要
 
 これは、RubyからSDLの機能を使うための拡張ライブラリです。
 SDLとは、Win32,Linux,BeOS,MacOS,FreeBSD,Solaris等で動く、クロスプラットフォームなゲーム開発用ライブラリです。
-
-これはまだ開発途中のバージョンです。
-
 
 2 動作環境
 LinuxのX上、Win32
