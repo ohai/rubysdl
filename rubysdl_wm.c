@@ -1,7 +1,7 @@
 /*
   Ruby/SDL   Ruby extension library for SDL
 
-  Copyright (C) 2001-2004 Ohbayashi Ippei
+  Copyright (C) 2001-2005 Ohbayashi Ippei
   
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -19,53 +19,53 @@
   */
 #include "rubysdl.h"
 
-static VALUE WM_s_caption(VALUE mod)
+static VALUE sdl_wm_getCaption(VALUE mod)
 {
-  char *title, *icon;
-  
-  rb_secure(4);
-  SDL_WM_GetCaption(&title, &icon);
-  return rb_ary_new3(2, rb_str_new2(title), rb_str_new2(icon));
+  char *title,*icon;
+  SDL_WM_GetCaption( &title,&icon );
+  return rb_ary_new3( 2,rb_str_new2(title),rb_str_new2(icon) );
 }
-static VALUE WM_s_setCaption(VALUE mod, VALUE title, VALUE icon)
+static VALUE sdl_wm_setCaption(VALUE mod,VALUE title,VALUE icon)
 {
-  rb_secure(4);
-  SafeStringValue(title);
-  SafeStringValue(icon);
-  
-  SDL_WM_SetCaption(RSTRING(title)->ptr, RSTRING(icon)->ptr);
+  SDL_WM_SetCaption( GETCSTR(title),GETCSTR(icon) );
   return Qnil;
 }
-static VALUE WM_s_set_icon(VALUE mod, VALUE icon)
+static VALUE sdl_wm_setIcon(VALUE mod,VALUE icon)
 {
-  rb_secure(4);
-  SDL_WM_SetIcon(Get_SDL_Surface(icon), NULL);
+  SDL_Surface *surface;
+  if( ! rb_obj_is_kind_of(icon,cSurface) )
+    rb_raise(rb_eArgError,"type mismatch (expected Surface)");
+  Data_Get_Struct(icon,SDL_Surface,surface);
+  SDL_WM_SetIcon(surface,NULL);
   return Qnil;
 }
-static VALUE WM_s_iconify(VALUE mod)
+static VALUE sdl_wm_iconifyWindow(VALUE mod)
 {
-  rb_secure(4);
   if( ! SDL_WM_IconifyWindow() )
     rb_raise( eSDLError,"iconify failed: %s",SDL_GetError() );
   return Qnil;
 }
 
-static VALUE WM_s_grabInput(VALUE mod, VALUE flag)
+static void defineConstForWM()
 {
-  rb_secure(4);
-  return INT2FIX(SDL_WM_GrabInput(flag));
+  rb_define_const(mWM,"GRAB_QUERY",INT2NUM(SDL_GRAB_QUERY));
+  rb_define_const(mWM,"GRAB_OFF",INT2NUM(SDL_GRAB_OFF));
+  rb_define_const(mWM,"GRAB_ON",INT2NUM(SDL_GRAB_ON));
 }
 
-void rubysdl_init_WM(void)
+static VALUE sdl_wm_grabInput(VALUE mod, VALUE flag)
 {
-  VALUE mWM=rb_define_module_under(mSDL, "WM");
-  rb_define_module_function(mWM, "caption", WM_s_caption, 0);
-  rb_define_module_function(mWM, "setCaption", WM_s_setCaption, 2);
-  rb_define_module_function(mWM, "icon=", WM_s_set_icon, 1);
-  rb_define_module_function(mWM, "iconify", WM_s_iconify, 0);
-  rb_define_module_function(mWM, "grabInput", WM_s_grabInput, 1);
+   return INT2FIX(SDL_WM_GrabInput(flag));
+}
 
-  rb_define_const(mWM, "GRAB_QUERY", INT2NUM(SDL_GRAB_QUERY));
-  rb_define_const(mWM, "GRAB_OFF", INT2NUM(SDL_GRAB_OFF));
-  rb_define_const(mWM, "GRAB_ON", INT2NUM(SDL_GRAB_ON));
+void init_wm()
+{
+  mWM=rb_define_module_under(mSDL,"WM");
+  rb_define_module_function(mWM,"caption",sdl_wm_getCaption,0);
+  rb_define_module_function(mWM,"setCaption",sdl_wm_setCaption,2);
+  rb_define_module_function(mWM,"icon=",sdl_wm_setIcon,1);
+  rb_define_module_function(mWM,"iconify",sdl_wm_iconifyWindow,0);
+  rb_define_module_function(mWM,"grabInput",sdl_wm_grabInput,1);
+
+  defineConstForWM();
 }

@@ -1,7 +1,7 @@
 /*
   Ruby/SDL   Ruby extension library for SDL
 
-  Copyright (C) 2001-2004 Ohbayashi Ippei
+  Copyright (C) 2001-2005 Ohbayashi Ippei
   
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -21,26 +21,19 @@
 #include "rubysdl.h"
 #include <SDL_image.h>
 
-static VALUE Surface_s_load(VALUE klass, VALUE filename)
+static VALUE sdl_load(VALUE class,VALUE filename)
 {
   SDL_Surface *surface;
-  
-  rb_secure(4);
-  SafeStringValue(filename);
-
-  surface = IMG_Load(RSTRING(filename)->ptr);
-  if(surface == NULL)
-    rb_raise(eSDLError,"Couldn't load %s: %s",
-             RSTRING(filename)->ptr, SDL_GetError());
-  return Surface_create(surface);
+  surface = IMG_Load(GETCSTR(filename));
+  if(surface==NULL){
+    rb_raise(eSDLError,"Couldn't load %s: %s",GETCSTR(filename),
+	     SDL_GetError());
+  }
+  return Data_Wrap_Struct(class,0,sdl_freeSurface,surface);
 }
 
-void rubysdl_init_image(void)
+void init_sdl_image()
 {
-  rb_define_singleton_method(cSurface, "load", Surface_s_load, 1);
-}
-#else /* HAVE_SDL_IMAGE */
-void rubysdl_init_image(void)
-{
+  rb_define_singleton_method(cSurface,"load",sdl_load,1);
 }
 #endif /* HAVE_SDL_IMAGE */

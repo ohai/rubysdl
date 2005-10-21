@@ -1,7 +1,7 @@
 /*
   Ruby/SDL   Ruby extension library for SDL
 
-  Copyright (C) 2001-2004 Ohbayashi Ippei
+  Copyright (C) 2001-2005 Ohbayashi Ippei
   
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -20,30 +20,44 @@
 
 #define DEF_GLOBAL
 #include "rubysdl.h"
+#include <signal.h>
+#include <stdio.h>
 
 /* declaration of initialize functions */
-void rubysdl_init_video(void);
+void init_video();
 #ifdef HAVE_SGE
 void init_sge_video();
 #else
 void init_pixel();
 #endif
-void rubysdl_init_GL(void);
-void rubysdl_init_image(void);
-void rubysdl_init_Event(void);
-void rubysdl_init_Key(void);
-void rubysdl_init_Mouse(void);
-void rubysdl_init_Joystick(void);
-void rubysdl_init_CD(void);
-void rubysdl_init_time(void);
-void rubysdl_init_WM(void);
+#ifdef DEF_OPENGL
+void init_opengl();
+#ifdef INIT_OGLMODULE_FROM_SDL
+void Init_opengl();
+#endif
+#endif
+#ifdef HAVE_SDL_IMAGE
+void init_sdl_image();
+#endif
+void init_event();
+#ifdef DEF_EVENT2
+void init_event2();
+#endif
+void init_keyEvent();
+void init_mouse();
+void init_joystick();
+void init_cdrom();
+void init_time();
+void init_wm();
 void init_kanji(void);
 #ifdef HAVE_SDL_TTF
 void init_ttf();
 void quit_ttf();
 #endif
-void rubysdl_init_Mixer(void);
-void rubysdl_quit_Mixer(void);
+#ifdef HAVE_SDL_MIXER
+void  init_mixer();
+void quit_mixer();
+#endif
 #ifdef HAVE_SMPEG
 void init_smpeg();
 #endif
@@ -100,9 +114,9 @@ int rubysdl_is_quit(void)
 }
 static void sdl_quit()
 {
-  if(rubysdl_is_quit())
-    return;
-  rubysdl_quit_Mixer();
+#ifdef HAVE_SDL_MIXER
+  quit_mixer();
+#endif
 #ifdef HAVE_SDL_TTF
   quit_ttf();
 #endif
@@ -144,26 +158,38 @@ void Init_sdl()
   defineConst();
 
 
-  rubysdl_init_video();
+  init_video();
 #ifdef HAVE_SGE
   init_sge_video();
 #else
   init_pixel();
 #endif
-  rubysdl_init_GL();
-  rubysdl_init_image();
-  rubysdl_init_Event();
-  rubysdl_init_Key();
-  rubysdl_init_Mouse();
-  rubysdl_init_Joystick();
-  rubysdl_init_CD();
-  rubysdl_init_time();
-  rubysdl_init_WM();
+#ifdef DEF_OPENGL
+  init_opengl();
+#ifdef INIT_OGLMODULE_FROM_SDL
+  Init_opengl();
+#endif
+#endif
+#ifdef HAVE_SDL_IMAGE
+  init_sdl_image();
+#endif
+  init_event();
+#ifdef DEF_EVENT2
+  init_event2();
+#endif
+  init_keyEvent();
+  init_mouse();
+  init_joystick();
+  init_cdrom();
+  init_time();
+  init_wm();
   init_kanji();
 #ifdef HAVE_SDL_TTF
   init_ttf();
 #endif
-  rubysdl_init_Mixer();
+#ifdef HAVE_SDL_MIXER
+  init_mixer();
+#endif
 #ifdef HAVE_SMPEG
   init_smpeg();
 #endif

@@ -1,7 +1,7 @@
 /*
   Ruby/SDL   Ruby extension library for SDL
 
-  Copyright (C) 2001-2004 Ohbayashi Ippei
+  Copyright (C) 2001-2005 Ohbayashi Ippei
   
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -19,244 +19,107 @@
   */
 #include "rubysdl.h"
 
-/* basic */
-typedef struct{
-  SDL_Joystick* joystick;
-} Joystick;
 
-static VALUE cJoystick=Qnil;
-
-static Joystick* GetJoystick(VALUE obj)
+static VALUE sdl_getJoyPolling(VALUE class)
 {
-  Joystick* joy;
-  
-  if(!rb_obj_is_kind_of(obj, cJoystick)){
-    rb_raise(rb_eTypeError, "wrong argument type %s (expected SDL::Joystick)",
-             rb_obj_classname(obj));
-  }
-  
-  Data_Get_Struct(obj, Joystick, joy);
-  return joy;
+  return BOOL(SDL_JoystickEventState(SDL_QUERY)==SDL_ENABLE);
 }
-
-static SDL_Joystick* Get_SDL_Joystick(VALUE obj)
+static VALUE sdl_setJoyPolling(VALUE class,VALUE poll)
 {
-  Joystick* joy = GetJoystick(obj);
-  if(joy->joystick == NULL){
-    rb_raise(rb_eRuntimeError, "joystick is closed");
-  }
-
-  return joy->joystick;
-}
-
-static void Joystick_free(Joystick* joy)
-{
-  if(rubysdl_is_quit() || joy->joystick == NULL){
-    free(joy);
-  }else{
-    SDL_JoystickClose(joy->joystick);
-    free(joy);
-  }
-}
-
-/* initialize methods */
-static VALUE Joystick_s_alloc(VALUE klass)
-{
-  Joystick* joy = ALLOC(Joystick);
-  joy->joystick = NULL;
-  return Data_Wrap_Struct(cJoystick, 0, Joystick_free, joy);
-}
-
-static VALUE Joystick_initialize(VALUE self, VALUE index)
-{
-  Joystick* joy = GetJoystick(self);
-  rb_secure(4);
-  
-  joy->joystick = SDL_JoystickOpen(NUM2INT(index));
-  if( joy->joystick == NULL ){
-    rb_raise(eSDLError, "Couldn't open joystick No.%d :%s", NUM2INT(index),
-	     SDL_GetError());
-  }
-  return Qnil;
-}
-
-/* class methods */
-static VALUE Joystick_s_poll(VALUE klass)
-{
-  rb_secure(4);
-  return INT2BOOL(SDL_JoystickEventState(SDL_QUERY) == SDL_ENABLE);
-}
-
-static VALUE Joystick_s_set_poll(VALUE klass, VALUE poll)
-{
-  rb_secure(4);
-  
-  if(RTEST(poll))
+  if(poll)
     SDL_JoystickEventState(SDL_ENABLE);
   else
     SDL_JoystickEventState(SDL_IGNORE);
   return poll;
 }
 
-static VALUE Joystick_s_num(VALUE klass)
+static VALUE sdl_joystick_num(VALUE class)
 {
-  rb_secure(4);
   return INT2FIX(SDL_NumJoysticks());
 }
-
-static VALUE Joystick_s_indexName(VALUE klass, VALUE index)
+static VALUE sdl_joystick_name(VALUE class,VALUE index)
 {
-  rb_secure(4);
-  return rb_str_new2(SDL_JoystickName(NUM2INT(index)));
+  return rb_str_new2( SDL_JoystickName(NUM2INT(index)) );
 }
-
-static VALUE Joystick_s_open_p(VALUE klass, VALUE index)
+static VALUE sdl_joystick_open(VALUE class,VALUE index)
 {
-  rb_secure(4);
-  return INT2BOOL(SDL_JoystickOpened(NUM2INT(index)));
+  SDL_Joystick *joystick;
+  joystick=SDL_JoystickOpen(NUM2INT(index));
+  if(joystick==NULL)
+    rb_raise(eSDLError,"Couldn't open joystick No.%d :%s",NUM2INT(index),
+	     SDL_GetError());
+  return Data_Wrap_Struct(class,0,0,joystick);
 }
-
-static VALUE Joystick_s_open(VALUE klass, VALUE index)
+static VALUE sdl_joystick_opened(VALUE class,VALUE index)
 {
-  VALUE newobj;
-  rb_secure(4);
-  
-  newobj = Joystick_s_alloc(klass);
-  Joystick_initialize(newobj, index);
-  return newobj;
+  return (SDL_JoystickOpened(NUM2INT(index)))?Qtrue:Qfalse;
 }
-
-static VALUE Joystick_s_update(VALUE klass)
+static VALUE sdl_joystick_update(VALUE class)
 {
-  rb_secure(4);
   SDL_JoystickUpdate();
   return Qnil;
 }
-
-/* methods */
-static VALUE Joystick_close(VALUE self)
+static VALUE sdl_joystick_index(VALUE obj)
 {
-  Joystick* joy;
-  rb_secure(4);
-  
-  joy = GetJoystick(self);
-  SDL_JoystickClose(joy->joystick);
-  joy->joystick = NULL;
-  return Qnil;
-}
-  
-static VALUE Joystick_index(VALUE self)
-{
-  SDL_Joystick* joystick;
-  rb_secure(4);
-  
-  joystick = Get_SDL_Joystick(self);
+  SDL_Joystick *joystick;
+  Data_Get_Struct(obj,SDL_Joystick,joystick);
   return INT2FIX(SDL_JoystickIndex(joystick));
 }
-
-static VALUE Joystick_numAxes(VALUE self)
+static VALUE sdl_joystick_numAxes(VALUE obj)
 {
-  SDL_Joystick* joystick;
-  rb_secure(4);
-  
-  joystick = Get_SDL_Joystick(self);
+  SDL_Joystick *joystick;
+  Data_Get_Struct(obj,SDL_Joystick,joystick);
   return INT2FIX(SDL_JoystickNumAxes(joystick));
 }
-
-static VALUE Joystick_numBalls(VALUE self)
+static VALUE sdl_joystick_numBalls(VALUE obj)
 {
   SDL_Joystick *joystick;
-  rb_secure(4);
-  
-  joystick = Get_SDL_Joystick(self);
+  Data_Get_Struct(obj,SDL_Joystick,joystick);
   return INT2FIX(SDL_JoystickNumBalls(joystick));
 }
-
-static VALUE Joystick_numHats(VALUE self)
+static VALUE sdl_joystick_numHats(VALUE obj)
 {
   SDL_Joystick *joystick;
-  rb_secure(4);
-  joystick = Get_SDL_Joystick(self);
+  Data_Get_Struct(obj,SDL_Joystick,joystick);
   return INT2FIX(SDL_JoystickNumHats(joystick));
 }
-
-static VALUE Joystick_numButtons(VALUE self)
+static VALUE sdl_joystick_numButtons(VALUE obj)
 {
   SDL_Joystick *joystick;
-  rb_secure(4);
-  
-  joystick = Get_SDL_Joystick(self);
+  Data_Get_Struct(obj,SDL_Joystick,joystick);
   return INT2FIX(SDL_JoystickNumButtons(joystick));
 }
 
-static VALUE Joystick_getAxis(VALUE self, VALUE axis)
+static VALUE sdl_joystick_getAxis(VALUE obj,VALUE axis)
 {
   SDL_Joystick *joystick;
-  rb_secure(4);
-  
-  joystick = Get_SDL_Joystick(self);
-  return INT2NUM(SDL_JoystickGetAxis(joystick, NUM2INT(axis)));
+  Data_Get_Struct(obj,SDL_Joystick,joystick);
+  return INT2NUM(SDL_JoystickGetAxis(joystick,NUM2INT(axis)));
 }
-
-static VALUE Joystick_getHat(VALUE self, VALUE hat)
+static VALUE sdl_joystick_getHat(VALUE obj,VALUE hat)
 {
   SDL_Joystick *joystick;
-  rb_secure(4);
-  
-  joystick = Get_SDL_Joystick(self);
-  return UINT2NUM(SDL_JoystickGetHat(joystick, NUM2INT(hat)));
+  Data_Get_Struct(obj,SDL_Joystick,joystick);
+  return UINT2NUM(SDL_JoystickGetHat(joystick,NUM2INT(hat)));
 }
-
-static VALUE Joystick_getButton(VALUE self, VALUE button)
+static VALUE sdl_joystick_getButton(VALUE obj,VALUE button)
 {
   SDL_Joystick *joystick;
-  rb_secure(4);
-  
-  joystick = Get_SDL_Joystick(self);
-  return INT2BOOL(SDL_JoystickGetButton(joystick, NUM2INT(button)));
+  Data_Get_Struct(obj,SDL_Joystick,joystick);
+  return (SDL_JoystickGetButton(joystick,NUM2INT(button)))?Qtrue:Qfalse;
 }
-
-static VALUE Joystick_getBall(VALUE self, VALUE ball)
+static VALUE sdl_joystick_getBall(VALUE obj,VALUE ball)
 {
   SDL_Joystick *joystick;
   int dx,dy;
-
-  rb_secure(4);
-  
-  joystick = Get_SDL_Joystick(self);
-  if( SDL_JoystickGetBall(joystick, NUM2INT(ball), &dx, &dy) == -1 )
+  Data_Get_Struct(obj,SDL_Joystick,joystick);
+  if( SDL_JoystickGetBall(joystick,NUM2INT(ball),&dx,&dy)== -1 )
     rb_raise(eSDLError,"SDL_JoystickGetBall failed :%s",SDL_GetError());
-  return rb_ary_new3(2, INT2FIX(dx), INT2FIX(dy));
+  return rb_ary_new3(2,INT2FIX(dx),INT2FIX(dy));
 }
 
-void rubysdl_init_Joystick(void)
+static void defineConstForJoystick()
 {
-  cJoystick = rb_define_class_under(mSDL, "Joystick", rb_cObject);
-  
-  rb_define_singleton_method(cJoystick, "poll", Joystick_s_poll, 0);
-  rb_define_singleton_method(cJoystick, "poll=", Joystick_s_set_poll, 1);
-  rb_define_singleton_method(cJoystick, "num", Joystick_s_num, 0);
-  rb_define_singleton_method(cJoystick, "indexName", Joystick_s_indexName, 1);
-  rb_define_singleton_method(cJoystick, "open?", Joystick_s_open_p, 1);
-  rb_define_singleton_method(cJoystick, "update", Joystick_s_update, 0);
-  rb_define_singleton_method(cJoystick, "updateAll", Joystick_s_update, 0);
-  rb_define_singleton_method(cJoystick, "open", Joystick_s_open, 1);
-
-  rb_define_alloc_func(cJoystick, Joystick_s_alloc);
-  rb_define_private_method(cJoystick, "initialize", Joystick_initialize, 1);
-
-  rb_define_method(cJoystick, "close", Joystick_close, 0);
-  rb_define_method(cJoystick, "index", Joystick_index, 0);
-  rb_define_method(cJoystick, "numAxes", Joystick_numAxes, 0);
-  rb_define_method(cJoystick, "numBalls", Joystick_numBalls, 0);
-  rb_define_method(cJoystick, "numHats", Joystick_numHats, 0);
-  rb_define_method(cJoystick, "numButtons", Joystick_numButtons, 0);  
-  
-  rb_define_method(cJoystick, "axis", Joystick_getAxis, 1);
-  rb_define_method(cJoystick, "hat", Joystick_getHat, 1);
-  rb_define_method(cJoystick, "button", Joystick_getButton, 1);
-  rb_define_method(cJoystick, "ball", Joystick_getBall, 1);
-  
   rb_define_const(cJoystick,"HAT_CENTERED",UINT2NUM(SDL_HAT_CENTERED));
   rb_define_const(cJoystick,"HAT_UP",UINT2NUM(SDL_HAT_UP));
   rb_define_const(cJoystick,"HAT_RIGHT",UINT2NUM(SDL_HAT_RIGHT));
@@ -266,4 +129,28 @@ void rubysdl_init_Joystick(void)
   rb_define_const(cJoystick,"HAT_RIGHTDOWN",UINT2NUM(SDL_HAT_RIGHTDOWN));
   rb_define_const(cJoystick,"HAT_LEFTUP",UINT2NUM(SDL_HAT_LEFTUP));
   rb_define_const(cJoystick,"HAT_LEFTDOWN",UINT2NUM(SDL_HAT_LEFTDOWN));
+}
+void init_joystick()
+{
+  cJoystick = rb_define_class_under(mSDL,"Joystick",rb_cObject);
+  rb_define_singleton_method(cJoystick,"poll",sdl_getJoyPolling,0);
+  rb_define_singleton_method(cJoystick,"poll=",sdl_setJoyPolling,1);
+  rb_define_singleton_method(cJoystick,"num",sdl_joystick_num,0);
+  rb_define_singleton_method(cJoystick,"indexName",sdl_joystick_name,1);
+  rb_define_singleton_method(cJoystick,"open",sdl_joystick_open,1);
+  rb_define_singleton_method(cJoystick,"open?",sdl_joystick_opened,1);
+  rb_define_singleton_method(cJoystick,"updateAll",sdl_joystick_update,0);
+  
+  rb_define_method(cJoystick,"index",sdl_joystick_index,0);
+  rb_define_method(cJoystick,"numAxes",sdl_joystick_numAxes,0);
+  rb_define_method(cJoystick,"numBalls",sdl_joystick_numBalls,0);
+  rb_define_method(cJoystick,"numHats",sdl_joystick_numHats,0);
+  rb_define_method(cJoystick,"numButtons",sdl_joystick_numButtons,0);
+  
+  rb_define_method(cJoystick,"axis",sdl_joystick_getAxis,1);
+  rb_define_method(cJoystick,"hat",sdl_joystick_getHat,1);
+  rb_define_method(cJoystick,"button",sdl_joystick_getButton,1);
+  rb_define_method(cJoystick,"ball",sdl_joystick_getBall,1);
+
+  defineConstForJoystick();
 }

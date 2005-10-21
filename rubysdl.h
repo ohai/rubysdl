@@ -1,7 +1,7 @@
 /*
   Ruby/SDL   Ruby extension library for SDL
 
-  Copyright (C) 2001-2004 Ohbayashi Ippei
+  Copyright (C) 2001-2005 Ohbayashi Ippei
   
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -37,26 +37,21 @@
 #define GETCSTR(v) STR2CSTR(v)
 #endif
 
-#define DEFINE_GET_STRUCT(struct_name, fun, klass, klassstr) \
-static struct_name* fun(VALUE obj) \
-{ \
-  struct_name* st; \
-  \
-  if(!rb_obj_is_kind_of(obj, klass)){ \
-    rb_raise(rb_eTypeError, "wrong argument type %s (expected " klassstr ")", \
-             rb_obj_classname(obj)); \
-  } \
-  Data_Get_Struct(obj, struct_name, st); \
-  return st; \
-} 
-
-
 GLOBAL VALUE mSDL;
 GLOBAL VALUE eSDLError;
 GLOBAL VALUE cVideoInfo;
 GLOBAL VALUE cSurface;
 GLOBAL VALUE cScreen;
+GLOBAL VALUE cEvent;
+GLOBAL VALUE mKey;
+GLOBAL VALUE mMixer;
+GLOBAL VALUE cWave;
+GLOBAL VALUE cMusic;
+GLOBAL VALUE mWM;
+GLOBAL VALUE mMouse;
 GLOBAL VALUE cTTF;
+GLOBAL VALUE cJoystick;
+GLOBAL VALUE cCD;
 GLOBAL VALUE cMPEG;
 GLOBAL VALUE cMPEGInfo;
 GLOBAL VALUE mSDLSKK;
@@ -70,6 +65,23 @@ GLOBAL VALUE cCollisionMap;
 GLOBAL VALUE cBMFont;
 #endif /* ifdef HAVE_SGE */
 
+#ifdef DEF_EVENT2
+GLOBAL VALUE cEvent2;
+GLOBAL VALUE cActiveEvent;
+GLOBAL VALUE cKeyDownEvent;
+GLOBAL VALUE cKeyUpEvent;
+GLOBAL VALUE cMouseMotionEvent;
+GLOBAL VALUE cMouseButtonDownEvent;
+GLOBAL VALUE cMouseButtonUpEvent;
+GLOBAL VALUE cJoyAxisEvent;
+GLOBAL VALUE cJoyBallEvent;
+GLOBAL VALUE cJoyHatEvent;
+GLOBAL VALUE cJoyButtonUpEvent;
+GLOBAL VALUE cJoyButtonDownEvent;
+GLOBAL VALUE cQuitEvent;
+GLOBAL VALUE cSysWMEvent;
+GLOBAL VALUE cVideoResizeEvent;
+#endif
 
 #define SetRect(Rect,X,Y,W,H) \
 do{ \
@@ -80,7 +92,6 @@ do{ \
 }while(0) \
 
 #define BOOL(x) (x)?Qtrue:Qfalse
-#define INT2BOOL(x) ((x)?Qtrue:Qfalse)
 
 #ifndef SDL_VERSION_ATLEAST
 #define SDL_COMPILEDVERSION SDL_VERSIONNUM(SDL_MAJOR_VERSION, SDL_MINOR_VERSION, SDL_PATCHLEVEL)
@@ -92,11 +103,5 @@ do{ \
 Uint32 VALUE2COLOR(VALUE color,SDL_PixelFormat *format);
 void rubysdl_putPixel(SDL_Surface *surface, Sint16 x, Sint16 y, Uint32 color);
 Uint32 rubysdl_getPixel(SDL_Surface *surface, Sint16 x, Sint16 y);
+void sdl_freeSurface(SDL_Surface* surface);
 int rubysdl_is_quit(void);
-
-#define Surface_create rubysdl_Surface_create
-VALUE Surface_create(SDL_Surface* surface);
-
-#define Get_SDL_Surface rubysdl_Get_SDL_Surface
-SDL_Surface* Get_SDL_Surface(VALUE obj);
-

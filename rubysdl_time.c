@@ -1,7 +1,7 @@
 /*
   Ruby/SDL   Ruby extension library for SDL
 
-  Copyright (C) 2001-2004 Ohbayashi Ippei
+  Copyright (C) 2001-2005 Ohbayashi Ippei
   
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -29,7 +29,7 @@ static VALUE sdl_delay(VALUE mod,VALUE ms)
   return Qnil;
 }
 
-void rubysdl_init_time(void)
+void init_time()
 {
   rb_define_module_function(mSDL,"getTicks",sdl_getTicks,0);
   rb_define_module_function(mSDL,"delay",sdl_delay,1);

@@ -1,7 +1,7 @@
 /*
   Ruby/SDL   Ruby extension library for SDL
 
-  Copyright (C) 2001-2004 Ohbayashi Ippei
+  Copyright (C) 2001-2005 Ohbayashi Ippei
   
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -17,50 +17,47 @@
   License along with this library; if not, write to the Free Software
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
   */
-#ifdef ENABLE_OPENGL
+#ifdef DEF_OPENGL
 #include "rubysdl.h"
-static VALUE GL_getAttr(VALUE class, VALUE attr)
+static VALUE sdl_getGLAttr(VALUE class,VALUE attr)
 {
   int val;
-  if(SDL_GL_GetAttribute(NUM2INT(attr), &val)==-1)
-    rb_raise(eSDLError, "GL get attribute failed: %s", SDL_GetError());
+  if(SDL_GL_GetAttribute(NUM2INT(attr),&val)==-1)
+    rb_raise(eSDLError,"GL get attribute failed: %s",SDL_GetError());
   return INT2NUM(val);
 }
-static VALUE GL_setAttr(VALUE mod, VALUE attr, VALUE val)
+static VALUE sdl_setGLAttr(VALUE class,VALUE attr,VALUE val)
 {
-  if(SDL_GL_SetAttribute(NUM2INT(attr), NUM2INT(val))==-1)
-    rb_raise(eSDLError, "GL set attribute failed: %s", SDL_GetError());
+  if(SDL_GL_SetAttribute(NUM2INT(attr),NUM2INT(val))==-1)
+    rb_raise(eSDLError,"GL set attribute failed: %s",SDL_GetError());
   return Qnil;
 }
-static VALUE GL_swapBuffers(VALUE mod)
+static VALUE sdl_GLSwapBuffers(VALUE class)
 {
   SDL_GL_SwapBuffers();
   return Qnil;
 }
+static void defineConstForOpenGL()
+{
+  rb_define_const(mSDL,"GL_RED_SIZE",INT2NUM(SDL_GL_RED_SIZE));
+  rb_define_const(mSDL,"GL_GREEN_SIZE",INT2NUM(SDL_GL_GREEN_SIZE));
+  rb_define_const(mSDL,"GL_BLUE_SIZE",INT2NUM(SDL_GL_BLUE_SIZE));
+  rb_define_const(mSDL,"GL_ALPHA_SIZE",INT2NUM(SDL_GL_ALPHA_SIZE));
+  rb_define_const(mSDL,"GL_BUFFER_SIZE",INT2NUM(SDL_GL_BUFFER_SIZE));
+  rb_define_const(mSDL,"GL_DOUBLEBUFFER",INT2NUM(SDL_GL_DOUBLEBUFFER));
+  rb_define_const(mSDL,"GL_DEPTH_SIZE",INT2NUM(SDL_GL_DEPTH_SIZE));
+  rb_define_const(mSDL,"GL_STENCIL_SIZE",INT2NUM(SDL_GL_STENCIL_SIZE));
+  rb_define_const(mSDL,"GL_ACCUM_RED_SIZE",INT2NUM(SDL_GL_ACCUM_RED_SIZE));
+  rb_define_const(mSDL,"GL_ACCUM_GREEN_SIZE",INT2NUM(SDL_GL_ACCUM_GREEN_SIZE));
+  rb_define_const(mSDL,"GL_ACCUM_BLUE_SIZE",INT2NUM(SDL_GL_ACCUM_BLUE_SIZE));
+  rb_define_const(mSDL,"GL_ACCUM_ALPHA_SIZE",INT2NUM(SDL_GL_ACCUM_ALPHA_SIZE));
+}
 		  
-void rubysdl_init_GL(void)
+void init_opengl()
 {
-  VALUE mGL;
-  mGL = rb_define_module_under(mSDL, "GL");
-  rb_define_module_function(mGL, "getAttr", GL_getAttr, 1);
-  rb_define_module_function(mGL, "setAttr", GL_setAttr, 2);
-  rb_define_module_function(mGL, "swapBuffers", GL_swapBuffers, 0);
-  
-  rb_define_const(mGL, "RED_SIZE", INT2NUM(SDL_GL_RED_SIZE));
-  rb_define_const(mGL, "GREEN_SIZE", INT2NUM(SDL_GL_GREEN_SIZE));
-  rb_define_const(mGL, "BLUE_SIZE", INT2NUM(SDL_GL_BLUE_SIZE));
-  rb_define_const(mGL, "ALPHA_SIZE", INT2NUM(SDL_GL_ALPHA_SIZE));
-  rb_define_const(mGL, "BUFFER_SIZE", INT2NUM(SDL_GL_BUFFER_SIZE));
-  rb_define_const(mGL, "DOUBLEBUFFER", INT2NUM(SDL_GL_DOUBLEBUFFER));
-  rb_define_const(mGL, "DEPTH_SIZE", INT2NUM(SDL_GL_DEPTH_SIZE));
-  rb_define_const(mGL, "STENCIL_SIZE", INT2NUM(SDL_GL_STENCIL_SIZE));
-  rb_define_const(mGL, "ACCUM_RED_SIZE", INT2NUM(SDL_GL_ACCUM_RED_SIZE));
-  rb_define_const(mGL, "ACCUM_GREEN_SIZE", INT2NUM(SDL_GL_ACCUM_GREEN_SIZE));
-  rb_define_const(mGL, "ACCUM_BLUE_SIZE", INT2NUM(SDL_GL_ACCUM_BLUE_SIZE));
-  rb_define_const(mGL, "ACCUM_ALPHA_SIZE", INT2NUM(SDL_GL_ACCUM_ALPHA_SIZE));
+  rb_define_module_function(mSDL,"getGLAttr",sdl_getGLAttr,1);
+  rb_define_module_function(mSDL,"setGLAttr",sdl_setGLAttr,2);
+  rb_define_module_function(mSDL,"GLSwapBuffers",sdl_GLSwapBuffers,0);
+  defineConstForOpenGL();
 }
-#else /* ENABLE_OPENGL */
-void rubysdl_init_GL(void)
-{
-}
-#endif /* ENABLE_OPENGL */
+#endif /* DEF_OPENGL */

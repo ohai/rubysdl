@@ -1,7 +1,7 @@
 /*
   Ruby/SDL   Ruby extension library for SDL
 
-  Copyright (C) 2001-2004 Ohbayashi Ippei
+  Copyright (C) 2001-2005 Ohbayashi Ippei
   
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -17,10 +17,6 @@
   License along with this library; if not, write to the Free Software
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
   */
-
-/*
- * this file is copied from SGE library.
- */
 
 /* sge's copyright */
 /*
@@ -112,3 +108,26 @@ Uint32 rubysdl_getPixel(SDL_Surface *surface, Sint16 x, Sint16 y)
   return 0;
 }
 
+#ifndef HAVE_SGE
+static VALUE sdl_getPixel(VALUE obj,VALUE x,VALUE y)
+{
+  SDL_Surface *surface;
+  Data_Get_Struct(obj,SDL_Surface,surface);
+  return UINT2NUM( rubysdl_getPixel(surface,NUM2INT(x),NUM2INT(y)) );
+}
+static VALUE sdl_putPixel(VALUE obj,VALUE x,VALUE y,VALUE color)
+{
+  SDL_Surface *surface;
+  Data_Get_Struct(obj,SDL_Surface,surface);
+  rubysdl_putPixel(surface,NUM2INT(x),NUM2INT(y),VALUE2COLOR(color,surface->format));
+  return Qnil;
+}
+
+void init_pixel()
+{
+  rb_define_method(cSurface,"getPixel",sdl_getPixel,2);
+  rb_define_method(cSurface,"putPixel",sdl_putPixel,3);
+  rb_define_method(cSurface,"[]",sdl_getPixel,2);
+  rb_define_method(cSurface,"[]=",sdl_putPixel,3);
+}
+#endif /* ifndef HAVE_SGE */
