@@ -1,3 +1,11 @@
+version 1.0.0
+Add following methods
+  SDL::Surface#drawBezier
+  SDL::Surface#drawAABezier
+  SDL::Surface#drawBezierAlpha
+  SDL::Surface#drawAABezierAlpha
+Fix bugs in SDL::MPEG#setDisplay
+
 version 0.9.5
 Fix bugs in SDL::Surface#getPalette and SDL::Surface#copyRect
 Add SDL::WM.grubInput, SDL.quit, SDL.putenv and SDL.getenv

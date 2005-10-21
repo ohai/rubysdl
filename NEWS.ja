@@ -1,3 +1,12 @@
+version 1.0.0
+以下のメソッドを追加
+  SDL::Surface#drawBezier
+  SDL::Surface#drawAABezier
+  SDL::Surface#drawBezierAlpha
+  SDL::Surface#drawAABezierAlpha
+以下のメソッドのバグを修正
+  SDL::MPEG#setDisplay
+
 version 0.9.5
 以下のメソッドのバグを修正
   SDL::Surface#getPalette
