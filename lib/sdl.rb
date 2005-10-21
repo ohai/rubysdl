@@ -1,6 +1,6 @@
 #
 # Ruby/SDL   Ruby extension library for SDL
-#  Copyright (C) 2001,2002 Ohbayashi Ippei
+#  Copyright (C) 2001-2005 Ohbayashi Ippei
 # 
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -23,12 +23,27 @@ end
 
 module SDL
 
-  VERSION = "2"
+  VERSION = "1.0.0"
 
-  
+  class PixelFormat
+
+    extend Forwardable
+    
+    def initialize(surface)
+      @surface = surface
+    end
+
+    def_delegators( :@surface, :mapRGB, :mapRGBA, :getRGB, :getRGBA, :bpp,
+		    :colorkey, :alpha )
+  end
+
   class Surface
     def put(surface,x,y)
-      SDL::Surface.blit(surface,0,0,surface.w,surface.h,self,x,y)
+      SDL::blitSurface(surface,0,0,surface.w,surface.h,self,x,y)
+    end
+
+    def format
+      return PixelFormat.new(self)
     end
 
     if method_defined?(:rotateScaledSurface) then
@@ -98,14 +113,14 @@ module SDL
       i=-1
       for y in 0..(bitmap.h-1)
 	for x in 0..(bitmap.w-1)
-	  if x%8 == 0 then
-            i+=1
-	    data[i]=mask[i]=0
-          else
+	  if x%8 != 0 then
 	    data[i] <<= 1
 	    mask[i] <<= 1
+	  else
+	    i+=1
+	    data[i]=mask[i]=0
 	  end
-
+	  
 	  case bitmap.getPixel(x,y)
 	  when white
 	    mask[i] |= 0x01
@@ -117,6 +132,7 @@ module SDL
 	  when inverted
 	    data[i] |= 0x01
 	  end
+
 	end
       end
 
