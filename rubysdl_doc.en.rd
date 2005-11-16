@@ -472,11 +472,11 @@ Object
       Needs SGE ,Needs lock
       Gets the color of the specified pixel.
 
---- SDL::Surface#putPixel(x,y,pixel)
---- SDL::Surface#put_pixel(x,y,pixel)
---- SDL::Surface#[]=(x,y,pixel)
+--- SDL::Surface#putPixel(x,y,color)
+--- SDL::Surface#put_pixel(x,y,color)
+--- SDL::Surface#[]=(x,y,color)
       Needs SGE ,Needs lock
-      Writes a pixel to the specified position.
+      Changes the color of the pixel on (x, y).
 
 --- SDL::Surface#drawLine(x1,y1,x2,y2,color)
 --- SDL::Surface#draw_line(x1,y1,x2,y2,color)

@@ -481,9 +481,9 @@ Object
 
       x,yの位置のピクセルの値を返す。
 
---- SDL::Surface#putPixel(x,y,pixel)
---- SDL::Surface#put_pixel(x,y,pixel)
---- SDL::Surface#[]=(x,y,pixel)
+--- SDL::Surface#putPixel(x,y,color)
+--- SDL::Surface#put_pixel(x,y,color)
+--- SDL::Surface#[]=(x,y,color)
       SGEが必要 ロックが必要
 
       x,yの位置のピクセルの値をpixelにする。
