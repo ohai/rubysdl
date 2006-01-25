@@ -450,6 +450,13 @@ static VALUE sdl_unset_cdata(VALUE obj, VALUE vx, VALUE vy, VALUE vw, VALUE vh)
 }
 
 /* bitmap font */
+static void sdl_bf_close(sge_bmpFont* font)
+{
+  if(!rubysdl_is_quit()){
+    sge_BF_CloseFont(font);
+  }
+}
+
 static VALUE sdl_bf_open(VALUE obj, VALUE file, VALUE flags)
 {
   sge_bmpFont* font;
@@ -458,7 +465,7 @@ static VALUE sdl_bf_open(VALUE obj, VALUE file, VALUE flags)
   if( font == NULL )
     rb_raise(eSDLError,"Couldn't open font: %s", GETCSTR(file));
   
-  return Data_Wrap_Struct(cBMFont,0,sge_BF_CloseFont,font);
+  return Data_Wrap_Struct(cBMFont,0,sdl_bf_close,font);
 }
 
 static VALUE sdl_bf_setColor(VALUE obj,VALUE r,VALUE g,VALUE b)
