@@ -307,6 +307,9 @@ static VALUE sdl_keyScan(VALUE mod)
 }
 static VALUE sdl_keyPressed(VALUE mod,VALUE keysym)
 {
+  if(NUM2INT(keysym) <SDLK_FIRST || SDLK_LAST < NUM2INT(keysym))
+    rb_raise(eSDLError, "keysym number is out of range");
+  
   return (keyState[NUM2INT(keysym)]==SDL_PRESSED)?Qtrue:Qfalse;
 }
 static VALUE sdl_modState(VALUE mod)
@@ -340,6 +343,9 @@ void init_keyEvent()
   rb_define_module_function(mKey,"enableKeyRepeat",sdl_enableKeyRepeat,2);
   rb_define_module_function(mKey,"disableKeyRepeat",sdl_disableKeyRepeat,0);
   rb_define_module_function(mKey,"getKeyName",sdl_getKeyName,1);
+
+  keyState = malloc(SDLK_LAST*sizeof(Uint8));
+  memset(keyState, SDL_RELEASED, SDLK_LAST);
   
   defineConstForKey();
 }
