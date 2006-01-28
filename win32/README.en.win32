@@ -15,21 +15,23 @@ This library supports
 Linux on X,Win32,FreeBSD and BeOS.
 
 And this archive contains compiled Ruby/SDL for win32 mingw's Ruby.
-This binary is tested on Windows2000, Ruby 1.8.1 mingw32 and SDL 1.2.7.
+This binary is tested on WindowsXP, Ruby 1.8.4 mswin32 and SDL 1.2.9.
 
 3 Install
 
 First, install mingw32 Ruby.
-You can get it from http://www.ruby-lang.org/~eban/ruby/binaries/mingw/ .
+You can get that from
+http://www.garbagecollect.jp/ruby/mswin32/en/download/release.html
 
-Second, copy sdl.so, opengl.so, sdl.rb, rubysdl_aliases.rb and SDL.dll
+Second, copy sdl.so, opengl.so, sdl.rb, rubysdl_aliases.rb and DLL files
 to appropriate folder.
-If you have installed Ruby at C:/usr/local ( in other words ruby.exe is
-under C:/usr/local/bin ) , you'll copy sdl.so, and opengl.so to
-C:/usr/local/lib/ruby/1.8/i386-mingw32, and copy sdl.rb and rubysdl_aliases.rb
-to C:/usr/local/lib/ruby/1.8 .
+If you have installed Ruby at
+C:\ruby ( in other words ruby.exe is under C:\ruby\bin ) ,
+you'll copy sdl.so, and opengl.so to C:\ruby\lib\ruby\site-ruby\1.8\i386-msvcrt,
+copy sdl.rb and rubysdl_aliases.rb to C:\ruby\lib\ruby\site-ruby\1.8\,
+and copy all DLL files to PATH directory.
 
-And that's all right.
+Therefore that's all right.
 
 4 How to use
 
@@ -44,9 +46,24 @@ opengl.so is under Ruby's Licence.
 Ohbayashi Ippei has sdl.so, rubysdl_aliases and sdl.rb 's  copyright, and
 Yoshiyuki Kusano hase opengl.so's copyright.
 
-6 Other
+6 Note
+You cannot play mp3 file with this binary. Please use Ogg/Vorbis.
+
+7 Version information
+Ruby 1.8.4
+SDL 1.2.9
+SDL_image 1.2.4
+SDL_ttf 2.0.7
+SDL_mixer 1.2.6
+SGE 030809 + patch for overflow error
+Ruby/opengl 0.32g
+iconv 1.8
+sdlskk 0.4
+
+8 Other
 
 Plsease get rubysdl-1.0.0.tar.gz and read its README.en and documents.
 
-Please send comments and bug reports to the author.
+Please send comments and bug reports to the author or rubyforge's BTS.
+RubyForge's project page: http://rubyforge.org/projects/rubysdl/
 Author's mail address: ohai@kmc.gr.jp

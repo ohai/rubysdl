@@ -10,26 +10,28 @@ SDL‚Æ‚ÍAWin32,Linux,BeOS,MacOS,FreeBSD,Solaris“™‚Å“®‚­AƒNƒƒXƒvƒ‰ƒbƒgƒtƒH[ƒ€‚
 
 2 “®ìŠÂ‹«
 ‚±‚Ìƒ‰ƒCƒuƒ‰ƒŠ‚ÍLinux‚ÌXãAWin32AFreeBSDABeOS‚Å“®ì‚ªŠm”F‚³‚ê‚Ä‚¢‚Ü‚·B
-‚±‚ÌƒA[ƒJƒCƒu‚É‚ÍAwin32 mingw”Å Ruby —p‚ÌƒRƒ“ƒpƒCƒ‹Ï‚İ‚Ìƒ‰ƒCƒuƒ‰ƒŠ‚ª
+‚±‚ÌƒA[ƒJƒCƒu‚É‚ÍAmswin32 ”Å Ruby —p‚ÌƒRƒ“ƒpƒCƒ‹Ï‚İ‚Ìƒ‰ƒCƒuƒ‰ƒŠ‚ª
 ŠÜ‚Ü‚ê‚Ä‚¢‚Ü‚·B
-‚±‚ê‚ÍARuby 1.8.1ASDL 1.2.7  ‚Å“®ì‚ğŠm”F‚µ‚Ä‚¢‚Ü‚·B
+‚±‚ê‚ÍARuby 1.8.4‚Å“®ì‚ğŠm”F‚µ‚Ä‚¢‚Ü‚·B
 
 
 3 ƒCƒ“ƒXƒg[ƒ‹
 Win32‚Å‚ÌƒCƒ“ƒXƒg[ƒ‹‚ğà–¾‚µ‚Ü‚·B
-‚Ü‚¸ARuby‚ğƒCƒ“ƒXƒg[ƒ‹‚µ‚Ä‚­‚¾‚³‚¢B
-Ruby‚ÍAhttp://www.ruby-lang.org/~eban/ruby/binaries/mingw/‚É‚ ‚é‚à‚Ì
-‚ªg‚¦‚Ü‚·B
+‚Ü‚¸A
+http://www.ruby-lang.org/ja/install.cgi?cmd=view;name=mswin32+%28%A5%D0%A5%A4%A5%CA%A5%EA%29
+‚Ì‰ğà‚ğQl‚É‚µ‚ÄRuby‚ğƒCƒ“ƒXƒg[ƒ‹‚µ‚Ä‚­‚¾‚³‚¢B
+Ruby‚ÍA
+http://www.garbagecollect.jp/ruby/mswin32/ja/
+‚É‚ ‚éƒoƒCƒiƒŠ‚ªg‚¦‚Ü‚·B
 
-‚Â‚¬‚ÉA‚±‚ÌƒA[ƒJƒCƒu‚ÉŠÜ‚Ü‚ê‚ésdl.soAopengl.soArubysdl_aliases.rbASDL.dll
-‚Æsdl.rb‚ğ“K“–‚ÈƒtƒHƒ‹ƒ_‚ÉƒRƒs[‚µ‚Ä‚­‚¾‚³‚¢B
+‚Â‚¬‚ÉA‚±‚ÌƒA[ƒJƒCƒu‚ÉŠÜ‚Ü‚ê‚ésdl.soAopengl.soArubysdl_aliases.rbAsdl.rb
+‚ÆDLLƒtƒ@ƒCƒ‹‚ğ“K“–‚ÈƒtƒHƒ‹ƒ_‚ÉƒRƒs[‚µ‚Ä‚­‚¾‚³‚¢B
 ruby‚ªƒCƒ“ƒXƒg[ƒ‹‚³‚ê‚Ä‚¢‚éƒtƒHƒ‹ƒ_‚ğ
-C:/hoge/
-‚Æ‚·‚é‚Æ(‚Â‚Ü‚è C:/hoge/bin ‚É ruby.exe ‚ª‚ ‚é‚Æ‚·‚é‚Æ)
-C:/hoge/lib/ruby/1.8/ ‚É sdl.rb ‚Ærubysdl_aliases.rb ‚ğA
-C:/hoge/lib/ruby/1.8/i386-mingw32 ‚É sdl.soA opengl.so ‚ğ
-‚»‚ê‚¼‚êƒRƒs[‚µ‚Ä‚­‚¾‚³‚¢BSDL.dll‚ÍƒpƒX‚Ì’Ê‚Á‚½ƒtƒHƒ‹ƒ_‚ÉƒRƒs[‚µ‚Ä
-‚­‚¾‚³‚¢B
+C:/ruby/
+‚Æ‚·‚é‚Æ(‚Â‚Ü‚è C:/ruby/bin ‚É ruby.exe ‚ª‚ ‚é‚Æ‚·‚é‚Æ)
+C:/ruby/lib/ruby/1.8/ ‚É sdl.rb ‚Ærubysdl_aliases.rb ‚ğA
+C:/ruby/lib/ruby/1.8/i386-mingw32 ‚É sdl.soA opengl.so ‚ğ
+‚»‚ê‚¼‚êƒRƒs[‚µ‚Ä‚­‚¾‚³‚¢BDLL‚ÍƒpƒX‚Ì’Ê‚Á‚½ƒtƒHƒ‹ƒ_‚ÉƒRƒs[‚µ‚Ä‚­‚¾‚³‚¢B
 
 4 g‚¢•û
 http://www.kmc.gr.jp/~ohai/rubysdl/rubysdl-1.0.0.tar.gz ‚É
@@ -42,10 +44,28 @@ GNU LGPL(GNU Lesser General Public License) version 2.1 ˆÈ~‚É]‚¢‚Ü‚·B
 ‚½‚¾‚µAopengl.so ‚Í Yoshiyuki Kusano ‚³‚ñ‚ªì‚Á‚½‚à‚Ì‚Å‚ ‚èA
 ’˜ìŒ ‚Í”Ş‚É‚ ‚èA‚»‚Ìƒ‰ƒCƒZƒ“ƒX‚Í Ruby's License ‚É]‚¢‚Ü‚·B
 
-6 ‚»‚Ì‘¼
+6 ’ˆÓ‚È‚Ç
+‚±‚ÌƒoƒCƒiƒŠ‚Å‚Ímp3‚Ì‰‰‘t‚ª‚Å‚«‚Ü‚¹‚ñBogg‚ğg‚Á‚Ä‚­‚¾‚³‚¢B
+‚Ü‚½AActiveRuby‚Å‚à‚±‚ÌƒoƒCƒiƒŠ‚Í—˜—p‰Â”\‚Å‚·B
+
+7 ƒo[ƒWƒ‡ƒ“î•ñ
+Ruby 1.8.4
+SDL 1.2.9
+SDL_image 1.2.4
+SDL_ttf 2.0.7
+SDL_mixer 1.2.6
+SGE 030809 + patch for overflow error
+Ruby/opengl 0.32g
+iconv 1.8
+sdlskk 0.4
+
+8 ‚»‚Ì‘¼
 ‚±‚ÌƒA[ƒJƒCƒu‚Íã‚Ìrubysdl-1.0.0.tar.gz‚Æˆê‚Éƒ_ƒEƒ“ƒ[ƒh‚µ‚Äg‚¤‚±‚Æ
 ‚ğ‘O’ñ‚Æ‚µ‚Ä‚¢‚Ü‚·B•K‚¸‚»‚¿‚ç‚àƒ_ƒEƒ“ƒ[ƒh‚µ‚Ä‚»‚ÌREADME‚àŒ©‚Ä‚­‚¾‚³‚¢B
 —v–]AƒoƒO•ñ“™‚ÍAohai@kmc.gr.jp‚Éƒ[ƒ‹‚ğo‚µ‚Ä‚­‚¾‚³‚¢B
-‚Ü‚½Aruby-listAruby-ext‚ğŒ©‚Ä‚¢‚Ü‚·‚Ì‚ÅA‚»‚±‚É•ñ‚µ‚Ä‚­‚ê‚Ä‚à—Ç‚¢‚Å‚·B
+http://rubyforge.org/projects/rubysdl/‚ÉBTS‚ª‚ ‚è‚Ü‚·‚Ì‚Å‚»‚¿‚ç‚Å‚à
+•ñ‚Í‰Â”\‚Å‚·B‚Ü‚½Aruby-listAruby-ext‚ğŒ©‚Ä‚¢‚Ü‚·‚Ì‚ÅA
+‚»‚±‚É•ñ‚µ‚Ä‚­‚ê‚Ä‚àŒ‹\‚Å‚·B
+
 
 
