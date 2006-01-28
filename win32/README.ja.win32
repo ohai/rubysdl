@@ -1,0 +1,51 @@
+
+Ruby/SDL 1.0.0 win32 バイナリ
+大林一平
+
+1 概要
+
+これは、RubyからSDLの機能を使うための拡張ライブラリです。
+SDLとは、Win32,Linux,BeOS,MacOS,FreeBSD,Solaris等で動く、クロスプラットフォームなゲーム開発用ライブラリです。
+
+
+2 動作環境
+このライブラリはLinuxのX上、Win32、FreeBSD、BeOSで動作が確認されています。
+このアーカイブには、win32 mingw版 Ruby 用のコンパイル済みのライブラリが
+含まれています。
+これは、Ruby 1.8.1、SDL 1.2.7  で動作を確認しています。
+
+
+3 インストール
+Win32でのインストールを説明します。
+まず、Rubyをインストールしてください。
+Rubyは、http://www.ruby-lang.org/~eban/ruby/binaries/mingw/にあるもの
+が使えます。
+
+つぎに、このアーカイブに含まれるsdl.so、opengl.so、rubysdl_aliases.rb、SDL.dll
+とsdl.rbを適当なフォルダにコピーしてください。
+rubyがインストールされているフォルダを
+C:/hoge/
+とすると(つまり C:/hoge/bin に ruby.exe があるとすると)
+C:/hoge/lib/ruby/1.8/ に sdl.rb とrubysdl_aliases.rb を、
+C:/hoge/lib/ruby/1.8/i386-mingw32 に sdl.so、 opengl.so を
+それぞれコピーしてください。SDL.dllはパスの通ったフォルダにコピーして
+ください。
+
+4 使い方
+http://www.kmc.gr.jp/~ohai/rubysdl/rubysdl-1.0.0.tar.gz に
+このライブラリのソースなどが入っているアーカイブがあります。
+その中にリファレンスやサンプルなどがあるので、それを見てください。
+
+5 ライセンス
+GNU LGPL(GNU Lesser General Public License) version 2.1 以降に従います。
+
+ただし、opengl.so は Yoshiyuki Kusano さんが作ったものであり、
+著作権は彼にあり、そのライセンスは Ruby's License に従います。
+
+6 その他
+このアーカイブは上のrubysdl-1.0.0.tar.gzと一緒にダウンロードして使うこと
+を前提としています。必ずそちらもダウンロードしてそのREADMEも見てください。
+要望、バグ報告等は、ohai@kmc.gr.jpにメールを出してください。
+また、ruby-list、ruby-extを見ていますので、そこに報告してくれても良いです。
+
+

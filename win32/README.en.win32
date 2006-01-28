@@ -1,0 +1,52 @@
+
+Ruby/SDL 1.0.0 Win32's binary
+Ohbayashi Ippei
+
+1 What's Ruby/SDL?
+
+Ruby/SDL is the ruby extension library to use SDL.
+SDL(Simple DirectMedia Layer) is a cross-platform multimedia library      
+designed to provide fast access to the graphics framebuffer and audio    
+device. See http://www.libsdl.org/ if you want to know SDL in detail.
+
+2 Platform
+
+This library supports 
+Linux on X,Win32,FreeBSD and BeOS.
+
+And this archive contains compiled Ruby/SDL for win32 mingw's Ruby.
+This binary is tested on Windows2000, Ruby 1.8.1 mingw32 and SDL 1.2.7.
+
+3 Install
+
+First, install mingw32 Ruby.
+You can get it from http://www.ruby-lang.org/~eban/ruby/binaries/mingw/ .
+
+Second, copy sdl.so, opengl.so, sdl.rb, rubysdl_aliases.rb and SDL.dll
+to appropriate folder.
+If you have installed Ruby at C:/usr/local ( in other words ruby.exe is
+under C:/usr/local/bin ) , you'll copy sdl.so, and opengl.so to
+C:/usr/local/lib/ruby/1.8/i386-mingw32, and copy sdl.rb and rubysdl_aliases.rb
+to C:/usr/local/lib/ruby/1.8 .
+
+And that's all right.
+
+4 How to use
+
+Please get references and samples
+from http://www.kmc.gr.jp/~ohai/rubysdl/rubysdl-1.0.0.tar.gz and see those.
+
+5 License
+
+sdl.so, sdl.rb are under LGPL version 2.1.
+opengl.so is under Ruby's Licence.
+
+Ohbayashi Ippei has sdl.so, rubysdl_aliases and sdl.rb 's  copyright, and
+Yoshiyuki Kusano hase opengl.so's copyright.
+
+6 Other
+
+Plsease get rubysdl-1.0.0.tar.gz and read its README.en and documents.
+
+Please send comments and bug reports to the author.
+Author's mail address: ohai@kmc.gr.jp
