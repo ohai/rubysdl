@@ -27,10 +27,10 @@ http://www.garbagecollect.jp/ruby/mswin32/ja/
 つぎに、このアーカイブに含まれるsdl.so、opengl.so、rubysdl_aliases.rb、sdl.rb
 とDLLファイルを適当なフォルダにコピーしてください。
 rubyがインストールされているフォルダを
-C:/ruby/
-とすると(つまり C:/ruby/bin に ruby.exe があるとすると)
-C:/ruby/lib/ruby/1.8/ に sdl.rb とrubysdl_aliases.rb を、
-C:/ruby/lib/ruby/1.8/i386-mingw32 に sdl.so、 opengl.so を
+C:\ruby\
+とすると(つまり C:\ruby\bin に ruby.exe があるとすると)
+C:\ruby\lib\ruby\site-ruby\1.8\ に sdl.rb とrubysdl_aliases.rb を、
+C:\ruby\lib\ruby\site-ruby\1.8\i386-msvcrt に sdl.soとopengl.so を
 それぞれコピーしてください。DLLはパスの通ったフォルダにコピーしてください。
 
 4 使い方
