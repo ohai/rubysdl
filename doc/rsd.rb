@@ -77,19 +77,19 @@ def rsd2rd(input)
     output << format(part["NOTES"],6)
   end
   if part.key?("SEEALSO")
-    output << "    "
+    output << "    * See Also\n      \n      "
     output << part["SEEALSO"].
       split(/\n/).
-      map{|line| convert_link(line) }.
-      join("，")
-    output << "も参考にしてください\n"
+      map{|line| line[0] == ?( ? line : convert_link(line) }.
+      join(", ")
+    output << "\n"
   end
 
   MethodDesc.new(output, part["PURPOSE"], "#{ns}#{part["TYPE"]}#{part["NAME"]}")
 end
 
 def toc(methods)
-  methods.map{|m| ":((<#{m.fullname}>)) -- #{m.purpose}" }.join("\n")
+  methods.map{|m| ":((<#{m.fullname}>)) -- #{inline(m.purpose)}" }.join("\n")
 end
 
 synop, descs = ARGF.read.split(/^%%%$/)
