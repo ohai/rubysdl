@@ -43,6 +43,10 @@ SDL は現在 1 ピクセル 8 bit 以上のいかなるピクセル深度もサポートしています。
 返値として得られたサーフェスに対し、他のフレームバッファのように書き込み、
 いつものように更新処理を呼ぶことができます。
 
+== SDL::Surface
+== SDL::Screen
+== SDL::VideoInfo
+== 色、ピクセルフォーマット、ピクセル値について
 %%%
 NAME get_video_surface
 TYPE .
@@ -404,6 +408,7 @@ PROTO
 set_palette(flags,colors,firstcolor)
 setPalette(flags,colors,firstcolor)
 
+DESC
 与えられた 8 ビットサーフェスに対し、パレットの一部をセットします。
 
 SDL::HWPALETTE フラグがセットされている
@@ -463,3 +468,314 @@ Surface#set_colors
 set_video_mode
 
 %%
+NAME set_gamma
+TYPE .
+PURPOSE 表示用のカラーガンマ関数をセットします。
+
+PROTO
+set_gamma(redgamma,greengamma,bluegamma)
+setGamma(redgamma,greengamma,bluegamma)
+
+DESC
+各カラーチャンネルについて、表示用の「ガンマ関数」をセットします。
+ガンマは画面に表示される色の明るさ・コントラストを制御します。
+ガンマ値 1.0 は単位元です。
+(つまり、何の調整も行われません)
+
+この関数は「ガンマ関数」のパラメータに基いてガンマを調整します。
+@[set_gamma_ramp] を使うと、
+ガンマ調整の参照テーブルを直接指定することができます。
+
+EXCEPTION *
+NOTES
+全ての表示ハードウェアがガンマを変更することができるわけではありません。
+
+SEEALSO
+get_gamma_ramp
+set_gamma_ramp
+
+%%
+NAME get_gamma_ramp
+TYPE .
+PURPOSE 表示のためのカラーガンマ値の変換テーブルを取得します。
+
+PROTO
+get_gamma_ramp
+getGammaRamp
+
+DESC
+現在表示に使われているガンマ値の変換テーブルを取得します。
+それぞれのテーブル(R, G, B)は 256 個の16bit符号なし整数値の配列です。
+
+RET
+3個の「256個の16bit符号なし整数値の配列」の配列を返します。
+
+NOTES
+全ての表示ハードウェアがガンマを変換できるわけではありません。
+
+EXCEPTION *
+
+SEEALSO
+set_gamma
+set_gamma_ramp
+
+%%
+NAME set_gamma_ramp
+TYPE .
+PURPOSE 表示用にカラーガンマの参照テーブルをセットします。
+
+PROTO
+set_gamma_ramp(table)
+setGammaRamp(table)
+
+DESC
+各色チャンネルについて、表示用のガンマ参照テーブルをセットします。
+引数 $[tables] は @[get_gamma_ramp] と同じフォーマットで、
+対応するチャンネルの入力と出力間の写像を表現します。
+入力は配列に対するインデックスであり、出力はそのインデックスにおける
+16 ビットのガンマ値で、出力の色精度に合わせてスケーリングされます。
+
+この関数は参照テーブルに基いてガンマを調整しますが、
+@[set_gamma] を用いて
+「ガンマ関数」パラメータに基いて計算されたガンマも持つことができます。
+
+EXCEPTION *
+
+SEEALSO
+set_gamma
+get_gamma_ramp
+
+%%
+NAME map_rgb
+MOD Surface
+TYPE #
+PURPOSE RGB カラー値をピクセルフォーマットに写像します。
+
+PROTO
+map_rgb(r,g,b)
+mapRGB(r,g,b)
+
+DESC
+RGB カラーの値を$[self]のピクセルフォーマットに写像し、
+ピクセル値を 32bit 符号無し整数 として返します。
+$[r]、$[g]、$[b] は0から255までの値をとれます。
+
+フォーマットがパレット (8ビット) を持つ場合は、
+パレット内において最も近い色のインデックスが返されます。
+
+指定されたピクセルフォーマットがαチャンネルを持つ場合は、
+全て 1 のビット(完全に不透明)として返されます。
+
+RET
+与えられたピクセルフォーマット上において、
+与えられた RGB カラー値を最も良く近似するピクセル値です。
+ピクセルフォーマットのピクセル深度が 32bpp より小さい場合は、
+返値の使用されていない上位ビットは安全に無視することができます。
+(例えば、16bpp のフォーマットでは返値は 2**16 より小さく、
+8bpp では 2**8 より小さい)
+
+SEEALSO
+Surface#get_rgb
+Surface#get_rgba
+Surface#map_rgba
+((<色、ピクセルフォーマット、ピクセル値について>))
+
+%%
+NAME map_rgba
+MOD Surface
+TYPE #
+PURPOSE RGBA カラー値をピクセルフォーマットに写像します。
+
+PROTO
+map_rgba(r,g,b,a)
+mapRGBA(r,g,b,a)
+
+DESC
+RGBA カラーの値を$[self]のピクセルフォーマットに写像し、
+ピクセル値を 32bit 符号無し整数 として返します。
+$[r]、$[g]、$[b]、$[a] は0から255までの値をとれます。
+
+フォーマットがパレット (8ビット) を持つ場合は、
+パレット内において最も近い色のインデックスが返されます。
+
+指定されたピクセルフォーマットがαチャンネルを持たない場合は、
+(パレットを持つフォーマットの中でそうであるように)
+α値は無視されます。
+
+RET
+与えられたピクセルフォーマット上において、
+与えられた RGBA カラー値を最も良く近似するピクセル値です。
+ピクセルフォーマットのピクセル深度が 32bpp より小さい場合は、
+返値の使用されていない上位ビットは安全に無視することができます。
+(例えば、16bpp のフォーマットでは返値は 2**16 より小さく、
+8bpp では 2**8 より小さい)
+
+SEEALSO
+Surface#get_rgb
+Surface#get_rgba
+Surface#map_rgb
+((<色、ピクセルフォーマット、ピクセル値について>))
+
+%%
+NAME get_rgb
+MOD Surface
+TYPE #
+PURPOSE 指定されたピクセルフォーマット内のピクセルから RGB 値を取得します。
+
+PROTO
+get_rgb(pixel)
+getRGB(pixel)
+
+DESC
+$[self]のピクセルフォーマットによるピクセル値から
+RGB 各チャンネルの値を要素数3の配列で取得します。
+
+このメソッドは
+RGB 各チャンネルが 8 ビット未満のピクセルフォーマットから
+色チャンネルを変換する際にも 8 ビット全体 [0〜255] の範囲を使います。
+(例えば、16 ビット RGB565 フォーマットにおける完全な白色は
+[0xf8, 0xfc, 0xf8] ではなく [0xff, 0xff, 0xff] を返します)
+
+SEEALSO
+Surface#get_rgba
+Surface#map_rgb
+Surface#map_rgba
+((<色、ピクセルフォーマット、ピクセル値について>))
+
+%%
+NAME get_rgba
+MOD Surface
+TYPE #
+PURPOSE 指定されたピクセルフォーマット内のピクセルから RGBA 値を取得します。
+
+PROTO
+get_rgba(pixel)
+getRGBA(pixel)
+
+DESC
+指定されたピクセルフォーマットに格納されたピクセルから
+RGBA 各チャンネルの値を要素数4の配列で取得します。
+
+RGB 各チャンネルが 8 ビット未満のピクセルフォーマットから
+色チャンネルを変換する際にも 8 ビット全体 [0〜255] の範囲を使います。
+(例えば、16 ビット RGB565 フォーマットにおける完全な白色は
+[0xf8, 0xfc, 0xf8] ではなく [0xff, 0xff, 0xff] を返します)
+
+サーフェスにαチャンネルがない場合は、αには 0xff (100% 不透明) が返されます。
+
+SEEALSO
+Surface#get_rgba
+Surface#map_rgb
+Surface#map_rgba
+((<色、ピクセルフォーマット、ピクセル値について>))
+
+%%
+NAME new
+MOD Surface
+TYPE .
+PURPOSE 空の @[Surface] のインスタンスを生成します。
+
+PROTO
+new(flags,w,h,depth,Rmask,Gmask,Bmask,Amask)
+
+DESC
+大きさが $[w] x $[h] の空のサーフェスを確保します。
+(@[set_video_mode]の後で呼ばれなければいけません)
+
+$[depth] が 8 ビットの場合は、
+サーフェスに空のパレットが確保されます。
+そうでない場合は、
+与えられた$[Rmask]、$[Gmask]、$[Bmask]、$[Amask] を使って
+「パッキングされたピクセル」が作られます。
+$[flags] は作られるサーフェスのタイプを指定し、
+以下の取りうる値の OR による組み合わせとなります。
+
+:SDL::SWSURFACE
+  SDL はシステムメモリからサーフェスを作ります。
+  ピクセルレベルのアクセスのパフォーマンスを向上されますが、
+  いくつかのハードウェアによる blit 転送の
+  利点を得ることができなくなるかも知れません。
+:SDL::HWSURFACE
+  SDL はビデオメモリからサーフェスを作ろうとします。
+  これにより SDL はビデオメモリ同士の bilt 転送
+  (しばしばアクセラレーションが利きます) の利点を得ることができます。
+:SDL::SRCCOLORKEY
+  このフラグはサーフェスを blit する際にカラーキーを有効にします。
+  SDL::HWSURFACE も指定されており、
+  カラーキー付きの blit 転送もハードウェアによるアクセラレーションが利く場合は、
+  SDL はサーフェスをビデオメモリに作ろうとします。
+  サーフェスを作った後にこのフラグをセット・リセットしたい場合は
+  @[Surface#set_color_key] を使って下さい。
+:SDL::SRCALPHA
+  このフラグはサーフェスからの blit 転送におけるαブレンディングを有効にします。
+  SDL::HWSURFACE も指定され、
+  αブレンディング blit 転送がハードウェアによるアクセラレーションが利く場合は
+  サーフェスはなるだけビデオメモリに置かれます。
+  サーフェスを作った後にこのフラグをセット・リセットしたい場合は
+  @[Surface#set_alpha]を使って下さい。
+RET
+@[Surface]のインスタンスを返します。
+
+EXCEPTION *
+
+NOTES
+αチャンネルが指定されている
+(つまり $[Amask] が 0 でない) 場合は、
+SDL::SRCALPHA フラグは自動的にセットされます。
+サーフェスを作った後は、@[Surface#set_alpha]を
+呼ぶことでこのフラグを取り除くことができます。
+
+EXAMPLE
+# テクスチャ用として OpenGL に要求される、
+# 個々々のピクセルのバイトが RGBA の順番で並んだ
+# 32 ビットのサーフェスを生成
+
+big_endian = ([1].pack("N") == [1].pack("L"))
+
+if big_endian
+  rmask = 0xff000000
+  gmask = 0x00ff0000
+  bmask = 0x0000ff00
+  amask = 0x000000ff
+else
+  rmask = 0x000000ff
+  gmask = 0x0000ff00
+  bmask = 0x00ff0000
+  amask = 0xff000000
+end
+
+surface = SDL::Surface.new(SDL::SWSURFACE, width, height, 32,
+                           rmask, gmask, bmask, amask);
+
+SEEALSO
+Surface.new_from
+set_video_mode
+Surface#lock
+Surface#set_alpha
+Surface#set_color_key
+
+%%
+NAME new_from
+MOD Surface
+TYPE .
+PURPOSE ピクセルデータから @[Surface] のインスタンスを生成します。
+
+PROTO
+new_from(pixels,w,h,depth,pitch,Rmask,Gmask,Bmask,Amask)
+
+DESC
+与えられたピクセルデータ($[pixels])から @[Surface] のインスタンスを生成します。
+$[pixels] に格納されたデータは
+パラメータリストで指定された $[depth] のものであるとみなされます。
+$[pitch] は各スキャンラインの長さ(バイト数)です。
+
+他のパラメータについての詳しい記述については、@[Surface.new]を見てください。
+
+RET
+生成されたサーフェスを返します。
+
+EXCEPTION *
+
+SEEALSO
+Surface.new
+
