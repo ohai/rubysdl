@@ -764,9 +764,9 @@ PROTO
 new_from(pixels,w,h,depth,pitch,Rmask,Gmask,Bmask,Amask)
 
 DESC
-与えられたピクセルデータ($[pixels])から @[Surface] のインスタンスを生成します。
-$[pixels] に格納されたデータは
-パラメータリストで指定された $[depth] のものであるとみなされます。
+与えられたピクセルデータ($[pixels]、 Stringのインスタンス)から
+@[Surface] のインスタンスを生成します。
+$[pixels] に格納されたデータは $[depth] のものであるとみなされます。
 $[pitch] は各スキャンラインの長さ(バイト数)です。
 
 他のパラメータについての詳しい記述については、@[Surface.new]を見てください。
@@ -779,3 +779,432 @@ EXCEPTION *
 SEEALSO
 Surface.new
 
+%%
+NAME lock
+MOD Surface
+TYPE #
+PURPOSE 直接アクセスのためにサーフェスをロックします。
+
+PROTO
+lock
+
+DESC
+ピクセルに直接アクセスするためにサーフェスをロックします。
+@[Surface#lock] と @[Surface#unlock] の呼びだしの間、
+サーフェスへ直接読み書きができます。
+ひとたびサーフェスへのアクセスが終了したら、
+@[Surface#unlock] を使って解放する必要があります。
+
+サーフェスへ直接読み書きをする、ロックが必要なメソッドは
+以下の通りです。
+
+LOCKLIST
+
+また@[auto_lock?]が真である場合には、ロックが必要なメソッドが呼ばれた
+場合自動的にロックの設定と解放をするため、このメソッドを呼ぶ必要
+はありません。
+
+すべてのサーフェスがロックを必要とする訳ではありません。
+@[Surface#must_lock?]が偽ならば
+いつでも読み書きすることができ、サーフェスのピクセルフォーマット
+は変更されません。
+
+この時間の間にクリティカルなシステムロックが行われることがあるため、
+ロック/アンロック間では、いかなる OS システムコールやライブラリコールも
+呼ばれるべきではありません。
+
+明記しておくべきことに、
+SDL 1.1.8 以降ではサーフェスのロックは再帰的である、という点があります。
+これは複数のサーフェスロックをかけることができるということですが、
+個々のロックには対応するアンロックがなければいけません。
+  surface.lock
+  # サーフェスはロックされている 
+  # ここでサーフェス上の直接ピクセルアクセス
+  surface.lock
+  # さらにサーフェス上の直接ピクセルアクセス
+  surface.unlock
+  # サーフェスはまだロックされている
+  # 注記: バージョンが 1.1.8 以下の場合は、
+  # この段階でサーフェスはもうロックされていない
+  surface.unlock
+  # サーフェスは今アンロックされている
+EXCEPTION
+サーフェスのロックができなかった場合は例外@[Error]を返します。
+
+SEEALSO
+Surface#unlock
+Surface#must_lock?
+auto_lock?
+auto_lock_on
+auto_lock_off
+auto_lock=
+
+%%
+NAME unlock
+MOD Surface
+TYPE .
+PURPOSE 以前にロックされたサーフェスのロックを解除します。
+
+PROTO
+unlock
+
+DESC
+@[Surface#lock]を使ってロックされたサーフェスは
+このメソッドでロックを解除しなければいけません。
+サーフェスのロックはできるだけ早く解除されるべきです。
+
+1.1.8 以降、サーフェスのロックは再帰的であることに注意すべきです。
+
+SEEALSO
+Surface#lock
+
+%%
+NAME load_bmp
+MOD Surface
+TYPE .
+PURPOSE Windows の BMP ファイルを SDL_Surface にロードします。
+
+PROTO
+load_bmp(filename)
+loadBMP(filename)
+
+DESC
+Windows の BMP ファイルからサーフェスをロードします。
+
+RET
+@[Surface]のインスタンスを返します。
+
+EXCEPTION *
+
+SEEALSO
+Surface#save_bmp
+
+%%
+NAME save_bmp
+MOD Surface
+TYPE #
+PURPOSE SDL_Surface を Windows の BMP ファイルとしてセーブします。
+
+PROTO
+save_bmp(filename)
+saveBMP(filename)
+
+DESC
+$[self]の内容をWindows の BMP ファイル $[filename] にセーブします。
+
+EXCEPTION *
+SEEALSO
+Surface.load_bmp
+
+%%
+NAME set_color_key
+MOD Surface
+TYPE #
+PURPOSE blit 転送可能なサーフェスのカラーキー(透明ピクセル)と、RLE アクセラレーションをセットします。
+
+PROTO
+set_color_key(flag,key)
+setColorKey(flag,key)
+
+DESC
+blit 転送可能なサーフェスのカラーキー(透明ピクセル)をセットし、
+RLE アクセラレーションを有効または無効にします。
+$[key]はピクセル値もしくは色を表す配列で指定できます。
+
+RLE (Run-length encoding) アクセラレーションは、
+透明ピクセル(つまり$[key]と同じ値のピクセル)が
+水平方向に長く続いている場合に、
+画像の blit 転送を実質スピードアップさせることができます。
+$[key]としてピクセル値を使う場合、$[self]と
+同じピクセルフォーマットのものでなければいけません。
+
+$[flag] が SDL::SRCCOLORKEY ならば、$[key] は転送元の画像の透明色です。
+
+$[flag] に SDL::RLEACCEL が
+セットされている場合は、
+@[blit_surface] で描かれる時に、
+サーフェスは RLE アクセラレーションを使って描きます。
+最初にサーフェスに対して
+@[blit_surface] か @[Surface#display_format] が
+呼ばれた時に、実際に RLE アクセラレーションのためエンコードされます。
+
+flag が 0 ならば、この関数は現在のカラーキーをクリアします。
+
+EXCEPTION *
+SEEALSO
+blit_surface
+display_format
+map_rgb
+set_alpha
+
+%%
+NAME set_alpha
+MOD Surface
+TYPE #
+PURPOSE サーフェスのアルファ値を調整します。
+
+PROTO
+set_alpha(flags,alpha)
+setAlpha(flags,alpha)
+
+DESC
+このメソッドはサーフェス単位のα値をセットしたり、
+αブレンディングを有効に、また無効にするために使われます。
+
+$[flags] は、αブレンディングが使われるべきかどうか
+SDL::SRCALPHA、
+また blit の際に RLE アクセラレーションを使うべきかどうか
+SDL::RLEACCELを指定するのに使われます。
+$[flags] はこれらの 2 つのオプションの OR による
+組み合わせか、どちらか 1 つか、または 0 になり得るでしょう。
+SDL::SRCALPHA がフラグとして渡されないと、
+サーフェスを blit するときに全てのα情報は無視されます。
+$[alpha] パラメータはサーフェス単位のα値です。
+つまり、サーフェス単位のαを使うには、サーフェスのαチャンネルは不要であり、
+blit は未だ SDL::RLEACCEL によってアクセラレートされる
+ことが可能です。
+
+αは以下の方法でサーフェスの blit に影響を及ぼします。
+
+:RGBA->RGB SDL::SRCALPHA あり
+  転送元のピクセルはαチャンネルを使って転送先のピクセルとαブレンドされます。
+:RGBA->RGB SDL::SRCALPHA なし
+  転送元ピクセルから RGB データがコピーされます。
+  転送元のαチャンネルとサーフェス単位のα値は無視されます。
+
+:RGB->RGBA SDL::SRCALPHA あり
+  転送元ピクセルはサーフェス単位のα値を使って転送先ピクセルとαブレンドされます。
+  SDL::SRCCOLORKEY がセットされている場合は、
+  カラーキーの値と一致しないピクセルだけがコピーされます。
+  コピーされるピクセルのαチャンネルは不透明にセットされます。
+
+:RGB->RGBA SDL::SRCALPHA なし
+  RGB データは転送元のピクセルからコピーされ、コピーされたピクセルのα値は不透明にセットされます。
+  SDL::SRCCOLORKEY がセットされている場合は、
+  カラーキーの値に一致しないピクセルだけがコピーされます。
+
+:RGBA->RGBA SDL::SRCALPHA あり
+  転送元のピクセルはαチャンネルを使って転送先のピクセルとαブレンドされます。
+  転送先のピクセルのαチャンネルは変更されません。
+  SDL::SRCCOLORKEY は無視されます。
+
+:RGBA->RGBA SDL::SRCALPHA なし
+  RGBA データが転送先サーフェスにコピーされます。
+  SDL::SRCCOLORKEY がセットされている場合は、
+  カラーキーの値と一致しないピクセルだけがコピーされます。
+
+:RGB->RGB SDL::SRCALPHA あり
+  転送元ピクセルはサーフェス単位のα値を使って転送先ピクセルとαブレンドされます。
+  SDL::SRCCOLORKEY がセットされている場合は、
+  カラーキーの値と一致しないピクセルだけがコピーされます。
+
+:RGB->RGB SDL::SRCALPHA なし
+  転送元ピクセルから RGB データがコピーされます。
+  SDL::SRCCOLORKEY がセットされている場合は、
+  カラーキーの値と一致しないピクセルだけがコピーされます。
+
+
+NOTES
+この関数と SDL のαブレンディングの意味合いがバージョン 1.1.4 から変わりました。
+バージョン 1.1.5 までは、α値 0 は不透明で、255 は透明とみなされていました。
+これは今では反転されました。
+つまり、0 (SDL::ALPHA_TRANSPARENT) は透明であり、
+255 (SDL::ALPHA_OPAQUE) は不透明とみなされています。
+
+サーフェス単位のα値 128 は特殊な場合とみなされて最適化されるため、
+他の値よりもはるかに高速です。
+
+SDL::SRCALPHA がセットされた状態での RGBA->RGBA の blit は
+転送先サーフェスのαをそのまま維持することに注意して下さい。
+これは、2 つの任意の RGBA サーフェスを合成して
+それらの「重ね合わせ」が期待されるような結果を得ることはできないということです。
+転送先のαはマスクとして働きます。
+
+また、ピクセル単位のαとサーフェス単位のαは合成できないことにも注意して下さい。
+ピクセル単位のαが有効な時は必ずそちらが使われます。
+
+EXCEPTION *
+SEEALSO
+Surface#map_rgba
+Surface#get_rgba
+Surface#display_format
+blit_surface
+
+%%
+NAME set_clip_rect
+MOD Surface
+TYPE #
+PURPOSE サーフェスのクリッピング矩形をセットします。
+
+PROTO
+set_clip_rect(x,y,w,h)
+setClipRect(x,y,w,h)
+
+DESC
+サーフェスのクリッピング矩形をセットします。
+このサーフェスが blit 転送の転送先である場合は、
+クリッピング矩形の内部の領域だけが描画されます。
+
+引数によって指定された矩形はサーフェスの端でクリッピングされ、
+サーフェスに対するクリッピング矩形がサーフェスの端に出ないようにします。
+
+SEEALSO
+Surface#get_clip_rect
+blit_surface
+
+%%
+NAME get_clip_rect
+MOD Surface
+TYPE #
+PURPOSE サーフェスのクリッピング矩形を取得します。
+
+PROTO
+get_clip_rect
+getClipRect
+
+DESC
+サーフェスのクリッピング矩形を取得します。
+このサーフェスが blit の転送の場合は、
+クリッピング矩形の内部の領域のみが描画されます。
+
+RET
+[x, y, w, h]という整数4個の配列を返します。
+
+SEEALSO
+set_clip_rect
+blit_surface
+
+%%
+NAME blit_surface
+TYPE .
+PURPOSE 転送元サーフェスから転送先サーフェスへ高速 blit 転送を行います。
+
+PROTO
+blit_surface(src,srcX,srcY,srcW,srcH,dst,dstX,dstY)
+blitSurface(src,srcX,srcY,srcW,srcH,dst,dstX,dstY)
+
+転送元サーフェスから転送先サーフェスへ高速 blit 転送を行います
+$[src]が転送元、$[dst]が転送先のサーフィスとなります。
+$[srcX]、$[srcY]、$[srcW]、$[srcH]がすべて0の場合は$[src]
+全体がコピーされます。
+
+blit 関数はロックされたサーフェス上で呼ばれるべきではありません。
+
+blit 操作の結果は
+SDL::SRCAPLHA がセットされているか否かによって
+大きく変化します。
+これがどのように結果に影響するかについては、
+Surface#set_alpha を見て下さい。
+以下の擬似コードのようにカラーキーとα属性もサーフェスの blit に作用します。
+
+  if 転送元サーフェスに SDL_SRCALPHA がセットされている
+    if 転送元サーフェスにαチャンネルがある (つまり format->Amask != 0)
+      ピクセル単位のα値を使い、カラーキーを無視して blit
+    elsif 転送元サーフェスに SDL::SRCCOLORKEY がセットされている
+	カラーキーとサーフェス単位のα値を使って blit
+    else
+	サーフェス単位のα値を使って blit
+    end
+  elsif 転送元サーフェスに SDL::SRCCOLORKEY がセットされている
+    カラーキーを使って blit
+  else
+    普通の矩形 blit
+  end
+
+RET
+成功時には0を返します。
+どちらかのサーフェスがビデオメモリにあり、このメソッドが
+-2 を返す場合は、ビデオメモリが失われたため、
+画像込みでもう一度ロードして blit する必要があります。
+
+これは DirextX5.0 の下で、
+システムがあなたのフルスクリーンアプリケーションを切り換える時に発生します。
+あなたがビデオメモリに再度アクセスするまでは
+サーフェスのロックも失敗するでしょう。
+
+%%
+NAME fill_rect
+MOD Surface
+TYPE #
+PURPOSE 与えられた矩形領域と色で高速な塗り潰しを行います。
+
+PROTO
+fill_rect(x,y,w,h,color)
+fillRect(x,y,w,h,color)
+
+DESC
+与えられた矩形領域と $[color] で
+高速な塗り潰しを行います。
+$[color]は((<色、ピクセルフォーマット、ピクセル値について>))に書かれて
+いる方法で指定できます。
+
+色の値がα値を含んでいる場合は、塗り潰し先は単にそのα情報で「塗り潰され」、
+ブレンディングは起こりません。
+塗り潰し先にクリッピング矩形がある場合(@[Surface#set_clip_rect]に
+よってセットされます)は、この関数はクリッピング矩形と 指定した矩形が
+重なった領域でクリッピングされます。
+
+EXCEPTION *
+SEEALSO
+map_rgb
+map_rgba
+blit_surface
+
+%%
+NAME display_format
+MOD Surface
+TYPE #
+PURPOSE サーフェスを表示フォーマットに変換します。
+
+DESC
+このメソッドは$[self]を表示サーフェス上への高速 blit に適するように、
+ビデオフレームバッファのピクセルフォーマットとパレットの
+新しいサーフェスを作ります。
+
+ハードウェアによるカラーキーやαの blit 転送のアクセラレーション
+の利点を得たい場合は、
+このメソッドを呼ぶ前にカラーキーとα値をセットしておくべきです。
+
+RET
+変換後のサーフェスを返します。
+
+EXCEPTION
+変換に失敗するか、メモリを使い切った時は例外@[Error]を返します。
+
+SEEALSO
+Surface#display_format_alpha
+Surface#set_alpha
+Surface#set_color_key
+
+%%
+NAME display_format
+MOD Surface
+TYPE #
+PURPOSE サーフェスを表示フォーマットに変換します。
+
+DESC
+このメソッドは$[self]を表示サーフェス上への高速 blit に適するように、
+ビデオフレームバッファのピクセルフォーマット・色にαチャンネルを加えた
+新しいサーフェスにコピーします。
+
+ハードウェアによるカラーキーやαの blit 転送のアクセラレーション
+の利点を得たい場合は、
+このメソッドを呼ぶ前にカラーキーとα値をセットしておくべきです。
+
+$[self]に SDL::SRCCOLORKEY フラグがセットされている
+場合は、この関数はカラーキーをαチャンネルに変換することに使うことが
+できます。
+そうして生成されたサーフェスは、
+カラーキーに一致するピクセルでは透明(α=0)に、
+他の場所では不透明(α=255)になります。
+
+RET
+変換後のサーフェスを返します。
+
+EXCEPTION
+変換に失敗するか、メモリを使い切った時は例外@[Error]を返します。
+
+SEEALSO
+Surface#display_format_alpha
+Surface#set_alpha
+Surface#set_color_key
