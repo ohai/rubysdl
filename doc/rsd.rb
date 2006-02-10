@@ -82,7 +82,7 @@ def rsd2rd(input)
       split(/\n/).
       map{|line| line[0] == ?( ? line : convert_link(line) }.
       join(", ")
-    output << "\n"
+    output << "\n\n"
   end
 
   MethodDesc.new(output, part["PURPOSE"], "#{ns}#{part["TYPE"]}#{part["NAME"]}")
