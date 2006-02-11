@@ -41,6 +41,8 @@ def rsd2rd(input)
     case line
     when /^(MOD|DEP|NAME|PURPOSE|TYPE)\s+/
       part[$1] = $'.chomp
+    when "LOCK\n"
+      part["LOCK"] = true
     when /^(PROTO|DESC|NOTES|RET|EXCEPTION|EXAMPLE|BUG|SEEALSO)\s*$/
       mode = $1
     when "EXCEPTION *\n"

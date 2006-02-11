@@ -7,15 +7,15 @@ SDL は表示フレームバッファに対するとてもシンプルなインターフェースを
 オフスクリーンサーフェスとして表現されます。
 スクリーンに書いたものを画面に表示させるには、
 画面の必要な部分が更新されることを保証する
-@[更新|Screen.update_rect]関数を呼んで下さい。
+@[更新|Screen#update_rect]関数を呼んで下さい。
 
 Ruby/SDL のいかなるビデオ関連メソッドを呼ぶ前に、
-最初に SDL.init(SDL::INIT_VIDEO)を呼ばなければいけません。
+最初に @[init](SDL::INIT_VIDEO)を呼ばなければいけません。
 これは SDL 内のビデオとイベントを初期化します。
 
 アプリケーションでサウンドとビデオを共に使うときは、
 サウンドデバイスをオープンする前に
-SDL.Init(SDL::INIT_AUDIO|SDL::INIT_VIDEO)
+@[init](SDL::INIT_AUDIO|SDL::INIT_VIDEO)
 を呼ぶ必要があります。
 そうしないと、Win32 の DirectX において
 フルスクリーン表示モードにセットすることができないでしょう。
@@ -44,6 +44,18 @@ SDL は現在 1 ピクセル 8 bit 以上のいかなるピクセル深度もサポートしています。
 いつものように更新処理を呼ぶことができます。
 
 == SDL::Surface
+絵のサーフェスを表わすクラス。
+
+このクラスは描画される「絵」のメモリを表現しています。
+ビデオフレームバッファは @[set_video_mode] と @[get_video_surface]
+から得られます。
+
+このクラスは@[Surface#flags]、
+@[Surface#w]、@[Surface#h]、@[Surface#pixels]、@[Surface#Rmask]、
+@[Surface#Gmask]、@[Surface#Bmask]、@[Surface#Amask]、
+@[Surface#bpp]、@[Surface#alpha]、@[Surface#colorkey]、
+という属性を持ちます。
+
 == SDL::Screen
 == SDL::VideoInfo
 == 色、ピクセルフォーマット、ピクセル値について
@@ -936,6 +948,7 @@ blit_surface
 Surface#display_format
 Surface#map_rgb
 Surface#set_alpha
+Surface#colorkey
 
 %%
 NAME set_alpha
@@ -1029,6 +1042,7 @@ Surface#map_rgba
 Surface#get_rgba
 Surface#display_format
 blit_surface
+Surface#alpha
 
 %%
 NAME set_clip_rect
@@ -1099,7 +1113,7 @@ Surface#set_alpha を見て下さい。
 以下の擬似コードのようにカラーキーとα属性もサーフェスの blit に作用します。
 
   if 転送元サーフェスに SDL_SRCALPHA がセットされている
-    if 転送元サーフェスにαチャンネルがある (つまり format->Amask != 0)
+    if 転送元サーフェスにαチャンネルがある (つまり Amask != 0)
       ピクセル単位のα値を使い、カラーキーを無視して blit
     elsif 転送元サーフェスに SDL::SRCCOLORKEY がセットされている
       カラーキーとサーフェス単位のα値を使って blit
@@ -1217,3 +1231,203 @@ SEEALSO
 Surface#display_format
 Surface#set_alpha
 Surface#set_color_key
+
+%%
+NAME flags
+MOD Surface
+TYPE #
+PURPOSE サーフェスのフラグ
+
+PROTO
+flags
+
+DESC
+サーフェスにセットされているフラグを返します。以下のフラグが
+サポートされています。
+
+:SDL::SWSURFACE
+  サーフェスがシステムメモリに格納されます。
+:SDL::HWSURFACE
+  サーフェスがビデオメモリに格納されます。
+:SDL::ASYNCBLIT
+  可能であればサーフェスは非同期 blit 転送を使用します。
+:SDL::ANYFORMAT
+  任意のピクセルフォーマットを許可します。(表示サーフェス)
+:SDL::HWPALETTE
+  サーフェスには排他的なパレットがあります。
+:SDL::DOUBLEBUF
+  サーフェスはダブルバッファです。(表示サーフェス)
+:SDL::FULLSCREEN
+  サーフェスはフルスクリーンです。(表示サーフェス)
+:SDL::OPENGL
+  サーフェスには OpenGL コンテキストがあります。(表示サーフェス)
+:SDL::OPENGLBLIT
+  サーフェスは OpenGL への blit 転送をサポートします。(表示サーフェス)
+:SDL::RESIZABLE
+  サーフェスはサイズ変更が可能です。(表示サーフェス)
+:SDL::HWACCEL
+  サーフェスの blit 転送にはハードウェアアクセラレーションを使います。
+:SDL::SRCCOLORKEY
+  サーフェスはカラーキー付き blit 転送を使います。
+:SDL::RLEACCEL
+  カラーキー付き blit 転送は RLE (ランレングス圧縮)による
+  アクセラレーションが利きます。
+:SDL::SRCALPHA
+  サーフェスの blit 転送はαブレンディングを使います。
+
+RET
+以上のフラグの OR を取ったものが返されます。
+
+SEEALSO
+Surface
+Screen
+
+%%
+NAME w
+MOD Surface
+TYPE #
+PURPOSE サーフェスの幅
+
+PROTO
+w
+
+DESC
+サーフェスの幅のピクセル数を整数で返します。
+
+SEEALSO
+Surface#h
+
+%%
+NAME h
+MOD Surface
+TYPE #
+PURPOSE サーフェスの高さ
+
+PROTO
+h
+
+DESC
+サーフェスの高さのピクセル数を整数で返します。
+
+SEEALSO
+Surface#w
+
+%%
+NAME pixels
+MOD Surface
+TYPE #
+PURPOSE 実際のピクセルデータを返します
+
+PROTO
+pixels
+
+DESC
+実際のピクセルデータをStringのインスタンスで返します。
+ピクセルデータの形式は@[Surface#flags]、SDL::Surface#[RGBA]mask、
+@[Surface#bpp]によります。
+
+NOTES
+これにアクセスするには@[ロック|Surface#lock]が必要です。
+
+SEEALSO
+Surface#flags
+Surface#Rmask
+Surface#Gmask
+Surface#Bmask
+Surface#Amask
+Surface#bpp
+
+%%
+NAME Rmask
+MOD Surface
+TYPE #
+PURPOSE 赤チャンネルの値を取得するのに使われるビットマスク
+
+PROTO
+Rmask
+
+DESC
+赤チャンネルの値を取得するのに使われるビットマスクを整数で返します。
+
+%%
+NAME Gmask
+MOD Surface
+TYPE #
+PURPOSE 緑チャンネルの値を取得するのに使われるビットマスク
+
+PROTO
+Gmask
+
+DESC
+緑チャンネルの値を取得するのに使われるビットマスクを整数で返します。
+
+%%
+NAME Bmask
+MOD Surface
+TYPE #
+PURPOSE 青チャンネルの値を取得するのに使われるビットマスク
+
+PROTO
+Bmask
+
+DESC
+青チャンネルの値を取得するのに使われるビットマスクを整数で返します。
+
+%%
+NAME Amask
+MOD Surface
+TYPE #
+PURPOSE αチャンネルの値を取得するのに使われるビットマスク
+
+PROTO
+Amask
+
+DESC
+αチャンネルの値を取得するのに使われるビットマスクを整数で返します。
+
+%%
+NAME colorkey
+MOD Surface
+TYPE #
+PURPOSE 透明ピクセルのピクセル値
+
+PROTO
+colorkey
+
+DESC
+透明ピクセルのピクセル値を正の整数で返します。
+
+SEEALSO
+Surface
+Surface#set_color_key
+((<色、ピクセルフォーマット、ピクセル値について>))
+
+%%
+NAME alpha
+MOD Surface
+TYPE #
+PURPOSE サーフェス全体のα値
+
+PROTO
+alpha
+
+DESC
+サーフェス全体のα値を0から255までの整数で返します。
+0が透明で、255が不透明です。
+
+SEEALSO
+Surface#set_alpha
+
+%%
+NAME bpp
+MOD Surface
+TYPE #
+PURPOSE サーフェスの各ピクセルを表わすのに使われるビット数
+
+PROTO
+bpp
+
+DESC
+サーフェスの各ピクセルを表わすのに使われるビット数を返します。
+通常1〜4のいずれかです。
+
