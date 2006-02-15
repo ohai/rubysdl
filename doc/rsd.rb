@@ -39,7 +39,7 @@ def rsd2rd(input)
   
   input.each do |line|
     case line
-    when /^(MOD|DEP|NAME|PURPOSE|TYPE)\s+/
+    when /^(MOD|DEP|NAME|PURPOSE|TYPE|RVAL)\s+/
       part[$1] = $'.chomp
     when "LOCK\n"
       part["LOCK"] = ""
