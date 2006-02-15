@@ -52,8 +52,8 @@ PURPOSE サブシステムが初期化されているかどうかをチェックします。
 RVAL UINT
 
 PROTO
-initedSystem(flags)
 inited_system(flags)
+initedSystem(flags)
 
 DESC
 これは、どのSDLサブシステムが@[初期化されているか|init]を報告します。
