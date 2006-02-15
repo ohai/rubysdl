@@ -31,7 +31,7 @@ def format(lines,spaces)
   end
 end
 
-MethodDesc = Struct.new(:output, :purpose, :fullname)
+MethodDesc = Struct.new(:output, :purpose, :fullname, :module, :lock)
 
 def rsd2rd(input)
   part = Hash.new{""}
@@ -94,16 +94,32 @@ def rsd2rd(input)
     output << "\n\n"
   end
 
-  MethodDesc.new(output, part["PURPOSE"], "#{ns}#{part["TYPE"]}#{part["NAME"]}")
+  MethodDesc.new(output,
+                 part["PURPOSE"],
+                 "#{ns}#{part["TYPE"]}#{part["NAME"]}",
+                 part["MOD"],
+                 part.key?("LOCK"))
 end
 
 def toc(methods)
-  methods.map{|m| ":((<#{m.fullname}>)) -- #{inline(m.purpose)}" }.join("\n")
+  methods.map{|m| "  * ((<#{m.fullname}>)) -- #{inline(m.purpose)}" }.join("\n")
+end
+
+def locklist(methods)
+  methods.find_all{|m| m.lock}.map{|m| "* ((<#{m.fullname}>))"}.join("\n    ")
+end
+
+def methodlist(mod, methods)
+  methods.find_all{|m| m.module == mod}.
+    map{|m| "* ((<#{m.fullname}>)) -- #{inline(m.purpose)}"}.
+    join("\n")
 end
 
 synop, descs = ARGF.read.split(/^%%%$/)
 methods = if descs then descs.split(/^%%$/).map{|m| rsd2rd(m)} else [] end
 
-STDOUT << format(synop, 0).gsub(/^TOC$/){ toc(methods) }
-methods.each{|m| STDOUT << m.output}
+STDOUT << format(synop, 0).gsub(/^TOC$/){ toc(methods) }.
+  gsub(/^METHODS\((.*)\)$/){methodlist($1, methods)}
+  
+methods.each{|m| STDOUT << m.output.gsub("LOCKLIST"){ locklist(methods) }}
 
