@@ -725,7 +725,7 @@ NAME get_rgba
 MOD Surface
 TYPE #
 PURPOSE 指定されたピクセルフォーマット内のピクセルから RGBA 値を取得します。
-RVAL [UINT, UINT, UINT]
+RVAL [UINT, UINT, UINT, UINT]
 
 PROTO
 get_rgba(pixel)
@@ -2201,3 +2201,89 @@ $[alpha]で指定したアルファ値でアンチエイリアスで描画します。
 
 SEEALSO
 Surface#draw_ellipse
+
+%%
+NAME draw_bezier
+MOD Surface
+TYPE #
+DEP SGE
+LOCK
+PURPOSE ベジエ曲線を描く
+
+PROTO
+draw_bezier(x1,y1,x2,y2,x3,y3,x4,y4,level,color)
+drawBezier(x1,y1,x2,y2,x3,y3,x4,y4,level,color)
+
+DESC
+($[x1], $[y1]) から ($[x4], $[y4])までのベジエ曲線を
+($[x2], $[y2]) と ($[x3], $[y3]) をコントロールポイントとして
+$[color]で指定した色で
+描画する。$[leve] は曲線の近似度で、4から7を使うと良い。
+
+SEEALSO
+Surface#draw_aa_bezier
+Surface#draw_bezier_alpha
+Surface#draw_aa_bezier_alpha
+
+%%
+NAME draw_aa_bezier
+MOD Surface
+TYPE #
+DEP SGE
+LOCK
+PURPOSE アンチエイリアスをかけたベジエ曲線を描く
+
+PROTO
+draw_aa_bezier(x1,y1,x2,y2,x3,y3,x4,y4,level,color)
+drawAABezier(x1,y1,x2,y2,x3,y3,x4,y4,level,color)
+
+DESC
+($[x1], $[y1]) から ($[x4], $[y4])までのベジエ曲線を
+($[x2], $[y2]) と ($[x3], $[y3]) をコントロールポイントとして
+$[color]で指定した色でアンチエイリアスして
+描画する。$[leve] は曲線の近似度で、4から7を使うと良い。
+
+SEEALSO
+Surface#draw_bezier
+
+%%
+NAME draw_bezier_alpha
+MOD Surface
+TYPE #
+DEP SGE
+LOCK
+PURPOSE ベジエ曲線をアルファブレンディングして描く
+
+PROTO
+draw_bezier_alpha(x1,y1,x2,y2,x3,y3,x4,y4,level,color,alpha)
+drawBezierAlpha(x1,y1,x2,y2,x3,y3,x4,y4,level,color,alpha)
+
+DESC
+($[x1], $[y1]) から ($[x4], $[y4])までのベジエ曲線を
+($[x2], $[y2]) と ($[x3], $[y3]) をコントロールポイントとして
+$[color]で指定した色、$[alpha]で指定したα値で
+描画する。$[leve] は曲線の近似度で、4から7を使うと良い。
+
+SEEALSO
+Surface#draw_bezier
+
+%%
+NAME draw_aa_bezier_alpha
+MOD Surface
+TYPE #
+DEP SGE
+LOCK
+PURPOSE アンチエイリアスしたベジエ曲線をアルファブレンディングして描く
+
+PROTO
+draw_aa_bezier_alpha(x1,y1,x2,y2,x3,y3,x4,y4,level,color,alpha)
+drawAABezierAlpha(x1,y1,x2,y2,x3,y3,x4,y4,level,color,alpha)
+
+DESC
+($[x1], $[y1]) から ($[x4], $[y4])までのベジエ曲線を
+($[x2], $[y2]) と ($[x3], $[y3]) をコントロールポイントとして
+$[color]で指定した色、$[alpha]で指定したα値でアンチエイリアス
+描画する。$[leve] は曲線の近似度で、4から7を使うと良い。
+
+SEEALSO
+Surface#draw_bezier
