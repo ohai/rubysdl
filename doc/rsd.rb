@@ -42,7 +42,7 @@ def rsd2rd(input)
     when /^(MOD|DEP|NAME|PURPOSE|TYPE)\s+/
       part[$1] = $'.chomp
     when "LOCK\n"
-      part["LOCK"] = true
+      part["LOCK"] = ""
     when /^(PROTO|DESC|NOTES|RET|EXCEPTION|EXAMPLE|BUG|SEEALSO)\s*$/
       mode = $1
     when "EXCEPTION *\n"
@@ -64,8 +64,15 @@ def rsd2rd(input)
   part["PROTO"].each{|proto| output << "--- #{ns}#{part["TYPE"]}#{proto}"}
   output << "\n"
   output << format(part["DESC"],4)
+  if part.key?("LOCK")
+    output << "\n"
+    output << format("このメソッドを使うにはサーフェスを@[ロック|Surface#lock]する必要があります。\n@[auto_lock?]が真の場合はシステムが自動的にロック/アンロックします。",4)
+  end
   output << format(part["RET"],4)
   output << format(part["EXCEPTION"],4)
+  if part.key?("DEP")
+    output << "\n    このメソッドを使うには #{part["DEP"]} が必要です。\n"
+  end
   if part.key?("EXAMPLE")
     output << "    EXAMPLE\n"
     output << format(part["EXAMPLE"],6)
@@ -74,7 +81,7 @@ def rsd2rd(input)
     output << "    * NOTES\n\n"
     output << format(part["NOTES"],6)
   end
-    if part.key?("BUG")
+  if part.key?("BUG")
     output << "    * BUG\n\n"
     output << format(part["NOTES"],6)
   end
@@ -95,7 +102,7 @@ def toc(methods)
 end
 
 synop, descs = ARGF.read.split(/^%%%$/)
-methods = descs.split(/^%%$/).map{|m| rsd2rd(m)}
+methods = if descs then descs.split(/^%%$/).map{|m| rsd2rd(m)} else [] end
 
 STDOUT << format(synop, 0).gsub(/^TOC$/){ toc(methods) }
 methods.each{|m| STDOUT << m.output}
