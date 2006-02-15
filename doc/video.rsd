@@ -1,6 +1,14 @@
 = Video
+* ((<Video Subsystem 概説>))
+* ((<SDL::Screen>))
+* ((<SDL::Surface>))
+* ((<SDL::VideoInfo>))
+* ((<色、ピクセルフォーマット、ピクセル値について>))
+
+* Video関連メソッド
 TOC
 
+== Video Subsystem 概説
 SDL は表示フレームバッファに対するとてもシンプルなインターフェースを
 提供します。
 フレームバッファはあなたが直接書くことができる
@@ -47,20 +55,21 @@ SDL は現在 1 ピクセル 8 bit 以上のいかなるピクセル深度もサポートしています。
 絵のサーフェスを表わすクラスです。
 
 このクラスは描画される「絵」のメモリを表現しています。
-ビデオフレームバッファは @[set_video_mode] と @[get_video_surface]
-から得られます。
 
-このクラスは@[Surface#flags]、
-@[Surface#w]、@[Surface#h]、@[Surface#pixels]、@[Surface#Rmask]、
-@[Surface#Gmask]、@[Surface#Bmask]、@[Surface#Amask]、
-@[Surface#bpp]、@[Surface#alpha]、@[Surface#colorkey]、
-という属性を持ちます。
+メソッドおよびクラスメソッドのリスト
+METHODS(Surface)
 
 == SDL::Screen
 画面に対応するサーフェスを表わすクラスです。
 
 このクラスは @[Surface] のサブクラスであり、実際に画面に表示される
 サーフェスを表わします。
+
+ビデオフレームバッファは @[set_video_mode] と @[get_video_surface]
+から得られます。
+
+メソッドおよびクラスメソッドのリスト
+METHODS(Screen)
 
 == SDL::VideoInfo
 ビデオターゲットの情報を表わすクラスです。
@@ -113,7 +122,64 @@ SDL は現在 1 ピクセル 8 bit 以上のいかなるピクセル深度もサポートしています。
     一ピクセルあたりのバイト数
 
 
-= 色、ピクセルフォーマット、ピクセル値について
+== 色、ピクセルフォーマット、ピクセル値について
+まずは Ruby/SDL において重要なことを先に書きます。
+Ruby/SDLにおいて色はRGBAそれぞれ0から255までの値を取ります。
+性能のため SDL 内部ではRGBA値を32ビット符号無し整数でパッキングします。
+このRGBA値と符号無し32ビット整数との変換規則をピクセルフォーマットと
+呼び、変換後の値をピクセル値と呼びます。
+ピクセルフォーマットはサーフェスごとに決まっていて、
+変換は@[Surface#map_rgb]、@[Surface#map_rgba]、
+@[Surface#get_rgb]、@[Surface#get_rgba]というメソッドでします。
+メソッドの引数などで色を指定する場合、[231, 251, 100] というような
+要素が3個の配列(RGB,A=255)、
+[231, 251, 100, 128]という要素が4個の配列(RGBA)、もしくはピクセル値の
+いずれでも使えます。またメソッドの返り値として色情報が得られる場合は
+通常ピクセル値が得られます。
+
+以下はより基本的でより詳しい内容です。
+
+Ruby/SDLにおける絵は、ピクセルの集合として表されます。
+ピクセルと呼ばれる小さな正方形を縦横に並べ、そのそれぞれに
+色をわりあてることで画像を表現します。
+例えば 640x480 の絵は 307200個 = 640×480 のピクセルで表わされます。
+
+そして、その色は光の3原色である赤(Red)、緑(Green)、青(Blue)それぞれの値
+を0から255までで指定することで決めます。例えば [R,G,B] = [0,0,0] ならば黒、
+[255, 255, 0]ならば黄色、[160, 32, 240]で紫、などです。
+
+そしてこの情報をバイト列に変換して保存します。一つのピクセルに対し
+8ビット、16ビット、24ビット、もしくは32ビットのメモリを割当て、
+R,G,Bの 255*255*255の情報を適当にそのメモリに収まるように変換します。
+このビット数をbpp(Bits Per Pixel)と呼びます。
+そしてこの色の情報 -> バイト列の変換規則をピクセルフォーマットと呼びます。
+また、ピクセル1個分の色データをピクセルフォーマットで変換したものを
+ピクセル値と呼びます。性能のため SDL 内部ではこのピクセル値を
+よく利用します。
+それぞれのサーフェスは、このピクセルフォーマットと「絵を表わすバイト列」
+の組であると解釈できます。
+
+この色データとピクセル値の相互変換は
+@[Surface#map_rgb]、@[Surface#get_rgb]というメソッドでします。
+
+また、各メソッドの引数で色を指定する場合は、[r, g, b]という要素が整数3個の
+配列、もしくはそのサーフェスのピクセルフォーマットで変換したピクセル値の
+どちらでも使える場合がほとんどです。
+
+最後にα値について解説します。この値はある画像と別の画像を重ね合わせる
+時に意味のある値です。@[blit_surface]などで2つの画像が重ね合わされる場合、
+通常下の画像は上の画像で完全に隠されてしまいます。しかし上の画像に
+α値を指定しておくと、上の画像の色と下の画像の色が混ぜ合されます。
+この混ぜ合せの割合をα値と呼びます。SDLではα値は0から255までの値をとりえます。
+0が完全な透明で、255が完全な不透明です。
+この値はbppが32の場合には、各ピクセルごとに指定することができます。
+つまりピクセル値には R,G,B のほかアルファ(Alpha)値を含めることができると
+いうことです。このα値を含めた変換には
+@[Surface#map_rgba]、[Surface#get_rgba]を使います。
+また各メソッドの引数でアルファ付きの色を指定する場合は、[r,g,b,a]という
+要素が整数4個の配列を使うことが可能です。
+
+== Methods 
 %%%
 NAME get_video_surface
 TYPE .
@@ -121,8 +187,8 @@ PURPOSE 現在の表示サーフェスを返します。
 RVAL Screen
 
 PROTO
-getVideoSurface
 get_video_surface
+getVideoSurface
 
 DESC
 このメソッドは現在の表示サーフェスを返します。
@@ -142,8 +208,8 @@ PURPOSE ビデオハードウェアについての情報を返します。
 RVAL VideoInfo
 
 PROTO
-videoInfo
 video_info
+videoInfo
 
 DESC
 この関数はビデオハードウェアに関する@[情報|VideoInfo]を返します。
@@ -168,8 +234,8 @@ PURPOSE ビデオドライバの名前を取得します。
 RVAL String
 
 PROTO
-videoDriverName
 video_driver_name
+videoDriverName
 
 DESC
 ドライバ名は "x11" や "windib" のように単なる 1 語の識別子です。
@@ -879,6 +945,7 @@ DESC
 サーフェスへ直接読み書きをする、ロックが必要なメソッドは
 以下の通りです。
 
+* @[Surface#pixels]
 LOCKLIST
 
 また@[auto_lock?]が真である場合には、ロックが必要なメソッドが呼ばれた
@@ -1767,6 +1834,7 @@ $[src]が32bpp RGBA フォーマットの場合には、SDL::TRANSFORM_SAFEを使うべきです。
 
 SEEALSO
 transform_blit
+Surface#transform_surface
 Surface.new
 
 %%
@@ -1786,6 +1854,7 @@ DESC
 
 SEEALSO
 transform
+Surface#transform_surface
 Surface#set_color_key
 Surface#set_alpha
 
@@ -2287,3 +2356,32 @@ $[color]で指定した色、$[alpha]で指定したα値でアンチエイリアス
 
 SEEALSO
 Surface#draw_bezier
+
+%%
+NAME transform_surface
+MOD Surface
+TYPE #
+DEP SGE
+LOCK
+PURPOSE 拡大縮小変形した新しいサーフェスを生成する
+RVAL Surface
+
+PROTO
+transform_surface(bgcolor,angle,xscale,yscale,flags)
+transformSurface(bgcolor,angle,xscale,yscale,flags)
+
+DESC
+$[self] を拡大縮小変形したサーフェスを生成し返す。
+回転によって生じた隙間は $[bgcolor] で指定した色で埋められる。
+引数 $[angle]、$[xscale]、$[yscale]、$[flags] は @[transform]
+と同じ意味である。
+
+新しいサーフェスは $[self] と同じ bpp およびピクセルフォーマットを
+持つ。
+
+EXCEPTION *
+
+SEEALSO
+transform
+transform_blit
+
