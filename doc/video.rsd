@@ -44,7 +44,7 @@ SDL は現在 1 ピクセル 8 bit 以上のいかなるピクセル深度もサポートしています。
 いつものように更新処理を呼ぶことができます。
 
 == SDL::Surface
-絵のサーフェスを表わすクラス。
+絵のサーフェスを表わすクラスです。
 
 このクラスは描画される「絵」のメモリを表現しています。
 ビデオフレームバッファは @[set_video_mode] と @[get_video_surface]
@@ -57,8 +57,63 @@ SDL は現在 1 ピクセル 8 bit 以上のいかなるピクセル深度もサポートしています。
 という属性を持ちます。
 
 == SDL::Screen
+画面に対応するサーフェスを表わすクラスです。
+
+このクラスは @[Surface] のサブクラスであり、実際に画面に表示される
+サーフェスを表わします。
+
 == SDL::VideoInfo
-== 色、ピクセルフォーマット、ピクセル値について
+ビデオターゲットの情報を表わすクラスです。
+このクラスのインスタンスは @[video_info] から返り値として得られます。
+これは以下のメソッドを持ちます。
+
+--- SDL::VideoInfo#hw_available
+
+    ハードウェアサーフェスを作ることは可能かどうか
+
+--- SDL::VideoInfo#wm_available
+
+    ウィンドウマネージャが利用できるかどうか
+
+--- SDL::VideoInfo#blit_hw
+
+    ハードウェア間の blit はアクセラレーションが有効かどうか
+
+--- SDL::VideoInfo#blit_hw_CC
+
+    ハードウェア間のカラーキー blit はアクセラレーションが有効かどうか
+
+--- SDL::VideoInfo#blit_hw_A
+
+    ハードウェア間のα blit はアクセラレーションが有効かどうか
+
+--- SDL::VideoInfo#blit_sw
+
+    ソフトウェアからハードウェアへの blit はアクセラレーションが有効かどうか
+
+--- SDL::VideoInfo#blit_sw_CC
+
+    ソフトウェアからハードウェアへのカラーキー blit はアクセラレーション
+    が有効かどうか
+
+--- SDL::VideoInfo#blit_sw_A
+
+    ソフトウェアからハードウェアへのα blit はアクセラレーションが有効かどうか
+
+--- SDL::VideoInfo#blit_fill
+
+    色の塗潰しはアクセラレーションが有効かどうか
+
+--- SDL::VideoInfo#video_mem
+
+    ビデオメモリの総容量(Kbyte)
+
+--- SDL::VideoInfo#bpp
+
+    一ピクセルあたりのバイト数
+
+
+= 色、ピクセルフォーマット、ピクセル値について
 %%%
 NAME get_video_surface
 TYPE .
@@ -854,7 +909,7 @@ auto_lock=
 %%
 NAME unlock
 MOD Surface
-TYPE .
+TYPE #
 PURPOSE 以前にロックされたサーフェスのロックを解除します。
 
 PROTO
@@ -871,10 +926,27 @@ SEEALSO
 Surface#lock
 
 %%
+NAME must_lock?
+MOD Surface
+TYPE #
+PURPOSE ロックが必要かどうかを返します。
+
+PROTO
+must_lock?
+mustLock?
+
+DESC
+サーフェスのピクセルに直接アクセスするときに @[Surface#lock] による
+ロックが必要かどうかを true/false で返します。
+
+SEEALSO
+Surface#lock
+
+%%
 NAME load_bmp
 MOD Surface
 TYPE .
-PURPOSE Windows の BMP ファイルを SDL_Surface にロードします。
+PURPOSE Windows の BMP ファイルをサーフェスにロードします。
 
 PROTO
 load_bmp(filename)
@@ -890,12 +962,13 @@ EXCEPTION *
 
 SEEALSO
 Surface#save_bmp
+Surface.load
 
 %%
 NAME save_bmp
 MOD Surface
 TYPE #
-PURPOSE SDL_Surface を Windows の BMP ファイルとしてセーブします。
+PURPOSE サーフェスを Windows の BMP ファイルとしてセーブします。
 
 PROTO
 save_bmp(filename)
@@ -1112,7 +1185,7 @@ SDL::SRCAPLHA がセットされているか否かによって
 Surface#set_alpha を見て下さい。
 以下の擬似コードのようにカラーキーとα属性もサーフェスの blit に作用します。
 
-  if 転送元サーフェスに SDL_SRCALPHA がセットされている
+  if 転送元サーフェスに SDL::SRCALPHA がセットされている
     if 転送元サーフェスにαチャンネルがある (つまり Amask != 0)
       ピクセル単位のα値を使い、カラーキーを無視して blit
     elsif 転送元サーフェスに SDL::SRCCOLORKEY がセットされている
@@ -1429,5 +1502,530 @@ bpp
 
 DESC
 サーフェスの各ピクセルを表わすのに使われるビット数を返します。
-通常1〜4のいずれかです。
+通常8、16、24、32のいずれかです。
 
+%%
+NAME load
+MOD Surface
+TYPE .
+DEP SDL_image
+PURPOSE 画像をサーフェスにロードします。
+
+PROTO
+load(filename)
+
+DESC
+画像のファイルをサーフェスにロードします。
+もし画像の形式が透明ピクセルをサポートしているならば、サーフェスに
+カラーキーがセットされます。
+
+対応しているフォーマットはBMP, PNM (PPM/PGM/PBM), XPM,
+XCF, PCX, GIF, JPEG, TIFF, TGA, PNG, LBMです。
+
+NOTES
+SDL_image のコンパイル時に使えるように指定しなかったフォーマット
+のファイルはこのメソッドではロードできません。
+
+EXCEPTION *
+
+%%
+NAME put_pixel
+MOD Surface
+TYPE #
+LOCK
+PURPOSE 指定した位置に点を書きます。
+
+PROTO
+put_pixel(x, y, color)
+putPixel(x, y, color)
+[]=(x, y, color)
+
+DESC
+サーフェスの($[x], $[y])で指定した位置に$[color]のピクセルを描画します。
+$[color]としてピクセル値もしくは色を表わす配列が利用できます。
+
+SEEALSO
+Surface#get_pixel
+
+%%
+NAME get_pixel
+MOD Surface
+TYPE #
+LOCK
+PURPOSE 指定した位置のピクセル値を得ます。
+
+PROTO
+get_pixel(x, y)
+getPixel(x, y)
+[](x, y)
+
+DESC
+サーフェスの($[x], $[y])で指定した位置のピクセル値を得ます。
+
+SEEALSO
+Surface#put_pixel
+
+%%
+NAME put
+MOD Surface
+TYPE #
+PURPOSE 指定したサーフェス全体を指定した位置に高速 blit 転送します。
+
+PROTO
+put(src, x, y)
+
+DESC
+$[self]の($[x], $[y])で指定した位置にサーフェス $[src] を高速 blit 転送
+します。
+
+これは、
+  SDL.blit_surface(src, 0, 0, src.w, src.h, self, x, y)
+と同じです。
+
+SEEALSO
+blit_surface
+
+%%
+NAME copy_rect
+MOD Surface
+TYPE #
+PURPOSE サーフェスの一部を切り出した新しいサーフェスを返します。
+
+PROTO
+copy_rect(x,y,w,h)
+copyRect(x,y,w,h)
+
+DESC
+サーフェス $[self] の ($[x], $[y], $[w], $[h]) で指定される矩形を
+コピーした新しいサーフェスを作り、返します。
+
+NOTES
+このメソッドは内部で @[blit_surface] を呼ぶため、ロックされたサーフェス上で
+呼ばれるべきではありません。
+
+EXCEPTION *
+
+%%
+NAME auto_lock?
+TYPE .
+DEP SGE
+PURPOSE サーフェスを自動でロックするかどうかを返す。
+
+PROTO
+auto_lock?
+autoLock?
+auto_lock
+autoLock
+
+DESC
+サーフェスに対する@[ロック|Surface#lock]が必要な操作をするとき、
+Ruby/SDLが自動的にロック/アンロックするか
+どうかを true/false で返します。デフォルトでは true です。
+
+SEEALSO
+Surface#lock
+Surface#unlock
+auto_lock_on
+auto_lock_off
+
+%%
+NAME auto_lock_on
+TYPE .
+DEP SGE
+PURPOSE 自動ロックを利用するようにします。
+
+PROTO
+auto_lock_on
+autoLockON
+
+DESC
+自動ロックを利用するようにします。これを呼ぶと@[auto_lock?]が真に
+なります。
+
+SEEALSO
+Surface#lock
+auto_lock?
+auto_lock_off
+
+%%
+NAME auto_lock_off
+TYPE .
+DEP SGE
+PURPOSE 自動ロックを利用しないようにします。
+
+PROTO
+auto_lock_off
+autoLockOFF
+
+DESC
+自動ロックを利用しないようにします。これを呼ぶと@[auto_lock?]が偽に
+なります。
+
+SEEALSO
+Surface#lock
+auto_lock?
+auto_lock_on
+
+%%
+NAME auto_lock=
+TYPE .
+DEP SGE
+PURPOSE 自動ロックを使うかどうかを設定します。
+
+PROTO
+auto_lock=(locking)
+autoLock=(locking)
+
+DESC
+自動ロックを使うかどうかを設定します。 SDL.auto_lock = true は
+SDL.auto_lock_on と同じで、 SDL.auto_lock = false は SDL.auto_lock_off と
+同じです。
+
+SEEALSO
+Surface#lock
+auto_lock?
+auto_lock_on
+auto_lock_off
+
+%%
+NAME transform
+TYPE .
+DEP SGE
+PURPOSE 回転縮小拡大描画をします。
+
+PROTO
+transform(src,dst,angle,xscale,yscale,px,py,qx,qy,flags)
+
+DESC
+$[src]を回転縮小拡大したものを$[dst]に描画します。
+$[angle]は回転角度(単位はラジアンではなく度)、$[xscale]、$[yscale]は
+それぞれX方向とY方向の倍率、($[px], $[py]) は $[src]における回転の
+中心で、その点が$[dst]の($[qx], $[qy])にくるように描画されます。
+また、$[flags]としては以下の値のORを取ったものを与えます。
+
+:0
+  普通
+:SDL::TRANSFORM_SAFE
+  $[src] と $[dst] のピクセルフォーマットが異なっていても正しく描画します。
+  $[src].bpp と $[dst].bpp が異なる場合は自動的に有効になります。
+  ただしれを有効にすると遅くなります。
+:SDL::TRANSFORM_AA
+  補完描画をします。遅いがみためが良くなります。
+:SDL::TRANSFORM_TMAP
+  テクスチャマッピングを使います。すこし速くなるが見た目は悪くなります。
+  このフラグを有効にした場合 $[px] 、$[py] や上で挙げたフラグを無視します。
+
+NOTES
+最適なパフォーマンスを得るために、$[src] と $[dst] は同じピクセル
+フォーマットを使い、また24bpp以外のフォーマットを使ってください。
+
+@[Surface#set_clip_rect] で設定したクリッピング矩形は $[src]
+および $[dst] で有効です。
+
+SDL::TRANSFORM_AA を使う場合は、高さ方向および幅方向にそれぞれ
+1ピクセルづつ間引かれます(パフォーマンスを良くするためです)。
+
+$[src]が32bpp RGBA フォーマットの場合には、SDL::TRANSFORM_SAFEを使うべきです。
+
+このメソッドはアルファブレンディングは一切しませんが、アルファチャンネルの
+値は保ちます。もし、アルファブレンディング、カラーキーの効果のある
+回転縮小拡大描画をしたい場合は@[transform_blit]をかわりに利用してください。
+
+SEEALSO
+transform_blit
+Surface.new
+
+%%
+NAME transform_blit
+TYPE .
+DEP SGE
+PURPOSE カラーキーおよびアルファブレンドが有効な回転縮小拡大描画をします。
+
+PROTO
+transform_blit(src,dst,angle,xscale,yscale,px,py,qx,qy,flags)
+transformBlit(src,dst,angle,xscale,yscale,px,py,qx,qy,flags)
+
+DESC
+回転縮小拡大描画をします。引数の意味などは @[transform] と同様です。
+@[transform] との違いは $[src] に設定されたカラーキー(抜き色)
+およびアルファブレンディングが有効になることです。
+
+SEEALSO
+transform
+Surface#set_color_key
+Surface#set_alpha
+
+%%
+NAME draw_line
+MOD Surface
+TYPE #
+DEP SGE
+LOCK
+PURPOSE 直線を描画します。
+
+PROTO
+draw_line(x1,x2,y1,y2,color)
+drawLine(x1,x2,y1,y2,color)
+
+DESC
+($[x1], $[y1])から($[x2], $[y2])までの直線を $[color] で指定した色で
+描画します。
+
+SEEALSO
+Surface#draw_aa_line
+Surface#draw_line_alpha
+Surface#draw_rect
+
+%%
+NAME draw_aa_line
+MOD Surface
+TYPE #
+DEP SGE
+LOCK
+PURPOSE アンチエイリアシングされた直線を描画します。
+
+PROTO
+draw_aa_line(x1,x2,y1,y2,color)
+drawAALine(x1,x2,y1,y2,color)
+
+DESC
+($[x1], $[y1])から($[x2], $[y2])までの直線を $[color] で指定した色で
+アンチエイリアスして描画します。
+
+SEEALSO
+Surface#draw_line
+
+%%
+NAME draw_line_alpha
+MOD Surface
+TYPE #
+DEP SGE
+LOCK
+PURPOSE アルファブレンディングした直線を描画します。
+
+PROTO
+draw_line_alpha(x1,x2,y1,y2,color,alpha)
+drawLineAlpha(x1,x2,y1,y2,color,alpha)
+
+DESC
+($[x1], $[y1])から($[x2], $[y2])までの直線を $[color] で指定した色、
+$[alpha]で指定したα値で描画します。
+
+SEEALSO
+Surface#draw_line
+
+%%
+NAME draw_aa_line_alpha
+MOD Surface
+TYPE #
+DEP SGE
+LOCK
+PURPOSE アルファブレンディングした直線を描画します。
+
+PROTO
+draw_aa_line_alpha(x1,x2,y1,y2,color,alpha)
+drawAALineAlpha(x1,x2,y1,y2,color,alpha)
+
+DESC
+($[x1], $[y1])から($[x2], $[y2])までの直線を $[color] で指定した色、
+$[alpha]で指定したα値でアンチエイリアスをかけて描画します。
+
+SEEALSO
+Surface#draw_line
+
+%%
+NAME draw_rect
+MOD Surface
+TYPE #
+DEP SGE
+LOCK
+PURPOSE 長方形を描画します。
+
+PROTO
+draw_rect(x,y,w,h,color)
+drawRect(x,y,w,h,color)
+
+DESC
+($[x], $[y])が左上の点で$[w]が幅、$[h]が高さの長方形を $[color] で
+指定した色で描画します。中を塗り潰しません。
+
+SEEALSO
+Surface#fill_rect
+
+%%
+NAME draw_rect_alpha
+MOD Surface
+TYPE #
+DEP SGE
+LOCK
+PURPOSE 長方形をアルファブレンディング描画します。
+
+PROTO
+draw_rect_alpha(x,y,w,h,color,alpha)
+drawRectAlpha(x,y,w,h,color,alpha)
+
+DESC
+($[x], $[y])が左上の点で$[w]が幅、$[h]が高さの長方形を $[color] で
+指定した色、$[alpha] で指定したα値で描画します。中を塗り潰しません。
+
+SEEALSO
+Surface#fill_rect
+Surface#draw_rect
+
+%%
+NAME draw_filled_rect_alpha
+MOD Surface
+TYPE #
+DEP SGE
+LOCK
+PURPOSE 塗り潰した長方形をアルファブレンディング描画します。
+
+PROTO
+draw_filled_rect_alpha(x,y,w,h,color,alpha)
+drawFilledRectAlpha(x,y,w,h,color,alpha)
+
+DESC
+($[x], $[y])が左上の点で$[w]が幅、$[h]が高さの中を塗り潰した
+長方形を $[color] で指定した色、$[alpha] で指定したα値で描画します。
+
+SEEALSO
+Surface#fill_rect
+Surface#draw_rect
+
+%%
+NAME draw_circle
+MOD Surface
+TYPE #
+DEP SGE
+LOCK
+PURPOSE 円を描画します。
+
+PROTO
+draw_circle(x,y,r,color)
+drawCircle(x,y,r,color)
+
+DESC
+中心 ($[x],$[y])、半径 $[r]の円を $[color] で指定した色で描画します。
+
+SEEALSO
+Surface#draw_ellipse
+Surface#draw_filled_circle
+Surface#draw_aa_circle
+Surface#draw_aa_filled_circle
+Surface#draw_circle_alpha
+Surface#draw_filled_circle_alpha
+Surface#draw_aa_circle_alpha
+
+%%
+NAME draw_filled_circle
+MOD Surface
+TYPE #
+DEP SGE
+LOCK
+PURPOSE 塗り潰した円を描画します。
+
+PROTO
+draw_filled_circle(x,y,r,color)
+drawFilledCircle(x,y,r,color)
+
+DESC
+中心 ($[x],$[y])、半径 $[r]の円を $[color] で指定した色で中を
+塗り潰して描画します。
+
+SEEALSO
+Surface#draw_circle
+
+%%
+NAME draw_aa_circle
+MOD Surface
+TYPE #
+DEP SGE
+LOCK
+PURPOSE アンチエイリアスをかけた円を描画します。
+
+PROTO
+draw_aa_circle(x,y,r,color)
+drawAACircle(x,y,r,color)
+
+DESC
+中心 ($[x],$[y])、半径 $[r]の円を $[color] で指定した色で
+アンチエイリアスをかけて描画します。
+
+SEEALSO
+Surface#draw_circle
+
+%%
+NAME draw_aa_filled_circle
+MOD Surface
+TYPE #
+DEP SGE
+LOCK
+PURPOSE 塗り潰した円をアンチエイリアスをかけて描画します。
+
+PROTO
+draw_aa_filled_circle(x,y,r,color)
+drawAAFilledCircle(x,y,r,color)
+
+DESC
+中心 ($[x],$[y])、半径 $[r]の円を $[color] で指定した色で
+中を塗り潰しアンチエイリアスをかけて描画します。
+
+SEEALSO
+Surface#draw_circle
+
+%%
+NAME draw_circle_alpha
+MOD Surface
+TYPE #
+DEP SGE
+LOCK
+PURPOSE 円をアルファブレンディング描画します。
+
+PROTO
+draw_circle_alpha(x,y,r,color,alpha)
+drawCircleAlpha(x,y,r,color,alpha)
+
+DESC
+中心 ($[x],$[y])、半径 $[r]の円を $[color] で指定した色、
+$[alpha]で指定したアルファ値で描画します。
+
+SEEALSO
+Surface#draw_circle
+
+%%
+NAME draw_filled_circle_alpha
+MOD Surface
+TYPE #
+DEP SGE
+LOCK
+PURPOSE 塗り潰した円をアルファブレンディング描画します。
+
+PROTO
+draw_filled_circle_alpha(x,y,r,color,alpha)
+drawFilledCircleAlpha(x,y,r,color,alpha)
+
+DESC
+中心 ($[x],$[y])、半径 $[r]の中を塗り潰した円を $[color] で指定した色、
+$[alpha]で指定したアルファ値で描画します。
+
+SEEALSO
+Surface#draw_circle
+
+%%
+NAME draw_aa_circle_alpha
+MOD Surface
+TYPE #
+DEP SGE
+LOCK
+PURPOSE 円をアルファブレンディング、アンチエイリアス描画します。
+
+PROTO
+draw_aa_circle_alpha(x,y,r,color,alpha)
+drawAACircleAlpha(x,y,r,color,alpha)
+
+DESC
+中心 ($[x],$[y])、半径 $[r]の円を $[color] で指定した色、
+$[alpha]で指定したアルファ値でアンチエイリアスで描画します。
+
+SEEALSO
+Surface#draw_circle
