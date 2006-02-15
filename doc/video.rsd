@@ -118,6 +118,7 @@ SDL は現在 1 ピクセル 8 bit 以上のいかなるピクセル深度もサポートしています。
 NAME get_video_surface
 TYPE .
 PURPOSE 現在の表示サーフェスを返します。
+RVAL Screen
 
 PROTO
 getVideoSurface
@@ -138,6 +139,7 @@ EXCEPTION *
 NAME video_info
 TYPE .
 PURPOSE ビデオハードウェアについての情報を返します。
+RVAL VideoInfo
 
 PROTO
 videoInfo
@@ -163,6 +165,7 @@ VideoInfo
 NAME video_driver_name
 TYPE .
 PURPOSE ビデオドライバの名前を取得します。
+RVAL String
 
 PROTO
 videoDriverName
@@ -184,6 +187,7 @@ init
 NAME list_modes
 TYPE .
 PURPOSE 与えられたフォーマットとビデオのフラグに対し、利用可能な画面モードの配列を返します。
+RVAL nil/true/Array of [UINT, UINT]
 
 PROTO
 list_modes(flags)
@@ -235,6 +239,7 @@ video_info
 NAME check_video_mode
 TYPE .
 PURPOSE ある特定のビデオモードがサポートされているかチェックします。
+RVAL Integer
 
 PROTO
 check_video_mode(w,h,bpp,flags)
@@ -272,6 +277,7 @@ video_info
 NAME set_video_mode
 TYPE .
 PURPOSE 指定された横幅・高さ・ピクセル深度を用いてビデオモードを設定します。
+RVAL Screen
 
 PROTO
 setVideoMode(w,h,bpp,flags)
@@ -414,6 +420,7 @@ NAME set_colors
 MOD Surface
 TYPE #
 PURPOSE 与えられた 8 bit サーフェスのカラーマップの一部をセットします。
+RVAL true/false
 
 PROTO
 set_colors(colors,firstcolor)
@@ -470,6 +477,7 @@ NAME set_palette
 MOD Surface
 TYPE #
 PURPOSE 8 ビットサーフェスのパレットに色をセットします。
+RVAL true/false
 
 PROTO
 set_palette(flags,colors,firstcolor)
@@ -565,6 +573,7 @@ set_gamma_ramp
 NAME get_gamma_ramp
 TYPE .
 PURPOSE 表示のためのカラーガンマ値の変換テーブルを取得します。
+RVAL Array of UINT
 
 PROTO
 get_gamma_ramp
@@ -617,6 +626,7 @@ NAME map_rgb
 MOD Surface
 TYPE #
 PURPOSE RGB カラー値をピクセルフォーマットに写像します。
+RVAL UINT
 
 PROTO
 map_rgb(r,g,b)
@@ -652,6 +662,7 @@ NAME map_rgba
 MOD Surface
 TYPE #
 PURPOSE RGBA カラー値をピクセルフォーマットに写像します。
+RVAL UINT
 
 PROTO
 map_rgba(r,g,b,a)
@@ -688,7 +699,7 @@ NAME get_rgb
 MOD Surface
 TYPE #
 PURPOSE 指定されたピクセルフォーマット内のピクセルから RGB 値を取得します。
-
+RVAL [UINT, UINT, UINT]
 PROTO
 get_rgb(pixel)
 getRGB(pixel)
@@ -714,6 +725,7 @@ NAME get_rgba
 MOD Surface
 TYPE #
 PURPOSE 指定されたピクセルフォーマット内のピクセルから RGBA 値を取得します。
+RVAL [UINT, UINT, UINT]
 
 PROTO
 get_rgba(pixel)
@@ -741,6 +753,7 @@ NAME new
 MOD Surface
 TYPE .
 PURPOSE 空の @[Surface] のインスタンスを生成します。
+RVAL Surface
 
 PROTO
 new(flags,w,h,depth,Rmask,Gmask,Bmask,Amask)
@@ -826,6 +839,7 @@ NAME new_from
 MOD Surface
 TYPE .
 PURPOSE ピクセルデータから @[Surface] のインスタンスを生成します。
+RVAL Surface
 
 PROTO
 new_from(pixels,w,h,depth,pitch,Rmask,Gmask,Bmask,Amask)
@@ -930,6 +944,7 @@ NAME must_lock?
 MOD Surface
 TYPE #
 PURPOSE ロックが必要かどうかを返します。
+RVAL true/false
 
 PROTO
 must_lock?
@@ -947,6 +962,7 @@ NAME load_bmp
 MOD Surface
 TYPE .
 PURPOSE Windows の BMP ファイルをサーフェスにロードします。
+RVAL Surface
 
 PROTO
 load_bmp(filename)
@@ -1144,6 +1160,7 @@ NAME get_clip_rect
 MOD Surface
 TYPE #
 PURPOSE サーフェスのクリッピング矩形を取得します。
+RVAL [Integer, Integer, UINT, UINT]
 
 PROTO
 get_clip_rect
@@ -1165,6 +1182,7 @@ blit_surface
 NAME blit_surface
 TYPE .
 PURPOSE 転送元サーフェスから転送先サーフェスへ高速 blit 転送を行います。
+RVAL 0/-2
 
 PROTO
 blit_surface(src,srcX,srcY,srcW,srcH,dst,dstX,dstY)
@@ -1243,6 +1261,7 @@ NAME display_format
 MOD Surface
 TYPE #
 PURPOSE サーフェスを表示フォーマットに変換します。
+RVAL Surface
 
 PROTO
 display_format
@@ -1269,10 +1288,11 @@ Surface#set_alpha
 Surface#set_color_key
 
 %%
-NAME display_format
+NAME display_format_alpha
 MOD Surface
 TYPE #
 PURPOSE サーフェスを表示フォーマットに変換します。
+RVAL Surface
 
 PROTO
 display_format_alpha
@@ -1310,6 +1330,7 @@ NAME flags
 MOD Surface
 TYPE #
 PURPOSE サーフェスのフラグ
+RVAL UINT
 
 PROTO
 flags
@@ -1360,6 +1381,7 @@ NAME w
 MOD Surface
 TYPE #
 PURPOSE サーフェスの幅
+RVAL UINT
 
 PROTO
 w
@@ -1375,6 +1397,7 @@ NAME h
 MOD Surface
 TYPE #
 PURPOSE サーフェスの高さ
+RVAL UINT
 
 PROTO
 h
@@ -1390,6 +1413,7 @@ NAME pixels
 MOD Surface
 TYPE #
 PURPOSE 実際のピクセルデータを返します
+RVAL String
 
 PROTO
 pixels
@@ -1415,6 +1439,7 @@ NAME Rmask
 MOD Surface
 TYPE #
 PURPOSE 赤チャンネルの値を取得するのに使われるビットマスク
+RVAL UINT
 
 PROTO
 Rmask
@@ -1427,6 +1452,7 @@ NAME Gmask
 MOD Surface
 TYPE #
 PURPOSE 緑チャンネルの値を取得するのに使われるビットマスク
+RVAL UINT
 
 PROTO
 Gmask
@@ -1439,6 +1465,7 @@ NAME Bmask
 MOD Surface
 TYPE #
 PURPOSE 青チャンネルの値を取得するのに使われるビットマスク
+RVAL UINT
 
 PROTO
 Bmask
@@ -1451,6 +1478,7 @@ NAME Amask
 MOD Surface
 TYPE #
 PURPOSE αチャンネルの値を取得するのに使われるビットマスク
+RVAL UINT
 
 PROTO
 Amask
@@ -1463,6 +1491,7 @@ NAME colorkey
 MOD Surface
 TYPE #
 PURPOSE 透明ピクセルのピクセル値
+RVAL UINT
 
 PROTO
 colorkey
@@ -1480,6 +1509,7 @@ NAME alpha
 MOD Surface
 TYPE #
 PURPOSE サーフェス全体のα値
+RVAL UINT
 
 PROTO
 alpha
@@ -1496,6 +1526,7 @@ NAME bpp
 MOD Surface
 TYPE #
 PURPOSE サーフェスの各ピクセルを表わすのに使われるビット数
+RVAL UINT
 
 PROTO
 bpp
@@ -1510,6 +1541,7 @@ MOD Surface
 TYPE .
 DEP SDL_image
 PURPOSE 画像をサーフェスにロードします。
+RVAL Surface
 
 PROTO
 load(filename)
@@ -1553,6 +1585,7 @@ MOD Surface
 TYPE #
 LOCK
 PURPOSE 指定した位置のピクセル値を得ます。
+RVAL UINT
 
 PROTO
 get_pixel(x, y)
@@ -1610,6 +1643,7 @@ NAME auto_lock?
 TYPE .
 DEP SGE
 PURPOSE サーフェスを自動でロックするかどうかを返す。
+RVAL true/false
 
 PROTO
 auto_lock?

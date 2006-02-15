@@ -49,6 +49,7 @@ SDLおよびRuby/SDLの仕様を理解した上で必要な場合のみ使ってください。
 NAME inited_system
 TYPE .
 PURPOSE サブシステムが初期化されているかどうかをチェックします。
+RVAL UINT
 
 PROTO
 initedSystem(flags)
@@ -103,6 +104,7 @@ init
 NAME getenv
 TYPE .
 PURPOSE 環境変数を得ます。
+RVAL String
 
 PROTO
 getenv(var)
