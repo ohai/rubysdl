@@ -2063,3 +2063,141 @@ $[alpha]で指定したアルファ値でアンチエイリアスで描画します。
 
 SEEALSO
 Surface#draw_circle
+
+%%
+NAME draw_ellipse
+MOD Surface
+TYPE #
+DEP SGE
+LOCK
+PURPOSE 楕円を描画します。
+
+PROTO
+draw_ellipse(x,y,rx,ry,color)
+drawEllipse(x,y,rx,ry,color)
+
+DESC
+中心 ($[x],$[y])、X方向の半径 $[xr]、Y方向の半径 $[ry] の楕円を $[color] で指定した色で描画します。
+
+SEEALSO
+Surface#draw_circle
+Surface#draw_filled_ellipse
+Surface#draw_aa_ellipse
+Surface#draw_aa_filled_ellipse
+Surface#draw_ellipse_alpha
+Surface#draw_filled_ellipse_alpha
+Surface#draw_aa_ellipse_alpha
+
+%%
+NAME draw_filled_ellipse
+MOD Surface
+TYPE #
+DEP SGE
+LOCK
+PURPOSE 塗り潰した楕円を描画します。
+
+PROTO
+draw_filled_ellipse(x,y,rx,ry,color)
+drawFilledEllipse(x,y,rx,ry,color)
+
+DESC
+中心 ($[x],$[y])、X方向の半径 $[xr]、Y方向の半径 $[ry] の楕円を $[color] で指定した色で中を
+塗り潰して描画します。
+
+SEEALSO
+Surface#draw_ellipse
+
+%%
+NAME draw_aa_ellipse
+MOD Surface
+TYPE #
+DEP SGE
+LOCK
+PURPOSE アンチエイリアスをかけた楕円を描画します。
+
+PROTO
+draw_aa_ellipse(x,y,rx,ry,color)
+drawAAEllipse(x,y,rx,ry,color)
+
+DESC
+中心 ($[x],$[y])、X方向の半径 $[xr]、Y方向の半径 $[ry] の楕円を $[color] で指定した色で
+アンチエイリアスをかけて描画します。
+
+SEEALSO
+Surface#draw_ellipse
+
+%%
+NAME draw_aa_filled_ellipse
+MOD Surface
+TYPE #
+DEP SGE
+LOCK
+PURPOSE 塗り潰した楕円をアンチエイリアスをかけて描画します。
+
+PROTO
+draw_aa_filled_ellipse(x,y,rx,ry,color)
+drawAAFilledEllipse(x,y,rx,ry,color)
+
+DESC
+中心 ($[x],$[y])、X方向の半径 $[xr]、Y方向の半径 $[ry] の楕円を $[color] で指定した色で
+中を塗り潰しアンチエイリアスをかけて描画します。
+
+SEEALSO
+Surface#draw_ellipse
+
+%%
+NAME draw_ellipse_alpha
+MOD Surface
+TYPE #
+DEP SGE
+LOCK
+PURPOSE 楕円をアルファブレンディング描画します。
+
+PROTO
+draw_ellipse_alpha(x,y,rx,ry,color,alpha)
+drawEllipseAlpha(x,y,rx,ry,color,alpha)
+
+DESC
+中心 ($[x],$[y])、X方向の半径 $[xr]、Y方向の半径 $[ry] の楕円を $[color] で指定した色、
+$[alpha]で指定したアルファ値で描画します。
+
+SEEALSO
+Surface#draw_ellipse
+
+%%
+NAME draw_filled_ellipse_alpha
+MOD Surface
+TYPE #
+DEP SGE
+LOCK
+PURPOSE 塗り潰した楕円をアルファブレンディング描画します。
+
+PROTO
+draw_filled_ellipse_alpha(x,y,rx,ry,color,alpha)
+drawFilledEllipseAlpha(x,y,rx,ry,color,alpha)
+
+DESC
+中心 ($[x],$[y])、X方向の半径 $[xr]、Y方向の半径 $[ry] の中を塗り潰した楕円を $[color] で指定した色、
+$[alpha]で指定したアルファ値で描画します。
+
+SEEALSO
+Surface#draw_ellipse
+
+%%
+NAME draw_aa_ellipse_alpha
+MOD Surface
+TYPE #
+DEP SGE
+LOCK
+PURPOSE 楕円をアルファブレンディング、アンチエイリアス描画します。
+
+PROTO
+draw_aa_ellipse_alpha(x,y,rx,ry,color,alpha)
+drawAAEllipseAlpha(x,y,rx,ry,color,alpha)
+
+DESC
+中心 ($[x],$[y])、X方向の半径 $[xr]、Y方向の半径 $[ry] の楕円を $[color] で指定した色、
+$[alpha]で指定したアルファ値でアンチエイリアスで描画します。
+
+SEEALSO
+Surface#draw_ellipse
