@@ -83,3 +83,234 @@ Event2という名前は互換性のためのものです。これが気にいらない場合は、
 と書いてください。これで SDL::Event という名前で SDL::Event2 に
 アクセスできます。
 
+== SDL::Event2::Active
+アプリケーションの可視性に関するイベントのクラスです。
+
+マウスカーソルのウインドウの出入り、
+キーボードフォーカスの得失、および
+最小化/アイコン化されたり元に戻ったときに発生します。
+
+上のいずれが生じたのかは @[Event2::Active#state] でわかります。
+
+* NOTES
+
+  このイベントは、最初にウィンドウが作成されたときには発生しません。
+
+METHODS(Event2::Active)
+
+== SDL::Event2::KeyDown
+== SDL::Event2::KeyUp
+== SDL::Event2::MouseMotion
+== SDL::Event2::MouseButtonDown
+== SDL::Event2::MouseButtonUp
+== SDL::Event2::JoyAxis
+== SDL::Event2::JoyBall
+== SDL::Event2::JoyHat
+== SDL::Event2::JoyButtonUp
+== SDL::Event2::JoyButtonDown
+== SDL::Event2::Quit
+== SDL::Event2::SysWM
+== SDL::Event2::VideoResize
+
+== Methods
+%%%
+NAME poll
+MOD Event2
+TYPE .
+PURPOSE 現在留まっているイベントを取り出します。
+RVAL Event2/nil
+
+PROTO
+poll
+
+DESC
+現在留まっているイベントを取り出し、イベントがあるときはそのイベントを、
+無いときは nil を返します。イベントが取り出されたときは
+キューからそのイベントを削除します。
+
+EXAMPLE
+while event = SDL::Event2.poll #キューに残っているイベントがなくなるまでループ
+  case event # 適切なイベントタイプを処理
+  when SDL::Event2::KeyDown # キー押下イベントを処理
+    puts "あ! キーを押しましたね"
+  when SDL::Event2::MouseMotion
+    .
+    .
+    .
+  else # 未処理のイベントを報告
+    puts 私にはよく分からないイベントです!"
+  end
+end
+
+SEEALSO
+Event2
+Event2.wait
+
+%%
+NAME wait
+MOD Event2
+TYPE .
+PURPOSE 次の利用可能なイベントが来るまで無限に待機します。
+RVAL Event2/nil
+
+PROTO
+wait
+
+DESC
+次の利用可能なイベントが来るまで無限に待機し、
+イベントが来たらそのイベントを返します。
+
+返したイベントはキューから削除されます。
+
+EXCEPTION
+イベントを待っている間にエラーがあった場合は例外 @[Error] を
+発生させます。
+
+SEEALSO
+Event2.poll
+
+%%
+NAME push
+MOD Event2
+TYPE .
+PURPOSE イベントをイベントキューにプッシュします。
+
+PROTO
+push(event)
+
+DESC
+$[event] で指定したイベントをイベントキューにプッシュします。
+
+NOTES
+デバイス入力イベントをキューにプッシュしても、
+SDL 内のデバイスの状態は変わりません。
+
+EXCEPTION *
+
+SEEALSO
+Event2.poll
+
+%%
+NAME app_state
+MOD Event2
+TYPE .
+PURPOSE アプリケーションの状態を得ます。
+RVAL UINT
+
+PROTO
+app_state
+appState
+
+DESC
+アプリケーションの現在の状態を返します。戻り値は以下のビット和です。
+:SDL::Event2::APPMOUSEFOCUS
+  マウスのフォーカスがあります。
+:SDL::Event2::APPINPUTFOCUS
+  キーボードのフォーカスがあります。
+:SDL::Event2::APPACTIVE
+  アプリケーションは可視状態です。
+
+SEEALSO
+Event2::Active
+
+%%
+NAME enable_unicode
+MOD Event2
+TYPE .
+PURPOSE UNICODE変換を有効にします。
+
+PROTO
+enable_unicode
+enableUNICODE
+
+DESC
+キーイベントに対応した文字コードを得るために、
+まずこの関数を呼び出してUnicode変換を有効にしなければいけません。
+変換を有効にすると、キーボードイベントのたびにちょっとした
+オーバーヘッドが発生するため、デフォルトでは変換は無効になっています。
+変換を有効にすると、以後のキーダウンイベントでは、
+@[Event2::KeyDown#unicode] から対応する文字コードが得られます。
+対応する文字コードが見つからないときは0が入ります。
+
+NOTES
+変換が有効なのはキーダウンイベントのみです。
+キーリリースイベントは変換されません。
+
+SEEALSO
+Event2.disable_unicode
+Event2.enable_unicode?
+
+%%
+NAME disable_unicode
+MOD Event2
+TYPE .
+PURPOSE UNICODE変換を無効にします。
+
+PROTO
+disable_unicode
+disableUNICODE
+
+DESC
+UNICODE変換を無効にします。詳しくは @[Event2.enable_unicode]
+を見てください。
+
+%%
+NAME enable_unicode?
+MOD Event2
+TYPE .
+PURPOSE UNICODE変換が有効かどうか調べます。
+RVAL true/false
+
+PROTO
+enable_unicode?
+enableUNICODE?
+
+DESC
+UNICODE変換が有効かどうか調べます。詳しくは @[Event2.enable_unicode]
+を見てください。
+
+%%
+NAME gain
+TYPE #
+MOD Event2::Active
+PURPOSE 可視性を得たなら true を、失ったなら false を返します。
+RVAL true/false
+
+PROTO
+gain
+
+DESC
+可視性を得たことに対応するイベントなら true を、
+失ったことに対応するイベントなら false を返します。
+
+SEEALSO
+Event2::Active
+Event2::Active#state
+
+%%
+NAME state
+MOD Event2::Active
+TYPE #
+PURPOSE どのような種類の可視性変更イベントが発生したのかを返します。
+RVAL SDL::Event2::APPMOUSEFOCUS/SDL::Event2::APPINPUTFOCUS/SDL::Event2::APPACTIVE
+
+PROTO
+state
+
+DESC
+マウスカーソルがウインドウの外に出たり(gain=false)、ウインドウ内に
+入ったり(gain=true)したときは、SDL::Event2::APPMOUSEFOCUS を返します。
+
+アプリケーションがキーボードフォーカスを得たり(gain=true)
+失ったり(gain=false)したときは、SDL::Event2::APPINPUTFOCUS を
+返します。これは通常他のアプリケーションがアクティブに
+なったときに発生します。
+
+アプリケーションが最小化/アイコン化されたり(gain=false)
+元に戻ったとき(gain=true)には SDL::Event2::APPACTIVE を返します。
+
+SEEALSO
+Event2::Active
+Event2::Active#gain
+
+
