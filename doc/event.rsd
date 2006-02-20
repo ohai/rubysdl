@@ -99,7 +99,15 @@ Event2という名前は互換性のためのものです。これが気にいらない場合は、
 METHODS(Event2::Active)
 
 == SDL::Event2::KeyDown
+キーボードを押したときに発生するイベントのクラスです。
+
+METHODS(Event2::KeyDown)
+
 == SDL::Event2::KeyUp
+キーボードを離したときに発生するイベントのクラスです。
+
+METHODS(Event2::KeyUp)
+
 == SDL::Event2::MouseMotion
 == SDL::Event2::MouseButtonDown
 == SDL::Event2::MouseButtonUp
@@ -313,4 +321,115 @@ SEEALSO
 Event2::Active
 Event2::Active#gain
 
+%%
+NAME press
+MOD Event2::KeyDown
+TYPE #
+PURPOSE trueを返します。
+RVAL true
+
+PROTO
+press
+
+DESC
+常に true を返します。
+
+SEEALSO
+Event2::KeyUp#press
+
+%%
+NAME sym
+MOD Event2::KeyDown
+TYPE #
+PURPOSE 何のキーを押したかをキーシンボルで返します。
+RVAL Integer
+
+PROTO
+sym
+
+DESC
+何のキーを押したかを((<キーシンボル>))で返します。
+
+SEEALSO
+Event2::KeyDown#unicode
+
+%%
+NAME mod
+MOD Event2::KeyDown
+TYPE #
+PURPOSE キー押下時のキーモディファイアの状態を返します。
+RVAL UINT
+
+PROTO
+mod
+
+DESC
+キー押下時のキーモディファイアの状態を返します。
+返り値は @[Key.mod_state] で得られるものと同じです。
+
+SEEALSO
+Key.mod_state
+
+%%
+NAME unicode
+MOD Event2::KeyDown
+TYPE #
+PURPOSE 変換された文字を返します。
+RVAL UINT
+
+PROTO
+unicode
+
+DESC
+@[Event2.enable_unicode] によって UNICODE 変換が有効にされた時には、
+キーの押下に対応する UNICODE 文字を返します。
+文字の上位 9 ビットが 0 の場合は、 ASCII 文字に対応しています。
+
+変換が有効でない場合には0 を返します。
+
+%%
+NAME press
+MOD Event2::KeyUp
+TYPE #
+PURPOSE falseを返します。
+RVAL false
+
+PROTO
+press
+
+DESC
+常に false を返します。
+
+SEEALSO
+Event2::KeyDown#press
+
+%%
+NAME sym
+MOD Event2::KeyUp
+TYPE #
+PURPOSE 何のキーを離したかをキーシンボルで返します。
+RVAL Integer
+
+PROTO
+sym
+
+DESC
+何のキーを離したかを((<キーシンボル>))で返します。
+
+%%
+NAME mod
+MOD Event2::KeyUp
+TYPE #
+PURPOSE キーモディファイアの状態を返します。
+RVAL UINT
+
+PROTO
+mod
+
+DESC
+キーモディファイアの状態を返します。
+返り値は @[Key.mod_state] で得られるものと同じです。
+
+SEEALSO
+Key.mod_state
 
