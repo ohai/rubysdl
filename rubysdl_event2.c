@@ -158,6 +158,11 @@ static VALUE createVideoResizeEvent(SDL_Event *event)
   return obj;
 }
 
+static VALUE createVideoExposeEvent(SDL_Event *event)
+{
+  return rb_obj_alloc(cVideoExposeEvent);
+}
+
 static VALUE sdl_event2_poll(VALUE class)
 {
   SDL_Event event;
@@ -252,6 +257,8 @@ static VALUE sdl_event2_push(VALUE class,VALUE event)
     e.type=SDL_VIDEORESIZE;
     e.resize.w=NUM2INT(rb_iv_get(event,"@w"));
     e.resize.h=NUM2INT(rb_iv_get(event,"@h"));
+  }else if(eventClass==cVideoExposeEvent){
+    e.type=SDL_VIDEOEXPOSE;
   }else {
     rb_raise(eSDLError,"This object couldn't be pushed");
   }
@@ -362,6 +369,8 @@ void init_event2(void)
   rb_define_attr(cVideoResizeEvent,"w",1,1);
   rb_define_attr(cVideoResizeEvent,"h",1,1);
 
+  cVideoExposeEvent=rb_define_class_under(cEvent2,"VideoExpose",cEvent2);
+  
   for(i=0;i<SDL_NUMEVENTS;++i)
     createEventObj[i]=createNoEvent;
   createEventObj[SDL_ACTIVEEVENT]=createActiveEvent;
@@ -378,7 +387,7 @@ void init_event2(void)
   createEventObj[SDL_QUIT]=createQuitEvent;
   createEventObj[SDL_SYSWMEVENT]=createSysWMEvent;
   createEventObj[SDL_VIDEORESIZE]=createVideoResizeEvent;
-
+  createEventObj[SDL_VIDEOEXPOSE]=createVideoExposeEvent;
 		 
 }
   /*

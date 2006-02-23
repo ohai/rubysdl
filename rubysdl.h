@@ -81,6 +81,7 @@ GLOBAL VALUE cJoyButtonDownEvent;
 GLOBAL VALUE cQuitEvent;
 GLOBAL VALUE cSysWMEvent;
 GLOBAL VALUE cVideoResizeEvent;
+GLOBAL VALUE cVideoExposeEvent;
 #endif
 
 #define SetRect(Rect,X,Y,W,H) \
