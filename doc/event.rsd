@@ -109,9 +109,36 @@ METHODS(Event2::KeyDown)
 METHODS(Event2::KeyUp)
 
 == SDL::Event2::MouseMotion
+マウスを動かしたときに発生するイベントのクラスです。
+
+簡単に言うと、
+このイベントは
+アプリケーションウィンドウの中でユーザーがマウスを動かしたとき、
+または @[Mouse.warp] が呼ばれた時に発生します。
+現在のボタンの状態(@[Event2::MouseMotion#state])とともに、
+絶対座標(@[Event2::MouseMotion#x] と @[Event2::MouseMotion#y])
+と相対座標(@[Event2::MouseMotion#xrel] と @[Event2::MouseMotion#yrel])
+の両方が報告されます。
+
+METHODS(Event2::MouseMotion)
+
 == SDL::Event2::MouseButtonDown
+マウスボタンを押したときのイベントのクラスです。
+
+METHODS(Event2::MouseButtonDown)
+
 == SDL::Event2::MouseButtonUp
+マウスボタンを離したときのイベントのクラスです。
+
+METHODS(Event2::MouseButtonUp)
+
 == SDL::Event2::JoyAxis
+ジョイスティックの軸イベントのクラスです。
+
+ユーザがジョイスティックの軸を移動させるとこのイベントが発生します。
+
+METHODS(Event2::JoyAxis)
+
 == SDL::Event2::JoyBall
 == SDL::Event2::JoyHat
 == SDL::Event2::JoyButtonUp
@@ -432,4 +459,267 @@ DESC
 
 SEEALSO
 Key.mod_state
+
+%%
+NAME state
+MOD Event2::MouseMotion
+TYPE #
+PURPOSE 現在のボタンの状態を返します。
+RVAL UINT
+
+PROTO
+state
+
+DESC
+現在のボタンの状態を返します。
+以下の定数の論理和を取ったものを返します。
+
+:SDL::Mouse::BUTTON_LMASK
+  左ボタン
+:SDL::Mouse::BUTTON_MMASK
+  中央ボタン
+:SDL::Mouse::BUTTON_RMASK
+  右ボタン
+
+SEEALSO
+Mouse#state
+
+%%
+NAME x
+MOD Event2::MouseMotion
+TYPE #
+PURPOSE マウスの X 座標を返します。
+RVAL UINT
+
+PROTO
+x
+
+DESC
+マウスの X 座標を正の整数で返します。
+
+SEEALSO
+Mouse#state
+
+%%
+NAME y
+MOD Event2::MouseMotion
+TYPE #
+PURPOSE マウスの Y 座標を返します。
+RVAL UINT
+
+PROTO
+y
+
+DESC
+マウスの Y 座標を正の整数で返します。
+
+SEEALSO
+Mouse#state
+
+%%
+NAME xrel
+MOD Event2::MouseMotion
+TYPE #
+PURPOSE マウスの X 方向の相対的な動きを返します。
+RVAL Integer
+
+PROTO
+xrel
+
+DESC
+マウスの X 座標の相対的な動きを整数で返します。
+
+%%
+NAME yrel
+MOD Event2::MouseMotion
+TYPE #
+PURPOSE マウスの Y 方向の相対的な動きを返します。
+RVAL Integer
+
+PROTO
+yrel
+
+DESC
+マウスの Y 座標の相対的な動きを整数で返します。
+
+%%
+NAME button
+MOD Event2::MouseButtonDown
+TYPE #
+PURPOSE 押されたボタンの番号を返します。
+
+PROTO
+button
+
+DESC
+どのボタンが押されたのかを返します。左、中央、右のボタンに対応して
+* SDL::Mouse::BUTTON_LEFT
+* SDL::Mouse::BUTTON_MIDDLE
+* SDL::Mouse::BUTTON_RIGHT
+が得られます。
+
+%%
+NAME press
+MOD Event2::MouseButtonDown
+TYPE #
+PURPOSE ボタン押し下げイベントかどうかを返します。
+RVAL true
+
+PROTO
+press
+
+DESC
+ボタン押し下げイベントかどうかを返します。
+常に true を返します。
+
+SEEALSO
+Event2::MouseButtonUp#press
+
+%%
+NAME x
+MOD Event2::MouseButtonDown
+TYPE #
+PURPOSE マウスの X 座標を返します。
+RVAL UINT
+
+PROTO
+x
+
+DESC
+マウスの X 座標を正の整数で返します。
+
+SEEALSO
+Mouse#state
+
+%%
+NAME y
+MOD Event2::MouseButtonDown
+TYPE #
+PURPOSE マウスの Y 座標を返します。
+RVAL UINT
+
+PROTO
+y
+
+DESC
+マウスの Y 座標を正の整数で返します。
+
+SEEALSO
+Mouse#state
+
+%%
+NAME button
+MOD Event2::MouseButtonUp
+TYPE #
+PURPOSE 離されたボタンの番号を返します。
+
+PROTO
+button
+
+DESC
+どのボタンが離されたのかを返します。左、中央、右のボタンに対応して
+* SDL::Mouse::BUTTON_LEFT
+* SDL::Mouse::BUTTON_MIDDLE
+* SDL::Mouse::BUTTON_RIGHT
+が得られます。
+
+%%
+NAME press
+MOD Event2::MouseButtonUp
+TYPE #
+PURPOSE ボタン押し下げイベントかどうかを返します。
+RVAL false
+
+PROTO
+press
+
+DESC
+ボタン押し下げイベントかどうかを返します。
+常に false を返します。
+
+SEEALSO
+Event2::MouseButtonDown#press
+
+%%
+NAME x
+MOD Event2::MouseButtonUp
+TYPE #
+PURPOSE マウスの X 座標を返します。
+RVAL UINT
+
+PROTO
+x
+
+DESC
+マウスの X 座標を正の整数で返します。
+
+SEEALSO
+Mouse#state
+
+%%
+NAME y
+MOD Event2::MouseButtonUp
+TYPE #
+PURPOSE マウスの Y 座標を返します。
+RVAL UINT
+
+PROTO
+y
+
+DESC
+マウスの Y 座標を正の整数で返します。
+
+SEEALSO
+Mouse#state
+
+%%
+NAME which
+MOD Event2::JoyAxis
+TYPE #
+PURPOSE ジョイスティックデバイスの番号を返します。
+RVAL Integer
+
+PROTO
+which
+
+DESC
+イベントが発生したジョイスティックのインデックスを返します。
+
+SEEALSO
+Joystick
+
+%%
+NAME axis
+MOD Event2::JoyAxis
+TYPE #
+PURPOSE ジョイスティックの軸の番号を返します。
+RVAL Integer
+
+PROTO
+axis
+
+DESC
+イベントが発生した軸のインデックスを返します。
+
+SEEALSO
+Joystick
+
+%%
+NAME value
+MOD Event2::JoyAxis
+TYPE #
+PURPOSE 軸の値を返します。
+RVAL -32767 - 32767
+
+PROTO
+value
+
+DESC
+軸の現在の位置を -32767 から 32767 までの整数で返します。
+
+SEEALSO
+Joystick
+Joystick#num_axes
+Joystick#axis
+
 
