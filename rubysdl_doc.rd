@@ -1181,7 +1181,7 @@ SDL::Event2.poll,SDL::Event2.waitはSDL::Event2のサブクラスのインスタンスを返しま
         SDL::Joystick::HAT_LEFTDOWN
 
 ==== SDL::Event2::JoyButtonUp
-ジョイスティックのボタンが離されたときに生じるイベント。n
+ジョイスティックのボタンが離されたときに生じるイベント。
 --- SDL::Event2::JoyButtonUp#which
       どのジョイスティックのものなのかを示す。
 --- SDL::Event2::JoyButtonUp#button
