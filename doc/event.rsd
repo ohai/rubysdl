@@ -32,6 +32,7 @@ Ruby/SDLにおけるイベント処理の鍵は、@[Event2]のサブクラス群です。
 * @[Event2::Quit]
 * @[Event2::SysWM]
 * @[Event2::VideoResize]
+* @[Event2::VideoExpose]
 
 イベントクラスには以下の二つの用途があります。
 * キューからイベントを読み出す
@@ -208,6 +209,12 @@ SDL::RESIZABLE が $[flag] として @[set_video_mode] に
 
 このイベントを受け取ると、ウィンドウは
 @[set_video_mode]を使って新しい寸法にリサイズされるはずです。
+
+== SDL::Event2::VideoExpose
+再描画に関するイベントのクラスです
+
+このイベントは他のアプリケーション、通常はウインドウマネージャによってscreen
+が変更されたときに発生し、再描画の必要性を通知します。
 
 == Methods
 %%%
