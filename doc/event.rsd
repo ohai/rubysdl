@@ -27,8 +27,8 @@ Ruby/SDLにおけるイベント処理の鍵は、@[Event2]のサブクラス群です。
 * @[Event2::JoyAxis]
 * @[Event2::JoyBall]
 * @[Event2::JoyHat]
-* @[Event2::JoyButtonUp]
 * @[Event2::JoyButtonDown]
+* @[Event2::JoyButtonUp]
 * @[Event2::Quit]
 * @[Event2::SysWM]
 * @[Event2::VideoResize]
@@ -139,13 +139,75 @@ METHODS(Event2::MouseButtonUp)
 
 METHODS(Event2::JoyAxis)
 
+* SEEALSO
+    @[Joystick#num_axes]、@[Joystick#axis]
+
 == SDL::Event2::JoyBall
+ジョイスティックのトラックボールの動きイベントのクラスです。
+
+METHODS(Event2::JoyBall)
+
+* SEEALSO
+
+  @[Joystick#num_balls]、@[Joystick#ball]
+
 == SDL::Event2::JoyHat
-== SDL::Event2::JoyButtonUp
+ジョイスティックのハットスイッチの位置変化イベントのクラスです。
+
+METHODS(Event2::JoyHat)
+
+* SEEALSO
+  
+  @[Joystick#num_hats]、@[Joystick#hat]
+
 == SDL::Event2::JoyButtonDown
+ジョイスティックのボタンが押し下げられたときに発生するイベントのクラスです。
+
+METHODS(Event2::JoyButtonDown)
+
+* SEEALSO
+
+  @[Joystick#num_buttons]、@[Joystick#button]
+
+== SDL::Event2::JoyButtonUp
+ジョイスティックのボタンを離したときに発生するイベントのクラスです。
+
+METHODS(Event2::JoyButtonUp)
+
+* SEEALSO
+
+  @[Joystick#num_buttons]、@[Joystick#button]
+
 == SDL::Event2::Quit
+終了要請イベントのクラスです。
+
+終了イベントを無視すると、
+ユーザーはウィンドウを閉じることが不可能になります。
+一方で、終了イベントを受け入れるならば、
+アプリケーションウィンドウは閉じられて
+アプリケーションは見えなくなりますが、
+画面更新はそれでも成功イベントを報告します。
+
 == SDL::Event2::SysWM
+プラットフォーム依存のウィンドウマネージャイベントのクラスです。
+
+ウィンドウマネージャから処理できないイベントを受け取った時はいつでも
+生成されます。Ruby/SDL からはいかなるイベントであるのかを知ることは
+できません。ただ存在するだけで有用でないイベントです。
+Ruby からは無視する以外のことはできません。
+
 == SDL::Event2::VideoResize
+ウィンドウのリサイズイベントのクラスです。
+
+SDL::RESIZABLE が $[flag] として @[set_video_mode] に
+渡された時は、ユーザーはアプリケーションウィンドウをリサイズすることが
+許されます。
+ウィンドウがリサイズされた時は、このイベントが発生し、
+@[Event2::VideoResize#w] と @[Event2::VideoResize#h] から
+ウィンドウの新しい横幅と高さが得られます。
+
+このイベントを受け取ると、ウィンドウは
+@[set_video_mode]を使って新しい寸法にリサイズされるはずです。
 
 == Methods
 %%%
@@ -687,6 +749,7 @@ DESC
 
 SEEALSO
 Joystick
+Joystick#num_axes
 
 %%
 NAME axis
@@ -719,7 +782,259 @@ DESC
 
 SEEALSO
 Joystick
-Joystick#num_axes
 Joystick#axis
 
+%%
+NAME which
+MOD Event2::JoyBall
+TYPE #
+PURPOSE ジョイスティックデバイスの番号を返します。
+RVAL Integer
 
+PROTO
+which
+
+DESC
+イベントが発生したジョイスティックのインデックスを返します。
+
+SEEALSO
+Joystick
+
+%%
+NAME ball
+MOD Event2::JoyBall
+TYPE #
+PURPOSE ジョイスティックのトラックボールの番号を返します。
+RVAL Integer
+
+PROTO
+ball
+
+DESC
+イベントが発生したジョイスティックのトラックボールの
+インデックスを返します。
+
+SEEALSO
+Joystick
+Joystick#num_balls
+
+%%
+NAME xrel
+MOD Event2::JoyBall
+TYPE #
+PURPOSE X方向の相対的な動きを返します。
+RVAL Integer
+
+PROTO
+xrel
+
+DESC
+X方向の相対的な動きを整数で返します。
+
+SEEALSO
+Joystick
+Joystick#ball
+
+%%
+NAME yrel
+MOD Event2::JoyBall
+TYPE #
+PURPOSE Y方向の相対的な動きを返します。
+RVAL Integer
+
+PROTO
+yrel
+
+DESC
+Y方向の相対的な動きを整数で返します。
+
+SEEALSO
+Joystick
+Joystick#ball
+
+%%
+NAME which
+MOD Event2::JoyHat
+TYPE #
+PURPOSE ジョイスティックデバイスの番号を返します。
+RVAL Integer
+
+PROTO
+which
+
+DESC
+イベントが発生したジョイスティックのインデックスを返します。
+
+SEEALSO
+Joystick
+
+%%
+NAME hat
+MOD Event2::JoyHat
+TYPE #
+PURPOSE ジョイスティックのハットスイッチの番号を返します。
+RVAL Integer
+
+PROTO
+hat
+
+DESC
+イベントが発生したジョイスティックのハットスイッチのインデックスを返します。
+
+SEEALSO
+Joystick
+Joystick#num_hats
+
+%%
+NAME value
+MOD Event2::JoyHat
+TYPE #
+PURPOSE ハットスイッチの位置を返します。
+RVAL UINT
+
+PROTO
+value
+
+DESC
+イベントが発生したハットスイッチの現在の位置を以下の値の論理和で
+返します。
+
+:SDL::Joystick::HAT_CENTERED
+:SDL::Joystick::HAT_UP
+:SDL::Joystick::HAT_RIGHT
+:SDL::Joystick::HAT_DOWN
+:SDL::Joystick::HAT_LEFT
+:SDL::Joystick::HAT_RIGHTUP
+:SDL::Joystick::HAT_RIGHTDOWN
+:SDL::Joystick::HAT_LEFTUP
+:SDL::Joystick::HAT_LEFTDOWN
+
+%%
+NAME which
+MOD Event2::JoyButtonDown
+TYPE #
+PURPOSE ジョイスティックデバイスの番号を返します。
+RVAL Integer
+
+PROTO
+which
+
+DESC
+イベントが発生したジョイスティックのインデックスを返します。
+
+SEEALSO
+Joystick
+
+%%
+NAME button
+MOD Event2::JoyButtonDown
+TYPE #
+PURPOSE ジョイスティックのボタンの番号を返します。
+RVAL Integer
+
+PROTO
+button
+
+DESC
+イベントが発生したジョイスティックのボタンのインデックスを返します。
+
+SEEALSO
+Joystick
+Joystick#num_buttons
+
+%%
+NAME press
+MOD Event2::JoyButtonDown
+TYPE #
+PURPOSE ボタン押し下げイベントかどうかを返します。
+RVAL true
+
+PROTO
+press
+
+DESC
+ボタン押し下げイベントかどうかを返します。
+常に true を返します。
+
+SEEALSO
+Event2::JoyButtonUp#press
+Joystick#button
+
+%%
+NAME which
+MOD Event2::JoyButtonUp
+TYPE 
+PURPOSE ジョイスティックデバイスの番号を返します。
+RVAL Integer
+
+PROTO
+which
+
+DESC
+イベントが発生したジョイスティックのインデックスを返します。
+
+SEEALSO
+Joystick
+
+%%
+NAME button
+MOD Event2::JoyButtonUp
+TYPE #
+PURPOSE ジョイスティックのボタンの番号を返します。
+RVAL Integer
+
+PROTO
+button
+
+DESC
+イベントが発生したジョイスティックのボタンのインデックスを返します。
+
+SEEALSO
+Joystick
+Joystick#num_buttons
+
+%%
+NAME press
+MOD Event2::JoyButtonUp
+TYPE #
+PURPOSE ボタン押し下げイベントかどうかを返します。
+RVAL false
+
+PROTO
+press
+
+DESC
+ボタン押し下げイベントかどうかを返します。
+常に false を返します。
+
+SEEALSO
+Event2::JoyButtonDown#press
+Joystick#button
+
+%%
+NAME w
+MOD Event2::VideoResize
+TYPE #
+PURPOSE ウィンドウの新しい幅を返します。
+RVAL Integer
+
+PROTO
+w
+
+DESC
+ウィンドウがリサイズされたときに、
+ウィンドウの新しい幅を整数で返します。
+
+%%
+NAME h
+MOD Event2::VideoResize
+TYPE #
+PURPOSE ウィンドウの新しい高さを返します。
+RVAL Integer
+
+PROTO
+h
+
+DESC
+ウィンドウがリサイズされたときに、
+ウィンドウの新しい高さを整数で返します。
