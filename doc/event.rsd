@@ -1076,15 +1076,15 @@ DESC
 イベントが発生したハットスイッチの現在の位置を以下の値の論理和で
 返します。
 
-:SDL::Joystick::HAT_CENTERED
-:SDL::Joystick::HAT_UP
-:SDL::Joystick::HAT_RIGHT
-:SDL::Joystick::HAT_DOWN
-:SDL::Joystick::HAT_LEFT
-:SDL::Joystick::HAT_RIGHTUP
-:SDL::Joystick::HAT_RIGHTDOWN
-:SDL::Joystick::HAT_LEFTUP
-:SDL::Joystick::HAT_LEFTDOWN
+* SDL::Joystick::HAT_CENTERED
+* SDL::Joystick::HAT_UP
+* SDL::Joystick::HAT_RIGHT
+* SDL::Joystick::HAT_DOWN
+* SDL::Joystick::HAT_LEFT
+* SDL::Joystick::HAT_RIGHTUP
+* SDL::Joystick::HAT_RIGHTDOWN
+* SDL::Joystick::HAT_LEFTUP
+* SDL::Joystick::HAT_LEFTDOWN
 
 %%
 NAME which
