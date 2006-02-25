@@ -4,6 +4,7 @@
 * ((<Video>))
 * ((<Event>))
 * ((<Joystick>))
+* ((<Time>))
 
 = Ruby/SDL¤Î³µÍ×
 == SDL::Error

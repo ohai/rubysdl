@@ -1,6 +1,6 @@
 
 RSD = ruby rsd.rb
-RDFILES = general.rd init.rd video.rd event.rd joystick.rd
+RDFILES = general.rd init.rd video.rd event.rd joystick.rd time.rd
 RD2 = rd2
 RD2OPT = -r rd/rd2html-lib.rb --html-lang=ja --html-charset=EUC-JP
 
