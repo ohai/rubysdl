@@ -126,6 +126,17 @@ static VALUE sdl_cd_trackLength(VALUE obj,VALUE track)
   return INT2FIX(cd->track[index].length);
 }
 
+static VALUE sdl_cd_framesToMSF(VALUE class, VALUE frames)
+{
+  int m, s, f;
+  FRAMES_TO_MSF(NUM2INT(frames), &m, &s, &f);
+  return rb_ary_new3(3, INT2FIX(m), INT2FIX(s), INT2FIX(f));
+}
+static VALUE sdl_cd_MSFToFrames(VALUE class, VALUE m, VALUE s, VALUE f)
+{
+  return INT2FIX(MSF_TO_FRAMES(NUM2INT(m),NUM2INT(s),NUM2INT(f)));
+}
+
 static void defineConstForCDROM()
 {
   rb_define_const(cCD,"TRAYEMPTY",INT2NUM(CD_TRAYEMPTY));
@@ -136,6 +147,8 @@ static void defineConstForCDROM()
   
   rb_define_const(cCD,"AUDIO_TRACK",UINT2NUM(SDL_AUDIO_TRACK));
   rb_define_const(cCD,"DATA_TRACK",UINT2NUM(SDL_DATA_TRACK));
+
+  rb_define_const(cCD,"FPS", UINT2NUM(CD_FPS));
 }
 void init_cdrom()
 {
@@ -143,6 +156,8 @@ void init_cdrom()
   rb_define_singleton_method(cCD,"numDrive",sdl_cd_numDrive,0);
   rb_define_singleton_method(cCD,"indexName",sdl_cd_name,1);
   rb_define_singleton_method(cCD,"open",sdl_cd_open,1);
+  rb_define_singleton_method(cCD,"framesToMSF",sdl_cd_framesToMSF,1);
+  rb_define_singleton_method(cCD,"MSFToFrames",sdl_cd_MSFToFrames,3);
   rb_define_method(cCD,"status",sdl_cd_status,0);
   rb_define_method(cCD,"play",sdl_cd_play,2);
   rb_define_method(cCD,"playTracks",sdl_cd_playTracks,4);

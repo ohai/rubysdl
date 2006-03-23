@@ -229,6 +229,8 @@ module SDL
     alias current_frame currentFrame
     alias track_type trackType
     alias track_length trackLength
+    alias frames_to_msf framesToMSF
+    alias msf_to_frames MSFToFrames
   end
 end
 
