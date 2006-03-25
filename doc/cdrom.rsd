@@ -1,4 +1,7 @@
 = CD-ROM
+* ((<CD-ROM機能概説>))
+* ((<SDL::CD>))
+* ((<CD-ROM関連メソッド>))
 TOC
 
 == CD-ROM機能概説
@@ -36,7 +39,7 @@ SDL は CD 上のフレーム数を使って動作しますが、
 @[CD.open] によってオープンされた CDROM デバイスを表し、
 ディスクにおけるトラックのレイアウトの情報を格納します。
 
-== Methods
+== CD-ROM関連メソッド
 %%%
 NAME num_drives
 MOD CD
