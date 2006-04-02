@@ -6,6 +6,7 @@
 * ((<Event>))
 * ((<Joystick>))
 * ((<CD-ROM>))
+* ((<Audio>))
 * ((<Time>))
 
 = Ruby/SDL¤Î³µÍ×
