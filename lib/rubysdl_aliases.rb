@@ -213,6 +213,8 @@ module SDL
   class << CD
     alias num_drive numDrive
     alias index_name indexName
+    alias frames_to_msf framesToMSF
+    alias msf_to_frames MSFToFrames
 # alias open open
   end
 
@@ -229,8 +231,6 @@ module SDL
     alias current_frame currentFrame
     alias track_type trackType
     alias track_length trackLength
-    alias frames_to_msf framesToMSF
-    alias msf_to_frames MSFToFrames
   end
 end
 
@@ -287,6 +287,9 @@ module SDL
 #     alias open open
 #     alias spec spec
       alias play_channel playChannel
+      alias play_channel_timed playChannelTimed
+      alias fade_in_channel fadeInChannel
+      alias fade_in_channel_timed fadeInChannelTimed
 #     alias play? play?
       alias set_volume setVolume
       alias allocate_channels allocateChannels
@@ -294,6 +297,7 @@ module SDL
 #     alias pause pause
 #     alias resume resume
 #     alias pause? pause?
+      alias fade_out fadeOut
       alias play_music playMusic
       alias fade_in_music fadeInMusic
       alias set_volume_music setVolumeMusic
@@ -304,6 +308,7 @@ module SDL
       alias rewind_music rewindMusic
       alias pause_music? pauseMusic?
       alias play_music? playMusic?
+      alias fading_music fadingMusic
     end
 
     module Mixer

@@ -92,6 +92,66 @@ static VALUE mix_playChannel(VALUE mod,VALUE channel,VALUE wave,VALUE loops)
   return INT2FIX(playing_channel);
 }
 
+static VALUE mix_playChannelTimed(VALUE mod,VALUE channel,VALUE wave,VALUE loops,
+                                  VALUE ticks)
+{
+  Mix_Chunk *chunk;
+  int playing_channel;
+  
+  if( ! rb_obj_is_kind_of(wave,cWave) )
+    rb_raise(rb_eArgError,"type mismatch");
+  Data_Get_Struct(wave,Mix_Chunk,chunk);
+  
+  playing_channel = Mix_PlayChannelTimed(NUM2INT(channel),chunk,NUM2INT(loops),
+                                         NUM2INT(ticks));
+  if( playing_channel == -1 ){
+    rb_raise( eSDLError, "couldn't play wave" );
+  }
+
+  rb_ary_store(playing_wave,playing_channel,wave);/* to avoid gc problem */
+  return INT2FIX(playing_channel);
+}
+
+static VALUE mix_fadeInChannel(VALUE mod,VALUE channel,VALUE wave,VALUE loops,
+                               VALUE ms)
+{
+  Mix_Chunk *chunk;
+  int playing_channel;
+  
+  if( ! rb_obj_is_kind_of(wave,cWave) )
+    rb_raise(rb_eArgError,"type mismatch");
+  Data_Get_Struct(wave,Mix_Chunk,chunk);
+  
+  playing_channel = Mix_FadeInChannel(NUM2INT(channel),chunk,NUM2INT(loops),
+                                      NUM2INT(ms));
+  if( playing_channel == -1 ){
+    rb_raise( eSDLError, "couldn't play wave" );
+  }
+
+  rb_ary_store(playing_wave,playing_channel,wave);/* to avoid gc problem */
+  return INT2FIX(playing_channel);
+}
+
+static VALUE mix_fadeInChannelTimed(VALUE mod,VALUE channel,VALUE wave,VALUE loops,
+                                    VALUE ms, VALUE ticks)
+{
+  Mix_Chunk *chunk;
+  int playing_channel;
+  
+  if( ! rb_obj_is_kind_of(wave,cWave) )
+    rb_raise(rb_eArgError,"type mismatch");
+  Data_Get_Struct(wave,Mix_Chunk,chunk);
+  
+  playing_channel = Mix_FadeInChannelTimed(NUM2INT(channel),chunk,NUM2INT(loops),
+                                           NUM2INT(ms), NUM2INT(ticks));
+  if( playing_channel == -1 ){
+    rb_raise( eSDLError, "couldn't play wave" );
+  }
+
+  rb_ary_store(playing_wave,playing_channel,wave);/* to avoid gc problem */
+  return INT2FIX(playing_channel);
+}
+
 static VALUE mix_playing(VALUE mod,VALUE channel)
 {
   if( Mix_Playing( NUM2INT(channel) ) ){
@@ -143,9 +203,23 @@ static VALUE mix_resume(VALUE mod,VALUE channel)
 }
 static VALUE mix_paused(VALUE mod,VALUE channel)
 {
-  return Mix_Paused(NUM2INT(channel));
+  return INT2FIX(Mix_Paused(NUM2INT(channel)));
 }
-
+static VALUE mix_fadeOut(VALUE mod,VALUE channel,VALUE ms)
+{
+  return INT2FIX(Mix_FadeOutChannel(NUM2INT(channel), NUM2INT(ms)));
+}
+static VALUE mix_expire(VALUE mod, VALUE channel, VALUE ticks)
+{
+  return INT2FIX(Mix_ExpireChannel(NUM2INT(channel),NUM2INT(ticks)));
+}
+static VALUE mix_fading(VALUE mod, VALUE which)
+{
+  if( NUM2INT(which) < 0 || Mix_AllocateChannels(-1) <= NUM2INT(which))
+    rb_raise(eSDLError, "channel out of range");
+  return INT2FIX(Mix_FadingChannel(which));
+}
+  
 /* music functions */
 #define MakeSimpleRubyFunc(rubyFunc,sdlFunc) \
 static VALUE rubyFunc(VALUE mod) \
@@ -202,6 +276,11 @@ static VALUE mix_playingMusic(VALUE mod)
   return BOOL(Mix_PlayingMusic());
 }
 
+static VALUE mix_fadingMusic(VALUE mod)
+{
+  return INT2FIX(Mix_FadingMusic());
+}
+
 static VALUE mix_loadMus(VALUE class,VALUE filename)
 {
   Mix_Music* music;
@@ -231,6 +310,9 @@ static void defineConstForAudio()
   rb_define_const(mMixer,"DEFAULT_CHANNELS",UINT2NUM(MIX_DEFAULT_CHANNELS));
   rb_define_const(mMixer,"MAX_VOLUME",INT2NUM(MIX_MAX_VOLUME));
 
+  rb_define_const(mMixer,"NO_FADING", INT2NUM(MIX_NO_FADING));
+  rb_define_const(mMixer,"FADING_OUT", INT2NUM(MIX_FADING_OUT));
+  rb_define_const(mMixer,"FADING_IN", INT2NUM(MIX_FADING_IN));
 }
 
 void init_mixer()
@@ -239,6 +321,9 @@ void init_mixer()
   rb_define_module_function(mMixer,"open",mix_openAudio,4);
   rb_define_module_function(mMixer,"spec",mix_querySpec,0);
   rb_define_module_function(mMixer,"playChannel",mix_playChannel,3);
+  rb_define_module_function(mMixer,"playChannelTimed", mix_playChannelTimed, 4);
+  rb_define_module_function(mMixer,"fadeInChannel", mix_fadeInChannel, 4);
+  rb_define_module_function(mMixer,"fadeInChannelTimed", mix_fadeInChannelTimed, 5);
   rb_define_module_function(mMixer,"play?",mix_playing,1);
   rb_define_module_function(mMixer,"setVolume",mix_volume,2);
   rb_define_module_function(mMixer,"allocateChannels",mix_allocateChannels,1);
@@ -246,7 +331,10 @@ void init_mixer()
   rb_define_module_function(mMixer,"pause",mix_pause,1);
   rb_define_module_function(mMixer,"resume",mix_resume,1);
   rb_define_module_function(mMixer,"pause?",mix_paused,1);
-
+  rb_define_module_function(mMixer,"expire",mix_expire,2);
+  rb_define_module_function(mMixer,"fading",mix_fading,1);
+  rb_define_module_function(mMixer,"fadeOut",mix_fadeOut,2);
+  
   rb_define_module_function(mMixer,"playMusic",mix_playMusic,2);
   rb_define_module_function(mMixer,"fadeInMusic",mix_fadeInMusic,3);
   rb_define_module_function(mMixer,"setVolumeMusic",mix_setVolumeMusic,1);
@@ -257,6 +345,7 @@ void init_mixer()
   rb_define_module_function(mMixer,"rewindMusic",mix_rewindMusic,0);
   rb_define_module_function(mMixer,"pauseMusic?",mix_pausedMusic,0);
   rb_define_module_function(mMixer,"playMusic?",mix_playingMusic,0);
+  rb_define_module_function(mMixer,"fadingMusic",mix_fadingMusic,0);
   
   cWave = rb_define_class_under(mMixer,"Wave",rb_cObject);
   rb_define_singleton_method(cWave,"load",mix_loadWav,1);
