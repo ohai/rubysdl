@@ -140,6 +140,12 @@ module SDL
     end
     
   end # of module Mouse
+
+  class CD
+    def in_drive?
+      status > 0
+    end
+  end
   
   module_function
 
@@ -233,7 +239,7 @@ module SDL
       end
     end
   end
-    
+  
 end
 
 if defined?(GL) then
