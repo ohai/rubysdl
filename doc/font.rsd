@@ -704,3 +704,136 @@ lockする？
 SEEALSO
 BMFont#text_size
 
+%%
+NAME open
+MOD Kanji
+TYPE .
+PURPOSE bdfファイルを読み込む。
+RVAL SDL::Kanji
+
+PROTO
+open(filename, size)
+
+DESC
+$[filename] で指定した bdf ファイルを読みこみ、@[Kanji] のインスタンス
+を返します。$[size] で文字のサイズを指定します。この値は
+文字の高さに相当します。またいわゆる半角文字2文字分の幅にもなります。
+
+SEEALSO
+Kanji#add
+
+%%
+NAME add
+MOD Kanji
+TYPE #
+PURPOSE 既に読み込んでいるフォントに追加してフォントを読みこみます。
+
+PROTO
+add(filename)
+
+DESC
+$[filename] で指定した bdf ファイルを読みこみ、$[self] に無かった文字を
+新しいフォントで補完します。これを使って英語と日本語を別のフォント
+から読みこむ、といったことができます。
+
+SEEALSO
+Kanji#open
+
+%%
+NAME set_coding_system
+MOD Kanji
+TYPE #
+PURPOSE 文字コードを指定します。
+
+PROTO
+set_coding_system(sys)
+setCodingSystem(sys)
+
+DESC
+文字コードを指定します。 $[sys] として以下のいずれかを指定できます。
+* SDL::Kanji::SJIS
+* SDL::Kanji::EUC
+* SDL::Kanji::JIS
+デフォルトでは SDL::Kanji::JIS が指定されています。
+
+%%
+NAME height
+MOD Kanji
+TYPE #
+PURPOSE 文字の高さを得ます。
+RVAL Integer
+
+PROTO
+height
+
+DESC
+フォントの高さをピクセル数で返します。これはいわゆる全角文字の幅であり、
+いわゆる半角文字の幅の2倍の値です。
+
+%%
+NAME textwidth
+MOD Kanji
+TYPE #
+PURPOSE 文字列の幅を得ます。
+RVAL Integer
+
+PROTO
+textwidth(text)
+
+DESC
+$[text] で指定した文字列を描画するのに必要な幅をピクセル数で返します。
+
+SEEALSO
+Kanji#width
+
+%%
+NAME width
+MOD Kanji
+TYPE #
+PURPOSE 文字の幅を得ます。
+
+PROTO
+width
+
+DESC
+半角文字1文字の幅をピクセル数で得ます。
+
+SEEALSO
+textwidth
+
+%%
+NAME put
+MOD Kanji
+TYPE #
+PURPOSE 文字を描画します。
+
+PROTO
+put(surface, text, x, y, r, g, b)
+
+DESC
+$[text] で指定した文字列を $[surface] の ($[x], $[y]) に ($[r], $[g], $[b])
+で指定した色で描画します。
+
+SEEALSO
+Kanji#put_tate
+
+%%
+NAME put_tate
+MOD Kanji
+TYPE #
+PURPOSE 文字を縦書きで描画します。
+
+PROTO
+put_tate(surface, x, y, r, g, b)
+putTate(surface, x, y, r, g, b)
+
+DESC
+$[text] で指定した文字列を $[surface] の ($[x], $[y]) に ($[r], $[g], $[b])
+で指定した色で縦書きで描画します。
+
+ASCII文字は縦書きにできません。
+
+SEEALSO
+Kanji#put
+
+
