@@ -477,15 +477,6 @@ static VALUE sdl_bf_setColor(VALUE obj,VALUE r,VALUE g,VALUE b)
   return Qnil;
 }
 
-static VALUE sdl_bf_setAlpha(VALUE obj, VALUE alpha)
-{
-  sge_bmpFont* font;
-  Data_Get_Struct(obj,sge_bmpFont,font);
-
-  sge_BF_SetAlpha(font, NUM2UINT(alpha));
-  return Qnil;
-}
-
 static VALUE sdl_bf_getHeight(VALUE obj)
 {
   sge_bmpFont* font;
@@ -503,8 +494,10 @@ static VALUE sdl_bf_getWidth(VALUE obj)
 static VALUE sdl_bf_textSize(VALUE obj, VALUE text)
 {
   sge_bmpFont* font;
+  SDL_Rect rect;
   Data_Get_Struct(obj,sge_bmpFont,font);
-  return INT2FIX(sge_BF_TextSize(font, GETCSTR(text)));
+  rect = sge_BF_TextSize(font, GETCSTR(text));
+  return rb_ary_new3(2, INT2FIX(rect.w), INT2FIX(rect.h));
 }
 
 static VALUE sdl_bf_textout(VALUE obj,VALUE surface,VALUE string,
@@ -605,7 +598,6 @@ void init_sge_video()
   rb_define_singleton_method(cBMFont,"open",sdl_bf_open,2);
 
   rb_define_method(cBMFont,"setColor",sdl_bf_setColor,3);
-  rb_define_method(cBMFont,"setAlpha",sdl_bf_setAlpha,1);
   rb_define_method(cBMFont,"height",sdl_bf_getHeight,0);
   rb_define_method(cBMFont,"width",sdl_bf_getWidth,0);
   rb_define_method(cBMFont,"text_size",sdl_bf_textSize, 1);
