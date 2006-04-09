@@ -8,6 +8,7 @@
 * ((<CD-ROM>))
 * ((<Audio>))
 * ((<Time>))
+* ((<Font>))
 
 = Ruby/SDL¤Î³µÍ×
 == SDL::Error
