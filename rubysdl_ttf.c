@@ -38,6 +38,11 @@ static VALUE sdl_ttf_init(VALUE class)
   ttf_initialized=1;
   return Qnil;
 }
+static VALUE sdl_ttf_wasInit(VALUE class)
+{
+  return BOOL(TTF_WasInit());
+}
+
 static VALUE sdl_ttf_open(int argc, VALUE *argv, VALUE class)
 {
   TTF_Font *font;
@@ -99,8 +104,14 @@ static VALUE sdl_ttf_FontFaceFamilyName(VALUE obj)
 {
 #ifdef TTF_FONTFACEFAMILYNAME
   TTF_Font *font;
+  char* name;
+  
   Data_Get_Struct(obj,TTF_Font,font);
-  return rb_str_new2( (const char *)TTF_FontFaceFamilyName(font) );
+  name = TTF_FontFaceFamilyName(font);
+  if(name == NULL)
+    return Qnil;
+  else
+    return rb_str_new2(name);
 #else
   rb_raise(rb_eRuntimeError,"Not supported. The feature is in SDL_ttf 2.0.4 or later.");
 #endif
@@ -109,8 +120,14 @@ static VALUE sdl_ttf_FontFaceStyleName(VALUE obj)
 {
 #ifdef TTF_FONTFACESTYLENAME
   TTF_Font *font;
+  char* name;
+  
   Data_Get_Struct(obj,TTF_Font,font);
-  return rb_str_new2( (const char *)TTF_FontFaceStyleName(font) );
+  name = TTF_FontFaceStyleName(font);
+  if(name == NULL)
+    return Qnil;
+  else
+    return rb_str_new2( (const char *) );
 #else
   rb_raise(rb_eRuntimeError,"Not supported. The feature is in SDL_ttf 2.0.4 or later.");
 #endif
@@ -270,6 +287,7 @@ void init_ttf()
 {
   cTTF=rb_define_class_under(mSDL,"TTF",rb_cObject);
   rb_define_singleton_method(cTTF,"init",sdl_ttf_init,0);
+  rb_define_singleton_method(cTTF,"init?",sdl_ttf_wasInit,0);
   rb_define_singleton_method(cTTF,"open",sdl_ttf_open,-1);
   
   rb_define_method(cTTF,"style",sdl_ttf_getFontStyle,0);
