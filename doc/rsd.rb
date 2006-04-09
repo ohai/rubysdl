@@ -43,7 +43,7 @@ def rsd2rd(input)
       part[$1] = $'.chomp
     when "LOCK\n"
       part["LOCK"] = ""
-    when /^(PROTO|DESC|NOTES|RET|EXCEPTION|EXAMPLE|BUG|SEEALSO)\s*$/
+    when /^(PROTO|DESC|NOTES|RET|EXCEPTION|EXAMPLE|BUG|SEEALSO|COMMENT)\s*$/
       mode = $1
     when "EXCEPTION *\n"
       part["EXCEPTION"] = "失敗したときには例外@[Error]を発生させます。\n"
@@ -53,7 +53,7 @@ def rsd2rd(input)
   end
 
   %w(NAME PURPOSE TYPE PROTO DESC).each do |v|
-    raise "There isn't #{v}" unless part.key?(v)
+    raise "There isn't #{v} at #{part["NAME"]}" unless part.key?(v)
   end
 
   part = part.hash_map{|_, line| line.sub(/\n+\z/,"\n")}
@@ -74,7 +74,7 @@ def rsd2rd(input)
     output << "\n    このメソッドを使うには #{part["DEP"]} が必要です。\n"
   end
   if part.key?("EXAMPLE")
-    output << "    EXAMPLE\n"
+    output << "\n    EXAMPLE\n"
     output << format(part["EXAMPLE"],6)
   end
   if part.key?("NOTES")
