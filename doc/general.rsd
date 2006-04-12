@@ -9,6 +9,8 @@
 * ((<Audio>))
 * ((<Time>))
 * ((<Font>))
+* ((<¾×ÆÍÈ½Äê>))
+* ((<MPEG playback>))
 
 = Ruby/SDL¤Î³µÍ×
 == SDL::Error
