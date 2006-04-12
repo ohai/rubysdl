@@ -449,6 +449,18 @@ static VALUE sdl_unset_cdata(VALUE obj, VALUE vx, VALUE vy, VALUE vw, VALUE vh)
   return Qnil;
 }
 
+static VALUE sdl_w_cdata(VALUE obj)
+{
+  sge_cdata * cdata = value_to_collision_map(obj);
+  return INT2FIX(cdata->w);
+}
+
+static VALUE sdl_h_cdata(VALUE obj)
+{
+  sge_cdata * cdata = value_to_collision_map(obj);
+  return INT2FIX(cdata->h);
+}
+
 /* bitmap font */
 static void sdl_bf_close(sge_bmpFont* font)
 {
@@ -592,6 +604,8 @@ void init_sge_video()
   rb_define_method(cCollisionMap,"boundingBoxCheck", sdl_boundingBoxCheck, 5);
   rb_define_method(cCollisionMap,"clear", sdl_unset_cdata, 4);
   rb_define_method(cCollisionMap,"set", sdl_set_cdata, 4);
+  rb_define_method(cCollisionMap,"w", sdl_w_cdata, 0);
+  rb_define_method(cCollisionMap,"h", sdl_h_cdata, 0);
 
   /* bitmap font */
   cBMFont = rb_define_class_under(mSDL,"BMFont",rb_cObject);
