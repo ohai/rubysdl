@@ -2,11 +2,15 @@
 
 = SDL
 
-この拡張ライブラリのインターフェースはSDL本体と非常に似ています。
-よってSDLのドキュメントが非常に参考になるでしょう。
+Ruby/SDL は ((<SDL|URL:http://www.libsdl.org/)) を Ruby から利用するための
+拡張ライブラリです。
 
-すべてのクラス/モジュールはmodule SDLの下にあります。
-このモジュール内では数はほぼすべて0から始まります。
+SDL の薄いラッパを目指しているため、API は SDL のものと一対一に対応
+しているものが多い。よってSDLのドキュメントが非常に参考になるでしょう。
+
+すべての関数/クラス/モジュール/定数はSDLモジュールの下にあります。
+
+また、メソッドの返り値が記述されていない場合は常にnilを返すものとします。
 
 == クラス/モジュール構成
 
@@ -48,12 +52,58 @@
 * ((<OpenGLによる3D描画>))
 * ((<その他>))
 
+== 機能概説
+Ruby/SDLでは、上に挙げたような機能を持っています。
+ここでは、その概要を解説します。詳しくは個々の項を見てください。
+
+=== 初期化
+SDL全体の初期化をする((<SDL.init>))などです。
+
+=== Video
+ウィンドウを開き、そこに描画をするための機能です。
+矩形転送、基本的な図形(直線など)の描画、拡大縮小回転、パレット
+操作などの機能があります。
+
+=== Event
+キーボード、マウスなどから入力を受けとるための機能です。
+
+=== Audio
+効果音、BGMなどを演奏するための機能です。
+
+=== Window Manager
+Windowのタイトルなどを設定したり、入力をつかんだりする機能です。
+
+=== CDROM
+CDを演奏するための機能です。Audio機能とはまったく別個の機能として
+実現されています。フェードイン/フェードアウトといった複雑な演奏は
+できません。
+
+=== Joystick
+パッド/スティックからの入力を処理する機能です。Event機能とも
+連携して動作します。
+
+=== Font
+独自形式のBitmap font/True Type Font/bdf fontの描画ができます。
+True True Font と bdf fontは日本語の描画も可能です。
+
+=== MPEG
+MPEGの再生ができます。再生中は通常の描画はできないなどかなり
+機能に制限があります。
+
+=== 時刻
+((<SDL.init>))が呼ばれてからの経過時間をはかる((<SDL.getTicks>))
+と指定ミリ秒停止する((<SDL.delay>))があります。
+
+=== エラー
+SDL特有のエラーはすべて ((<SDL::Error>)) という例外を発生させること
+で通知されます。
+
+
 == エラー処理
 
 === SDL::Error
 
-エラー通知用のクラスです。SDLモジュール内で生じるエラーほぼすべて
-このクラスを用いて通知されます。
+エラー通知用のクラスです。SDL固有のエラーはこのクラスを用いて通知されます。
 
 ==== スーパークラス
 
@@ -61,45 +111,161 @@ StandardError
 
 == 初期化関連
 
+SDLを使う前には必ず((<SDL.init>))でSDLを初期化する必要があります。
+
 === SDL内のモジュール関数
 
 --- SDL.init(flag)
-      SDLを初期化する。flagとして与えられるのは以下の定数のORを取ったもの。
-        INIT_AUDIO  オーディオ機能(音声出力機能)を初期化
-        INIT_VIDEO  ビデオ機能(画像出力)機能とキーボード、マウス入力機能を初期化
-        INIT_CDROM  CDROM再生機能を初期化
-        INIT_JOYSTICK  ジョイスティック入力機能を初期化
-
-      このメソッドはRuby/SDLの他のメソッドを呼ぶ前に呼んでください
+      SDLを初期化します。
+      Ruby/SDLの他のメソッドを呼ぶ前にこのメソッドを呼ばなくてはなりません。
+      ((|flag|))でどの部分を初期化するかを指定します。
+      以下の定数の論理和を取ったものを指定してください。
+      * SDL::INIT_AUDIO  オーディオ機能(音声出力機能)を初期化
+      * SDL::INIT_VIDEO  ビデオ機能(画像出力)機能とキーボード、マウス入力機能を初期化
+      * SDL::INIT_CDROM  CDROM再生機能を初期化
+      * SDL::INIT_JOYSTICK  ジョイスティック入力機能を初期化
+      * SDL::INIT_EVERYTHING 上に挙げた機能を全て初期化します。
       
---- SDL.quit
-      SDLを止める。ライブラリから呼ばれるので基本的に呼ぶ必要はありません。
-      SDLの仕様を理解して必要な場合のみ使ってください。
-      これを呼んだ後SDLの機能を使わないでください。
+      初期化が失敗した場合は((<SDL::Error>))例外が発生します。
 
+        # 例
+        # Video機能とオーディオ機能を初期化する
+        SDL.init(SDL::INIT_VIDEO|SDL::INIT_AUDIO)
+
+--- SDL.quit
+      SDLをシャットダウンします。SDLが確保したデバイスやウィンドウなどの
+      リソースをすべて解放します。
+      Ruby/SDLがプログラム終了時に自動的にこのメソッドを呼ぶので、
+      通常はこれを使う必要はありません。
+      
+      SDLの仕様を理解して必要な場合のみ使ってください。
+      
+      これを呼んだ後SDLの機能を一切使わないでください。そのようなことは
+      想定されていません。
+      
 --- SDL.initedSystem(flag)
 --- SDL.inited_system(flag)
-      Not documented yet
+      指定した部分が初期化されているかどうかをチェックします。
+      ((|flag|))は((<SDL.init>))のものと同じです。
+      
+      返り値は初期化されている部分に対応する値の論理和です。
 
+        # 例
+        # 全部の初期化状態を調べる
+        init = SDL.initedSystem(SDL::INIT_EVERYTHING)
+        # ビデオ機能が使えるかを見る
+        if (init & SDL::INIT_VIDEO) != 0
+          puts("ビデオ機能は初期化されています")
+        else
+          puts("ビデオ機能は初期化されていません")
+        end
+        
 --- SDL.getenv(name)
       ((|name|))で指定した文字列に対応する環境変数を得る。
       返値は文字列であたえられる。
+      
 --- SDL.putenv(envstr)
       環境変数を変更する。
       
       Windows上ででSDL_WINDOWIDやSDL_VIDEODRIVERといった環境変数を使って
       SDLの実行に影響を与えたいときに利用する。
-      
+      SDLの仕様によりWindowsでは ENV を直接変更してもこれらの機能が使え
+      ないためこのような関数が存在する。
+            
       引数として"name=value"という形式の文字列を与える。
       
       Unix上では組み込み定数ENVを利用するのと同じです。
-      失敗時は例外SDL::Errorを発生する。
+      失敗時は例外((<SDL::Error>))を発生します。
+
+      # 例
+      # http://moriq.tdiary.net/20051006.html より
+      # Ruby/SDL と Apolloの併用
+      require 'phi'
+      require 'sdl'
+
+      # フォームの生成
+      form = Phi::Form.new
+      $terminated = false
+      form.on_close{ $terminated = true }
+      form.caption = "Ruby/SDL on Phi::Form"
+      # パネルをフォームの上に作る
+      panel = Phi::Panel.new(form)
+      panel.align = Phi::AL_LEFT
+
+      # WINDOWID hackを使い、パネルにSDLのウインドウをのせる
+      SDL.putenv("SDL_VIDEODRIVER=windib")
+      SDL.putenv("SDL_WINDOWID=#{panel.handle}")
+      form.show
+
+      # SDL本体の初期化など
+      SDL.init(SDL::INIT_VIDEO)
+      screen = SDL.setVideoMode(640, 480, 16, SDL::SWSURFACE)
+
+      # メインループ、とりあえず何もしない
+      unless $terminated
+        while event = SDL::Event2.poll
+          case event
+          when SDL::Event2::KeyDown, SDL::Event2::Quit
+            exit
+          end
+        end
+
+        sleep 0.05
+      end
       
 == video関連
 
-一部の機能は、SGEライブラリやSDL_imageが必要である。
+これは、画面描画および表示をする機能を提供します。以下のメソッドを利用する前
+に((<SDL.init>))でビデオ機能の初期化(SDL::INIT_VIDEO)をする必要があります。
 
-bpp=bit per pixelである。
+((<SDL::Surface>))という、画像を収めておくメモリ(これをサーフェスと呼びます)
+を表現するクラスが存在し、ビデオ機能はこれを用いて抽象化されています。
+つまり、画面上に表示される画像やファイルから読みこんだ画像は共に
+このクラスを用いて表され、これに対し描画することでさまざまな
+画像効果を得ることができます。
+
+画面に対応するサーフェスは特に((<SDL::Surface>))の
+サブクラスである((<SDL::Screen>))というクラスで表現されます。
+ここに描きこんだ画像は直接表示には反映されません。
+((<SDL::Screen.updateRect>))や((<SDL::Screen.flip>))を呼ぶことで
+その時点での内容が表示されます。
+このような仕組みはダブルバッファリングなどと呼ばれます。
+「描画が完了していない状態」を表示しないことで表示のちらつきが減ります。
+
+((<SDL.setVideoMode>))で、ビデオのモード(解像度やbppなど)を設定すること
+で((<SDL::Screen>))のインスタンスを得ることができます。
+
+その他、ガンマ値の設定や、サーフェスごとにパレットを変更したりする
+機能が存在します。
+
+
+一部の機能は、SGEライブラリやSDL_imageが必要です。
+bppはbit per pixelの略称です。
+
+以下にいくつかの例を挙げます。
+
+
+  # 例 ビデオ機能の初期化  
+  require 'sdl'
+  
+  # SDLの初期化
+  SDL.init(SDL::INIT_VIDEO)
+  
+  # 画面の初期化
+  # ソフトウェアサーフェス、 解像度 640x480、 16bitカラーモードで初期化
+  screen = SDL.setVideoMode(640, 480, 16, SDL::SWSURFACE)
+
+  
+
+  # 例3 BMPファイルのロードおよび表示
+
+  # 指定したファイルを読みこんで画面に表示する関数
+  def display_bmp(screen, fname)
+    # ファイルをロードする
+    image = SDL::Surface.loadBMP(fname)
+    SDL.blitSurface(image, 0, 0, 0, 0, screen, 0, 0)
+    screen.updateRect(0, 0, image.w, image.h)
+  end
 
 === SDL内のモジュール関数
 
@@ -112,7 +278,7 @@ bpp=bit per pixelである。
       指定された画面の幅、高さ、bppの値でビデオモードを設定する。
       bppが0の場合、現在のディスプレイのbppの値が使用される。
       成功したときは((<SDL::Screen>))のオブジェクトを返す。
-      失敗したときはSDL::Error例外が生じる。
+      失敗したときは((<SDL::Error>))例外が生じる。
       flagsの意味は以下のとおり。
       * SDL::SWSURFACE
         
@@ -146,7 +312,12 @@ bpp=bit per pixelである。
         
       flagはそのほかにもある。さらに詳しく知る必要があれば
       SDLのドキュメントを見てください。
-
+      
+        # 例 最良のビデオモードで初期化
+        # 16bitモードを指定したいが、使えなければ他のモードでも可
+        screen = SDL.setVideoMode(640, 480, 16  SDL::SWSURFACE|SDL::ANYFORMAT)
+        puts "640x480 at #{screen.bpp} bpp のモードに設定しました"
+      
 --- SDL.checkVideoMode(w,h,bpp,flags)
 --- SDL.check_video_mode(w,h,bpp,flags)
       指定されたビデオモードがサポートされているかどうかを調べる。
@@ -174,12 +345,17 @@ bpp=bit per pixelである。
       初期化したビデオドライバーに対応する文字列を返す( x11 や windib など)。
       初期化していなかったりしたら例外を発生させる。
 
+      # 例
+      SDL.init(SDL::INIT_VIDEO)
+      puts "ドライバは #{SDL.videoDriverName} です"
+      
 --- SDL.setGamma(redgamma,greengamma,bluegamma)
 --- SDL.set_gamma(redgamma,greengamma,bluegamma)
-      ガンマを設定します。
+      表示用のカラーガンマ関数を設定します。
       ガンマはスクリーン上での色の明るさやコントラストを調節します。
       r,g,bそれぞれのガンマ値は1.0で無調整と同等になります。
-
+      失敗時には((<SDL::Error>))例外を発生させます。
+            
 --- SDL.getGammaRamp
 --- SDL.get_gamma_ramp
       ガンマ変換用のテーブルを返す。
@@ -212,21 +388,34 @@ bpp=bit per pixelである。
       
 --- SDL.videoInfo
 --- SDL.video_info
-      Videoの情報をVideoInfoのインスタンスで返す。その内容は以下の通り。
+      ビデオハードウェアの情報をVideoInfoのインスタンスで返す。
+      その内容は以下の通り。
       真偽値を表すものはtrue,falseが入っている。
-      詳しい意味はSDLのドキュメントを参照してください。
-        SDL::VideoInfo#hw_available
-        SDL::VideoInfo#wm_available
-        SDL::VideoInfo#blit_hw
-        SDL::VideoInfo#blit_hw_CC
-        SDL::VideoInfo#blit_hw_A
-        SDL::VideoInfo#blit_sw
-        SDL::VideoInfo#blit_sw_CC
-        SDL::VideoInfo#blit_sw_A
-        SDL::VideoInfo#blit_fill
-        SDL::VideoInfo#video_mem
-        SDL::VideoInfo#bpp
-	
+      初期化前にこの関数を呼んだ場合、bppには「最も適した」値が入る。
+      * SDL::VideoInfo#hw_available
+          ハードウェアサーフェスを作ることは可能かどうか
+      * SDL::VideoInfo#wm_available
+          ウィンドウマネージャが利用できるかどうか
+      * SDL::VideoInfo#blit_hw
+          ハードウェア間の blit はアクセラレーションが有効かどうか
+      * SDL::VideoInfo#blit_hw_CC
+          ハードウェア間のカラーキー blit はアクセラレーションが有効かどうか
+      * SDL::VideoInfo#blit_hw_A
+          ハードウェア間のα blit はアクセラレーションが有効かどうか
+      * SDL::VideoInfo#blit_sw
+          ソフトウェアからハードウェアへの blit はアクセラレーションが有効かどうか
+      * SDL::VideoInfo#blit_sw_CC
+          ソフトウェアからハードウェアへのカラーキー blit はアクセラレーション
+          が有効かどうか
+      * SDL::VideoInfo#blit_sw_A
+          ソフトウェアからハードウェアへのα blit はアクセラレーションが有効かどうか
+      * SDL::VideoInfo#blit_fill
+          色の塗潰しはアクセラレーションが有効かどうか
+      * SDL::VideoInfo#video_mem
+          ビデオメモリの総容量
+      * SDL::VideoInfo#bpp
+          bpp
+          
 --- SDL.blitSurface(src,srcX,srcY,srcW,srcH,dst,dstX,dstY)
 --- SDL.blit_surface(src,srcX,srcY,srcW,srcH,dst,dstX,dstY)
       srcで指定されたSurfaceからdstで指定されたSurfaceへの高速なblit
@@ -750,38 +939,6 @@ Object
       
       ((<SDL::CollisionMap>))のインスタンスを返す。
 
-=== SDL::CollisionMap
-
-SGEが必要
-
-1ドットごとの衝突判定をするための情報を表わすクラス。
-これでふたつの画像が重なっているかどうかを簡単に判定できる。
-
-((<SDL::Surface#makeCollisionMap>)) によってのみインスタンスが得られる。
-
-==== クラスメソッド
-
---- SDL::CollisionMap#boundingBoxCheck(x1, y1, w1, h1, x2, y2, w2, h2)
-      ふたつの長方形が重なっているかどうかを判定し、重なっていれば
-      真を、いなければ偽を返す。
-
-==== method
-
---- SDL::CollisionMap#collisionCheck(x1, y1, collisionMap, x2, y2)
-      self が (x1,y1) に描画され、collisionMapが (x2,y2) に描画された
-      としたとき、そのふたつの画像の不透明部分が重なるかどうかを
-      判定する。
-
-      内部で自動的に((<SDL::CollisionMap#boundingBoxCheck>))を呼ぶ。
-
---- SDL::CollisionMap#boundingBoxCheck(x1, y1, collisionMap, x2, y2)
-      ふたつの長方形が重なっているかどうかを判定する。
-
---- SDL::CollisionMap#clear(x1, y1, w, h)
-      指定した長方形の部分を判定なしの状態にする。
-
---- SDL::CollisionMap#set(x1, y1, w, h)
-      指定した長方形の部分をすべて判定ありの状態にする。
 
 === SDL::Screen
 
@@ -870,6 +1027,39 @@ Object
 
 --- SDL::PixelFormat#alpha
       Not documented yet
+
+=== SDL::CollisionMap
+
+SGEが必要
+
+1ドットごとの衝突判定をするための情報を表わすクラス。
+これでふたつの画像が重なっているかどうかを簡単に判定できる。
+
+((<SDL::Surface#makeCollisionMap>)) によってのみインスタンスが得られる。
+
+==== クラスメソッド
+
+--- SDL::CollisionMap#boundingBoxCheck(x1, y1, w1, h1, x2, y2, w2, h2)
+      ふたつの長方形が重なっているかどうかを判定し、重なっていれば
+      真を、いなければ偽を返す。
+
+==== method
+
+--- SDL::CollisionMap#collisionCheck(x1, y1, collisionMap, x2, y2)
+      self が (x1,y1) に描画され、collisionMapが (x2,y2) に描画された
+      としたとき、そのふたつの画像の不透明部分が重なるかどうかを
+      判定する。
+
+      内部で自動的に((<SDL::CollisionMap#boundingBoxCheck>))を呼ぶ。
+
+--- SDL::CollisionMap#boundingBoxCheck(x1, y1, collisionMap, x2, y2)
+      ふたつの長方形が重なっているかどうかを判定する。
+
+--- SDL::CollisionMap#clear(x1, y1, w, h)
+      指定した長方形の部分を判定なしの状態にする。
+
+--- SDL::CollisionMap#set(x1, y1, w, h)
+      指定した長方形の部分をすべて判定ありの状態にする。
 
 == Event関連
 
