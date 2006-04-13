@@ -190,6 +190,7 @@ module SDL
   if defined?(BMFont) then
     class BMFont
       alias set_color setColor
+      alias text_size textSize
     end
   end
 
