@@ -74,6 +74,13 @@ static VALUE sdl_hideCursor(VALUE mod)
   SDL_ShowCursor(0);
   return Qnil;
 }
+static VALUE sdl_showedCursor(VALUE mod)
+{
+  if(SDL_ShowCursor(SDL_QUERY) == SDL_ENABLE)
+    return Qtrue;
+  else
+    return Qfalse;
+}
 
 void init_mouse()
 {
@@ -84,5 +91,6 @@ void init_mouse()
   rb_define_module_function(mMouse,"setCursor_imp",sdl_setCursor_imp,6);
   rb_define_module_function(mMouse,"show",sdl_showCursor,0);
   rb_define_module_function(mMouse,"hide",sdl_hideCursor,0);
+  rb_define_module_function(mMouse,"show?",sdl_showedCursor,0);
   defineConstForMouse();
 }
