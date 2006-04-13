@@ -73,13 +73,41 @@ FreeBSDにはPortがあるのでそれを利用してください。
   詳しくは、以下のファイルやドキュメントを見てください。
 
   sample/*.rb サンプル
-    サンプル用のデータが一部欠けています。自分で用意してください。
-  rubysdl_doc.rd リファレンス
+    以下のサンプルがあります。
+        testsprite.rb   画像表示のサンプル
+        playwave.rb     PCMファイル演奏のサンプル sample.wav が必要
+        movesp.rb       キー入力のサンプル
+        alpha.rb        アルファブレンディングのサンプル
+        sgetest.rb      sgeのプリミティブ描画のサンプル
+        font.rb         True Type Fontのサンプル sample.ttf というフォント
+                        ファイルが必要
+        playmod.rb      modファイル演奏のサンプル sample.it が必要
+        testgl.rb       OpenGLのサンプル
+        cursor.rb       マウスカーソルを変更するサンプル
+        transformblit.rb 回転縮小拡大のサンプル
+        joy2.rb         ジョイパッド入力のサンプル
+        plaympeg.rb     mpeg表示のサンプル sample.mpgが必要
+        sdlskk.rb       SDLSKKのサンプル。フォントや辞書等必要
+                        詳しくはサンプルのコメントを見てください
+        bfont.rb        ビットマップフォント表示のサンプル
+        kanji.rb        SDL_Kanji機能のサンプル。8x16.bdfとjiskan16.bdf
+                        という2つのbdfファイルが必要
+        collision.rb    衝突検出機能のサンプル
+        その他
+  rubysdl_ref.rd, rubysdl_ref.html リファレンス
+    Ruby/SDLのリファレンスマニュアルです。
+  rubysdl_doc_old.rd 古いリファレンス
+    古いリファレンスです。
   SDLのドキュメント
     SDLのインストールのときに展開したファイルの中にあるはずです。
     また、 http://www.tacoworks.jp/software/SDLdoc-jp/index-j.html
     から日本語のドキュメントも手に入ります。
     リファレンスに書かれていないことはこれを見てください。
+  doc/
+    Makefile
+    rsd.rb
+    *.rsd
+      リファレンスマニュアルの元データです。
 
 6 OpenGLについて
   このライフラリによってOpenGLへのアクセスが可能になります。
