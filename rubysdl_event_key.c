@@ -296,6 +296,11 @@ void defineConstForKey()
   rb_define_const(mKey,"MOD_SHIFT",UINT2NUM(KMOD_SHIFT));
   rb_define_const(mKey,"MOD_ALT",UINT2NUM(KMOD_ALT));
   rb_define_const(mKey,"MOD_META",UINT2NUM(KMOD_META));
+
+  /* key repeat constants*/
+  rb_define_const(mKey,"DEFAULT_REPEAT_DELAY", INT2NUM(SDL_DEFAULT_REPEAT_DELAY));
+  rb_define_const(mKey,"DEFAULT_REPEAT_INTERVAL", INT2NUM(SDL_DEFAULT_REPEAT_INTERVAL));
+  
 }
 
 /* under 2 function is for testing */
