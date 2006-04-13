@@ -4,11 +4,11 @@ RDFILES = general.rd init.rd video.rd wm.rd event.rd joystick.rd cdrom.rd mixer.
 RD2 = rd2
 RD2OPT = -r rd/rd2html-lib.rb --html-lang=ja --html-charset=EUC-JP
 
-rubysdl.html: rubysdl.rd
+rubysdl_ref.html: rubysdl_ref.rd
 	$(RD2) $(RD2OPT) --html-title="Ruby/SDL Reference Manual" $< > $@ || rm -f $@
 
-rubysdl.rd: $(RDFILES)
-	cat $(RDFILES) > rubysdl.rd
+rubysdl_ref.rd: $(RDFILES)
+	cat $(RDFILES) > rubysdl_ref.rd
 
 %.rd: %.rsd
 	$(RSD) < $< > $@
