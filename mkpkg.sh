@@ -1,12 +1,13 @@
 #!/bin/sh
 
-VERSION=1.0.0
+VERSION=1.1.0
 PACKAGE=rubysdl-$VERSION.tar.gz
 DIRNAME=rubysdl-$VERSION
 
 mkdir $DIRNAME
 mkdir ${DIRNAME}/lib
 mkdir ${DIRNAME}/sample
+mkdir ${DIRNAME}/doc
 
 for file in `cat MANIFEST`
 do

@@ -1,3 +1,31 @@
+version 1.1.0
+日本語のリファレンスを全面改訂
+以下のメソッドを追加
+  SDL::CD.framesToMSF
+  SDL::CD.MSFToFrames
+  SDL::CD#in_drive?
+  SDL::Mixer.playChannelTimed
+  SDL::Mixer.fadeInChannel
+  SDL::Mixer.fadeInChannelTimed
+  SDL::Mixer.expire
+  SDL::Mixer.fading
+  SDL::Mixer.fadeOut
+  SDL::Mixer.fadingMusic
+  SDL::Mouse.show?
+  SDL::CollisionMap#w
+  SDL::CollisionMap#h
+  SDL::BMFont#textSize
+  SDL::TTF#init?
+以下のクラスを追加
+  SDL::Event2::VideoExpose
+以下のメソッドのバグを修正
+  SDL::Key.press?
+  SDL::TTF#familyName
+  SDL::TTF#styleName
+以下のクラスの終了時バグを修正
+  SDL::BMFont
+キーリピート関連の定数を追加
+
 version 1.0.0
 以下のメソッドを追加
   SDL::Surface#drawBezier

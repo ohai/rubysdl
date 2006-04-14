@@ -1,5 +1,5 @@
 
-Ruby/SDL 1.0.0
+Ruby/SDL 1.1.0
 Ohbayashi Ippei
 
 1 What's Ruby/SDL
@@ -103,6 +103,7 @@ install on Linux
   Keffin Barnaby : some patches
   Rorien Dunn, Dennis Ranke, Keita Urashima : bug reports and useful information
   Yusuke TABATA : introduce me into SDL world
+  SDLdoc Japanese translation project : base of Ruby/SDL's reference manual
 
 9 OTHER
   Many functions are not tested.
