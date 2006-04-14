@@ -2,7 +2,7 @@
 
 = SDL
 
-Ruby/SDL は ((<SDL|URL:http://www.libsdl.org/)) を Ruby から利用するための
+Ruby/SDL は ((<SDL|URL:http://www.libsdl.org/>)) を Ruby から利用するための
 拡張ライブラリです。
 
 SDL の薄いラッパを目指しているため、API は SDL のものと一対一に対応
