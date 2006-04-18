@@ -23,8 +23,14 @@ First, install mingw32 Ruby.
 You can get that from
 http://www.garbagecollect.jp/ruby/mswin32/en/download/release.html
 
-Second, copy sdl.so, opengl.so, sdl.rb, rubysdl_aliases.rb and DLL files
-to appropriate folder.
+Therefore, you should run command prompt, change directory(cd) here,
+and type
+  ruby install_rubysdl.rb
+then all files are copyed and finish installation.
+
+3.1 Another way to install
+Copy ext\sdl.so, ext\opengl.so, lib\sdl.rb, lib\rubysdl_aliases.rb
+and all DLL files in dll\ to appropriate folder.
 If you have installed Ruby at
 C:\ruby ( in other words ruby.exe is under C:\ruby\bin ) ,
 you'll copy sdl.so, and opengl.so to C:\ruby\lib\ruby\site-ruby\1.8\i386-msvcrt,

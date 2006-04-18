@@ -24,8 +24,19 @@ Rubyは、
 http://www.garbagecollect.jp/ruby/mswin32/ja/
 にあるバイナリが使えます。
 
-つぎに、このアーカイブに含まれるsdl.so、opengl.so、rubysdl_aliases.rb、sdl.rb
-とDLLファイルを適当なフォルダにコピーしてください。
+次にコマンドプロンプトを起動し、このアーカイブを展開したフォルダに
+cd で移動します。その後
+  ruby install_rubysdl.rb
+とすると必要なファイルがインストールされます。
+また、
+  ruby install_rubysdl.rb --help
+とすることでオプションが表示されます。
+以上でインストールは完了です。
+
+3.1 別方法のでインストール
+このアーカイブに含まれる
+dll/*.dll, lib/*.rb, ext/*.so
+というファイルを適当なフォルダにコピーする方法でもインストールできます。
 rubyがインストールされているフォルダを
 C:\ruby\
 とすると(つまり C:\ruby\bin に ruby.exe があるとすると)
