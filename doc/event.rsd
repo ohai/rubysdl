@@ -267,16 +267,16 @@ METHODS(Key)
 * SDL::Key::MINUS  '-'   minus sign マイナス  
 * SDL::Key::PERIOD  '.'   period ピリオド  
 * SDL::Key::SLASH  '/'   forward slash スラッシュ  
-* SDL::Key::0  '0'  0  
-* SDL::Key::1  '1'  1  
-* SDL::Key::2  '2'  2  
-* SDL::Key::3  '3'  3  
-* SDL::Key::4  '4'  4  
-* SDL::Key::5  '5'  5  
-* SDL::Key::6  '6'  6  
-* SDL::Key::7  '7'  7  
-* SDL::Key::8  '8'  8  
-* SDL::Key::9  '9'  9  
+* SDL::Key::K0  '0'  0  
+* SDL::Key::K1  '1'  1  
+* SDL::Key::K2  '2'  2  
+* SDL::Key::K3  '3'  3  
+* SDL::Key::K4  '4'  4  
+* SDL::Key::K5  '5'  5  
+* SDL::Key::K6  '6'  6  
+* SDL::Key::K7  '7'  7  
+* SDL::Key::K8  '8'  8  
+* SDL::Key::K9  '9'  9  
 * SDL::Key::COLON  ':'   colon コロン  
 * SDL::Key::SEMICOLON  ';'   semicolon セミコロン  
 * SDL::Key::LESS  '&lt;'   less-than sign 小なり  
@@ -290,32 +290,32 @@ METHODS(Key)
 * SDL::Key::CARET  '^'   caret キャレット  
 * SDL::Key::UNDERSCORE  '_'   underscore アンダースコア  
 * SDL::Key::BACKQUOTE  '`'   grave 逆引用符  
-* SDL::Key::a  'a'  a  
-* SDL::Key::b  'b'  b  
-* SDL::Key::c  'c'  c  
-* SDL::Key::d  'd'  d  
-* SDL::Key::e  'e'  e  
-* SDL::Key::f  'f'  f  
-* SDL::Key::g  'g'  g  
-* SDL::Key::h  'h'  h  
-* SDL::Key::i  'i'  i  
-* SDL::Key::j  'j'  j  
-* SDL::Key::k  'k'  k  
-* SDL::Key::l  'l'  l  
-* SDL::Key::m  'm'  m  
-* SDL::Key::n  'n'  n  
-* SDL::Key::o  'o'  o  
-* SDL::Key::p  'p'  p  
-* SDL::Key::q  'q'  q  
-* SDL::Key::r  'r'  r  
-* SDL::Key::s  's'  s  
-* SDL::Key::t  't'  t  
-* SDL::Key::u  'u'  u  
-* SDL::Key::v  'v'  v  
-* SDL::Key::w  'w'  w  
-* SDL::Key::x  'x'  x  
-* SDL::Key::y  'y'  y  
-* SDL::Key::z  'z'  z  
+* SDL::Key::A  'a'  a  
+* SDL::Key::B  'b'  b  
+* SDL::Key::C  'c'  c  
+* SDL::Key::D  'd'  d  
+* SDL::Key::E  'e'  e  
+* SDL::Key::F  'f'  f  
+* SDL::Key::G  'g'  g  
+* SDL::Key::H  'h'  h  
+* SDL::Key::I  'i'  i  
+* SDL::Key::J  'j'  j  
+* SDL::Key::K  'k'  k  
+* SDL::Key::L  'l'  l  
+* SDL::Key::M  'm'  m  
+* SDL::Key::N  'n'  n  
+* SDL::Key::O  'o'  o  
+* SDL::Key::P  'p'  p  
+* SDL::Key::Q  'q'  q  
+* SDL::Key::R  'r'  r  
+* SDL::Key::S  's'  s  
+* SDL::Key::T  't'  t  
+* SDL::Key::U  'u'  u  
+* SDL::Key::V  'v'  v  
+* SDL::Key::W  'w'  w  
+* SDL::Key::X  'x'  x  
+* SDL::Key::Y  'y'  y  
+* SDL::Key::Z  'z'  z  
 * SDL::Key::DELETE  '^?'  delete  
 * SDL::Key::KP0     keypad 0 キーバッド(テンキー)の0  
 * SDL::Key::KP1     keypad 1 キーバッドの1  
