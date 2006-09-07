@@ -413,9 +413,6 @@ DESC
 MPEGの映像の最後のフレームを $[dst] で指定した@[サーフェス|Surface]の
 ($[x], $[y])の位置に描画します。
 
-NOTES
-not implemented yet
-
 %%
 NAME set_filer
 MOD MPEG

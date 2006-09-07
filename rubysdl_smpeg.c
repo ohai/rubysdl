@@ -248,6 +248,20 @@ static VALUE smpeg_renderFrame(VALUE obj,VALUE framenum)
   return Qnil;
 }
 
+static VALUE smpeg_renderFinal(VALUE obj,VALUE dst, VALUE x, VALUE y)
+{
+  SMPEG *mpeg;
+  SDL_Surface *surface;
+  if( !rb_obj_is_kind_of(dst,cSurface) )
+    rb_raise(rb_eArgError,"type mismatchi(expect Surface)");
+  
+  Data_Get_Struct(obj,SMPEG,mpeg);
+  Data_Get_Struct(dst,SDL_Surface,surface);
+  
+  SMPEG_renderFinal(mpeg, surface, NUM2INT(x), NUM2INT(y));
+  return Qnil;
+}
+  
 static VALUE smpeg_setFilter(VALUE obj,VALUE filter)
 {
   SMPEG *mpeg;
@@ -314,6 +328,7 @@ void init_smpeg()
   rb_define_method(cMPEG,"seek",smpeg_seek,1);
   rb_define_method(cMPEG,"skip",smpeg_skip,1);
   rb_define_method(cMPEG,"renderFrame",smpeg_renderFrame,1);
+  rb_define_method(cMPEG,"renderFinal",smpeg_renderFinal,3);
   rb_define_method(cMPEG,"setFilter",smpeg_setFilter,1);
   
 }
