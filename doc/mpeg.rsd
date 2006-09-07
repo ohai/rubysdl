@@ -389,10 +389,10 @@ DEP SMPEG
 PURPOSE 特定のフレームを描画します。
 
 PROTO
-render_frame
+render_frame(framenum)
 
 DESC
-MPEGの中の特定のフレームを @[MPEG#set_display] で指定した
+MPEGの中の $[framenum] で指定したフレームを @[MPEG#set_display] で指定した
 サーフェスの @[MPEG#move] で指定した位置に描画します。
 
 SEEALSO
