@@ -20,7 +20,10 @@
 #ifdef HAVE_SMPEG
 #include "rubysdl.h"
 #include "smpeg/smpeg.h"
+
+#ifdef HAVE_SDL_MIXER
 #include "SDL_mixer.h"
+#endif
 
 static SMPEG_Filter* filters[3];
 #define NULL_FILTER 0
@@ -59,7 +62,7 @@ static VALUE smpeg_load(VALUE class,VALUE filename)
   }
 
   obj = Data_Wrap_Struct(cMPEG,0,SMPEG_delete,mpeg);
-  rb_iv_set(obj,"enable_audio",Qfalse);
+  rb_iv_set(obj,"enable_audio",Qtrue);
   return obj;
 }
 
@@ -82,7 +85,6 @@ static VALUE smpeg_enableAudio(VALUE obj,VALUE enable)
 {
   SMPEG *mpeg;
   Data_Get_Struct(obj,SMPEG,mpeg);
-  SMPEG_enableaudio(mpeg,RTEST(enable));
   rb_iv_set(obj,"enable_audio",enable);
   return Qnil;
 }
@@ -173,6 +175,7 @@ static VALUE smpeg_play(VALUE obj)
   
   Data_Get_Struct(obj,SMPEG,mpeg);
 
+#if HAVE_SDL_MIXER
   use_audio = RTEST(rb_iv_get(obj,"enable_audio")) &&
     Mix_QuerySpec( NULL, NULL, NULL );
 
@@ -194,7 +197,10 @@ static VALUE smpeg_play(VALUE obj)
     Mix_HookMusic(SMPEG_playAudioSDL, mpeg);
     SMPEG_enableaudio(mpeg, 1);
   }
-    
+#else
+  SMPEG_enableaudio(mpeg, RTEST(rb_iv_get(obj,"enable_audio")));
+#endif
+  
   SMPEG_play(mpeg);
   return Qnil;
 }
