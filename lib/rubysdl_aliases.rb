@@ -375,6 +375,7 @@ module SDL
 #     alias seek seek
 #     alias skip skip
       alias render_frame renderFrame
+      alias render_final renderFinal
       alias set_filter setFilter
     end
   end
