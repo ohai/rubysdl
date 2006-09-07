@@ -349,7 +349,7 @@ void init_keyEvent()
   rb_define_module_function(mKey,"disableKeyRepeat",sdl_disableKeyRepeat,0);
   rb_define_module_function(mKey,"getKeyName",sdl_getKeyName,1);
 
-  keyState = malloc(SDLK_LAST*sizeof(Uint8));
+  keyState = ALLOC_N(Uint8,SDLK_LAST);
   memset(keyState, SDL_RELEASED, SDLK_LAST);
   
   defineConstForKey();

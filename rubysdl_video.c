@@ -252,7 +252,7 @@ static VALUE sdl_createSurfaceFrom(VALUE class,VALUE pixels,VALUE w,
   void* pixel_data;
   
   StringValue(pixels);
-  pixel_data = malloc(RSTRING(pixels)->len);
+  pixel_data = ALLOC_N(char, RSTRING(pixels)->len);
   memcpy(pixel_data,RSTRING(pixels)->ptr,RSTRING(pixels)->len);
   
   surface = SDL_CreateRGBSurfaceFrom(pixel_data,NUM2INT(w),NUM2INT(h),
