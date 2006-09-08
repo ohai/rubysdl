@@ -823,6 +823,7 @@ RVAL Surface
 
 PROTO
 new(flags,w,h,depth,Rmask,Gmask,Bmask,Amask)
+new(flags,w,h,surface)
 
 DESC
 大きさが $[w] x $[h] の空のサーフェスを確保します。
@@ -859,6 +860,9 @@ $[flags] は作られるサーフェスのタイプを指定し、
   サーフェスはなるだけビデオメモリに置かれます。
   サーフェスを作った後にこのフラグをセット・リセットしたい場合は
   @[Surface#set_alpha]を使って下さい。
+また、depth,Rmask,Gmask,Bmask,Amaskの代わりに @[Surface] のインスタンス
+を渡すとこれらの値が与えたインスタンスと同じになります。
+
 RET
 @[Surface]のインスタンスを返します。
 
