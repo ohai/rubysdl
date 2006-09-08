@@ -1,5 +1,5 @@
 
-Ruby/SDL 1.1.0
+Ruby/SDL 1.2.0
 Ohbayashi Ippei
 
 1 What's Ruby/SDL
@@ -106,7 +106,8 @@ install on Linux
   SDLdoc Japanese translation project : base of Ruby/SDL's reference manual
 
 9 OTHER
-  Many functions are not tested.
+  Some functions, especially SDL::MPEG methods and pallete handling methods,
+  are not tested.
 
   Please send comments and bug reports to the author.
   Author's mail address: ohai@kmc.gr.jp

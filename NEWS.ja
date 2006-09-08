@@ -1,3 +1,13 @@
+version 1.2.0
+日本語のリファレンスのMPEGの項目を加筆
+以下のメソッドを追加
+  SDL::MPEG#render_final
+  SDL::Surface.load_bmp_from_io
+  SDL::Surface.load_from_io
+  SDL::Mixer::Wave.load_from_io
+  SDL::Mixer::Music.load_from_string
+SMPEG有、SDL_mixer無の場合にコンパイルできないバグを修正
+
 version 1.1.0
 日本語のリファレンスを全面改訂
 以下のメソッドを追加
