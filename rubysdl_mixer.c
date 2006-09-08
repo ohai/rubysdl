@@ -303,6 +303,7 @@ static VALUE mix_loadMus(VALUE class,VALUE filename)
   return Data_Wrap_Struct(class,0,mix_FreeMusic,music);
 }
 
+#ifdef HAVE_MIX_LOADMUS_RW
 static VALUE mix_loadMusFromString(VALUE class,VALUE str)
 {
   Mix_Music* music;
@@ -323,6 +324,7 @@ static VALUE mix_loadMusFromString(VALUE class,VALUE str)
   
   return result;
 }
+#endif
 
 static void defineConstForAudio()
 {
@@ -388,8 +390,10 @@ void init_mixer()
 
   cMusic = rb_define_class_under(mMixer,"Music",rb_cObject);
   rb_define_singleton_method(cMusic,"load",mix_loadMus,1);
+#ifdef HAVE_MIX_LOADMUS_RW
   rb_define_singleton_method(cMusic,"loadFromString",mix_loadMusFromString,1);
-
+#endif
+  
   /* to avoid to do garbage collect when playing */
   playing_wave = rb_ary_new();
   rb_global_variable( &playing_wave );
