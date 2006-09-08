@@ -44,14 +44,14 @@ static int rubyio_pseudo_seek(SDL_RWops* context, int offset, int whence)
   
   
   switch(whence){
-  case RW_SEEK_SET:
+  case SEEK_SET:
     rb_funcall(io, rb_intern("rewind"), 0);
     rb_funcall(io, rb_intern("read"), 1, INT2NUM(offset));
     break;
-  case RW_SEEK_CUR:
+  case SEEK_CUR:
     str = rb_funcall(io, rb_intern("read"), 1, INT2NUM(offset));
     break;
-  case RW_SEEK_END:
+  case SEEK_END:
     rb_raise(eSDLError, "cannot seek SEEK_END");
   default:
     SDL_SetError("Unknown value for 'whence'");
