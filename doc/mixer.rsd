@@ -211,7 +211,7 @@ load(filename)
 
 DESC
 $[filename] から音楽データをロードします。
- WAVE, MOD, MIDI, OGG, MP3 に対応しています。
+WAVE, MOD, MIDI, OGG, MP3 に対応しています。
 
 EXCEPTION *
 
