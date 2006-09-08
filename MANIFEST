@@ -63,6 +63,7 @@ sample/fpstimer.rb
 sample/bfont.rb
 sample/font.bmp
 sample/kanji.rb
+sample/sample.ttf
 doc/Makefile
 doc/rsd.rb
 doc/cdrom.rsd
