@@ -213,6 +213,9 @@ DESC
 $[filename] から音楽データをロードします。
 WAVE, MOD, MIDI, OGG, MP3 に対応しています。
 
+NOTES
+Windowsでは環境によってはMP3がロードできないことがあります。
+
 EXCEPTION *
 
 %%
@@ -234,6 +237,8 @@ MOD, OGG に対応しています。
 NOTES
 内部的に $[str] をコピーして別に保持しているため、メモリの使用量に
 注意してください。
+
+Windowsではこのメソッドが使えない場合があります。
 
 EXCEPTION *
 
