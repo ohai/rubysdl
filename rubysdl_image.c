@@ -31,9 +31,23 @@ static VALUE sdl_load(VALUE class,VALUE filename)
   }
   return Data_Wrap_Struct(class,0,sdl_freeSurface,surface);
 }
+static VALUE sdl_loadFromIO(VALUE class,VALUE io)
+{
+  volatile VALUE guard = io;
+  SDL_Surface *surface;
+  
+  surface = IMG_Load_RW(rubysdl_RWops_from_ruby_obj(io), 1);
+  
+  if(surface==NULL){
+    rb_raise(eSDLError,"Couldn't load image from IO: %s",
+	     SDL_GetError());
+  }
+  return Data_Wrap_Struct(class,0,sdl_freeSurface,surface);
+}
 
 void init_sdl_image()
 {
   rb_define_singleton_method(cSurface,"load",sdl_load,1);
+  rb_define_singleton_method(cSurface,"loadFromIO",sdl_loadFromIO,1);
 }
 #endif /* HAVE_SDL_IMAGE */

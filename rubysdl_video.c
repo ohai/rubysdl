@@ -276,6 +276,18 @@ static VALUE sdl_loadBMP(VALUE class,VALUE filename)
   }
   return Data_Wrap_Struct(class,0,sdl_freeSurface,image);
 }
+
+static VALUE sdl_loadBMPFromIO(VALUE class, VALUE io)
+{
+  volatile VALUE guard = io;
+  SDL_Surface* image;
+  image = SDL_LoadBMP_RW(rubysdl_RWops_from_ruby_obj(io), 1);
+  if(image == NULL)
+    rb_raise(eSDLError, "Couldn't Load BMP file from IO : %s",
+             SDL_GetError());
+  return Data_Wrap_Struct(class,0,sdl_freeSurface,image);
+}
+
 static VALUE sdl_saveBMP(VALUE obj,VALUE filename)
 {
   SDL_Surface *image;
@@ -670,6 +682,7 @@ void init_video()
   rb_define_singleton_method(cSurface,"createWithFormat",sdl_createSurfaceWithFormat,8);
   rb_define_singleton_method(cSurface,"new_from",sdl_createSurfaceFrom,9);
   rb_define_singleton_method(cSurface,"loadBMP",sdl_loadBMP,1);
+  rb_define_singleton_method(cSurface,"loadBMPFromIO",sdl_loadBMPFromIO,1);
   rb_define_method(cSurface,"saveBMP",sdl_saveBMP,1);
   rb_define_method(cSurface,"displayFormat",sdl_displayFormat,0);
   rb_define_method(cSurface,"displayFormatAlpha",sdl_displayFormatAlpha,0);

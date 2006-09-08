@@ -29,6 +29,7 @@ module SDL
   class << Surface
 #   alias new new
     alias load_bmp loadBMP
+    alias load_bmp_from_io loadBMPFromIO
   end
 
   class Surface
@@ -314,17 +315,27 @@ module SDL
 
     module Mixer
       class Wave
-#       alias load load
+        class << self
+          alias load_from_io loadFromIO
+        end
 	alias set_volume setVolume
       end
+      
+      class << Music
+        alias load_from_string loadFromString
+      end
     end
-    # class Mixer::Music
-    # alias load load
   end
 end
 
 # rubysdl_image.c
-# alias load load
+module SDL
+  class Surface
+    if method_defined?(:load)
+      alias load_from_io loadFromIO
+    end
+  end
+end
 
 # rubysdl_ttf.c
 module SDL

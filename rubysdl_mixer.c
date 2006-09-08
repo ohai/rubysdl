@@ -20,6 +20,7 @@
 #ifdef HAVE_SDL_MIXER
 
 #include "rubysdl.h"
+#define USE_RWOPS
 #include <SDL_mixer.h>
 
 static int mix_opened=0;
@@ -173,6 +174,17 @@ static VALUE mix_loadWav(VALUE class,VALUE filename)
   return Data_Wrap_Struct(class,0,mix_FreeChunk,wave);
 }
 
+static VALUE mix_loadWavFromIO(VALUE class, VALUE io)
+{
+  Mix_Chunk *wave;
+  wave = Mix_LoadWAV_RW(rubysdl_RWops_from_ruby_obj(io), 1);
+  if( wave == NULL ){
+    rb_raise(eSDLError,"Couldn't load wave file from IO: %s",
+             SDL_GetError());
+  }
+  return Data_Wrap_Struct(class,0,mix_FreeChunk,wave);
+}
+ 
 /* Volume setting functions and methods : volume in 0..128 */
 static VALUE mix_volume(VALUE mod,VALUE channel,VALUE volume)
 {
@@ -290,6 +302,28 @@ static VALUE mix_loadMus(VALUE class,VALUE filename)
 	     "Couldn't load %s: %s",GETCSTR(filename),SDL_GetError());
   return Data_Wrap_Struct(class,0,mix_FreeMusic,music);
 }
+
+static VALUE mix_loadMusFromString(VALUE class,VALUE str)
+{
+  Mix_Music* music;
+  volatile VALUE result;
+  volatile VALUE buf;
+  
+  StringValue(str);
+  buf = rb_str_dup(str);
+  music = Mix_LoadMUS_RW(SDL_RWFromConstMem(RSTRING(buf)->ptr,
+                                            RSTRING(buf)->len));
+  
+  if( music == NULL )
+    rb_raise(eSDLError,
+	     "Couldn't load from String: %s",SDL_GetError());
+  
+  result = Data_Wrap_Struct(class,0,mix_FreeMusic,music);
+  rb_iv_set(result, "buf", buf);
+  
+  return result;
+}
+
 static void defineConstForAudio()
 {
   rb_define_const(mMixer,"FORMAT_U8",UINT2NUM(AUDIO_U8));
@@ -349,10 +383,12 @@ void init_mixer()
   
   cWave = rb_define_class_under(mMixer,"Wave",rb_cObject);
   rb_define_singleton_method(cWave,"load",mix_loadWav,1);
+  rb_define_singleton_method(cWave,"loadFromIO",mix_loadWavFromIO,1);
   rb_define_method(cWave,"setVolume",mix_wave_volume,1);
 
   cMusic = rb_define_class_under(mMixer,"Music",rb_cObject);
   rb_define_singleton_method(cMusic,"load",mix_loadMus,1);
+  rb_define_singleton_method(cMusic,"loadFromString",mix_loadMusFromString,1);
 
   /* to avoid to do garbage collect when playing */
   playing_wave = rb_ary_new();
