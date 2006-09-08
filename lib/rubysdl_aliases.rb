@@ -322,7 +322,9 @@ module SDL
       end
       
       class << Music
-        alias load_from_string loadFromString
+        if method_defined?(:loadFromString)
+          alias load_from_string loadFromString
+        end
       end
     end
   end
