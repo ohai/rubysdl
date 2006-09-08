@@ -2,7 +2,11 @@
 
 # current directory should be rubysdl/win32
 
-VERSION=1.1.0
+if [ "$1" = "" ]; then
+    echo "usage: $0 VERSION"
+    exit 1
+fi
+VERSION=$1
 RUBY_VERSION=1.8.4
 OPENGLDIR=../../opengl-0.32g
 DLLDIR=../../lib
