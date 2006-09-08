@@ -79,11 +79,10 @@ FreeBSDにはPortがあるのでそれを利用してください。
         movesp.rb       キー入力のサンプル
         alpha.rb        アルファブレンディングのサンプル
         sgetest.rb      sgeのプリミティブ描画のサンプル
-        font.rb         True Type Fontのサンプル sample.ttf というフォント
-                        ファイルが必要
+        font.rb         True Type Fontのサンプル 
         playmod.rb      modファイル演奏のサンプル sample.it が必要
         testgl.rb       OpenGLのサンプル
-        cursor.rb       マウスカーソルを変更するサンプル
+        cursor.rb       マウスカーソルを変更するサンプルp
         transformblit.rb 回転縮小拡大のサンプル
         joy2.rb         ジョイパッド入力のサンプル
         plaympeg.rb     mpeg表示のサンプル sample.mpgが必要
@@ -151,6 +150,7 @@ FreeBSDにはPortがあるのでそれを利用してください。
     Keita Urashimaさん。
   * SDLの存在を教えてくれ、Ruby/SDLを作るきっかけを与えてくれた田畑さん。
   * SDLdoc 日本語翻訳プロジェクトにかかわったみなさま
+  * サンプル用のフォントを提供してくれた原さん。
 
 9 その他
   まだテストされていない機能が多くあります(パレット関連

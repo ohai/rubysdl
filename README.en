@@ -104,7 +104,7 @@ install on Linux
   Rorien Dunn, Dennis Ranke, Keita Urashima : bug reports and useful information
   Yusuke TABATA : introduce me into SDL world
   SDLdoc Japanese translation project : base of Ruby/SDL's reference manual
-
+  Hara Yutaka: Sample TrueTypeFont
 9 OTHER
   Some functions, especially SDL::MPEG methods and pallete handling methods,
   are not tested.

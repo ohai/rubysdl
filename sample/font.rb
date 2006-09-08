@@ -1,4 +1,3 @@
-# This sample needs a true type font file `sample.ttf'.
 require 'sdl'
 
 SDL.init( SDL::INIT_VIDEO )
@@ -16,9 +15,9 @@ font.drawSolidUTF8(screen,'test SDL_ttf',300,150,255,255,255)
 screen.flip
 
 while true
-  while event = SDL::Event.poll
+  while event = SDL::Event2.poll
     case event
-    when SDL::Event::KeyDown, SDL::Event::Quit
+    when SDL::Event2::KeyDown, SDL::Event2::Quit
       exit
     end
   end
