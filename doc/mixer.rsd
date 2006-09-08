@@ -176,11 +176,35 @@ OGGをロードした場合、ロード時にすべてのデータがメモリ上にRAWデータとして
 EXCEPTION *
 
 %%
+NAME load_from_io
+MOD Mixer::Wave
+TYPE .
+PURPOSE IOオブジェクトから音声をロードする。
+RVAL Mixer::Wave
+
+PROTO
+load_from_io(io)
+loadFromIO(io)
+
+DESC
+$[io]から音声をロードします。$[io]にはRubyのIOオブジェクト
+(IO, StringIOなどread, tell, rewindを持つオブジェクト)を指定します。
+WAVE, AIFF, RIFF, OGG, VOC に対応しています。
+
+NOTES
+これを呼ぶ前に @[Mixer.open] を呼んでおく必要があります。
+
+OGGをロードした場合、ロード時にすべてのデータがメモリ上にRAWデータとして
+展開されるので、メモリ使用量に注意してください。
+
+EXCEPTION *
+
+%%
 NAME load
 MOD Mixer::Music
 TYPE .
 PURPOSE ファイルから音楽データをロードする。
-RVAL Mixer::Mixer
+RVAL Mixer::Music
 nn
 PROTO
 load(filename)
@@ -188,6 +212,28 @@ load(filename)
 DESC
 $[filename] から音楽データをロードします。
  WAVE, MOD, MIDI, OGG, MP3 に対応しています。
+
+EXCEPTION *
+
+%%
+NAME load_from_string
+MOD Mixer::Music
+TYPE .
+PURPOSE 文字列から音楽データをロードする。
+RVAL Mixer::Music
+
+PROTO
+load_from_string(str)
+loadFromString(str)
+
+DESC
+$[str]から音楽データをロードします。$[str]には音楽データのバイナリ文字列
+を与えます。
+MOD, OGG に対応しています。
+
+NOTES
+内部的に $[str] をコピーして別に保持しているため、メモリの使用量に
+注意してください。
 
 EXCEPTION *
 

@@ -1048,6 +1048,34 @@ Surface#save_bmp
 Surface.load
 
 %%
+NAME load_bmp_from_io
+MOD Surface
+TYPE .
+PURPOSE RubyのIOオブジェクトから BMP ファイルをサーフェスにロードします。
+RVAL Surface
+
+PROTO
+load_bmp_from_io(io)
+loadBMPFromIO(io)
+
+DESC
+RubyのIOオブジェクトから BMP ファイルをサーフェスにロードします。
+
+RET
+@[Surface]のインスタンスを返します。
+
+EXCEPTION *
+
+SEEALSO
+Surface.load_bmp
+Surface.load_from_io
+
+NOTES
+RubyのIOオブジェクトとは、read、rewind、tell という3つのメソッドを
+持つオブジェクトです。IO、StringIO、Zlib::GzipReaderなどが
+利用できます。
+
+%%
 NAME save_bmp
 MOD Surface
 TYPE #
@@ -1626,6 +1654,36 @@ SDL_image のコンパイル時に使えるように指定しなかったフォーマット
 のファイルはこのメソッドではロードできません。
 
 EXCEPTION *
+
+%%
+NAME load_from_io
+MOD Surface
+TYPE .
+PURPOSE RubyのIOオブジェクトから画像をサーフェスにロードします。
+RVAL Surface
+
+PROTO
+load_from_io(io)
+loadFromIO(io)
+
+DESC
+RubyのIOオブジェクトから画像データをサーフェスにロードします。
+もし画像の形式が透明ピクセルをサポートしているならば、サーフェスに
+カラーキーがセットされます。
+
+対応しているフォーマットはBMP, PNM (PPM/PGM/PBM), XPM,
+XCF, PCX, GIF, JPEG, TIFF, TGA, PNG, LBMです。
+
+EXCEPTION *
+
+NOTES
+RubyのIOオブジェクトとは、read、rewind、tell という3つのメソッドを
+持つオブジェクトです。IO、StringIO、Zlib::GzipReaderなどが
+利用できます。
+
+SEEALSO
+Surface.load
+Surface.load_bmp_from_io
 
 %%
 NAME put_pixel
