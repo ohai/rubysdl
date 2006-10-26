@@ -368,7 +368,7 @@ TTF#fixed_width?
 TTF#family_name
 
 %%
-NAME size_text
+NAME text_size
 MOD TTF
 TYPE #
 DEP SDL_ttf
@@ -376,8 +376,8 @@ PURPOSE 文字列のレンダリングに必要なサーフェスのサイズを得ます。
 RVAL [Integer, Integer]
 
 PROTO
-size_text(text)
-sizeText(text)
+text_size(text)
+textSize(text)
 
 DESC
 $[text] で与えられた文字列をレンダリングするのに必要な@[サーフェス|Surface]
