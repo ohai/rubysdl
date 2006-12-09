@@ -633,6 +633,7 @@ static void defineConstForVideo()
   rb_define_const(mSDL,"OPENGL",UINT2NUM(SDL_OPENGL));
   rb_define_const(mSDL,"OPENGLBLIT",UINT2NUM(SDL_OPENGLBLIT));
   rb_define_const(mSDL,"RESIZABLE",UINT2NUM(SDL_RESIZABLE));
+  rb_define_const(mSDL,"NOFRAME", UINT2NUM(SDL_NOFRAME));
   rb_define_const(mSDL,"HWACCEL",UINT2NUM(SDL_HWACCEL));
   rb_define_const(mSDL,"SRCCOLORKEY",UINT2NUM(SDL_SRCCOLORKEY));
   rb_define_const(mSDL,"RLEACCELOK",UINT2NUM(SDL_RLEACCELOK));
