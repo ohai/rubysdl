@@ -179,6 +179,12 @@ static VALUE sdl_event2_wait(VALUE class)
   else
     rb_raise(eSDLError,"Event handling error");
 }
+static VALUE sdl_event2_pump(VALUE class)
+{
+  SDL_PumpEvents();
+  return Qnil;
+}
+
 static VALUE sdl_event2_new(VALUE class)
 {
   return rb_obj_alloc(class);
@@ -293,6 +299,7 @@ void init_event2(void)
   cEvent2=rb_define_class_under(mSDL,"Event2",rb_cObject);
   rb_define_singleton_method(cEvent2,"poll",sdl_event2_poll,0);
   rb_define_singleton_method(cEvent2,"wait",sdl_event2_wait,0);
+  rb_define_singleton_method(cEvent2, "pump",sdl_event2_pump, 0);
   /*rb_define_attr(cEvent2,"type",1,0);*/
   rb_define_singleton_method(cEvent2,"new",sdl_event2_new,0);
   rb_define_singleton_method(cEvent2,"push",sdl_event2_push,1);
