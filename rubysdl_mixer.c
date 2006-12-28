@@ -65,7 +65,7 @@ static VALUE mix_querySpec(VALUE mod)
   int channels;
 
   if( !Mix_QuerySpec(&rate,&format,&channels) )
-    rb_raise(eSDLError,"audio have not been opened yet");
+    rb_raise(eSDLError,"audio have not been opened yet: %s", Mix_GetError());
   return rb_ary_new3( 3,INT2NUM(rate),UINT2NUM(format),INT2NUM(channels) );
 }
 
@@ -81,12 +81,12 @@ static VALUE mix_playChannel(VALUE mod,VALUE channel,VALUE wave,VALUE loops)
   int playing_channel;
   
   if( ! rb_obj_is_kind_of(wave,cWave) )
-    rb_raise(rb_eArgError,"type mismatch");
+    rb_raise(rb_eArgError,"type mismatch: SDL::Mixer::Wave is expected");
   Data_Get_Struct(wave,Mix_Chunk,chunk);
   
   playing_channel = Mix_PlayChannel(NUM2INT(channel),chunk,NUM2INT(loops) );
   if( playing_channel == -1 ){
-    rb_raise( eSDLError, "couldn't play wave" );
+    rb_raise( eSDLError, "couldn't play wave: %s", Mix_GetError() );
   }
 
   rb_ary_store(playing_wave,playing_channel,wave);/* to avoid gc problem */
@@ -100,13 +100,13 @@ static VALUE mix_playChannelTimed(VALUE mod,VALUE channel,VALUE wave,VALUE loops
   int playing_channel;
   
   if( ! rb_obj_is_kind_of(wave,cWave) )
-    rb_raise(rb_eArgError,"type mismatch");
+    rb_raise(rb_eArgError,"type mismatch: SDL::Mixer::Wave is expected");
   Data_Get_Struct(wave,Mix_Chunk,chunk);
   
   playing_channel = Mix_PlayChannelTimed(NUM2INT(channel),chunk,NUM2INT(loops),
                                          NUM2INT(ticks));
   if( playing_channel == -1 ){
-    rb_raise( eSDLError, "couldn't play wave" );
+    rb_raise( eSDLError, "couldn't play wave: %s", Mix_GetError() );
   }
 
   rb_ary_store(playing_wave,playing_channel,wave);/* to avoid gc problem */
@@ -120,13 +120,13 @@ static VALUE mix_fadeInChannel(VALUE mod,VALUE channel,VALUE wave,VALUE loops,
   int playing_channel;
   
   if( ! rb_obj_is_kind_of(wave,cWave) )
-    rb_raise(rb_eArgError,"type mismatch");
+    rb_raise(rb_eArgError,"type mismatch: SDL::Mixer::Wave is expected");
   Data_Get_Struct(wave,Mix_Chunk,chunk);
   
   playing_channel = Mix_FadeInChannel(NUM2INT(channel),chunk,NUM2INT(loops),
                                       NUM2INT(ms));
   if( playing_channel == -1 ){
-    rb_raise( eSDLError, "couldn't play wave" );
+    rb_raise( eSDLError, "couldn't play wave: %s", Mix_GetError() );
   }
 
   rb_ary_store(playing_wave,playing_channel,wave);/* to avoid gc problem */
@@ -140,13 +140,13 @@ static VALUE mix_fadeInChannelTimed(VALUE mod,VALUE channel,VALUE wave,VALUE loo
   int playing_channel;
   
   if( ! rb_obj_is_kind_of(wave,cWave) )
-    rb_raise(rb_eArgError,"type mismatch");
+    rb_raise(rb_eArgError,"type mismatch: SDL::Mixer::Wave is expected");
   Data_Get_Struct(wave,Mix_Chunk,chunk);
   
   playing_channel = Mix_FadeInChannelTimed(NUM2INT(channel),chunk,NUM2INT(loops),
                                            NUM2INT(ms), NUM2INT(ticks));
   if( playing_channel == -1 ){
-    rb_raise( eSDLError, "couldn't play wave" );
+    rb_raise( eSDLError, "couldn't play wave: %s", Mix_GetError() );
   }
 
   rb_ary_store(playing_wave,playing_channel,wave);/* to avoid gc problem */
@@ -169,7 +169,7 @@ static VALUE mix_loadWav(VALUE class,VALUE filename)
   wave = Mix_LoadWAV( GETCSTR(filename) );
   if( wave == NULL ){
     rb_raise( eSDLError,"Couldn't load wave file %s: %s",
-	      GETCSTR(filename),SDL_GetError() );
+	      GETCSTR(filename), Mix_GetError() );
   }
   return Data_Wrap_Struct(class,0,mix_FreeChunk,wave);
 }
@@ -180,7 +180,7 @@ static VALUE mix_loadWavFromIO(VALUE class, VALUE io)
   wave = Mix_LoadWAV_RW(rubysdl_RWops_from_ruby_obj(io), 1);
   if( wave == NULL ){
     rb_raise(eSDLError,"Couldn't load wave file from IO: %s",
-             SDL_GetError());
+             Mix_GetError());
   }
   return Data_Wrap_Struct(class,0,mix_FreeChunk,wave);
 }
@@ -228,7 +228,7 @@ static VALUE mix_expire(VALUE mod, VALUE channel, VALUE ticks)
 static VALUE mix_fading(VALUE mod, VALUE which)
 {
   if( NUM2INT(which) < 0 || Mix_AllocateChannels(-1) <= NUM2INT(which))
-    rb_raise(eSDLError, "channel out of range");
+    rb_raise(eSDLError, "channel %d out of range", NUM2INT(which));
   return INT2FIX(Mix_FadingChannel(which));
 }
   
@@ -244,7 +244,7 @@ static VALUE mix_playMusic(VALUE mod,VALUE music,VALUE loops)
 {
   Mix_Music *mus;
   if( ! rb_obj_is_kind_of(music,cMusic) )
-    rb_raise(rb_eArgError,"type mismatch");
+    rb_raise(rb_eArgError,"type mismatch: SDL::Mixer::Music is expected");
   Data_Get_Struct(music,Mix_Music,mus);
   playing_music=music; /* to avoid gc problem */
   Mix_PlayMusic(mus,NUM2INT(loops));
@@ -255,7 +255,7 @@ static VALUE mix_fadeInMusic(VALUE mod,VALUE music,VALUE loops,VALUE ms)
 {
   Mix_Music *mus;
   if( ! rb_obj_is_kind_of(music,cMusic) )
-    rb_raise(rb_eArgError,"type mismatch");
+    rb_raise(rb_eArgError,"type mismatch: SDL::Mixer::Music is expected");
   Data_Get_Struct(music,Mix_Music,mus);
   Mix_FadeInMusic(mus,NUM2INT(loops),NUM2INT(ms));
   return Qnil;
@@ -317,7 +317,7 @@ static VALUE mix_loadMusFromString(VALUE class,VALUE str)
   
   if( music == NULL )
     rb_raise(eSDLError,
-	     "Couldn't load from String: %s",SDL_GetError());
+	     "Couldn't load from String: %s",Mix_GetError());
   
   result = Data_Wrap_Struct(class,0,mix_FreeMusic,music);
   rb_iv_set(result, "buf", buf);
