@@ -1007,6 +1007,10 @@ Object
     Waits indefinitely for the next available event,returning the instance
     represents that event.
 
+    Note that while waiting next event, ruby's interpreter is blocked
+    and it cannot switch other threads because ruby's thread is
+    user-level thread.
+    
 --- SDL::Event2.push(event)
       Not documented yet.
 
