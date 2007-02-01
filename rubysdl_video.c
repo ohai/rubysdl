@@ -61,7 +61,9 @@ static VALUE sdl_getVideoSurface(VALUE mod)
 static VALUE sdl_videoDriverName(VALUE mod)
 {
   char namebuf[256];
-  SDL_VideoDriverName( namebuf, sizeof(namebuf) );
+  if(SDL_VideoDriverName(namebuf, sizeof(namebuf)) == NULL) {
+    rb_raise(eSDLError, "SDL is not initialized yet: %s", SDL_GetError());
+  }
   return rb_str_new2( namebuf );
 }
 
