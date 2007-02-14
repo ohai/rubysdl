@@ -80,28 +80,28 @@ $[chunksize] はそれぞれのチャンネルに割当てられるメモリの量(byte単位)です。
 デフォルトでは8(定数Mixer::CHANNELS)チャンネルが確保されます。
 
 $[format] は以下のものが利用できます。
-:SDL::Mixer::AUDIO_U8
+:SDL::Mixer::FORMAT_U8
     Unsigned 8-bit samples
-:SDL::Mixer::AUDIO_S8
+:SDL::Mixer::FORMAT_S8
     Signed 8-bit samples
-:SDL::Mixer::AUDIO_U16LSB
+:SDL::Mixer::FORMAT_U16LSB
     Unsigned 16-bit samples, in little-endian byte order
-:SDL::Mixer::AUDIO_S16LSB
+:SDL::Mixer::FORMAT_S16LSB
     Signed 16-bit samples, in little-endian byte order
-:SDL::Mixer::AUDIO_U16MSB
+:SDL::Mixer::FORMAT_U16MSB
     Unsigned 16-bit samples, in big-endian byte order
-:SDL::Mixer::AUDIO_S16MSB
+:SDL::Mixer::FORMAT_S16MSB
     Signed 16-bit samples, in big-endian byte order
-:SDL::Mixer::AUDIO_U16
-    same as AUDIO_U16LSB (for backwards compatability probably)
-:SDL::Mixer::AUDIO_S16
-    same as AUDIO_S16LSB (for backwards compatability probably)
-:SDL::Mixer::AUDIO_U16SYS
+:SDL::Mixer::FORMAT_U16
+    same as FORMAT_U16LSB (for backwards compatability probably)
+:SDL::Mixer::FORMAT_S16
+    same as FORMAT_S16LSB (for backwards compatability probably)
+:SDL::Mixer::FORMAT_U16SYS
     Unsigned 16-bit samples, in system byte order
-:SDL::Mixer::AUDIO_S16SYS
+:SDL::Mixer::FORMAT_S16SYS
     Signed 16-bit samples, in system byte order
 
-SDL::DEFAULT_FORMAT は SDL::Mixer::AUDIO_S16SYS を指します。
+SDL::DEFAULT_FORMAT は SDL::Mixer::FORMAT_S16SYS を指します。
 
 $[channels] は 1 でモノラル、2でステレオ出力を指定します。
 Mixer::DEFAULT_CHANNELS は 2 です。
