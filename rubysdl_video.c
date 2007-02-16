@@ -127,6 +127,26 @@ static VALUE sdl_updateRect(VALUE obj,VALUE x,VALUE y,VALUE w,VALUE h)
   return Qnil;
 }
 
+static VALUE sdl_updateRects(int argc, VALUE *argv, VALUE obj)
+{
+  SDL_Surface *screen;
+  SDL_Rect* rects;
+  int i;
+  
+  Data_Get_Struct(obj,SDL_Surface,screen);
+  rects = ALLOCA_N(SDL_Rect, argc);
+
+  for (i=0; i<argc; i++) {
+    rects[i].x = NUM2INT(rb_ary_entry(argv[i], 0));
+    rects[i].y = NUM2INT(rb_ary_entry(argv[i], 1));
+    rects[i].w = NUM2INT(rb_ary_entry(argv[i], 2));
+    rects[i].h = NUM2INT(rb_ary_entry(argv[i], 3));
+  }
+
+  SDL_UpdateRects(screen, argc, rects);
+  return Qnil;
+}
+
 static VALUE sdl_flip(VALUE obj)
 {
   SDL_Surface *screen;
@@ -721,6 +741,7 @@ void init_video()
   
   cScreen = rb_define_class_under(mSDL,"Screen",cSurface);
   rb_define_method(cScreen,"updateRect",sdl_updateRect,4);
+  rb_define_method(cScreen,"updateRects",sdl_updateRects, -1);
   rb_define_method(cScreen,"flip",sdl_flip,0);
   rb_define_method(cScreen,"toggleFullScreen",sdl_toggleFullScreen,0);
   defineConstForVideo();
