@@ -435,6 +435,19 @@ Screen#flip
 Screen
 
 %%
+NAME open
+MOD Screen
+TYPE .
+PURPOSE 指定された横幅・高さ・ピクセル深度を用いてビデオモードを設定します。
+RVAL Screen
+
+PROTO
+open(w,h,bpp,flags)
+
+DESC
+@[set_video_mode] の別名です。
+
+%%
 NAME update_rect
 MOD Screen
 TYPE #
@@ -1326,6 +1339,19 @@ RET
 システムがあなたのフルスクリーンアプリケーションを切り換える時に発生します。
 あなたがビデオメモリに再度アクセスするまでは
 サーフェスのロックも失敗するでしょう。
+
+%%
+NAME blit
+MOD Surface
+TYPE .
+PURPOSE 転送元サーフェスから転送先サーフェスへ高速 blit 転送を行います。
+RVAL 0/-2
+
+PROTO
+blit(src,srcX,srcY,srcW,srcH,dst,dstX,dstY)
+
+DESC
+@[blit_surface] の別名です。
 
 %%
 NAME fill_rect
