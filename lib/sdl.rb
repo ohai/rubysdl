@@ -22,7 +22,7 @@ if !defined?(block_given?) then
 end
 
 module SDL
-
+  
   VERSION = "1.2.0"
 
   class PixelFormat
@@ -52,7 +52,6 @@ module SDL
       end
     end
 
-    
     def copyRect(x,y,w,h)
       flagbase=SDL::SWSURFACE|SDL::HWSURFACE|SDL::SRCCOLORKEY|SDL::SRCALPHA
       alpha_flag = self.flags & (SDL::SRCCOLORKEY|SDL::RLEACCEL)
@@ -69,7 +68,11 @@ module SDL
                            self.alpha )
       return new_surface
     end
-
+    
+    def self.blit(src, srcX, srcY, srcW, srcH, dst, dstX, dstY)
+      SDL.blitSurface(src, srcX, srcY, srcW, srcH, dst, dstX, dstY)
+    end
+    
     def self.new(*args)
       case args.size
       when 4
@@ -82,6 +85,10 @@ module SDL
     end
   end
 
+  class Screen
+    def self.open(*args); SDL.setVideoMode(*args) end
+  end
+  
   def color2int(color,format)
     case color
     when Integer
