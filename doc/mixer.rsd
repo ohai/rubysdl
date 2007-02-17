@@ -106,6 +106,12 @@ SDL::DEFAULT_FORMAT は SDL::Mixer::FORMAT_S16SYS を指します。
 $[channels] は 1 でモノラル、2でステレオ出力を指定します。
 Mixer::DEFAULT_CHANNELS は 2 です。
 
+NOTES
+音の発生が遅延する場合はここで与えるパラメータを変えると
+改善される場合があります。
+$[frequency] を 22050 にしたり、$[chunksize] を2048や1024などと
+小さくしたりしてみてください。$[format] を変えるのが有効な場合もあります。
+
 EXAMPLE
 # SDLを初期化、Audio機能を有効にする。
 SDL.init(SDL::INIT_AUDIO)
@@ -149,6 +155,27 @@ end
 printf "frequency=%dHz format=%s channels=%d", frequency, format_str, channels
 
 EXCEPTION *
+
+SEEALSO
+Mixer.open
+
+%%
+NAME driver_name
+MOD Mixer
+TYPE .
+PURPOSE 初期化したデバイスの名前を得ます
+RVAL String
+
+PROTO
+driver_name
+driverName
+
+DESC
+現在使われているオーディオデバイスの名前を文字列で得ます。
+
+EXCEPTION
+@[Mixer.open] による初期化がまだされていない場合は
+例外 @[Error] が発生します。
 
 SEEALSO
 Mixer.open

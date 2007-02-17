@@ -43,6 +43,14 @@ static void mix_FreeMusic(Mix_Music *music)
   }
 }
 
+static VALUE mix_audioDriverName(VALUE mod)
+{
+  char driver_name[512];
+  if(SDL_AudioDriverName(driver_name, sizeof(driver_name)) == NULL)
+    rb_raise(eSDLError, "No driver has been initialized: %s", SDL_GetError());
+  return rb_str_new2(driver_name);
+}
+
 static VALUE mix_openAudio(VALUE mod,VALUE frequency,VALUE format,
 			   VALUE channels,VALUE chunksize)
 {
@@ -356,6 +364,7 @@ void init_mixer()
   mMixer = rb_define_module_under(mSDL,"Mixer");
   rb_define_module_function(mMixer,"open",mix_openAudio,4);
   rb_define_module_function(mMixer,"spec",mix_querySpec,0);
+  rb_define_module_function(mMixer,"driverName", mix_audioDriverName, 0); 
   rb_define_module_function(mMixer,"playChannel",mix_playChannel,3);
   rb_define_module_function(mMixer,"playChannelTimed", mix_playChannelTimed, 4);
   rb_define_module_function(mMixer,"fadeInChannel", mix_fadeInChannel, 4);

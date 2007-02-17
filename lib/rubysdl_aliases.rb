@@ -7,6 +7,7 @@ end
 module SDL
   class Screen
     alias update_rect updateRect
+    alias update_rects updateRects
     alias flip flip
     alias toggle_fullscreen toggleFullScreen
   end
@@ -288,6 +289,7 @@ module SDL
     class << Mixer
 #     alias open open
 #     alias spec spec
+      alias driver_name driverName
       alias play_channel playChannel
       alias play_channel_timed playChannelTimed
       alias fade_in_channel fadeInChannel
