@@ -1298,6 +1298,11 @@ Needs SDL_mixer to use functions if this module.
       Returns the audio spec in array.
         [ rate,format,channels ]
 
+--- SDL::Mixer.driverName
+--- SDL::Mixer.driver_name
+      Returns the current audio device name.
+      Raises SDL::Error if mixer is not initialized yet.
+
 --- SDL::Mixer.allocateChannels(numchannels)
 --- SDL::Mixer.allocate_channels(numchannels)
       Dynamically change the number of channels managed by the mixer.
