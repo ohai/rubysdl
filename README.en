@@ -1,5 +1,5 @@
 
-Ruby/SDL 1.2.0
+Ruby/SDL 1.3.0
 Ohbayashi Ippei
 
 1 What's Ruby/SDL
@@ -105,6 +105,8 @@ install on Linux
   Yusuke TABATA : introduce me into SDL world
   SDLdoc Japanese translation project : base of Ruby/SDL's reference manual
   Hara Yutaka: Sample TrueTypeFont
+  Members of #sdl-fan-jp @ FriendChat: bug reports and advices
+
 9 OTHER
   Some functions, especially SDL::MPEG methods and pallete handling methods,
   are not tested.
