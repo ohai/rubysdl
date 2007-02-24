@@ -471,13 +471,16 @@ Object
 --- SDL::Surface#[](x,y)
       Needs SGE ,Needs lock
       Gets the color of the specified pixel.
-
+      You can convert this color value to RGB with ((<SDL::Surface#getRGBA>)).
+      
 --- SDL::Surface#putPixel(x,y,color)
 --- SDL::Surface#put_pixel(x,y,color)
 --- SDL::Surface#[]=(x,y,color)
       Needs SGE ,Needs lock
       Changes the color of the pixel on (x, y).
-
+      You can specify color by [r, g, b], [r, g, b, a] array or integer
+      given by ((<SDL::Surface#mapRGBA>)).
+      
 --- SDL::Surface#drawLine(x1,y1,x2,y2,color)
 --- SDL::Surface#draw_line(x1,y1,x2,y2,color)
       Needs SGE ,Needs lock
