@@ -789,6 +789,14 @@ singleton methods.
       If 'x', 'y', 'w' and 'h' are all 0, SDL_UpdateRect will update the entire
       screen.
 
+--- SDL::Screen#updateRects(*rects)
+--- SDL::Screen#update_rects(*rects)
+    Makes sure the given list of rectangles is updated on the given screen.
+    Each rectagle is represented as an array of 4 elements([x, y, w, h]).
+    The rectangles must all be confined within the screen boundaries
+    (no clipping is done).
+
+
 --- SDL::Screen#flip
       On hardware that supports double-buffering, this method sets up a flip
       and returns. The hardware will wait for vertical retrace, and then swap

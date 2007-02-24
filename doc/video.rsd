@@ -469,6 +469,30 @@ $[x]、$[y]、$[w]、$[h]がすべて 0 ならば、画面全体を更新します。
 
 SEEALSO
 Surface#lock
+Screen#update_rects
+
+%%
+NAME update_rects
+MOD Screen
+TYPE #
+PURPOSE 与えられた矩形リストに従い、画面を更新します。
+
+PROTO
+update_rects(*rects)
+updateRects(*rects)
+
+DESC
+与えられた矩形の配列に従い、画面を更新します。
+個々の矩形は[x, y, w, h]という配列で指定します。
+矩形は画面の境界内の収まっていなければなりません。
+(つまりクリッピングはされません)
+
+この関数は$[self]が@[ロック|Surface#lock]されている間は呼んでは
+いけません。
+
+SEEALSO
+Surface#lock
+Screen#update_rect
 
 %%
 NAME flip
