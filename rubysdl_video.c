@@ -639,7 +639,7 @@ static VALUE sdl_surface_pixels(VALUE obj)
   SDL_Surface *surface;
   Data_Get_Struct(obj,SDL_Surface,surface);
   return rb_str_new(surface->pixels,
-                    surface->w * surface->h * surface->format->BytesPerPixel);
+                    surface->h * surface->pitch);
 }
 
 static void defineConstForVideo()
