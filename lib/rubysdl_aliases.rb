@@ -59,6 +59,7 @@ module SDL
 #   alias colorkey colorkey
 #   alias alpha alpha
     alias copy_rect copyRect
+    alias bytes_per_pixel BytesPerPixel
   end
 end
 
