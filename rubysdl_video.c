@@ -633,6 +633,67 @@ static VALUE sdl_surface_amask(VALUE obj)
   Data_Get_Struct(obj,SDL_Surface,surface);
   return UINT2NUM(surface->format->Amask);
 }
+static VALUE sdl_surface_rloss(VALUE obj)
+{
+  SDL_Surface *surface;
+  Data_Get_Struct(obj,SDL_Surface,surface);
+  return UINT2NUM(surface->format->Rloss);
+}
+static VALUE sdl_surface_gloss(VALUE obj)
+{
+  SDL_Surface *surface;
+  Data_Get_Struct(obj,SDL_Surface,surface);
+  return UINT2NUM(surface->format->Gloss);
+}
+static VALUE sdl_surface_bloss(VALUE obj)
+{
+  SDL_Surface *surface;
+  Data_Get_Struct(obj,SDL_Surface,surface);
+  return UINT2NUM(surface->format->Bloss);
+}
+static VALUE sdl_surface_aloss(VALUE obj)
+{
+  SDL_Surface *surface;
+  Data_Get_Struct(obj,SDL_Surface,surface);
+  return UINT2NUM(surface->format->Aloss);
+}
+static VALUE sdl_surface_rshift(VALUE obj)
+{
+  SDL_Surface *surface;
+  Data_Get_Struct(obj,SDL_Surface,surface);
+  return UINT2NUM(surface->format->Rshift);
+}
+static VALUE sdl_surface_gshift(VALUE obj)
+{
+  SDL_Surface *surface;
+  Data_Get_Struct(obj,SDL_Surface,surface);
+  return UINT2NUM(surface->format->Gshift);
+}
+static VALUE sdl_surface_bshift(VALUE obj)
+{
+  SDL_Surface *surface;
+  Data_Get_Struct(obj,SDL_Surface,surface);
+  return UINT2NUM(surface->format->Bshift);
+}
+static VALUE sdl_surface_ashift(VALUE obj)
+{
+  SDL_Surface *surface;
+  Data_Get_Struct(obj,SDL_Surface,surface);
+  return UINT2NUM(surface->format->Ashift);
+}
+
+static VALUE sdl_surface_pitch(VALUE obj)
+{
+  SDL_Surface *surface;
+  Data_Get_Struct(obj,SDL_Surface,surface);
+  return UINT2NUM(surface->pitch);
+}
+static VALUE sdl_surface_bytes_per_pixel(VALUE obj)
+{
+  SDL_Surface *surface;
+  Data_Get_Struct(obj,SDL_Surface,surface);
+  return UINT2NUM(surface->format->BytesPerPixel);
+}
 
 static VALUE sdl_surface_pixels(VALUE obj)
 {
@@ -737,7 +798,17 @@ void init_video()
   rb_define_method(cSurface,"Gmask",sdl_surface_gmask,0);
   rb_define_method(cSurface,"Bmask",sdl_surface_bmask,0);
   rb_define_method(cSurface,"Amask",sdl_surface_amask,0);
+  rb_define_method(cSurface,"Rloss",sdl_surface_rloss,0);
+  rb_define_method(cSurface,"Gloss",sdl_surface_gloss,0);
+  rb_define_method(cSurface,"Bloss",sdl_surface_bloss,0);
+  rb_define_method(cSurface,"Aloss",sdl_surface_aloss,0);
+  rb_define_method(cSurface,"Rshift",sdl_surface_rshift,0);
+  rb_define_method(cSurface,"Gshift",sdl_surface_gshift,0);
+  rb_define_method(cSurface,"Bshift",sdl_surface_bshift,0);
+  rb_define_method(cSurface,"Ashift",sdl_surface_ashift,0);
   rb_define_method(cSurface,"pixels",sdl_surface_pixels,0);
+  rb_define_method(cSurface,"pitch",sdl_surface_pitch,0);
+  rb_define_method(cSurface,"BytesPerPixel",sdl_surface_bytes_per_pixel,0);
   
   cScreen = rb_define_class_under(mSDL,"Screen",cSurface);
   rb_define_method(cScreen,"updateRect",sdl_updateRect,4);
