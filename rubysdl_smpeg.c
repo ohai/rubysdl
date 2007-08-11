@@ -175,7 +175,7 @@ static VALUE smpeg_play(VALUE obj)
   
   Data_Get_Struct(obj,SMPEG,mpeg);
 
-#if HAVE_SDL_MIXER
+#ifdef HAVE_SDL_MIXER
   use_audio = RTEST(rb_iv_get(obj,"enable_audio")) &&
     Mix_QuerySpec( NULL, NULL, NULL );
 
@@ -218,7 +218,9 @@ static VALUE smpeg_stop(VALUE obj)
   SMPEG *mpeg;
   Data_Get_Struct(obj,SMPEG,mpeg);
   SMPEG_stop(mpeg);
+#ifdef HAVE_SDL_MIXER
   Mix_HookMusic(NULL,NULL);
+#endif
   return Qnil;
 }
 
