@@ -1,5 +1,5 @@
 = Video
-* ((<Video Subsystem 概説>))
+* ((<Video Subsystem 概要>))
 * ((<SDL::Screen>))
 * ((<SDL::Surface>))
 * ((<SDL::VideoInfo>))
@@ -1634,6 +1634,118 @@ Amask
 
 DESC
 αチャンネルの値を取得するのに使われるビットマスクを整数で返します。
+
+%%
+NAME Rloss
+MOD Surface
+TYPE #
+PURPOSE 赤チャンネルで失われる精度
+RVAL UINT
+
+PROTO
+Rloss
+
+DESC
+赤チャンネルで8bitの値をパッキングするときに失われる
+ビット数を整数で返します。
+
+%%
+NAME Gloss
+MOD Surface
+TYPE #
+PURPOSE 緑チャンネルで失われる精度
+RVAL UINT
+
+PROTO
+Gloss
+
+DESC
+緑チャンネルで8bitの値をパッキングするときに失われる
+ビット数を整数で返します。
+
+%%
+NAME Bloss
+MOD Surface
+TYPE #
+PURPOSE 青チャンネルで失われる精度
+RVAL UINT
+
+PROTO
+Bloss
+
+DESC
+青チャンネルで8bitの値をパッキングするときに失われる
+ビット数を整数で返します。
+
+%%
+NAME Aloss
+MOD Surface
+TYPE #
+PURPOSE αチャンネルで失われる精度
+RVAL UINT
+
+PROTO
+Aloss
+
+DESC
+αチャンネルで8bitの値をパッキングするときに失われる
+ビット数を整数で返します。
+
+%%
+NAME Rshift
+MOD Surface
+TYPE #
+PURPOSE ピクセル値の赤チャンネルの2進数の左シフト数
+RVAL UINT
+
+PROTO
+Rshift
+
+DESC
+ピクセル値の赤チャンネルの右端が何bit目にくるかを整数で
+返します。
+
+%%
+NAME Gshift
+MOD Surface
+TYPE #
+PURPOSE ピクセル値の緑チャンネルの2進数の左シフト数
+RVAL UINT
+
+PROTO
+Gshift
+
+DESC
+ピクセル値の緑チャンネルの右端が何bit目にくるかを整数で
+返します。
+
+%%
+NAME Bshift
+MOD Surface
+TYPE #
+PURPOSE ピクセル値の青チャンネルの2進数の左シフト数
+RVAL UINT
+
+PROTO
+Bshift
+
+DESC
+ピクセル値の青チャンネルの右端が何bit目にくるかを整数で
+返します。
+
+%%
+NAME Ashift
+MOD Surface
+TYPE #
+PURPOSE ピクセル値のαチャンネルの2進数の左シフト数
+RVAL UINT
+
+PROTO
+Ashift
+
+DESC
+ピクセル値のαチャンネルの右端が何bit目にくるかを整数で
+返します。
 
 %%
 NAME colorkey
