@@ -1,3 +1,19 @@
+version 1.3.1
+SMPEG有、SDL_mixer無の場合の問題を修正
+以下のメソッドを追加
+  SDL::Surface#Rloss
+  SDL::Surface#Gloss
+  SDL::Surface#Bloss
+  SDL::Surface#Aloss
+  SDL::Surface#Rshift
+  SDL::Surface#Gshift
+  SDL::Surface#Bshift
+  SDL::Surface#Ashift
+  SDL::Surface#pitch
+  SDL::Surface#bytes_per_pixel
+以下のメソッドを修正
+  SDL::Surface.pixels
+
 version 1.3.0
 ドキュメントを修正/改善
 定数SDL::NOFRAMEが定義されていなかったのを修正
