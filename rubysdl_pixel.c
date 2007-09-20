@@ -18,6 +18,10 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
   */
 
+/*
+ * this file is copied from SGE library.
+ */
+
 /* sge's copyright */
 /*
 *       
@@ -47,6 +51,9 @@
      
 void rubysdl_putPixel(SDL_Surface *surface, Sint16 x, Sint16 y, Uint32 color)
 {
+#ifdef HAVE_SGE
+  sge_PutPixel(surface,x, y, color);
+#else
   Uint8 *pix;  
   int shift;
   
@@ -74,10 +81,14 @@ void rubysdl_putPixel(SDL_Surface *surface, Sint16 x, Sint16 y, Uint32 color)
       break;
     }
   }
+#endif
 }
 
 Uint32 rubysdl_getPixel(SDL_Surface *surface, Sint16 x, Sint16 y)
 {
+#ifdef HAVE_SGE
+  return sge_GetPixel(surface, x, y);
+#else
   Uint8 *pix;
   int shift;
   Uint32 color=0;
@@ -90,15 +101,15 @@ Uint32 rubysdl_getPixel(SDL_Surface *surface, Sint16 x, Sint16 y)
     return *((Uint16 *)surface->pixels + y*surface->pitch/2 + x);
     break;
   case 3:  /* Slow 24-bpp mode, usually not used */
-
-    /* Does this work? */
     pix = (Uint8 *)surface->pixels + y * surface->pitch + x*3;
     shift = surface->format->Rshift;
-    color = *(pix+shift/8)>>shift;
+    color = *(pix+shift/8)<<shift;
     shift = surface->format->Gshift;
-    color|= *(pix+shift/8)>>shift;
+    color|= *(pix+shift/8)<<shift;
     shift = surface->format->Bshift;
-    color|= *(pix+shift/8)>>shift;
+    color|= *(pix+shift/8)<<shift;
+    shift = surface->format->Ashift;
+    color|= *(pix+shift/8)<<shift;
     return color;
     break;
   case 4:  /* Probably 32-bpp */
@@ -106,28 +117,6 @@ Uint32 rubysdl_getPixel(SDL_Surface *surface, Sint16 x, Sint16 y)
     break;
   }
   return 0;
+#endif
 }
 
-#ifndef HAVE_SGE
-static VALUE sdl_getPixel(VALUE obj,VALUE x,VALUE y)
-{
-  SDL_Surface *surface;
-  Data_Get_Struct(obj,SDL_Surface,surface);
-  return UINT2NUM( rubysdl_getPixel(surface,NUM2INT(x),NUM2INT(y)) );
-}
-static VALUE sdl_putPixel(VALUE obj,VALUE x,VALUE y,VALUE color)
-{
-  SDL_Surface *surface;
-  Data_Get_Struct(obj,SDL_Surface,surface);
-  rubysdl_putPixel(surface,NUM2INT(x),NUM2INT(y),VALUE2COLOR(color,surface->format));
-  return Qnil;
-}
-
-void init_pixel()
-{
-  rb_define_method(cSurface,"getPixel",sdl_getPixel,2);
-  rb_define_method(cSurface,"putPixel",sdl_putPixel,3);
-  rb_define_method(cSurface,"[]",sdl_getPixel,2);
-  rb_define_method(cSurface,"[]=",sdl_putPixel,3);
-}
-#endif /* ifndef HAVE_SGE */

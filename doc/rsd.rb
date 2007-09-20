@@ -39,7 +39,7 @@ def rsd2rd(input)
   
   input.each do |line|
     case line
-    when /^(MOD|DEP|NAME|PURPOSE|TYPE|RVAL)\s+/
+    when /^(MOD|DEP|NAME|PURPOSE|TYPE|RVAL|OBSOLETE)\s+/
       part[$1] = $'.chomp
     when "LOCK\n"
       part["LOCK"] = ""
@@ -52,8 +52,12 @@ def rsd2rd(input)
     end
   end
 
-  %w(NAME PURPOSE TYPE PROTO DESC).each do |v|
+  %w(NAME PURPOSE TYPE PROTO).each do |v|
     raise "There isn't #{v} at #{part["NAME"]}" unless part.key?(v)
+  end
+
+  if !part.key?("DESC") && !part.key("OBSOLETE")
+    raise  "There isn't DESC and OBSOLETE at #{part["NAME"]}"
   end
 
   part = part.hash_map{|_, line| line.sub(/\n+\z/,"\n")}
@@ -63,7 +67,12 @@ def rsd2rd(input)
 
   part["PROTO"].each{|proto| output << "--- #{ns}#{part["TYPE"]}#{proto}"}
   output << "\n"
+  if part.key?("OBSOLETE")
+    otuput << format("このメソッドの利用は推奨されません。代わりに@[#{part["OBSOLETE"]}]を利用してください。\n", 4)
+  end
+  
   output << format(part["DESC"],4)
+  
   if part.key?("LOCK")
     output << "\n"
     output << format("このメソッドを使うにはサーフェスを@[ロック|Surface#lock]する必要があります。\n@[auto_lock?]が真の場合はシステムが自動的にロック/アンロックします。",4)

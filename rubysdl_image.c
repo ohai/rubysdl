@@ -21,17 +21,20 @@
 #include "rubysdl.h"
 #include <SDL_image.h>
 
-static VALUE sdl_load(VALUE class,VALUE filename)
+static VALUE Surface_s_load(VALUE klass, VALUE filename)
 {
   SDL_Surface *surface;
-  surface = IMG_Load(GETCSTR(filename));
-  if(surface==NULL){
-    rb_raise(eSDLError,"Couldn't load %s: %s",GETCSTR(filename),
-	     SDL_GetError());
-  }
-  return Data_Wrap_Struct(class,0,sdl_freeSurface,surface);
+  
+  rb_secure(4);
+  SafeStringValue(filename);
+
+  surface = IMG_Load(RSTRING(filename)->ptr);
+  if(surface == NULL)
+    rb_raise(eSDLError,"Couldn't load %s: %s",
+             RSTRING(filename)->ptr, SDL_GetError());
+  return Surface_create(surface);
 }
-static VALUE sdl_loadFromIO(VALUE class,VALUE io)
+static VALUE Surface_s_loadFromIO(VALUE class,VALUE io)
 {
   volatile VALUE guard = io;
   SDL_Surface *surface;
@@ -42,12 +45,16 @@ static VALUE sdl_loadFromIO(VALUE class,VALUE io)
     rb_raise(eSDLError,"Couldn't load image from IO: %s",
 	     SDL_GetError());
   }
-  return Data_Wrap_Struct(class,0,sdl_freeSurface,surface);
+  return Surface_create(surface);
 }
 
-void init_sdl_image()
+void rubysdl_init_image(VALUE mSDL, VALUE cSurface)
 {
-  rb_define_singleton_method(cSurface,"load",sdl_load,1);
-  rb_define_singleton_method(cSurface,"loadFromIO",sdl_loadFromIO,1);
+  rb_define_singleton_method(cSurface, "load", Surface_s_load, 1);
+  rb_define_singleton_method(cSurface, "loadFromIO", Surface_s_loadFromIO, 1);
+}
+#else /* HAVE_SDL_IMAGE */
+void rubysdl_init_image(VALUE mSDL, VALUE cSurface)
+{
 }
 #endif /* HAVE_SDL_IMAGE */

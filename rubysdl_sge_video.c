@@ -22,601 +22,487 @@
 #include "rubysdl.h"
 #include <sge.h>
 
-static VALUE sdl_get_autoLocking(VALUE mod)
+static VALUE cCollisionMap = Qnil;
+static VALUE cBMFont = Qnil;
+
+DEFINE_GET_STRUCT(sge_bmpFont, Get_sge_bmpFont, cBMFont, "SDL::BMFont");
+DEFINE_GET_STRUCT(sge_cdata, Get_sge_cdata, cCollisionMap, "SDL::CollisionMap");
+
+static VALUE Surface_s_autoLock_p(VALUE klass)
 {
-  return BOOL(sge_getLock());
+  rb_secure(4);
+  return INT2BOOL(sge_getLock());
 }
 
-static VALUE  sdl_set_autoLocking(VALUE mod,VALUE bool)
+static VALUE Surface_s_autoLockON(VALUE klass)
 {
-  if(RTEST(bool))
-    sge_Lock_ON();
-  else
-    sge_Lock_OFF();
-  return Qnil;
-}
-
-     
-static VALUE sdl_getPixel(VALUE obj,VALUE x,VALUE y)
-{
-  SDL_Surface *surface;
-  Data_Get_Struct(obj,SDL_Surface,surface);
-  return UINT2NUM( sge_GetPixel(surface,NUM2INT(x),NUM2INT(y)) );
-}
-static VALUE sdl_putPixel(VALUE obj,VALUE x,VALUE y,VALUE color)
-{
-  SDL_Surface *surface;
-  Data_Get_Struct(obj,SDL_Surface,surface);
-  sge_PutPixel(surface,NUM2INT(x),NUM2INT(y),VALUE2COLOR(color,surface->format));
-  return Qnil;
-}
-static VALUE sdl_drawLine(VALUE obj,VALUE x1,VALUE y1,VALUE x2,VALUE y2,VALUE color)
-{
-  SDL_Surface *surface;
-  Data_Get_Struct(obj,SDL_Surface,surface);
-  sge_Line( surface,NUM2INT(x1),NUM2INT(y1),NUM2INT(x2),NUM2INT(y2),
-	    VALUE2COLOR(color,surface->format) );
-  return Qnil;
-}
-static VALUE sdl_drawAALine(VALUE obj,VALUE x1,VALUE y1,VALUE x2,VALUE y2,VALUE color)
-{
-  SDL_Surface *surface;
-  Data_Get_Struct(obj,SDL_Surface,surface);
-  sge_AALine( surface,NUM2INT(x1),NUM2INT(y1),NUM2INT(x2),NUM2INT(y2),
-	    VALUE2COLOR(color,surface->format) );
-  return Qnil;
-}
-static VALUE sdl_drawLineAlpha(VALUE obj,VALUE x1,VALUE y1,VALUE x2,VALUE y2,VALUE color,VALUE alpha)
-{
-  SDL_Surface *surface;
-  Data_Get_Struct(obj,SDL_Surface,surface);
-  sge_LineAlpha( surface,NUM2INT(x1),NUM2INT(y1),NUM2INT(x2),NUM2INT(y2),
-                 VALUE2COLOR(color,surface->format), NUM2UINT(alpha) );
-  return Qnil;
-}
-static VALUE sdl_drawAALineAlpha(VALUE obj,VALUE x1,VALUE y1,VALUE x2,VALUE y2,VALUE color,VALUE alpha)
-{
-  SDL_Surface *surface;
-  Data_Get_Struct(obj,SDL_Surface,surface);
-  sge_AALineAlpha( surface,NUM2INT(x1),NUM2INT(y1),NUM2INT(x2),NUM2INT(y2),
-                   VALUE2COLOR(color,surface->format),NUM2UINT(alpha) );
+  rb_secure(4);
+  sge_Lock_ON();
   return Qnil;
 }
 
-static VALUE sdl_drawRect(VALUE obj,VALUE x,VALUE y,VALUE w,VALUE h,VALUE color)
+static VALUE Surface_s_autoLockOFF(VALUE klass)
 {
-  SDL_Surface *surface;
-  Data_Get_Struct(obj,SDL_Surface,surface);
-  sge_Rect( surface,NUM2INT(x),NUM2INT(y),NUM2INT(x)+NUM2INT(w),
-	    NUM2INT(y)+NUM2INT(h),VALUE2COLOR(color,surface->format) );
-  return Qnil;
-}
-static VALUE sdl_drawRectAlpha(VALUE obj,VALUE x,VALUE y,VALUE w,VALUE h,VALUE color,VALUE alpha)
-{
-  SDL_Surface *surface;
-  Data_Get_Struct(obj,SDL_Surface,surface);
-  sge_RectAlpha( surface,NUM2INT(x),NUM2INT(y),NUM2INT(x)+NUM2INT(w),
-                 NUM2INT(y)+NUM2INT(h),VALUE2COLOR(color,surface->format),
-                 NUM2UINT(alpha) );
-  return Qnil;
-}
-static VALUE sdl_drawFilledRectAlpha(VALUE obj,VALUE x,VALUE y,VALUE w,VALUE h,VALUE color,VALUE alpha)
-{
-  SDL_Surface *surface;
-  Data_Get_Struct(obj,SDL_Surface,surface);
-  sge_FilledRectAlpha( surface,NUM2INT(x),NUM2INT(y),NUM2INT(x)+NUM2INT(w),
-                       NUM2INT(y)+NUM2INT(h),VALUE2COLOR(color,surface->format),
-                       NUM2UINT(alpha) );
-  return Qnil;
-}
-static VALUE sdl_drawCircle(VALUE obj,VALUE x,VALUE y,VALUE r,VALUE color)
-{
-  SDL_Surface *surface;
-  Data_Get_Struct(obj,SDL_Surface,surface);
-  sge_Circle( surface,NUM2INT(x),NUM2INT(y),NUM2INT(r),
-	      VALUE2COLOR(color,surface->format) );
-  return Qnil;
-}
-static VALUE sdl_drawAACircle(VALUE obj,VALUE x,VALUE y,VALUE r,VALUE color)
-{
-  SDL_Surface *surface;
-  Data_Get_Struct(obj,SDL_Surface,surface);
-  sge_AACircle( surface,NUM2INT(x),NUM2INT(y),NUM2INT(r),
-	      VALUE2COLOR(color,surface->format) );
-  return Qnil;
-}
-static VALUE sdl_drawCircleAlpha(VALUE obj,VALUE x,VALUE y,VALUE r,VALUE color,VALUE alpha)
-{
-  SDL_Surface *surface;
-  Data_Get_Struct(obj,SDL_Surface,surface);
-  sge_CircleAlpha( surface,NUM2INT(x),NUM2INT(y),NUM2INT(r),
-                   VALUE2COLOR(color,surface->format),NUM2UINT(alpha) );
-  return Qnil;
-}
-static VALUE sdl_drawAACircleAlpha(VALUE obj,VALUE x,VALUE y,VALUE r,VALUE color,
-                                   VALUE alpha)
-{
-  SDL_Surface *surface;
-  Data_Get_Struct(obj,SDL_Surface,surface);
-  sge_AACircleAlpha( surface,NUM2INT(x),NUM2INT(y),NUM2INT(r),
-                     VALUE2COLOR(color,surface->format),NUM2UINT(alpha) );
-  return Qnil;
-}
-static VALUE sdl_drawFilledCircle(VALUE obj,VALUE x,VALUE y,VALUE r,VALUE color)
-{
-  SDL_Surface *surface;
-  Data_Get_Struct(obj,SDL_Surface,surface);
-  sge_FilledCircle( surface,NUM2INT(x),NUM2INT(y),NUM2INT(r),
-		    VALUE2COLOR(color,surface->format) );
-  return Qnil;
-}
-static VALUE sdl_drawAAFilledCircle(VALUE obj,VALUE x,VALUE y,VALUE r,VALUE color)
-{
-  SDL_Surface *surface;
-  Data_Get_Struct(obj,SDL_Surface,surface);
-  sge_AAFilledCircle( surface,NUM2INT(x),NUM2INT(y),NUM2INT(r),
-		    VALUE2COLOR(color,surface->format) );
-  return Qnil;
-}
-static VALUE sdl_drawFilledCircleAlpha(VALUE obj,VALUE x,VALUE y,VALUE r,VALUE color,VALUE alpha)
-{
-  SDL_Surface *surface;
-  Data_Get_Struct(obj,SDL_Surface,surface);
-  sge_FilledCircleAlpha( surface,NUM2INT(x),NUM2INT(y),NUM2INT(r),
-                         VALUE2COLOR(color,surface->format),NUM2UINT(alpha) );
-  return Qnil;
-}
-static VALUE sdl_drawEllipse(VALUE obj,VALUE x,VALUE y,VALUE rx,VALUE ry,
-			     VALUE color)
-{
-  SDL_Surface *surface;
-  Data_Get_Struct(obj,SDL_Surface,surface);
-  sge_Ellipse( surface,NUM2INT(x),NUM2INT(y),NUM2INT(rx),NUM2INT(ry),
-	       VALUE2COLOR(color,surface->format) );
-  return Qnil;
-}
-static VALUE sdl_drawAAEllipse(VALUE obj,VALUE x,VALUE y,VALUE rx,VALUE ry,
-			     VALUE color)
-{
-  SDL_Surface *surface;
-  Data_Get_Struct(obj,SDL_Surface,surface);
-  sge_AAEllipse( surface,NUM2INT(x),NUM2INT(y),NUM2INT(rx),NUM2INT(ry),
-	       VALUE2COLOR(color,surface->format) );
-  return Qnil;
-}
-static VALUE sdl_drawEllipseAlpha(VALUE obj,VALUE x,VALUE y,VALUE rx,VALUE ry,
-                                  VALUE color,VALUE alpha)
-{
-  SDL_Surface *surface;
-  Data_Get_Struct(obj,SDL_Surface,surface);
-  sge_EllipseAlpha( surface,NUM2INT(x),NUM2INT(y),NUM2INT(rx),NUM2INT(ry),
-                    VALUE2COLOR(color,surface->format),NUM2UINT(alpha) );
-  return Qnil;
-}
-static VALUE sdl_drawAAEllipseAlpha(VALUE obj,VALUE x,VALUE y,VALUE rx,VALUE ry,
-                                    VALUE color,VALUE alpha)
-{
-  SDL_Surface *surface;
-  Data_Get_Struct(obj,SDL_Surface,surface);
-  sge_AAEllipseAlpha( surface,NUM2INT(x),NUM2INT(y),NUM2INT(rx),NUM2INT(ry),
-                      VALUE2COLOR(color,surface->format),NUM2UINT(alpha) );
-  return Qnil;
-}
-static VALUE sdl_drawFilledEllipse(VALUE obj,VALUE x,VALUE y,VALUE rx,VALUE ry,
-				   VALUE color)
-{
-  SDL_Surface *surface;
-  Data_Get_Struct(obj,SDL_Surface,surface);
-  sge_FilledEllipse( surface,NUM2INT(x),NUM2INT(y),NUM2INT(rx),NUM2INT(ry),
-		     VALUE2COLOR(color,surface->format) );
-  return Qnil;
-}
-static VALUE sdl_drawAAFilledEllipse(VALUE obj,VALUE x,VALUE y,VALUE rx,VALUE ry,
-				   VALUE color)
-{
-  SDL_Surface *surface;
-  Data_Get_Struct(obj,SDL_Surface,surface);
-  sge_AAFilledEllipse( surface,NUM2INT(x),NUM2INT(y),NUM2INT(rx),NUM2INT(ry),
-		     VALUE2COLOR(color,surface->format) );
-  return Qnil;
-}
-static VALUE sdl_drawFilledEllipseAlpha(VALUE obj,VALUE x,VALUE y,VALUE rx,VALUE ry,
-                                        VALUE color,VALUE alpha)
-{
-  SDL_Surface *surface;
-  Data_Get_Struct(obj,SDL_Surface,surface);
-  sge_FilledEllipseAlpha( surface,NUM2INT(x),NUM2INT(y),NUM2INT(rx),NUM2INT(ry),
-                          VALUE2COLOR(color,surface->format),NUM2UINT(alpha) );
+  rb_secure(4);
+  sge_Lock_OFF();
   return Qnil;
 }
 
-static VALUE sdl_drawBezier(VALUE obj,VALUE x1,VALUE y1,VALUE x2,VALUE y2,
-                            VALUE x3,VALUE y3,VALUE x4,VALUE y4,
-                            VALUE level,VALUE color)
+static VALUE Surface_drawLine(int argc, VALUE* argv, VALUE self)
 {
-  SDL_Surface *surface;
-  Data_Get_Struct(obj,SDL_Surface,surface);
-  sge_Bezier(surface,NUM2INT(x1),NUM2INT(y1),NUM2INT(x2),NUM2INT(y2),
-             NUM2INT(x3),NUM2INT(y3),NUM2INT(x4),NUM2INT(y4),
-             NUM2INT(level),VALUE2COLOR(color,surface->format));
-  return Qnil;
-}
-
-static VALUE sdl_drawBezierAlpha(VALUE obj,VALUE x1,VALUE y1,VALUE x2,VALUE y2,
-                                 VALUE x3,VALUE y3,VALUE x4,VALUE y4,
-                                 VALUE level,VALUE color,VALUE alpha)
-{
-  SDL_Surface *surface;
-  Data_Get_Struct(obj,SDL_Surface,surface);
-  sge_BezierAlpha(surface,NUM2INT(x1),NUM2INT(y1),NUM2INT(x2),NUM2INT(y2),
-                  NUM2INT(x3),NUM2INT(y3),NUM2INT(x4),NUM2INT(y4),
-                  NUM2INT(level),VALUE2COLOR(color,surface->format),
-                  NUM2UINT(alpha));
-  return Qnil;
-}
-
-static VALUE sdl_drawAABezier(VALUE obj,VALUE x1,VALUE y1,VALUE x2,VALUE y2,
-                              VALUE x3,VALUE y3,VALUE x4,VALUE y4,
-                              VALUE level,VALUE color)
-{
-  SDL_Surface *surface;
-  Data_Get_Struct(obj,SDL_Surface,surface);
-  sge_AABezier(surface,NUM2INT(x1),NUM2INT(y1),NUM2INT(x2),NUM2INT(y2),
-               NUM2INT(x3),NUM2INT(y3),NUM2INT(x4),NUM2INT(y4),
-               NUM2INT(level),VALUE2COLOR(color,surface->format));
-  return Qnil;
-}
-
-static VALUE sdl_drawAABezierAlpha(VALUE obj,VALUE x1,VALUE y1,VALUE x2,VALUE y2,
-                                 VALUE x3,VALUE y3,VALUE x4,VALUE y4,
-                                 VALUE level,VALUE color,VALUE alpha)
-{
-  SDL_Surface *surface;
-  Data_Get_Struct(obj,SDL_Surface,surface);
-  sge_AABezierAlpha(surface,NUM2INT(x1),NUM2INT(y1),NUM2INT(x2),NUM2INT(y2),
-                    NUM2INT(x3),NUM2INT(y3),NUM2INT(x4),NUM2INT(y4),
-                    NUM2INT(level),VALUE2COLOR(color,surface->format),
-                    NUM2UINT(alpha));
-  return Qnil;
-}
-
-static VALUE sdl_rotateScaledSurface(VALUE obj,VALUE angle,VALUE scale,VALUE bgcolor)
-{
-  SDL_Surface *surface,*result;
-  Data_Get_Struct(obj,SDL_Surface,surface);
-  result=sge_rotate_scaled_surface(surface,NUM2INT(angle),NUM2DBL(scale),
-				   VALUE2COLOR(bgcolor,surface->format) );
-  if( result==NULL )
-    rb_raise( eSDLError,"Couldn't Create Surface: %s",SDL_GetError() );
-  return Data_Wrap_Struct(cSurface,0,sdl_freeSurface,result);
-}
-/* doesn't respect ColorKey */
-static VALUE sdl_rotateXYScaled(VALUE mod,VALUE src,VALUE dst,VALUE x,
-				VALUE y,VALUE angle,VALUE xscale,
-				VALUE yscale)
-{
-  SDL_Surface *srcSurface,*dstSurface;
-  if( !rb_obj_is_kind_of(src,cSurface) || !rb_obj_is_kind_of(dst,cSurface) )
-    rb_raise(rb_eArgError,"type mismatch(expect Surface)");
-  Data_Get_Struct(src,SDL_Surface,srcSurface);
-  Data_Get_Struct(dst,SDL_Surface,dstSurface);
-  sge_rotate_xyscaled(dstSurface,srcSurface,NUM2INT(x),NUM2INT(y),
-		      NUM2INT(angle),NUM2DBL(xscale),NUM2DBL(yscale));
-  return Qnil;
-}
-static VALUE sdl_rotateScaledBlit(VALUE mod,VALUE src,VALUE dst,VALUE x,
-				  VALUE y,VALUE angle,VALUE scale)
-{
-  SDL_Surface *srcSurface,*dstSurface,*tmpSurface;
-  SDL_Rect destRect;
-  Uint32 colorkey;
-  Uint32 flags;
-  int result;
+  VALUE x1_, y1_, x2_, y2_, color_, aa_, alpha_;
+  Sint16 x1, y1, x2, y2;
+  Uint32 color;
+  SDL_Surface* surface;
   
-  if( !rb_obj_is_kind_of(src,cSurface) || !rb_obj_is_kind_of(dst,cSurface) )
-    rb_raise(rb_eArgError,"type mismatch(expect Surface)");
-  Data_Get_Struct(src,SDL_Surface,srcSurface);
-  Data_Get_Struct(dst,SDL_Surface,dstSurface);
-  colorkey=srcSurface->format->colorkey;
-  flags = srcSurface->flags & ( SDL_RLEACCEL|SDL_SRCCOLORKEY );
-  tmpSurface = sge_rotate_scaled_surface(srcSurface,NUM2INT(angle),
-					 NUM2DBL(scale),colorkey);
-  if( tmpSurface==NULL )
-    rb_raise(eSDLError,"SDL memory allocate failed :%s",SDL_GetError());
-  SDL_SetColorKey(tmpSurface,flags,colorkey);
-  destRect.x=NUM2INT(x)-tmpSurface->h/2;
-  destRect.y=NUM2INT(y)-tmpSurface->w/2;
-  result = SDL_BlitSurface(tmpSurface,NULL,dstSurface,&destRect);
-  SDL_FreeSurface(tmpSurface);
-  if( result == -1 ){
-    rb_raise(eSDLError,"SDL_BlitSurface fail: %s",SDL_GetError());
-  }
-  return INT2NUM(result);
-}
+  rb_secure(4);
+  rb_scan_args(argc, argv, "52", &x1_, &y1_, &x2_, &y2_, &color_, &aa_, &alpha_);
+  surface = Get_SDL_Surface(self);
+  
+  x1 = NUM2INT(x1_); y1 = NUM2INT(y1_);
+  x2 = NUM2INT(x2_); y2 = NUM2INT(y2_);
+  color = VALUE2COLOR(color_, surface->format);
+  
+  if(RTEST(aa_) && RTEST(alpha_))
+    sge_AALineAlpha(surface, x1, y1, x2, y2, color, NUM2UINT(alpha_));
+  
+  if(RTEST(aa_) && !RTEST(alpha_))
+    sge_AALine(surface, x1, y1, x2, y2, color);
 
-static VALUE sdl_transform(VALUE mod,VALUE src,VALUE dst,VALUE angle,
-			   VALUE xscale,VALUE yscale,VALUE px,VALUE py,
-			   VALUE qx,VALUE qy,VALUE flags)
-{
-  SDL_Surface *srcSurface,*dstSurface;
-  if( !rb_obj_is_kind_of(src,cSurface) || !rb_obj_is_kind_of(dst,cSurface) )
-    rb_raise(rb_eArgError,"type mismatch(expect Surface)");
-  Data_Get_Struct(src,SDL_Surface,srcSurface);
-  Data_Get_Struct(dst,SDL_Surface,dstSurface);
-  sge_transform(srcSurface,dstSurface,NUM2DBL(angle),NUM2DBL(xscale),
-		NUM2DBL(yscale),NUM2INT(px),NUM2INT(py),NUM2INT(qx),
-		NUM2INT(qy),NUM2UINT(flags));
+  if(!RTEST(aa_) && RTEST(alpha_))
+    sge_LineAlpha(surface, x1, y1, x2, y2, color, NUM2UINT(alpha_));
+
+  if(!RTEST(aa_) && !RTEST(alpha_))
+    sge_Line(surface, x1, y1, x2, y2, color);
+
   return Qnil;
 }
 
-static VALUE sdl_transformSurface(VALUE obj,VALUE bgcolor,VALUE angle,
-				  VALUE xscale,VALUE yscale,VALUE flags)
+static VALUE Surface_drawRect(int argc, VALUE* argv, VALUE self)
 {
-  SDL_Surface *surface,*result;
-  Data_Get_Struct(obj,SDL_Surface,surface);
-  result = sge_transform_surface(surface,VALUE2COLOR(bgcolor,surface->format),
-				 NUM2DBL(angle),NUM2DBL(xscale),
-				 NUM2DBL(yscale),NUM2UINT(flags));
-  if( result==NULL )
-    rb_raise( eSDLError,"Couldn't Create Surface: %s",SDL_GetError() );
-  return Data_Wrap_Struct(cSurface,0,sdl_freeSurface,result);
+  VALUE x_, y_, w_, h_, color_, fill_, alpha_;
+  Sint16 x1, y1, x2, y2;
+  Uint32 color;
+  SDL_Surface* surface;
+
+  rb_scan_args(argc, argv, "52", &x_, &y_, &w_, &h_, &color_, &fill_, &alpha_);
+  
+  surface = Get_SDL_Surface(self);
+  x1 = NUM2INT(x_); y1 = NUM2INT(y_);
+  x2 = x1 + NUM2INT(w_); y2 = y1 + NUM2INT(h_);
+  color = VALUE2COLOR(color_, surface->format);
+  
+  if(RTEST(fill_) && RTEST(alpha_))
+    sge_FilledRectAlpha(surface, x1, y1, x2, y2, color, NUM2UINT(alpha_));
+
+  if(RTEST(fill_) && !RTEST(alpha_))
+    sge_FilledRect(surface, x1, y1, x2, y2, color);
+
+  if(!RTEST(fill_) && RTEST(alpha_))
+    sge_RectAlpha(surface, x1, y1, x2, y2, color, NUM2UINT(alpha_));
+
+  if(!RTEST(fill_) && !RTEST(alpha_))
+    sge_Rect(surface, x1, y1, x2, y2, color);
+  
+  return Qnil;
 }
 
-static VALUE sdl_makeCollisionMap(VALUE obj)
+static VALUE Surface_drawCircle(int argc, VALUE* argv, VALUE self)
+{
+  SDL_Surface* surface;
+  VALUE x_, y_, r_,  color_, fill_, aa_, alpha_;
+  Sint16 x, y, r;
+  Uint32 color;
+
+  rb_secure(4);
+  rb_scan_args(argc, argv, "43", &x_, &y_, &r_, &color_, &fill_, &aa_, &alpha_);
+
+  surface = Get_SDL_Surface(self);
+  x = NUM2INT(x_);
+  y = NUM2INT(y_);
+  r = NUM2INT(r_);
+  color = VALUE2COLOR(color_, surface->format);
+
+  if(RTEST(fill_) && RTEST(aa_) && RTEST(alpha_))
+    rb_raise(eSDLError, "can't draw filled antialiased alpha circle");
+
+  if(RTEST(fill_) && RTEST(aa_) && !RTEST(alpha_))
+    sge_AAFilledCircle(surface, x, y, r, color);
+
+  if(RTEST(fill_) && !RTEST(aa_) && RTEST(alpha_))
+    sge_FilledCircleAlpha(surface, x, y, r, color, NUM2UINT(alpha_));
+
+  if(RTEST(fill_) && !RTEST(aa_) && !RTEST(alpha_))
+    sge_FilledCircle(surface, x, y, r, color);
+
+  
+  if(!RTEST(fill_) && RTEST(aa_) && RTEST(alpha_))
+    sge_AACircleAlpha(surface, x, y, r, color, NUM2UINT(alpha_));
+
+  if(!RTEST(fill_) && RTEST(aa_) && !RTEST(alpha_))
+    sge_AACircle(surface, x, y, r, color);
+
+  if(!RTEST(fill_) && !RTEST(aa_) && RTEST(alpha_))
+    sge_CircleAlpha(surface, x, y, r, color, NUM2UINT(alpha_));
+
+  if(!RTEST(fill_) && !RTEST(aa_) && !RTEST(alpha_))
+    sge_Circle(surface, x, y, r, color);
+
+  return Qnil;
+}
+
+static VALUE Surface_drawEllipse(int argc, VALUE* argv, VALUE self)
+{
+  SDL_Surface* surface;
+  VALUE x_, y_, rx_, ry_, color_, fill_, aa_, alpha_;
+  Sint16 x, y, rx, ry;
+  Uint32 color;
+
+  rb_secure(4);
+  rb_scan_args(argc, argv, "53", &x_, &y_, &rx_, &ry_, &color_,
+               &fill_, &aa_, &alpha_);
+
+  surface = Get_SDL_Surface(self);
+  x = NUM2INT(x_);
+  y = NUM2INT(y_);
+  rx = NUM2INT(rx_);
+  ry = NUM2INT(ry_);
+  color = VALUE2COLOR(color_, surface->format);
+
+  if(RTEST(fill_) && RTEST(aa_) && RTEST(alpha_))
+    rb_raise(eSDLError, "can't draw filled antialiased alpha ellipse");
+
+  if(RTEST(fill_) && RTEST(aa_) && !RTEST(alpha_))
+    sge_AAFilledEllipse(surface, x, y, rx, ry, color);
+
+  if(RTEST(fill_) && !RTEST(aa_) && RTEST(alpha_))
+    sge_FilledEllipseAlpha(surface, x, y, rx, ry, color, NUM2UINT(alpha_));
+
+  if(RTEST(fill_) && !RTEST(aa_) && !RTEST(alpha_))
+    sge_FilledEllipse(surface, x, y, rx, ry, color);
+
+  if(!RTEST(fill_) && RTEST(aa_) && RTEST(alpha_))
+    sge_AAEllipseAlpha(surface, x, y, rx, ry, color, NUM2UINT(alpha_));
+
+  if(!RTEST(fill_) && RTEST(aa_) && !RTEST(alpha_))
+    sge_AAEllipse(surface, x, y, rx, ry, color);
+
+  if(!RTEST(fill_) && !RTEST(aa_) && RTEST(alpha_))
+    sge_EllipseAlpha(surface, x, y, rx, ry, color, NUM2UINT(alpha_));
+
+  if(!RTEST(fill_) && !RTEST(aa_) && !RTEST(alpha_))
+    sge_Ellipse(surface, x, y, rx, ry, color);
+
+  return Qnil;
+}
+
+static VALUE Surface_drawBezier(int argc, VALUE* argv, VALUE self)
+{
+  SDL_Surface* surface;
+  VALUE coords_[8], level_, color_;
+  VALUE aa_, alpha_;
+  int coords[8];
+  Uint32 color;
+  int level;
+  int i;
+  
+  rb_secure(4);
+  /* WARNING:  ':' == '9' + 1
+  */
+  rb_scan_args(argc, argv, ":2",
+               &coords_[0], &coords_[1],
+               &coords_[2], &coords_[3],
+               &coords_[4], &coords_[5],
+               &coords_[6], &coords_[7],
+               &level_, &color_,
+               &aa_, &alpha_);
+  surface = Get_SDL_Surface(self);
+  for (i=0; i<8; i++)
+    coords[i] = NUM2INT(coords_[i]);
+  color = VALUE2COLOR(color_, surface->format);
+  level = NUM2INT(level_);
+  
+  if(RTEST(aa_) && RTEST(alpha_))
+    sge_AABezierAlpha(surface,
+                      coords[0], coords[1],
+                      coords[2], coords[3],
+                      coords[4], coords[5],
+                      coords[6], coords[7],
+                      level, color, NUM2UINT(alpha_));
+  if(!RTEST(aa_) && RTEST(alpha_))
+    sge_BezierAlpha(surface,
+                    coords[0], coords[1],
+                    coords[2], coords[3],
+                    coords[4], coords[5],
+                    coords[6], coords[7],
+                    level, color, NUM2UINT(alpha_));
+  if(RTEST(aa_) && !RTEST(alpha_))
+    sge_AABezier(surface,
+                 coords[0], coords[1],
+                 coords[2], coords[3],
+                 coords[4], coords[5],
+                 coords[6], coords[7],
+                 level, color);
+  if(!RTEST(aa_) && !RTEST(alpha_))
+    sge_Bezier(surface,
+               coords[0], coords[1],
+               coords[2], coords[3],
+               coords[4], coords[5],
+               coords[6], coords[7],
+               level, color);
+  return Qnil;
+}
+  
+static VALUE Surface_s_transformDraw(VALUE klass, VALUE src, VALUE dst,
+                                     VALUE angle, 
+                                     VALUE xscale, VALUE yscale,
+                                     VALUE px, VALUE py, 
+                                     VALUE qx, VALUE qy,
+                                     VALUE flags)
+{
+  rb_secure(4);
+  sge_transform(Get_SDL_Surface(src), Get_SDL_Surface(dst),
+                NUM2DBL(angle), NUM2DBL(xscale), NUM2DBL(yscale),
+		NUM2INT(px), NUM2INT(py), NUM2INT(qx), NUM2INT(qy),
+                NUM2UINT(flags));
+  return Qnil;
+}
+
+static VALUE Surface_transform(VALUE self, VALUE bgcolor, VALUE angle, 
+                               VALUE xscale, VALUE yscale, VALUE flags)
+{
+  SDL_Surface *surface, *result;
+  
+  rb_secure(4);
+  surface = Get_SDL_Surface(self);
+  result = sge_transform_surface(surface, VALUE2COLOR(bgcolor, surface->format), 
+				 NUM2DBL(angle), NUM2DBL(xscale), 
+				 NUM2DBL(yscale), NUM2UINT(flags));
+  if(result == NULL)
+    rb_raise(eSDLError, "Couldn't Create Surface: %s", SDL_GetError());
+  return Surface_create(result);
+}
+
+static VALUE Surface_makeCollisionMap(VALUE self)
 {
   sge_cdata * cdata;
-  SDL_Surface *surface;
-  Data_Get_Struct(obj,SDL_Surface,surface);
-  cdata = sge_make_cmap(surface);
-  if( cdata==NULL )
-    rb_raise( eSDLError,"Couldn't Create CollisionMap: %s",SDL_GetError() );
-  return Data_Wrap_Struct(cCollisionMap,0,sge_destroy_cmap,cdata);
+  rb_secure(4);
+  cdata = sge_make_cmap(Get_SDL_Surface(self));
+  if(cdata == NULL)
+    rb_raise(eSDLError, "Couldn't Create CollisionMap: %s", SDL_GetError());
+  return Data_Wrap_Struct(cCollisionMap, 0, sge_destroy_cmap, cdata);
 }
 
-static sge_cdata * value_to_collision_map(VALUE value)
+
+static VALUE CollisionMap_s_boundingBoxCheck(VALUE klass, 
+                                             VALUE x1, VALUE y1,
+                                             VALUE w1, VALUE h1, 
+                                             VALUE x2, VALUE y2,
+                                             VALUE w2, VALUE h2)
 {
-  sge_cdata * cdata;
-  if( !rb_obj_is_kind_of(value, cCollisionMap) )
-    rb_raise(rb_eArgError,"type mismatch(expect CollisionMap)");
-  Data_Get_Struct(value, sge_cdata, cdata);
-  return cdata;
+  return INT2BOOL(_sge_bbcheck
+                  ((Sint16) NUM2INT(x1),  (Sint16) NUM2INT(y1), 
+                   (Sint16) NUM2INT(w1),  (Sint16) NUM2INT(h1), 
+                   (Sint16) NUM2INT(x2),  (Sint16) NUM2INT(y2), 
+                   (Sint16) NUM2INT(w2),  (Sint16) NUM2INT(h2)));
 }
 
-static VALUE sdl_classBoundingBoxCheck(VALUE class,
-                                       VALUE x1, VALUE y1, VALUE w1, VALUE h1,
-                                       VALUE x2, VALUE y2, VALUE w2, VALUE h2)
+static VALUE CollisionMap_collisionCheck(VALUE collisionMap1,
+                                           VALUE x1,  VALUE y1, 
+                                           VALUE collisionMap2,
+                                           VALUE x2,  VALUE y2)
 {
-  return BOOL(_sge_bbcheck
-              ((Sint16) NUM2INT(x1), (Sint16) NUM2INT(y1),
-               (Sint16) NUM2INT(w1), (Sint16) NUM2INT(h1),
-               (Sint16) NUM2INT(x2), (Sint16) NUM2INT(y2),
-               (Sint16) NUM2INT(w2), (Sint16) NUM2INT(h2)));
-}
-
-static VALUE sdl_collisionCheck(VALUE collisionMap1, VALUE x1, VALUE y1,
-                                VALUE collisionMap2, VALUE x2, VALUE y2)
-{
-  sge_cdata * cdata1 = value_to_collision_map(collisionMap1);
-  sge_cdata * cdata2 = value_to_collision_map(collisionMap2);
+  sge_cdata * cdata1 = Get_sge_cdata(collisionMap1);
+  sge_cdata * cdata2 = Get_sge_cdata(collisionMap2);
   int collided;
   collided = sge_cmcheck
-    (cdata1, (Sint16) NUM2INT(x1), (Sint16) NUM2INT(y1),
-     cdata2, (Sint16) NUM2INT(x2), (Sint16) NUM2INT(y2));
+    (cdata1,  (Sint16) NUM2INT(x1),  (Sint16) NUM2INT(y1), 
+     cdata2,  (Sint16) NUM2INT(x2),  (Sint16) NUM2INT(y2));
   if(!collided)
     return Qnil;
-  return rb_ary_new3(2, INT2NUM(sge_get_cx()), INT2NUM(sge_get_cy()));
+  return rb_ary_new3(2,  INT2NUM(sge_get_cx()),  INT2NUM(sge_get_cy()));
 }
 
-static VALUE sdl_boundingBoxCheck(VALUE collisionMap1, VALUE x1, VALUE y1,
-                                  VALUE collisionMap2, VALUE x2, VALUE y2)
+static VALUE CollisionMap_boundingBoxCheck(VALUE collisionMap1,
+                                           VALUE x1,  VALUE y1, 
+                                           VALUE collisionMap2,
+                                           VALUE x2,  VALUE y2)
 {
-  sge_cdata * cdata1 = value_to_collision_map(collisionMap1);
-  sge_cdata * cdata2 = value_to_collision_map(collisionMap2);
-  return BOOL(sge_bbcheck
-              (cdata1, (Sint16) NUM2INT(x1), (Sint16) NUM2INT(y1),
-               cdata2, (Sint16) NUM2INT(x2), (Sint16) NUM2INT(y2)));
+  sge_cdata * cdata1 = Get_sge_cdata(collisionMap1);
+  sge_cdata * cdata2 = Get_sge_cdata(collisionMap2);
+  return INT2BOOL(sge_bbcheck
+                  (cdata1,  (Sint16) NUM2INT(x1),  (Sint16) NUM2INT(y1), 
+                   cdata2,  (Sint16) NUM2INT(x2),  (Sint16) NUM2INT(y2)));
 }
 
-static VALUE sdl_set_cdata(VALUE obj, VALUE vx, VALUE vy, VALUE vw, VALUE vh)
+static VALUE CollisionMap_set(VALUE self, VALUE vx, VALUE vy, VALUE vw, VALUE vh)
 {
-  sge_cdata * cdata = value_to_collision_map(obj);
-  Sint16 x, y, w, h;
-  
+  sge_cdata * cdata = Get_sge_cdata(self);
+  Sint16 x,  y,  w,  h;
+
+  rb_secure(4);
   x = NUM2INT(vx);
   y = NUM2INT(vy);
   w = NUM2INT(vw);
   h = NUM2INT(vh);
   if( x < 0 || y < 0 || x+w > cdata->w || y+h > cdata->h ){
-    rb_raise(eSDLError,"Couldn't clear that area");
+    rb_raise(eSDLError, "Couldn't set that area");
   }
-  sge_set_cdata(cdata, x, y, w, h );
+  sge_set_cdata(cdata,  x,  y,  w,  h);
   return Qnil;
 }
 
-static VALUE sdl_unset_cdata(VALUE obj, VALUE vx, VALUE vy, VALUE vw, VALUE vh)
+static VALUE CollisionMap_clear(VALUE self, VALUE vx, VALUE vy, VALUE vw, VALUE vh)
 {
-  sge_cdata * cdata = value_to_collision_map(obj);
-  Sint16 x, y, w, h;
-  
+  sge_cdata * cdata = Get_sge_cdata(self);
+  Sint16 x,  y,  w,  h;
+
+  rb_secure(4);
   x = NUM2INT(vx);
   y = NUM2INT(vy);
   w = NUM2INT(vw);
   h = NUM2INT(vh);
   if( x < 0 || y < 0 || x+w > cdata->w || y+h > cdata->h ){
-    rb_raise(eSDLError,"Couldn't clear that area");
+    rb_raise(eSDLError, "Couldn't clear that area");
   }
-  sge_unset_cdata(cdata, x, y, w, h);
+  sge_unset_cdata(cdata,  x,  y,  w,  h);
   return Qnil;
 }
 
-static VALUE sdl_w_cdata(VALUE obj)
+static VALUE CollisionMap_w(VALUE self)
 {
-  sge_cdata * cdata = value_to_collision_map(obj);
-  return INT2FIX(cdata->w);
+  return INT2FIX(Get_sge_cdata(self)->w);
 }
 
-static VALUE sdl_h_cdata(VALUE obj)
+static VALUE CollisionMap_h(VALUE self)
 {
-  sge_cdata * cdata = value_to_collision_map(obj);
-  return INT2FIX(cdata->h);
+  return INT2FIX(Get_sge_cdata(self)->h);
 }
 
 /* bitmap font */
-static void sdl_bf_close(sge_bmpFont* font)
+static void bf_close(sge_bmpFont* font)
 {
   if(!rubysdl_is_quit()){
     sge_BF_CloseFont(font);
   }
 }
 
-static VALUE sdl_bf_open(VALUE obj, VALUE file, VALUE flags)
+static VALUE BMFont_open(VALUE klass,  VALUE file,  VALUE flags)
+
 {
   sge_bmpFont* font;
-
-  font = sge_BF_OpenFont(GETCSTR(file),NUM2UINT(flags));
-  if( font == NULL )
-    rb_raise(eSDLError,"Couldn't open font: %s", GETCSTR(file));
+  rb_secure(4);
+  SafeStringValue(file);
   
-  return Data_Wrap_Struct(cBMFont,0,sdl_bf_close,font);
+  font = sge_BF_OpenFont(RSTRING(file)->ptr, NUM2UINT(flags));
+  if(font == NULL)
+    rb_raise(eSDLError, "Couldn't open font: %s", RSTRING(file)->ptr);
+  
+  return Data_Wrap_Struct(cBMFont, 0, bf_close, font);
 }
 
-static VALUE sdl_bf_setColor(VALUE obj,VALUE r,VALUE g,VALUE b)
+static VALUE BMFont_setColor(VALUE self, VALUE r, VALUE g, VALUE b)
 {
-  sge_bmpFont* font;
-  Data_Get_Struct(obj,sge_bmpFont,font);
-  
-  sge_BF_SetColor(font,NUM2UINT(r),NUM2UINT(g),NUM2UINT(b));
+  sge_BF_SetColor(Get_sge_bmpFont(self),
+                  NUM2UINT(r), NUM2UINT(g), NUM2UINT(b));
   return Qnil;
 }
 
-static VALUE sdl_bf_getHeight(VALUE obj)
+static VALUE BMFont_getHeight(VALUE self)
 {
-  sge_bmpFont* font;
-  Data_Get_Struct(obj,sge_bmpFont,font);
-  return INT2FIX(sge_BF_GetHeight(font));
+  return INT2FIX(sge_BF_GetHeight(Get_sge_bmpFont(self)));
 }
 
-static VALUE sdl_bf_getWidth(VALUE obj)
+static VALUE BMFont_getWidth(VALUE self)
 {
-  sge_bmpFont* font;
-  Data_Get_Struct(obj,sge_bmpFont,font);
-  return INT2FIX(sge_BF_GetWidth(font));
+  return INT2FIX(sge_BF_GetWidth(Get_sge_bmpFont(self)));
 }
 
-static VALUE sdl_bf_textSize(VALUE obj, VALUE text)
+static VALUE BMFont_textSize(VALUE self, VALUE text)
 {
-  sge_bmpFont* font;
+  StringValue(text);
   SDL_Rect rect;
-  Data_Get_Struct(obj,sge_bmpFont,font);
-  rect = sge_BF_TextSize(font, GETCSTR(text));
+  rect = sge_BF_TextSize(Get_sge_bmpFont(self),
+                         RSTRING(text)->ptr);
   return rb_ary_new3(2, INT2FIX(rect.w), INT2FIX(rect.h));
 }
 
-static VALUE sdl_bf_textout(VALUE obj,VALUE surface,VALUE string,
-                            VALUE x, VALUE y)
+static VALUE BMFont_textout(VALUE self,
+                            VALUE surface, VALUE string, 
+                            VALUE x,  VALUE y)
+
 {
-  sge_bmpFont* font;
-  SDL_Surface* target;
+  rb_secure(4);
+  StringValue(string);
   
-  if(!rb_obj_is_kind_of(surface,cSurface))
-    rb_raise( rb_eArgError,"type mismatch(expect Surface)" );
-  Data_Get_Struct(obj,sge_bmpFont,font);
-  Data_Get_Struct(surface,SDL_Surface,target);
-  sge_BF_textout(target,font,GETCSTR(string),NUM2INT(x),NUM2INT(y));
+  sge_BF_textout(Get_SDL_Surface(surface), Get_sge_bmpFont(self),
+                 RSTRING(string)->ptr, NUM2INT(x), NUM2INT(y));
   return Qnil;
 }
 
-static void defineConstForSGE()
-{
-  rb_define_const(mSDL,"TRANSFORM_AA",UINT2NUM(SGE_TAA));
-  rb_define_const(mSDL,"TRANSFORM_SAFE",UINT2NUM(SGE_TSAFE));
-  rb_define_const(mSDL,"TRANSFORM_TMAP",UINT2NUM(SGE_TTMAP));
-
-  rb_define_const(cBMFont,"TRANSPARENT",UINT2NUM(SGE_BFTRANSP));
-  rb_define_const(cBMFont,"NOCONVERT",UINT2NUM(SGE_BFNOCONVERT));
-  rb_define_const(cBMFont,"SFONT",UINT2NUM(SGE_BFSFONT));
-  rb_define_const(cBMFont,"PALETTE",UINT2NUM(SGE_BFPALETTE));
-}
-
-void init_sge_video()
+void rubysdl_init_sge(VALUE mSDL, VALUE cSurface)
 {
   sge_Update_OFF();
   sge_Lock_ON();
-
-  rb_define_module_function(mSDL,"autoLock",sdl_get_autoLocking,0);
-  rb_define_module_function(mSDL,"autoLock=",sdl_set_autoLocking,1);
-
-  rb_define_method(cSurface,"getPixel",sdl_getPixel,2);
-  rb_define_method(cSurface,"putPixel",sdl_putPixel,3);
-  rb_define_method(cSurface,"[]",sdl_getPixel,2);
-  rb_define_method(cSurface,"[]=",sdl_putPixel,3);
+  
+  rb_define_module_function(cSurface, "autoLock?", Surface_s_autoLock_p, 0);
+  rb_define_module_function(cSurface, "autoLockON", Surface_s_autoLockON, 0);
+  rb_define_module_function(cSurface, "autoLockOFF", Surface_s_autoLockOFF, 0);
 
   /* primitive drawing */
-  rb_define_method(cSurface,"drawLine",sdl_drawLine,5);
-  rb_define_method(cSurface,"drawRect",sdl_drawRect,5);
-  rb_define_method(cSurface,"drawCircle",sdl_drawCircle,4);
-  rb_define_method(cSurface,"drawFilledCircle",sdl_drawFilledCircle,4);
-  rb_define_method(cSurface,"drawEllispe",sdl_drawEllipse,5);
-  rb_define_method(cSurface,"drawFilledEllispe",sdl_drawFilledEllipse,5);
-  rb_define_method(cSurface,"drawEllipse",sdl_drawEllipse,5);
-  rb_define_method(cSurface,"drawFilledEllipse",sdl_drawFilledEllipse,5);
-  rb_define_method(cSurface,"drawBezier",sdl_drawBezier,10);
-    
-  /* antialiased primitive drawing */
-  rb_define_method(cSurface,"drawAALine",sdl_drawAALine,5);
-  rb_define_method(cSurface,"drawAACircle",sdl_drawAACircle,4);
-  rb_define_method(cSurface,"drawAAFilledCircle",sdl_drawAAFilledCircle,4);
-  rb_define_method(cSurface,"drawAAEllipse",sdl_drawAAEllipse,5);
-  rb_define_method(cSurface,"drawAAFilledEllipse",sdl_drawAAFilledEllipse,5);
-  rb_define_method(cSurface,"drawAABezier",sdl_drawAABezier,10);
-    
-  /* primitive drawing with alpha */
-  rb_define_method(cSurface,"drawLineAlpha",sdl_drawLineAlpha,6);
-  rb_define_method(cSurface,"drawRectAlpha",sdl_drawRectAlpha,6);
-  rb_define_method(cSurface,"drawFilledRectAlpha",sdl_drawFilledRectAlpha,6);
-  rb_define_method(cSurface,"drawCircleAlpha",sdl_drawCircleAlpha,5);
-  rb_define_method(cSurface,"drawFilledCircleAlpha",sdl_drawFilledCircleAlpha,5);
-  rb_define_method(cSurface,"drawEllipseAlpha",sdl_drawEllipseAlpha,6);
-  rb_define_method(cSurface,"drawFilledEllipseAlpha",sdl_drawFilledEllipseAlpha,6);
-  rb_define_method(cSurface,"drawBezierAlpha",sdl_drawBezierAlpha,11);
-    
-  /* antialiased primitive drawing with alpha */
-  rb_define_method(cSurface,"drawAALineAlpha",sdl_drawAALineAlpha,6);
-  rb_define_method(cSurface,"drawAACircleAlpha",sdl_drawAACircleAlpha,5);
-  rb_define_method(cSurface,"drawAAEllipseAlpha",sdl_drawAAEllipseAlpha,6);
-  rb_define_method(cSurface,"drawAABezierAlpha",sdl_drawAABezierAlpha,11);
-    
-  /* rotation and scaling */
-  rb_define_method(cSurface,"rotateScaledSurface",sdl_rotateScaledSurface,3);
-  rb_define_module_function(mSDL,"rotateScaledBlit",sdl_rotateScaledBlit,6);
-  rb_define_module_function(mSDL,"rotateXYScaled",sdl_rotateXYScaled,7);
+  rb_define_method(cSurface, "drawLine", Surface_drawLine, -1);
+  rb_define_method(cSurface, "drawRect", Surface_drawRect, -1);
+  rb_define_method(cSurface, "drawCircle", Surface_drawCircle, -1);
+  rb_define_method(cSurface, "drawEllipse", Surface_drawEllipse, -1);
+  rb_define_method(cSurface, "drawBezier", Surface_drawBezier, -1);
 
-  rb_define_module_function(mSDL,"transform",sdl_transform,10);
-  rb_define_method(cSurface,"transformSurface",sdl_transformSurface,5);
+  /* rotation and scaling */
+  rb_define_module_function(cSurface, "transformDraw",
+                            Surface_s_transformDraw, 10);
+  rb_define_method(cSurface, "transformSurface", Surface_transform, 5);
 
   /* collision detection */
-  rb_define_method(cSurface,"makeCollisionMap", sdl_makeCollisionMap, 0);
-
-  cCollisionMap = rb_define_class_under(mSDL,"CollisionMap",rb_cObject);
-  rb_define_singleton_method(cCollisionMap,"boundingBoxCheck",
-                             sdl_classBoundingBoxCheck, 8);
-  rb_define_method(cCollisionMap,"collisionCheck", sdl_collisionCheck, 5);
-  rb_define_method(cCollisionMap,"boundingBoxCheck", sdl_boundingBoxCheck, 5);
-  rb_define_method(cCollisionMap,"clear", sdl_unset_cdata, 4);
-  rb_define_method(cCollisionMap,"set", sdl_set_cdata, 4);
-  rb_define_method(cCollisionMap,"w", sdl_w_cdata, 0);
-  rb_define_method(cCollisionMap,"h", sdl_h_cdata, 0);
+  cCollisionMap = rb_define_class_under(mSDL, "CollisionMap", rb_cObject);
+  rb_undef_alloc_func(cCollisionMap);
+  
+  rb_define_method(cSurface, "makeCollisionMap",  Surface_makeCollisionMap,  0);
+  rb_define_singleton_method(cCollisionMap, "boundingBoxCheck", 
+                             CollisionMap_s_boundingBoxCheck,  8);
+  rb_define_method(cCollisionMap, "collisionCheck",
+                   CollisionMap_collisionCheck,  5);
+  rb_define_method(cCollisionMap, "boundingBoxCheck",
+                   CollisionMap_boundingBoxCheck,  5);
+  rb_define_method(cCollisionMap, "clear",  CollisionMap_clear,  4);
+  rb_define_method(cCollisionMap, "set",  CollisionMap_set,  4);
+  rb_define_method(cCollisionMap, "w", CollisionMap_w, 0);
+  rb_define_method(cCollisionMap, "h", CollisionMap_h, 0);
+  
 
   /* bitmap font */
-  cBMFont = rb_define_class_under(mSDL,"BMFont",rb_cObject);
-  rb_define_singleton_method(cBMFont,"open",sdl_bf_open,2);
+  cBMFont = rb_define_class_under(mSDL, "BMFont", rb_cObject);
+  rb_undef_alloc_func(cBMFont);
+    
+  rb_define_singleton_method(cBMFont, "open", BMFont_open, 2);
 
-  rb_define_method(cBMFont,"setColor",sdl_bf_setColor,3);
-  rb_define_method(cBMFont,"height",sdl_bf_getHeight,0);
-  rb_define_method(cBMFont,"width",sdl_bf_getWidth,0);
-  rb_define_method(cBMFont,"textSize",sdl_bf_textSize, 1);
-  rb_define_method(cBMFont,"textout",sdl_bf_textout,4);
+  rb_define_method(cBMFont, "setColor", BMFont_setColor, 3);
+  rb_define_method(cBMFont, "height", BMFont_getHeight, 0);
+  rb_define_method(cBMFont, "width", BMFont_getWidth, 0);
+  rb_define_method(cBMFont, "textSize", BMFont_textSize,1);
+  rb_define_method(cBMFont, "textout", BMFont_textout, 4);
 
-  defineConstForSGE();
+
+  rb_define_const(cSurface, "TRANSFORM_AA", UINT2NUM(SGE_TAA));
+  rb_define_const(cSurface, "TRANSFORM_SAFE", UINT2NUM(SGE_TSAFE));
+  rb_define_const(cSurface, "TRANSFORM_TMAP", UINT2NUM(SGE_TTMAP));
+
+  rb_define_const(cBMFont, "TRANSPARENT", UINT2NUM(SGE_BFTRANSP));
+  rb_define_const(cBMFont, "NOCONVERT", UINT2NUM(SGE_BFNOCONVERT));
+  rb_define_const(cBMFont, "SFONT", UINT2NUM(SGE_BFSFONT));
+  rb_define_const(cBMFont, "PALETTE", UINT2NUM(SGE_BFPALETTE));
+}
+#else /* HAVE_SGE */
+#include "rubysdl.h"
+void rubysdl_init_sge(VALUE mSDL, VALUE cSurface)
+{
 }
 #endif /* HAVE_SGE */

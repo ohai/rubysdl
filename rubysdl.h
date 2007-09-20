@@ -21,69 +21,23 @@
 #include <SDL.h>
 #include <ruby.h>
 #include <stdio.h>
-#ifndef UINT2NUM
-#define UINT2NUM(v) INT2NUM(v)
-#endif
 
-#ifdef DEF_GLOBAL
-#define GLOBAL
-#else
-#define GLOBAL extern
-#endif
+/* Macros */
+#define GLOBAL_DEFINE_GET_STRUCT(struct_name, fun, klass, klassstr) \
+struct_name* fun(VALUE obj) \
+{ \
+  struct_name* st; \
+  \
+  if(!rb_obj_is_kind_of(obj, klass)){ \
+    rb_raise(rb_eTypeError, "wrong argument type %s (expected " klassstr ")", \
+             rb_obj_classname(obj)); \
+  } \
+  Data_Get_Struct(obj, struct_name, st); \
+  return st; \
+} 
 
-#ifdef StringValuePtr
-#define GETCSTR(v) StringValuePtr(v)
-#else
-#define GETCSTR(v) STR2CSTR(v)
-#endif
-
-GLOBAL VALUE mSDL;
-GLOBAL VALUE eSDLError;
-GLOBAL VALUE cVideoInfo;
-GLOBAL VALUE cSurface;
-GLOBAL VALUE cScreen;
-GLOBAL VALUE cEvent;
-GLOBAL VALUE mKey;
-GLOBAL VALUE mMixer;
-GLOBAL VALUE cWave;
-GLOBAL VALUE cMusic;
-GLOBAL VALUE mWM;
-GLOBAL VALUE mMouse;
-GLOBAL VALUE cTTF;
-GLOBAL VALUE cJoystick;
-GLOBAL VALUE cCD;
-GLOBAL VALUE cMPEG;
-GLOBAL VALUE cMPEGInfo;
-GLOBAL VALUE mSDLSKK;
-GLOBAL VALUE cContext;
-GLOBAL VALUE cDictionary;
-GLOBAL VALUE cRomKanaRuleTable;
-GLOBAL VALUE cKeybind;
-
-#ifdef HAVE_SGE
-GLOBAL VALUE cCollisionMap;
-GLOBAL VALUE cBMFont;
-#endif /* ifdef HAVE_SGE */
-
-#ifdef DEF_EVENT2
-GLOBAL VALUE cEvent2;
-GLOBAL VALUE cActiveEvent;
-GLOBAL VALUE cKeyDownEvent;
-GLOBAL VALUE cKeyUpEvent;
-GLOBAL VALUE cMouseMotionEvent;
-GLOBAL VALUE cMouseButtonDownEvent;
-GLOBAL VALUE cMouseButtonUpEvent;
-GLOBAL VALUE cJoyAxisEvent;
-GLOBAL VALUE cJoyBallEvent;
-GLOBAL VALUE cJoyHatEvent;
-GLOBAL VALUE cJoyButtonUpEvent;
-GLOBAL VALUE cJoyButtonDownEvent;
-GLOBAL VALUE cQuitEvent;
-GLOBAL VALUE cSysWMEvent;
-GLOBAL VALUE cVideoResizeEvent;
-GLOBAL VALUE cVideoExposeEvent;
-#endif
-
+#define DEFINE_GET_STRUCT(struct_name, fun, klass, klassstr) \
+static GLOBAL_DEFINE_GET_STRUCT(struct_name, fun, klass, klassstr)
 #define SetRect(Rect,X,Y,W,H) \
 do{ \
   Rect.x=NUM2INT(X); \
@@ -92,18 +46,55 @@ do{ \
   Rect.h=NUM2INT(H); \
 }while(0) \
 
-#define BOOL(x) (x)?Qtrue:Qfalse
+#define INT2BOOL(x) ((x)?Qtrue:Qfalse)
 
-#ifndef SDL_VERSION_ATLEAST
-#define SDL_COMPILEDVERSION SDL_VERSIONNUM(SDL_MAJOR_VERSION, SDL_MINOR_VERSION, SDL_PATCHLEVEL)
-     
-#define SDL_VERSION_ATLEAST(X, Y, Z) (SDL_COMPILEDVERSION >= SDL_VERSIONNUM(X, Y, Z))
-     
+/* Global variables */
+#define eSDLError rubysdl_eSDLError
+#ifdef DEF_GLOBAL
+VALUE eSDLError;
+#else
+extern VALUE eSDLError;
 #endif
 
+/* Global functions */
+#define VALUE2COLOR rubysdl_VALUE2COLOR
 Uint32 VALUE2COLOR(VALUE color,SDL_PixelFormat *format);
+
 void rubysdl_putPixel(SDL_Surface *surface, Sint16 x, Sint16 y, Uint32 color);
 Uint32 rubysdl_getPixel(SDL_Surface *surface, Sint16 x, Sint16 y);
-void sdl_freeSurface(SDL_Surface* surface);
 int rubysdl_is_quit(void);
+
 SDL_RWops* rubysdl_RWops_from_ruby_obj(VALUE obj);
+
+#define Surface_create rubysdl_Surface_create
+VALUE Surface_create(SDL_Surface* surface);
+
+#define Get_SDL_Surface rubysdl_Get_SDL_Surface
+SDL_Surface* Get_SDL_Surface(VALUE obj);
+
+#ifdef HAVE_SDLSKK
+#include <SDL_ttf.h>
+#define Get_TTF_Font rubysdl_Get_TTF_Font
+TTF_Font* Get_TTF_Font(VALUE obj);
+#endif
+
+/* declaration of initialize functions */
+VALUE rubysdl_init_video(VALUE mSDL);
+void rubysdl_init_sge(VALUE mSDL, VALUE cSurface);
+void rubysdl_init_GL(VALUE mSDL);
+void rubysdl_init_image(VALUE mSDL, VALUE cSurface);
+void rubysdl_init_Event(VALUE mSDL);
+void rubysdl_init_Key(VALUE mSDL);
+void rubysdl_init_Mouse(VALUE mSDL);
+void rubysdl_init_Joystick(VALUE mSDL);
+void rubysdl_init_CD(VALUE mSDL);
+void rubysdl_init_time(VALUE mSDL);
+void rubysdl_init_WM(VALUE mSDL);
+void rubysdl_init_Kanji(VALUE mSDL);
+void rubysdl_init_TTF(VALUE mSDL);
+void rubysdl_quit_TTF(void);
+void rubysdl_init_Mixer(VALUE mSDL);
+void rubysdl_quit_Mixer(void);
+void rubysdl_init_MPEG(VALUE mSDL);
+void rubysdl_init_SKK(VALUE mSDL);
+

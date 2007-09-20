@@ -22,6 +22,19 @@
 #include <sdlskk.h>
 #include <SDL_ttf.h>
 
+static VALUE cEvent = Qnil;
+static VALUE cKeyDownEvent = Qnil;
+
+static VALUE cContext = Qnil;
+static VALUE cDictionary = Qnil;
+static VALUE cRomKanaRuleTable = Qnil;
+static VALUE cKeybind = Qnil;
+
+DEFINE_GET_STRUCT(SDLSKK_Context, Get_SDLSKK_Context, cContext, "SDL::SKK::Context");
+DEFINE_GET_STRUCT(SDLSKK_Dictionary, Get_SDLSKK_Dictionary, cDictionary, "SDL::SKK::Dictionary");
+DEFINE_GET_STRUCT(SDLSKK_RomKanaRuleTable, Get_SDLSKK_RomKanaRuleTable, cRomKanaRuleTable, "SDL::SKK::RomKanaRuleTable");
+DEFINE_GET_STRUCT(SDLSKK_Keybind, Get_SDLSKK_Keybind, cKeybind, "SDL::SKK::Keybind");
+
 typedef SDL_Surface* (*Renderer)(SDLSKK_Context*,TTF_Font*,SDL_Color);
 
 static void skk_error_handler(SDLSKK_Error err)
@@ -34,279 +47,238 @@ static void skk_error_handler(SDLSKK_Error err)
   }
 }
 
-static VALUE skk_set_encoding(VALUE mod,VALUE encoding)
+static VALUE SKK_set_encoding(VALUE mod, VALUE encoding)
 {
-  SDLSKK_set_encoding( NUM2INT(encoding) );
+  SDLSKK_set_encoding(NUM2INT(encoding));
   return Qnil;
 }
 
-static VALUE skk_get_encoding(VALUE mod)
+static VALUE SKK_get_encoding(VALUE mod)
 {
   return INT2FIX(SDLSKK_get_encoding());
 }
 
-
-static VALUE skk_Context_new(VALUE class,VALUE dict,VALUE rule_table,
-			     VALUE keybind, VALUE use_minibuffer )
+static VALUE Context_s_new(VALUE klass, VALUE dict, VALUE rule_table,
+                           VALUE keybind, VALUE use_minibuffer)
 {
   SDLSKK_Context* c_context;
-  SDLSKK_RomKanaRuleTable* c_table;
-  SDLSKK_Dictionary* c_dict;
-  SDLSKK_Keybind* c_bind;
   VALUE context;
   
-  if( !rb_obj_is_kind_of(dict,cDictionary) )
-    rb_raise(rb_eArgError,"type mismatch(expect SDL::SKK::Dictionary)");
-  if( !rb_obj_is_kind_of(rule_table,cRomKanaRuleTable) )
-    rb_raise(rb_eArgError,"type mismatch(expect SDL::SKK::RomKanaRuleTable)");
-  if( !rb_obj_is_kind_of(keybind,cKeybind) )
-    rb_raise(rb_eArgError,"type mismatch(expect SDL::SKK::Keybind)");
+  c_context = SDLSKK_Context_new(Get_SDLSKK_Dictionary(dict),
+                                 Get_SDLSKK_RomKanaRuleTable(rule_table),
+                                 Get_SDLSKK_Keybind(keybind),
+                                 RTEST(use_minibuffer));
   
-  Data_Get_Struct(dict,SDLSKK_Dictionary,c_dict);
-  Data_Get_Struct(rule_table,SDLSKK_RomKanaRuleTable,c_table);
-  Data_Get_Struct(keybind,SDLSKK_Keybind,c_bind);
-  
-  c_context = SDLSKK_Context_new( c_dict, c_table, c_bind, RTEST(use_minibuffer) );
-  if( c_context == NULL )
+  if(c_context == NULL)
     rb_raise(eSDLError,"Couldn't create Context");
 
-  context = Data_Wrap_Struct(class,0,SDLSKK_Context_delete,c_context);
-  rb_iv_set(context,"dict",dict);
-  rb_iv_set(context,"rule_table",rule_table);
+  context = Data_Wrap_Struct(klass, 0, SDLSKK_Context_delete ,c_context);
+  rb_iv_set(context, "dict", dict);
+  rb_iv_set(context, "rule_table", rule_table);
   
   return context;
 }
 
-static VALUE skk_Context_input_event(VALUE obj,VALUE event)
+static VALUE Context_input(VALUE self, VALUE event)
 {
-  SDLSKK_Context* context;
-  SDL_Event *ev;
-  
-  Data_Get_Struct(obj,SDLSKK_Context,context);
-  if( rb_obj_is_kind_of( event,cEvent ) ){
-    Data_Get_Struct(event,SDL_Event,ev);
-    SDLSKK_Context_input_event( context, ev );
+  if(rb_obj_is_kind_of(event, cKeyDownEvent)){
+    SDL_Event ev;
+    ev.type = SDL_KEYDOWN;
+    ev.key.keysym.sym = NUM2INT(rb_iv_get(event, "@sym"));
+    ev.key.keysym.unicode = NUM2UINT(rb_iv_get(event, "@unicode"));
+    ev.key.keysym.mod = NUM2INT(rb_iv_get(event, "@mod"));
+    SDLSKK_Context_input_event(Get_SDLSKK_Context(self), &ev);
     return Qnil;
+  }else if(rb_obj_is_kind_of(event, cEvent)){
+    return Qnil;
+  }else{
+    rb_raise( rb_eArgError,"type mismatch(expect SDL::Event or SDL::Event2)");
   }
-  
-#ifdef DEF_EVENT2
-  if( rb_obj_is_kind_of( event,cEvent2 ) ){
-    if( rb_obj_is_kind_of( event,cKeyDownEvent ) ){
-      SDL_Event ev2;
-      ev2.type = SDL_KEYDOWN;
-      ev2.key.keysym.sym = NUM2INT( rb_iv_get(event,"@sym") );
-      ev2.key.keysym.unicode = NUM2UINT( rb_iv_get(event,"@unicode") );
-      ev2.key.keysym.mod = NUM2INT( rb_iv_get(event,"@mod"));
-      SDLSKK_Context_input_event( context, &ev2 );
-      return Qnil;
-    }else{
-      return Qnil;
-    }
-  }
-    
-#endif
-  rb_raise( rb_eArgError,"type mismatch(expect SDL::Event or SDL::Event2)");
-
   /* NOT REACHED */
 }
 
-static VALUE skk_Context_get_str(VALUE obj)
+static VALUE Context_str(VALUE self)
 {
-  SDLSKK_Context* context;
   char cstr[10000];
-  
-  Data_Get_Struct(obj,SDLSKK_Context,context);
-
-  SDLSKK_Context_get_str(context,cstr,sizeof(cstr));
-
+  SDLSKK_Context_get_str(Get_SDLSKK_Context(self), cstr, sizeof(cstr));
   return rb_str_new2(cstr);
 }
 
-static VALUE render_str(VALUE obj,VALUE font,VALUE r,VALUE g,VALUE b,
-			Renderer func)
+static VALUE render_str(VALUE self, VALUE font, VALUE r, VALUE g, VALUE b,
+                        Renderer func)
 {
-  SDLSKK_Context* context;
   SDL_Surface* surface;
-  TTF_Font* ttf_font;
   SDL_Color color;
-
-  if( !rb_obj_is_kind_of(font,cTTF) )
-    rb_raise( rb_eArgError,"type mismatch(expect SDL::TTF)");
   
   color.r = NUM2UINT(r);
   color.g = NUM2UINT(g);
   color.b = NUM2UINT(b);
   
-  Data_Get_Struct(obj,SDLSKK_Context,context);
-  Data_Get_Struct(font,TTF_Font,ttf_font);
-  
-  surface = func(context,ttf_font,color);
+  surface = func(Get_SDLSKK_Context(self), Get_TTF_Font(font), color);
 
-  if( surface == NULL )
+  if(surface == NULL)
     return Qnil;
 
-  return Data_Wrap_Struct(cSurface,0,sdl_freeSurface,surface);  
+  return Surface_create(surface);
 }
 
-static VALUE skk_Context_render_str(VALUE obj,VALUE font,VALUE r,VALUE g,
-				    VALUE b)
+static VALUE Context_render_str(VALUE self, VALUE font,
+                                VALUE r, VALUE g, VALUE b)
+     
 {
-  return render_str(obj,font,r,g,b,SDLSKK_Context_render_display_str);
+  return render_str(self, font, r, g, b, SDLSKK_Context_render_display_str);
 }
 
-static VALUE skk_Context_render_minibuffer_str(VALUE obj,VALUE font,VALUE r,
-						VALUE g,VALUE b)
+static VALUE Context_render_minibuffer_str(VALUE self, VALUE font,
+                                           VALUE r, VALUE g,VALUE b)
 {
-  return render_str(obj,font,r,g,b,SDLSKK_Context_render_minibuffer_str);
+  return render_str(self, font, r, g, b, SDLSKK_Context_render_minibuffer_str);
 }
 
-static VALUE skk_Context_get_basic_mode(VALUE obj)
+static VALUE Context_get_basic_mode(VALUE self)
 {
-  SDLSKK_Context* context;
-  
-  Data_Get_Struct(obj,SDLSKK_Context,context);
-  return BOOL(SDLSKK_Context_get_basic_mode(context));
+  return INT2BOOL(SDLSKK_Context_get_basic_mode(Get_SDLSKK_Context(self)));
 }
 
-static VALUE skk_Context_clear(VALUE obj)
+static VALUE Context_clear(VALUE self)
 {
-  SDLSKK_Context* context;
-  
-  Data_Get_Struct(obj,SDLSKK_Context,context);
-  SDLSKK_Context_clear(context);
+  SDLSKK_Context_clear(Get_SDLSKK_Context(self));
   return Qnil;
 }
 
-static VALUE skk_Context_clear_text(VALUE obj)
+static VALUE Context_clear_text(VALUE self)
 {
-  SDLSKK_Context* context;
-  
-  Data_Get_Struct(obj,SDLSKK_Context,context);
-  SDLSKK_Context_clear_text(context);
+  SDLSKK_Context_clear_text(Get_SDLSKK_Context(self));
   return Qnil;
 }
 
-static VALUE skk_Dictionary_new(VALUE class)
+static VALUE Dictionary_s_new(VALUE klass)
 {
   SDLSKK_Dictionary* dict;
 
   dict = SDLSKK_Dict_new();
-  if( dict == NULL )
-    rb_raise(eSDLError,"Couldn't create SDL::SKK::Dictionary" );
+  if(dict == NULL)
+    rb_raise(eSDLError, "Couldn't create SDL::SKK::Dictionary");
   
-  return Data_Wrap_Struct(class,0,SDLSKK_Dict_delete,dict);
+  return Data_Wrap_Struct(klass, 0, SDLSKK_Dict_delete, dict);
 }
 
-static VALUE skk_Dict_load(VALUE obj,VALUE filename,VALUE users)
+static VALUE Dictionary_load(VALUE self, VALUE filename, VALUE users)
 {
-  SDLSKK_Dictionary* dict;
-
-  Data_Get_Struct(obj,SDLSKK_Dictionary,dict);
+  SDLSKK_Dictionary* dict = Get_SDLSKK_Dictionary(self);
+  rb_secure(4);
+  SafeStringValue(filename);
   
-  if( !SDLSKK_Dict_load(dict,GETCSTR(filename),RTEST(users)) )
-    rb_raise(eSDLError,"Couldn't load %s",GETCSTR(filename));
+  if(!SDLSKK_Dict_load(dict, RSTRING(filename)->ptr, RTEST(users)))
+    rb_raise(eSDLError, "Couldn't load %s", RSTRING(filename)->ptr);
 
   return Qnil;
 }
 
-static VALUE skk_Dict_save(VALUE obj, VALUE filename)
+static VALUE Dictionary_save(VALUE self, VALUE filename)
 {
-  SDLSKK_Dictionary* dict;
-
-  Data_Get_Struct(obj,SDLSKK_Dictionary,dict);
-
-  if( !SDLSKK_Dict_save_user_dict(dict,GETCSTR(filename)) )
-    rb_raise(eSDLError,"Couldn't save %s",GETCSTR(filename));
+  SDLSKK_Dictionary* dict = Get_SDLSKK_Dictionary(self);
+  rb_secure(4);
+  SafeStringValue(self);
   
+  if(!SDLSKK_Dict_save_user_dict(dict, RSTRING(filename)->ptr))
+    rb_raise(eSDLError, "Couldn't save %s", RSTRING(filename)->ptr);
   return Qnil;
 }
 
-static VALUE skk_RomKanaRuleTable_new(VALUE class,VALUE table_file)
+static VALUE RomKanaRuleTable_s_new(VALUE klass, VALUE table_file)
 {
   SDLSKK_RomKanaRuleTable* rule_table;
-
-  rule_table = SDLSKK_RomKanaRuleTable_new( GETCSTR(table_file) );
-
-  if( rule_table == NULL )
-    rb_raise(eSDLError,"Couldn't load %s",GETCSTR(table_file));
+  rb_secure(4);
+  SafeStringValue(table_file);
   
-  return Data_Wrap_Struct(class,0,SDLSKK_RomKanaRuleTable_delete,rule_table);
+  rule_table = SDLSKK_RomKanaRuleTable_new(RSTRING(table_file)->ptr);
+
+  if(rule_table == NULL)
+    rb_raise(eSDLError, "Couldn't load %s", RSTRING(table_file)->ptr);
+  
+  return Data_Wrap_Struct(klass, 0, SDLSKK_RomKanaRuleTable_delete, rule_table);
 }
 
-static VALUE skk_Keybind_new(VALUE class)
+static VALUE Keybind_s_new(VALUE klass)
 {
-  return Data_Wrap_Struct(class,0,SDLSKK_Keybind_delete,SDLSKK_Keybind_new());
+  return Data_Wrap_Struct(klass, 0, SDLSKK_Keybind_delete, SDLSKK_Keybind_new());
 }
 
-static VALUE skk_Keybind_set_key(VALUE obj,VALUE key_str,VALUE cmd_str)
+static VALUE Keybind_set_key(VALUE self, VALUE key_str, VALUE cmd_str)
 {
-  SDLSKK_Keybind* keybind;
-  
-  Data_Get_Struct(obj,SDLSKK_Keybind,keybind);
-  SDLSKK_Keybind_set_key(keybind,GETCSTR(key_str),GETCSTR(cmd_str));
+  SDLSKK_Keybind_set_key(Get_SDLSKK_Keybind(self),
+                         StringValuePtr(key_str),
+                         StringValuePtr(cmd_str));
   return Qnil;
 }
 
-static VALUE skk_Keybind_set_default_key(VALUE obj)
+static VALUE Keybind_set_default_key(VALUE self)
 {
-  SDLSKK_Keybind* keybind;
-  
-  Data_Get_Struct(obj,SDLSKK_Keybind,keybind);
-  SDLSKK_Keybind_set_default_key(keybind);
+  SDLSKK_Keybind_set_default_key(Get_SDLSKK_Keybind(self));
   return Qnil;
 }
 
-static VALUE skk_Keybind_unset_key(VALUE obj,VALUE key_str)
+static VALUE Keybind_unset_key(VALUE self, VALUE key_str)
 {
-  SDLSKK_Keybind* keybind;
-  
-  Data_Get_Struct(obj,SDLSKK_Keybind,keybind);
-  SDLSKK_Keybind_unset_key(keybind,GETCSTR(key_str));
+  SDLSKK_Keybind_unset_key(Get_SDLSKK_Keybind(self), StringValuePtr(key_str));
   return Qnil;
 }
 
-static void defineConstForSDLSKK(void)
+void rubysdl_init_SKK(VALUE mSDL)
 {
-  rb_define_const(mSDLSKK,"EUCJP",INT2NUM(SDLSKK_EUCJP));
-  rb_define_const(mSDLSKK,"UTF8",INT2NUM(SDLSKK_UTF8));
-  rb_define_const(mSDLSKK,"SJIS",INT2NUM(SDLSKK_SJIS));
-}
-
-void init_sdlskk(void)
-{
-  mSDLSKK = rb_define_module_under(mSDL,"SKK");
-  cContext = rb_define_class_under(mSDLSKK,"Context",rb_cObject);
-  cDictionary = rb_define_class_under(mSDLSKK,"Dictionary",rb_cObject);
-  cRomKanaRuleTable = rb_define_class_under(mSDLSKK,"RomKanaRuleTable",
+  VALUE mSDLSKK;
+  
+  cEvent = rb_const_get(mSDL,  rb_intern("Event"));
+  cKeyDownEvent = rb_const_get(cEvent,  rb_intern("KeyDown"));
+  
+  mSDLSKK = rb_define_module_under(mSDL, "SKK");
+  cContext = rb_define_class_under(mSDLSKK, "Context", rb_cObject);
+  cDictionary = rb_define_class_under(mSDLSKK, "Dictionary", rb_cObject);
+  cRomKanaRuleTable = rb_define_class_under(mSDLSKK, "RomKanaRuleTable", 
 					    rb_cObject);
-  cKeybind = rb_define_class_under(mSDLSKK,"Keybind",rb_cObject);
-  
-  rb_define_module_function(mSDLSKK,"encoding=",skk_set_encoding,1);
-  rb_define_module_function(mSDLSKK,"encoding",skk_get_encoding,0);
-  
-  rb_define_singleton_method(cContext,"new",skk_Context_new,4);
-  rb_define_method(cContext,"input",skk_Context_input_event,1);
-  rb_define_method(cContext,"str",skk_Context_get_str,0);
-  rb_define_method(cContext,"render_str",skk_Context_render_str,4);
-  rb_define_method(cContext,"render_minibuffer_str",skk_Context_render_minibuffer_str,4);
-  rb_define_method(cContext,"get_basic_mode",skk_Context_get_basic_mode,0);
-  rb_define_method(cContext,"clear",skk_Context_clear,0);
-  rb_define_method(cContext,"clear_text",skk_Context_clear_text,0);
-  
-  rb_define_singleton_method(cDictionary,"new",skk_Dictionary_new,0);
-  rb_define_method(cDictionary,"load",skk_Dict_load,2);
-  rb_define_method(cDictionary,"save",skk_Dict_save,1);
-  
-  rb_define_singleton_method(cRomKanaRuleTable,"new",
-			     skk_RomKanaRuleTable_new,1);
+  cKeybind = rb_define_class_under(mSDLSKK, "Keybind", rb_cObject);
 
-  rb_define_singleton_method(cKeybind,"new",skk_Keybind_new,0);
-  rb_define_method(cKeybind,"set_key",skk_Keybind_set_key,2);
-  rb_define_method(cKeybind,"set_default_key",skk_Keybind_set_default_key,0);
-  rb_define_method(cKeybind,"unset_key",skk_Keybind_unset_key,1);
+  rb_undef_alloc_func(cContext);
+  rb_undef_alloc_func(cDictionary);
+  rb_undef_alloc_func(cRomKanaRuleTable);
+  rb_undef_alloc_func(cKeybind);
+  
+  rb_define_module_function(mSDLSKK, "encoding=", SKK_set_encoding, 1);
+  rb_define_module_function(mSDLSKK, "encoding", SKK_get_encoding, 0);
+  
+  rb_define_singleton_method(cContext, "new", Context_s_new, 4);
+  rb_define_method(cContext, "input", Context_input, 1);
+  rb_define_method(cContext, "str", Context_str, 0);
+  rb_define_method(cContext, "render_str", Context_render_str, 4);
+  rb_define_method(cContext, "render_minibuffer_str",
+                   Context_render_minibuffer_str, 4);
+  rb_define_method(cContext, "get_basic_mode", Context_get_basic_mode, 0);
+  rb_define_method(cContext, "clear", Context_clear, 0);
+  rb_define_method(cContext, "clear_text", Context_clear_text, 0);
+  
+  rb_define_singleton_method(cDictionary, "new", Dictionary_s_new, 0);
+  rb_define_method(cDictionary, "load", Dictionary_load, 2);
+  rb_define_method(cDictionary, "save", Dictionary_save, 1);
+  
+  rb_define_singleton_method(cRomKanaRuleTable, "new", 
+			     RomKanaRuleTable_s_new, 1);
+
+  rb_define_singleton_method(cKeybind, "new", Keybind_s_new, 0);
+  rb_define_method(cKeybind, "set_key", Keybind_set_key, 2);
+  rb_define_method(cKeybind, "set_default_key", Keybind_set_default_key, 0);
+  rb_define_method(cKeybind, "unset_key", Keybind_unset_key, 1);
   
   SDLSKK_set_error_func(skk_error_handler);
+
   
-  defineConstForSDLSKK();
+  rb_define_const(mSDLSKK, "EUCJP", INT2NUM(SDLSKK_EUCJP));
+  rb_define_const(mSDLSKK, "UTF8", INT2NUM(SDLSKK_UTF8));
+  rb_define_const(mSDLSKK, "SJIS", INT2NUM(SDLSKK_SJIS));
+}
+#else /* HAVE_SDLSKK */
+#include "rubysdl.h"
+void rubysdl_init_SKK(VALUE mSDL)
+{
 }
 #endif /* HAVE_SDLSKK */

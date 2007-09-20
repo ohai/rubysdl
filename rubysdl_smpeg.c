@@ -25,319 +25,318 @@
 #include "SDL_mixer.h"
 #endif
 
+static VALUE cMPEG;
+static VALUE cMPEGInfo;
+
 static SMPEG_Filter* filters[3];
 #define NULL_FILTER 0
 #define BILINEAR_FILTER 1
 #define DEBLOCKING_FILTER 2
 #define NUM_FILTERS 3
 
-static void setInfoToSMPEGInfo(VALUE obj,SMPEG_Info info)
+typedef struct{
+  SMPEG* smpeg;
+  int audio_enable;
+}MPEG;
+
+DEFINE_GET_STRUCT(MPEG, Get_MPEG, cMPEG, "SDL::MPEG");
+
+static SMPEG* Get_SMPEG(VALUE self)
 {
-  rb_iv_set(obj,"@has_audio",BOOL(info.has_audio));
-  rb_iv_set(obj,"@has_video",BOOL(info.has_video));
-  rb_iv_set(obj,"@width",INT2NUM(info.width));
-  rb_iv_set(obj,"@height",INT2NUM(info.height));
-  rb_iv_set(obj,"@current_frame",INT2NUM(info.current_frame));
-  rb_iv_set(obj,"@current_fps",INT2NUM(info.current_fps));
-  rb_iv_set(obj,"@audio_string",rb_str_new2(info.audio_string));
-  rb_iv_set(obj,"@audio_current_frame",INT2NUM(info.audio_current_frame));
-  rb_iv_set(obj,"@current_offset",UINT2NUM(info.current_offset));
-  rb_iv_set(obj,"@total_size",UINT2NUM(info.total_size));
-  rb_iv_set(obj,"@current_time",UINT2NUM(info.current_time));
-  rb_iv_set(obj,"@total_time",UINT2NUM(info.total_time));
+  MPEG* mpeg = Get_MPEG(self);
+  if(mpeg->smpeg)
+    return mpeg->smpeg;
+  else
+    rb_raise(eSDLError, "MPEG is already deleted");
+  /* NOT REACHED */
 }
 
-static VALUE smpeg_load(VALUE class,VALUE filename)
+static void MPEG_free(MPEG* mpg)
 {
-  SMPEG *mpeg;
-  VALUE obj;
-  char error_msg[2048];
-    
-  mpeg = SMPEG_new(GETCSTR(filename),NULL,0);
-  if( SMPEG_error(mpeg) ){
-    snprintf(error_msg,sizeof(error_msg),"Couldn't load %s: %s",
-	     GETCSTR(filename),SMPEG_error(mpeg));
-    SMPEG_delete(mpeg);
-    rb_raise(eSDLError,"%s",error_msg);
-  }
+  if(!rubysdl_is_quit() && mpg->smpeg)
+    SMPEG_delete(mpg->smpeg);
+  free(mpg);
+}
 
-  obj = Data_Wrap_Struct(cMPEG,0,SMPEG_delete,mpeg);
-  rb_iv_set(obj,"enable_audio",Qtrue);
+static VALUE MPEG_s_alloc(VALUE klass)
+{
+  MPEG* mpg = ALLOC(MPEG);
+  mpg->smpeg = NULL;
+  mpg->audio_enable = 1;
+  return Data_Wrap_Struct(klass, 0, MPEG_free, mpg);
+}
+
+static VALUE MPEG_create(SMPEG* smpeg)
+{
+  VALUE newobj = MPEG_s_alloc(cMPEG);
+  Get_MPEG(newobj)->smpeg = smpeg;
+  return newobj;
+}
+
+static VALUE MPEG_delete(VALUE self)
+{
+  MPEG* mpg = Get_MPEG(self);
+  SMPEG_delete(mpg->smpeg);
+  mpg->smpeg = NULL;
+  return Qnil;
+}
+
+static VALUE MPEG_s_load(VALUE klass, VALUE filename)
+{
+  SMPEG *smpeg;
+  VALUE mpeg;
+  char error_msg[2048];
+  
+  rb_secure(4);
+  SafeStringValue(filename);
+  
+  smpeg = SMPEG_new(RSTRING(filename)->ptr, NULL, 0);
+  if( SMPEG_error(smpeg) ){
+    snprintf(error_msg, sizeof(error_msg), "Couldn't load %s: %s", 
+	     RSTRING(filename)->ptr, SMPEG_error(smpeg));
+    SMPEG_delete(smpeg);
+    rb_raise(eSDLError, "%s", error_msg);
+  }
+  return MPEG_create(smpeg);
+}
+
+static VALUE MPEGInfo_create(SMPEG_Info info)
+{
+  VALUE obj = rb_obj_alloc(cMPEGInfo);
+  
+  rb_iv_set(obj, "@has_audio", INT2BOOL(info.has_audio));
+  rb_iv_set(obj, "@has_video", INT2BOOL(info.has_video));
+  rb_iv_set(obj, "@width", INT2NUM(info.width));
+  rb_iv_set(obj, "@height", INT2NUM(info.height));
+  rb_iv_set(obj, "@current_frame", INT2NUM(info.current_frame));
+  rb_iv_set(obj, "@current_fps", INT2NUM(info.current_fps));
+  rb_iv_set(obj, "@audio_string", rb_str_new2(info.audio_string));
+  rb_iv_set(obj, "@audio_current_frame", INT2NUM(info.audio_current_frame));
+  rb_iv_set(obj, "@current_offset", UINT2NUM(info.current_offset));
+  rb_iv_set(obj, "@total_size", UINT2NUM(info.total_size));
+  rb_iv_set(obj, "@current_time", UINT2NUM(info.current_time));
+  rb_iv_set(obj, "@total_time", UINT2NUM(info.total_time));
   return obj;
 }
 
-static VALUE smpeg_getInfo(VALUE obj,VALUE infoObj)
+
+static VALUE MPEG_info(VALUE self)
 {
-  SMPEG *mpeg;
   SMPEG_Info info;
   
-  if( !rb_obj_is_kind_of(infoObj,cMPEGInfo) )
-    rb_raise(rb_eArgError,"type mismatch(expect SDL::MPEG::Info)");
-  Data_Get_Struct(obj,SMPEG,mpeg);
+  SMPEG_getinfo(Get_SMPEG(self), &info);
+  return MPEGInfo_create(info);
+}
 
-  SMPEG_getinfo(mpeg,&info);
-  setInfoToSMPEGInfo(infoObj,info);
-  
+static VALUE MPEG_enableAudio(VALUE self, VALUE enable)
+{
+  Get_MPEG(self)->audio_enable = RTEST(enable);
   return Qnil;
 }
 
-static VALUE smpeg_enableAudio(VALUE obj,VALUE enable)
+static VALUE MPEG_enableVideo(VALUE self, VALUE enable)
 {
-  SMPEG *mpeg;
-  Data_Get_Struct(obj,SMPEG,mpeg);
-  rb_iv_set(obj,"enable_audio",enable);
+  SMPEG_enablevideo(Get_SMPEG(self), RTEST(enable));
   return Qnil;
 }
 
-static VALUE smpeg_enableVideo(VALUE obj,VALUE enable)
+static VALUE MPEG_status(VALUE self)
 {
-  SMPEG *mpeg;
-  Data_Get_Struct(obj,SMPEG,mpeg);
-  SMPEG_enablevideo(mpeg,RTEST(enable));
+  return INT2FIX(SMPEG_status(Get_SMPEG(self)));
+}
+
+static VALUE MPEG_setVolume(VALUE self, VALUE volume)
+{
+  SMPEG_setvolume(Get_SMPEG(self), NUM2INT(volume));
   return Qnil;
 }
 
-static VALUE smpeg_status(VALUE obj)
+static VALUE MPEG_setDisplay(VALUE self, VALUE dst)
 {
-  SMPEG *mpeg;
-  Data_Get_Struct(obj,SMPEG,mpeg);
-  return INT2FIX(SMPEG_status(mpeg));
-}
-
-static VALUE smpeg_setVolume(VALUE obj,VALUE volume)
-{
-  SMPEG *mpeg;
-  Data_Get_Struct(obj,SMPEG,mpeg);
-  SMPEG_setvolume(mpeg,NUM2INT(volume));
+  SMPEG_setdisplay(Get_SMPEG(self),
+                   Get_SDL_Surface(dst), NULL, NULL);
+  rb_iv_set(self, "display", dst);
   return Qnil;
 }
 
-static VALUE smpeg_setDisplay(VALUE obj,VALUE dst)
+static VALUE MPEG_setLoop(VALUE self, VALUE repeat)
 {
-  SMPEG *mpeg;
-  SDL_Surface *surface;
-  if( !rb_obj_is_kind_of(dst,cSurface) )
-    rb_raise(rb_eArgError,"type mismatchi(expect Surface)");
-  
-  Data_Get_Struct(obj,SMPEG,mpeg);
-  Data_Get_Struct(dst,SDL_Surface,surface);
-
-  SMPEG_setdisplay(mpeg,surface,NULL,NULL);
-  rb_iv_set(obj,"surface",dst);
+  SMPEG_loop(Get_SMPEG(self), RTEST(repeat));
   return Qnil;
 }
 
-static VALUE smpeg_setLoop(VALUE obj,VALUE repeat)
+static VALUE MPEG_scaleXY(VALUE self, VALUE w, VALUE h)
 {
-  SMPEG *mpeg;
-  Data_Get_Struct(obj,SMPEG,mpeg);
-  SMPEG_loop(mpeg,RTEST(repeat));
+  SMPEG_scaleXY(Get_SMPEG(self), NUM2INT(w), NUM2INT(h));
   return Qnil;
 }
 
-static VALUE smpeg_scaleXY(VALUE obj,VALUE w,VALUE h)
+static VALUE MPEG_scale(VALUE self, VALUE scale)
 {
-  SMPEG *mpeg;
-  Data_Get_Struct(obj,SMPEG,mpeg);
-  SMPEG_scaleXY(mpeg,NUM2INT(w),NUM2INT(h));
+  SMPEG_scale(Get_SMPEG(self), NUM2INT(scale));
   return Qnil;
 }
 
-static VALUE smpeg_scale(VALUE obj,VALUE scale)
+static VALUE MPEG_move(VALUE self, VALUE x, VALUE y)
 {
-  SMPEG *mpeg;
-  Data_Get_Struct(obj,SMPEG,mpeg);
-  SMPEG_scale(mpeg,NUM2INT(scale));
+  SMPEG_move(Get_SMPEG(self), NUM2INT(x), NUM2INT(y));
   return Qnil;
 }
 
-static VALUE smpeg_move(VALUE obj,VALUE x,VALUE y)
-{
-  SMPEG *mpeg;
-  Data_Get_Struct(obj,SMPEG,mpeg);
-  SMPEG_move(mpeg,NUM2INT(x),NUM2INT(y));
-  return Qnil;
-}
-
-static VALUE smpeg_setDisplayRegion(VALUE obj,VALUE x,VALUE y,VALUE w,
+static VALUE MPEG_setDisplayRegion(VALUE self, VALUE x, VALUE y, VALUE w, 
 				    VALUE h)
 {
-  SMPEG *mpeg;
-  Data_Get_Struct(obj,SMPEG,mpeg);
-  SMPEG_setdisplayregion(mpeg,NUM2INT(x),NUM2INT(y),NUM2INT(w),NUM2INT(h));
+  SMPEG_setdisplayregion(Get_SMPEG(self), NUM2INT(x), NUM2INT(y),
+                         NUM2INT(w), NUM2INT(h));
   return Qnil;
 }
 
-static VALUE smpeg_play(VALUE obj)
+static VALUE MPEG_play(VALUE self)
 {
-  SMPEG *mpeg;
+  SMPEG *mpeg = Get_SMPEG(self);
   int use_audio;
   
-  Data_Get_Struct(obj,SMPEG,mpeg);
-
 #ifdef HAVE_SDL_MIXER
-  use_audio = RTEST(rb_iv_get(obj,"enable_audio")) &&
-    Mix_QuerySpec( NULL, NULL, NULL );
-
+  use_audio = Get_MPEG(self)->audio_enable && Mix_QuerySpec(NULL, NULL, NULL);
   if( use_audio ){
     SDL_AudioSpec audiofmt;
     Uint16 format;
-    int freq, channels;
+    int freq,  channels;
     
-    SMPEG_enableaudio(mpeg, 0);
+    SMPEG_enableaudio(mpeg,  0);
     /* Tell SMPEG what the audio format is */
-    Mix_QuerySpec(&freq, &format, &channels);
+    Mix_QuerySpec(&freq,  &format,  &channels);
     audiofmt.format = format;
     audiofmt.freq = freq;
     audiofmt.channels = channels;
-    SMPEG_actualSpec(mpeg, &audiofmt);
+    SMPEG_actualSpec(mpeg,  &audiofmt);
 
     /* Hook in the MPEG music mixer */
-    Mix_HookMusic(NULL,NULL);
-    Mix_HookMusic(SMPEG_playAudioSDL, mpeg);
-    SMPEG_enableaudio(mpeg, 1);
+    Mix_HookMusic(NULL, NULL);
+    Mix_HookMusic(SMPEG_playAudioSDL,  mpeg);
+    SMPEG_enableaudio(mpeg,  1);
   }
 #else
-  SMPEG_enableaudio(mpeg, RTEST(rb_iv_get(obj,"enable_audio")));
+  SMPEG_enableaudio(mpeg, Get_MPEG(self)->audio_enable);
 #endif
   
   SMPEG_play(mpeg);
   return Qnil;
 }
 
-static VALUE smpeg_pause(VALUE obj)
+static VALUE MPEG_pause(VALUE self)
 {
-  SMPEG *mpeg;
-  Data_Get_Struct(obj,SMPEG,mpeg);
-  SMPEG_pause(mpeg);
+  SMPEG_pause(Get_SMPEG(self));
   return Qnil;
 }
 
-static VALUE smpeg_stop(VALUE obj)
+static VALUE MPEG_stop(VALUE self)
 {
-  SMPEG *mpeg;
-  Data_Get_Struct(obj,SMPEG,mpeg);
-  SMPEG_stop(mpeg);
+  SMPEG_stop(Get_SMPEG(self));
 #ifdef HAVE_SDL_MIXER
   Mix_HookMusic(NULL,NULL);
 #endif
   return Qnil;
 }
 
-static VALUE smpeg_rewind(VALUE obj)
+static VALUE MPEG_rewind(VALUE self)
 {
-  SMPEG *mpeg;
-  Data_Get_Struct(obj,SMPEG,mpeg);
-  SMPEG_rewind(mpeg);
+  SMPEG_rewind(Get_SMPEG(self));
   return Qnil;
 }
 
-static VALUE smpeg_seek(VALUE obj,VALUE bytes)
+static VALUE MPEG_seek(VALUE self, VALUE bytes)
 {
-  SMPEG *mpeg;
-  Data_Get_Struct(obj,SMPEG,mpeg);
-  SMPEG_seek(mpeg,NUM2INT(bytes));
+  SMPEG_seek(Get_SMPEG(self), NUM2INT(bytes));
   return Qnil;
 }
 
-static VALUE smpeg_skip(VALUE obj,VALUE seconds)
+static VALUE MPEG_skip(VALUE self, VALUE seconds)
 {
-  SMPEG *mpeg;
-  Data_Get_Struct(obj,SMPEG,mpeg);
-  SMPEG_skip(mpeg,NUM2DBL(seconds));
+  SMPEG_skip(Get_SMPEG(self), NUM2DBL(seconds));
   return Qnil;
 }
 
-static VALUE smpeg_renderFrame(VALUE obj,VALUE framenum)
+static VALUE MPEG_renderFrame(VALUE self, VALUE framenum)
 {
-  SMPEG *mpeg;
-  Data_Get_Struct(obj,SMPEG,mpeg);
-  SMPEG_renderFrame(mpeg,NUM2INT(framenum));
+  SMPEG_renderFrame(Get_SMPEG(self), NUM2INT(framenum));
   return Qnil;
 }
 
-static VALUE smpeg_renderFinal(VALUE obj,VALUE dst, VALUE x, VALUE y)
+static VALUE MPEG_renderFinal(VALUE self, VALUE dst,
+                              VALUE x, VALUE y)
 {
-  SMPEG *mpeg;
-  SDL_Surface *surface;
-  if( !rb_obj_is_kind_of(dst,cSurface) )
-    rb_raise(rb_eArgError,"type mismatchi(expect Surface)");
-  
-  Data_Get_Struct(obj,SMPEG,mpeg);
-  Data_Get_Struct(dst,SDL_Surface,surface);
-  
-  SMPEG_renderFinal(mpeg, surface, NUM2INT(x), NUM2INT(y));
+  SMPEG_renderFinal(Get_SMPEG(self), Get_SDL_Surface(dst),
+                    NUM2INT(x), NUM2INT(y));
   return Qnil;
 }
-  
-static VALUE smpeg_setFilter(VALUE obj,VALUE filter)
+
+static VALUE MPEG_setFilter(VALUE self, VALUE filter)
 {
-  SMPEG *mpeg;
-  
-  Data_Get_Struct(obj,SMPEG,mpeg);
   if( (NUM2INT(filter)<0) || (NUM2INT(filter)>=NUM_FILTERS) )
-    rb_raise(eSDLError,"There isn't that filter");
-  SMPEG_filter(mpeg,filters[NUM2INT(filter)]);
+    rb_raise(eSDLError, "There isn't that filter");
+  SMPEG_filter(Get_SMPEG(self), filters[NUM2INT(filter)]);
   return Qnil;
 }
 
-static void defineConstForSMPEG()
+void rubysdl_init_MPEG(VALUE mSDL)
 {
-  rb_define_const(cMPEG,"ERROR",INT2FIX(SMPEG_ERROR));
-  rb_define_const(cMPEG,"STOPPED",INT2FIX(SMPEG_STOPPED));
-  rb_define_const(cMPEG,"PLAYING",INT2FIX(SMPEG_PLAYING));
-  rb_define_const(cMPEG,"NULL_FILTER",INT2FIX(NULL_FILTER));
-  rb_define_const(cMPEG,"BILINEAR_FILTER",INT2FIX(BILINEAR_FILTER));
-  rb_define_const(cMPEG,"DEBLOCKING_FILTER",INT2FIX(DEBLOCKING_FILTER));
-}
+  cMPEG = rb_define_class_under(mSDL, "MPEG", rb_cObject);
+  cMPEGInfo = rb_define_class_under(cMPEG, "Info", rb_cObject);
 
-void init_smpeg()
-{
-  cMPEG = rb_define_class_under(mSDL,"MPEG",rb_cObject);
-  cMPEGInfo = rb_define_class_under(cMPEG,"Info",rb_cObject);
-
+  rb_define_alloc_func(cMPEG, MPEG_s_alloc);
+  
   filters[NULL_FILTER] = SMPEGfilter_null();
   filters[BILINEAR_FILTER] = SMPEGfilter_bilinear();
   filters[DEBLOCKING_FILTER] = SMPEGfilter_deblocking();
-
-  defineConstForSMPEG();
   
-  rb_define_attr(cMPEGInfo,"has_audio",1,0);
-  rb_define_attr(cMPEGInfo,"has_video",1,0);
-  rb_define_attr(cMPEGInfo,"width",1,0);
-  rb_define_attr(cMPEGInfo,"height",1,0);
-  rb_define_attr(cMPEGInfo,"current_frame",1,0);
-  rb_define_attr(cMPEGInfo,"current_fps",1,0);
-  rb_define_attr(cMPEGInfo,"audio_string",1,0);
-  rb_define_attr(cMPEGInfo,"audio_current_frame",1,0);
-  rb_define_attr(cMPEGInfo,"current_offset",1,0);
-  rb_define_attr(cMPEGInfo,"total_size",1,0);
-  rb_define_attr(cMPEGInfo,"current_time",1,0);
-  rb_define_attr(cMPEGInfo,"total_time",1,0);
+  rb_define_attr(cMPEGInfo, "has_audio", 1, 0);
+  rb_define_attr(cMPEGInfo, "has_video", 1, 0);
+  rb_define_attr(cMPEGInfo, "width", 1, 0);
+  rb_define_attr(cMPEGInfo, "height", 1, 0);
+  rb_define_attr(cMPEGInfo, "current_frame", 1, 0);
+  rb_define_attr(cMPEGInfo, "current_fps", 1, 0);
+  rb_define_attr(cMPEGInfo, "audio_string", 1, 0);
+  rb_define_attr(cMPEGInfo, "audio_current_frame", 1, 0);
+  rb_define_attr(cMPEGInfo, "current_offset", 1, 0);
+  rb_define_attr(cMPEGInfo, "total_size", 1, 0);
+  rb_define_attr(cMPEGInfo, "current_time", 1, 0);
+  rb_define_attr(cMPEGInfo, "total_time", 1, 0);
 
-  rb_define_singleton_method(cMPEG,"load",smpeg_load,1);
-  rb_define_singleton_method(cMPEG,"new",smpeg_load,1);
+  rb_define_singleton_method(cMPEG, "load", MPEG_s_load, 1);
 
-  rb_define_method(cMPEG,"info",smpeg_getInfo,1);
-  rb_define_method(cMPEG,"enableAudio",smpeg_enableAudio,1);
-  rb_define_method(cMPEG,"enableVideo",smpeg_enableVideo,1);
-  rb_define_method(cMPEG,"status",smpeg_status,0);
-  rb_define_method(cMPEG,"setVolume",smpeg_setVolume,1);
-  rb_define_method(cMPEG,"setDisplay",smpeg_setDisplay,1);
-  rb_define_method(cMPEG,"setLoop",smpeg_setLoop,1);
-  rb_define_method(cMPEG,"scaleXY",smpeg_scaleXY,2);
-  rb_define_method(cMPEG,"scale",smpeg_scale,1);
-  rb_define_method(cMPEG,"move",smpeg_move,1);
-  rb_define_method(cMPEG,"setDisplayRegion",smpeg_setDisplayRegion,4);
-  rb_define_method(cMPEG,"play",smpeg_play,0);
-  rb_define_method(cMPEG,"pause",smpeg_pause,0);
-  rb_define_method(cMPEG,"stop",smpeg_stop,0);
-  rb_define_method(cMPEG,"rewind",smpeg_rewind,0);
-  rb_define_method(cMPEG,"seek",smpeg_seek,1);
-  rb_define_method(cMPEG,"skip",smpeg_skip,1);
-  rb_define_method(cMPEG,"renderFrame",smpeg_renderFrame,1);
-  rb_define_method(cMPEG,"renderFinal",smpeg_renderFinal,3);
-  rb_define_method(cMPEG,"setFilter",smpeg_setFilter,1);
-  
+  rb_define_method(cMPEG, "info", MPEG_info, 0);
+  rb_define_method(cMPEG, "delete", MPEG_delete, 0);
+  rb_define_method(cMPEG, "enableAudio", MPEG_enableAudio, 1);
+  rb_define_method(cMPEG, "enableVideo", MPEG_enableVideo, 1);
+  rb_define_method(cMPEG, "status", MPEG_status, 0);
+  rb_define_method(cMPEG, "setVolume", MPEG_setVolume, 1);
+  rb_define_method(cMPEG, "setDisplay", MPEG_setDisplay, 1);
+  rb_define_method(cMPEG, "setLoop", MPEG_setLoop, 1);
+  rb_define_method(cMPEG, "scaleXY", MPEG_scaleXY, 2);
+  rb_define_method(cMPEG, "scale", MPEG_scale, 1);
+  rb_define_method(cMPEG, "move", MPEG_move, 1);
+  rb_define_method(cMPEG, "setDisplayRegion", MPEG_setDisplayRegion, 4);
+  rb_define_method(cMPEG, "play", MPEG_play, 0);
+  rb_define_method(cMPEG, "pause", MPEG_pause, 0);
+  rb_define_method(cMPEG, "stop", MPEG_stop, 0);
+  rb_define_method(cMPEG, "rewind", MPEG_rewind, 0);
+  rb_define_method(cMPEG, "seek", MPEG_seek, 1);
+  rb_define_method(cMPEG, "skip", MPEG_skip, 1);
+  rb_define_method(cMPEG, "renderFrame", MPEG_renderFrame, 1);
+  rb_define_method(cMPEG, "renderFinal", MPEG_renderFinal, 3);
+  rb_define_method(cMPEG, "setFilter", MPEG_setFilter, 1);
+
+  rb_define_const(cMPEG, "ERROR", INT2FIX(SMPEG_ERROR));
+  rb_define_const(cMPEG, "STOPPED", INT2FIX(SMPEG_STOPPED));
+  rb_define_const(cMPEG, "PLAYING", INT2FIX(SMPEG_PLAYING));
+  rb_define_const(cMPEG, "NULL_FILTER", INT2FIX(NULL_FILTER));
+  rb_define_const(cMPEG, "BILINEAR_FILTER", INT2FIX(BILINEAR_FILTER));
+  rb_define_const(cMPEG, "DEBLOCKING_FILTER", INT2FIX(DEBLOCKING_FILTER));
+}
+#else
+#include "rubysdl.h"
+void rubysdl_init_MPEG(VALUE mSDL)
+{
 }
 #endif /* HAVE_SMPEG */

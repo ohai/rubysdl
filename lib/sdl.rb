@@ -17,60 +17,30 @@
 require 'sdl.so'
 require 'forwardable'
 
-if !defined?(block_given?) then
-  alias block_given? iterator?
-end
-
 module SDL
-  
-  VERSION = "1.3.1"
-
-  class PixelFormat
-
-    extend Forwardable
-    
-    def initialize(surface)
-      @surface = surface
-    end
-
-    def_delegators( :@surface, :mapRGB, :mapRGBA, :getRGB, :getRGBA, :bpp,
-		    :colorkey, :alpha )
-  end
+  VERSION = "1.4.0"
 
   class Surface
     def put(surface,x,y)
-      SDL::blitSurface(surface,0,0,surface.w,surface.h,self,x,y)
-    end
-
-    def format
-      return PixelFormat.new(self)
-    end
-
-    if method_defined?(:rotateScaledSurface) then
-      def rotateSurface(angle,bgcolor)
-	rotateScaledSurface(angle,1.0,bgcolor)
-      end
+      SDL::Surface.blit(surface,0,0,surface.w,surface.h,self,x,y)
     end
 
     def copyRect(x,y,w,h)
+      format = self.format
       flagbase=SDL::SWSURFACE|SDL::HWSURFACE|SDL::SRCCOLORKEY|SDL::SRCALPHA
       alpha_flag = self.flags & (SDL::SRCCOLORKEY|SDL::RLEACCEL)
-      self.setAlpha(0,self.alpha)
+      self.setAlpha(0,format.alpha)
       begin
         new_surface=Surface.new(flagbase&self.flags,w,h,self)
       ensure
-        self.setAlpha(alpha_flag,self.alpha)
+        self.setAlpha(alpha_flag,format.alpha)
       end
       SDL.blitSurface(self,x,y,w,h,new_surface,0,0)
       new_surface.setColorKey(self.flags & (SDL::SRCCOLORKEY|SDL::RLEACCEL),
-                              self.colorkey )
+                              format.colorkey )
       new_surface.setAlpha(self.flags & (SDL::SRCALPHA|SDL::RLEACCEL),
-                           self.alpha )
+                           format.alpha )
       return new_surface
-    end
-    
-    def self.blit(src, srcX, srcY, srcW, srcH, dst, dstX, dstY)
-      SDL.blitSurface(src, srcX, srcY, srcW, srcH, dst, dstX, dstY)
     end
     
     def self.new(*args)
@@ -83,12 +53,10 @@ module SDL
         raise ArgumentError,"must be SDL::Surface.new(flags,w,h,surface) or SDL::Surface.new(flags,w,h,depth,Rmask,Gmask,Bmask,Amask)"
       end
     end
+
+    
   end
 
-  class Screen
-    def self.open(*args); SDL.setVideoMode(*args) end
-  end
-  
   def color2int(color,format)
     case color
     when Integer
@@ -120,14 +88,14 @@ module SDL
       i=-1
       for y in 0..(bitmap.h-1)
 	for x in 0..(bitmap.w-1)
-	  if x%8 != 0 then
+	  if x%8 == 0 then
+            i+=1
+	    data[i]=mask[i]=0
+          else
 	    data[i] <<= 1
 	    mask[i] <<= 1
-	  else
-	    i+=1
-	    data[i]=mask[i]=0
 	  end
-	  
+
 	  case bitmap.getPixel(x,y)
 	  when white
 	    mask[i] |= 0x01
@@ -139,7 +107,6 @@ module SDL
 	  when inverted
 	    data[i] |= 0x01
 	  end
-
 	end
       end
 
@@ -148,6 +115,26 @@ module SDL
     
   end # of module Mouse
 
+  if defined?(CollisionMap)
+    def Surface.transformBlit(src, dst, angle, xscale, yscale,
+                              px, py, qx, qy, flags)
+      transformed = src.transformSurface(src.colorkey, angle,
+                                         xscale, yscale, flags)
+      transformed.setColorKey(src.flags & (SDL::SRCCOLORKEY|SDL::RLEACCEL),
+                              src.colorkey )
+      transformed.setAlpha(src.flags & (SDL::SRCALPHA|SDL::RLEACCEL),
+                           src.alpha )
+      rad = Math::PI*angle / 180.0
+      x = px - src.w/2.0 ; y = py - src.h/2.0
+        x *= xscale ; y *= yscale
+      dst_x = x*Math.cos(rad)-y*Math.sin(rad) 
+      dst_y = x*Math.sin(rad)+y*Math.cos(rad) 
+      dst_x += transformed.w / 2
+      dst_y += transformed.h / 2
+      Surface.blit(transformed, 0, 0, 0, 0, dst, qx-dst_x, qy-dst_y)
+    end
+  end
+  
   class CD
     def in_drive?
       status > 0
@@ -155,49 +142,6 @@ module SDL
   end
   
   module_function
-
-  if defined?(rotateXYScaled) then
-    def rotateScaled(src,dst,x,y,angle,scale)
-      rotateXYScaled(src,dst,x,y,angle,scale,scale)
-    end
-    def rotate(src,dst,x,y,angle)
-      rotateXYScaled(src,dst,x,y,angle,1,1)
-    end
-
-    def rotateBlit(src,dst,x,y,angle)
-      rotateScaledBlit(src,dst,x,y,angle,1)
-    end
-
-    def autoLock?
-      autoLock
-    end
-    
-    def autoLockON
-      self.autoLock = true
-    end
-    def autoLockOFF
-      self.autoLock =false
-    end
-  end
-
-  if defined?(transform) then
-    def transformBlit(src,dst,angle,xscale,yscale,px,py,qx,qy,flags)
-      transformed = src.transformSurface( src.colorkey, angle,
-					 xscale, yscale, flags )
-      transformed.setColorKey( src.flags & (SDL::SRCCOLORKEY|SDL::RLEACCEL),
-			      src.colorkey )
-      transformed.setAlpha( src.flags & (SDL::SRCALPHA|SDL::RLEACCEL),
-			    src.alpha )
-      rad = Math::PI*angle/180.0
-      x = px - src.w/2.0 ; y = py - src.h/2.0
-      x *= xscale ; y *= yscale
-      dst_x = x*Math.cos(rad)-y*Math.sin(rad) 
-      dst_y = x*Math.sin(rad)+y*Math.cos(rad) 
-      dst_x += transformed.w/2
-      dst_y += transformed.h/2
-      blitSurface( transformed, 0, 0, 0, 0, dst, qx-dst_x, qy-dst_y )
-    end      
-  end
 
   Rect = Struct.new( :x, :y, :w, :h )
   
@@ -211,7 +155,8 @@ module SDL
       return rect
     end
   end
-  
+
+  # FIX:
   def blitSurface2(src,srcRect,dst,dstRect)
     srcR = convertRect(srcRect)
     dstR = convertRect(dstRect)
@@ -246,7 +191,27 @@ module SDL
       end
     end
   end
-  
+  if defined?(TTF)
+    class TTF
+      def drawSolidUTF8(dst, text, x, y, r, g, b)
+        image = renderSolidUTF8(text, r, g, b)
+        dst.put(image, x, y)
+        image.destroy
+      end
+      
+      def drawBlendedUTF8(dst, text, x, y, r, g, b)
+        image = renderBlendedUTF8(text, r, g, b)
+        dst.put(image, x, y)
+        image.destroy
+      end
+      
+      def drawShadedUTF8(dst, text, fg_r, fg_g, fg_b, bg_r, bg_g, bg_b)
+        image = renderSolidUTF8(text, fg_r, fg_g, fg_b, bg_r, bg_g, bg_b)
+        dst.put(image, x, y)
+        image.destroy
+      end
+    end
+  end
 end
 
 if defined?(GL) then
@@ -269,3 +234,4 @@ if defined?(GL) then
 end
 
 require 'rubysdl_aliases.rb'
+require 'rubysdl_compatible_10.rb'

@@ -23,302 +23,234 @@
 
 typedef SDL_Surface* (*RenderFunc)(TTF_Font *,const char *,SDL_Color,SDL_Color);
 
-static int ttf_initialized=0;
-static int ttf_finalized=0;
+static int ttf_init = 0;
+static VALUE cTTFFont = Qnil;
 
-static void ttf_closeFont(TTF_Font *font)
+static void Font_free(TTF_Font *font)
 {
-  if( !ttf_finalized )
+  if(!rubysdl_is_quit())
     TTF_CloseFont(font);
 }
-static VALUE sdl_ttf_init(VALUE class)
+
+GLOBAL_DEFINE_GET_STRUCT(TTF_Font, Get_TTF_Font, cTTFFont, "SDL::TT::Font");
+
+static VALUE TTF_s_init(VALUE klass)
 {
-  if( TTF_Init()== -1 )
+  rb_secure(4);
+  if(TTF_Init() == -1)
     rb_raise(eSDLError,"Couldn't initialize TTF engine: %s",TTF_GetError());
-  ttf_initialized=1;
+  ttf_init = 1;
   return Qnil;
 }
-static VALUE sdl_ttf_wasInit(VALUE class)
+
+static VALUE TTF_s_init_p(VALUE class)
 {
-  return BOOL(TTF_WasInit());
+  return INT2BOOL(TTF_WasInit());
 }
 
-static VALUE sdl_ttf_open(int argc, VALUE *argv, VALUE class)
+static VALUE Font_s_open(int argc, VALUE *argv, VALUE class)
 {
   TTF_Font *font;
   VALUE filename, size, index;
+  
+  rb_secure(4);
   rb_scan_args( argc, argv, "21", &filename, &size, &index );
-  if( NIL_P(index) )
-    font=TTF_OpenFont( GETCSTR(filename),NUM2INT(size) );
+  
+  SafeStringValue(filename);
+  
+  if(NIL_P(index))
+    font = TTF_OpenFont(RSTRING(filename)->ptr, NUM2INT(size));
   else
-#ifdef HAVE_TTF_OPENFONTINDEX
-    font=TTF_OpenFontIndex( GETCSTR(filename),NUM2INT(size),NUM2INT(index) );
-#else
-    if( index != 0)
-      rb_raise(rb_eRuntimeError,"Not supported for selecting indivisual font face by SDL_ttf. The feature is in SDL_ttf 2.0.4 or later.");
-    else
-      font=TTF_OpenFont( GETCSTR(filename),NUM2INT(size) );
-#endif
-  if( font==NULL )
-    rb_raise(eSDLError,"Couldn't open font %s: %s",GETCSTR(filename),
-	     TTF_GetError());
-  return Data_Wrap_Struct(class,0,ttf_closeFont,font);
+    font = TTF_OpenFontIndex(RSTRING(filename)->ptr,
+                             NUM2INT(size), NUM2INT(index));
+  
+  if(font == NULL)
+    rb_raise(eSDLError,"Couldn't open font %s: %s",
+             RSTRING(filename)->ptr, TTF_GetError());
+  return Data_Wrap_Struct(class, 0, Font_free, font);
 }
-static VALUE sdl_ttf_getFontStyle(VALUE obj)
+
+static VALUE Font_style(VALUE self)
 {
-  TTF_Font *font;
-  Data_Get_Struct(obj,TTF_Font,font);
-  return INT2FIX( TTF_GetFontStyle(font) );
+  return INT2FIX(TTF_GetFontStyle(Get_TTF_Font(self)));
 }
-static VALUE sdl_ttf_setFontStyle(VALUE obj,VALUE style)
+
+static VALUE Font_set_style(VALUE self, VALUE style)
 {
-  TTF_Font *font;
-  Data_Get_Struct(obj,TTF_Font,font);
-  TTF_SetFontStyle(font,NUM2UINT(style));
+  TTF_SetFontStyle(Get_TTF_Font(self), NUM2UINT(style));
   return Qnil;
 }
-static VALUE sdl_ttf_getFontFaces(VALUE obj)
+
+static VALUE Font_faces(VALUE self)
 {
-#ifdef TTF_FONTFACES
-  TTF_Font *font;
-  Data_Get_Struct(obj,TTF_Font,font);
-  return UINT2NUM( TTF_FontFaces(font) );
-#else
-  rb_raise(rb_eRuntimeError,"Not supported. The feature is in SDL_ttf 2.0.4 or later.");
-#endif
+  return UINT2NUM(TTF_FontFaces(Get_TTF_Font(self)));
 }
-static VALUE sdl_ttf_FontFaceIsFixedWidth(VALUE obj)
+
+static VALUE Font_fixedWidth_p(VALUE self)
 {
-#ifdef TTF_FONTISFIXEDWIDTH
-  TTF_Font *font;
-  Data_Get_Struct(obj,TTF_Font,font);
-  if( TTF_FontFaceIsFixedWidth(font) )
-    return Qtrue;
+  return INT2BOOL(TTF_FontFaceIsFixedWidth(Get_TTF_Font(self)));
+}
+
+static VALUE string_or_nil(char* str)
+{
+  if (str)
+    return rb_str_new2(str);
   else
-    return Qfalse;
-#else
-  rb_raise(rb_eRuntimeError,"Not supported. The feature is in SDL_ttf 2.0.4 or later.");
-#endif
-}
-static VALUE sdl_ttf_FontFaceFamilyName(VALUE obj)
-{
-#ifdef TTF_FONTFACEFAMILYNAME
-  TTF_Font *font;
-  char* name;
-  
-  Data_Get_Struct(obj,TTF_Font,font);
-  name = TTF_FontFaceFamilyName(font);
-  if(name == NULL)
     return Qnil;
-  else
-    return rb_str_new2(name);
-#else
-  rb_raise(rb_eRuntimeError,"Not supported. The feature is in SDL_ttf 2.0.4 or later.");
-#endif
 }
-static VALUE sdl_ttf_FontFaceStyleName(VALUE obj)
+
+static VALUE Font_familyName(VALUE self)
 {
-#ifdef TTF_FONTFACESTYLENAME
-  TTF_Font *font;
-  char* name;
-  
-  Data_Get_Struct(obj,TTF_Font,font);
-  name = TTF_FontFaceStyleName(font);
-  if(name == NULL)
-    return Qnil;
-  else
-    return rb_str_new2( (const char *) );
-#else
-  rb_raise(rb_eRuntimeError,"Not supported. The feature is in SDL_ttf 2.0.4 or later.");
-#endif
+  return string_or_nil(TTF_FontFaceFamilyName(Get_TTF_Font(self)));
 }
-static VALUE sdl_ttf_sizeText(VALUE obj,VALUE text)
+
+static VALUE Font_styleName(VALUE self)
 {
-  TTF_Font *font;
+  return string_or_nil(TTF_FontFaceStyleName(Get_TTF_Font(self)));
+}
+
+static VALUE Font_textSize(VALUE self, VALUE text)
+{
   int w,h;
-  Data_Get_Struct(obj,TTF_Font,font);
-  TTF_SizeUTF8(font,GETCSTR(text),&w,&h);
-  return rb_ary_new3(2,INT2FIX(w),INT2FIX(h));
-}
-
-static VALUE sdl_ttf_fontHeight(VALUE obj)
-{
-  TTF_Font *font;
-  Data_Get_Struct(obj,TTF_Font,font);
-  return INT2FIX(TTF_FontHeight(font));
-}
-
-static VALUE sdl_ttf_fontAscent(VALUE obj)
-{
-  TTF_Font *font;
-  Data_Get_Struct(obj,TTF_Font,font);
-  return INT2FIX(TTF_FontAscent(font));
-}
-
-static VALUE sdl_ttf_fontDescent(VALUE obj)
-{
-  TTF_Font *font;
-  Data_Get_Struct(obj,TTF_Font,font);
-  return INT2FIX(TTF_FontDescent(font));
-}
-
-static VALUE sdl_ttf_fontLineSkip(VALUE obj)
-{
-  TTF_Font *font;
-  Data_Get_Struct(obj,TTF_Font,font);
-  return INT2FIX(TTF_FontLineSkip(font));
-}
-
-static VALUE ttf_draw(VALUE obj,VALUE dest,VALUE text,VALUE x,
-		      VALUE y,VALUE fgr,VALUE fgg,VALUE fgb,
-		      VALUE bgr,VALUE bgg,VALUE bgb,RenderFunc render)
-{
-  TTF_Font *font;
-  SDL_Surface *destSurface, *tmpSurface;
-  SDL_Color fg,bg;
-  SDL_Rect destRect;
-  int result;
-  char *ctext=GETCSTR(text);
-  /* If text=="" , TTF_RenderUTF8_Solid() and etc fail to render */
-  if( ctext[0]=='\0' )return INT2FIX(0);
   
-  if( !rb_obj_is_kind_of( dest,cSurface ) )
-    rb_raise( rb_eArgError,"type mismatch(expect Surface)");
-  Data_Get_Struct(obj,TTF_Font,font);
-  Data_Get_Struct(dest,SDL_Surface,destSurface);
-  fg.r=NUM2UINT(fgr); fg.g=NUM2UINT(fgg); fg.b=NUM2UINT(fgb);
-  bg.r=NUM2UINT(bgr); bg.g=NUM2UINT(bgg); bg.b=NUM2UINT(bgb);
-  SetRect(destRect,x,y,1,1);
-  
-  tmpSurface=render(font,ctext,fg,bg);
-  if( tmpSurface==NULL )
-    rb_raise(eSDLError,"Text Render fail: %s",TTF_GetError());
-  
-  result=SDL_BlitSurface(tmpSurface,NULL,destSurface,&destRect);
-  SDL_FreeSurface(tmpSurface);
-  if( result == -1 ){
-    rb_raise(eSDLError,"SDL_BlitSurface fail: %s",SDL_GetError());
-  }
-  return INT2NUM(result);
+  StringValue(text);
+  TTF_SizeUTF8(Get_TTF_Font(self), RSTRING(text)->ptr, &w, &h);
+  return rb_ary_new3(2, INT2FIX(w), INT2FIX(h));
 }
 
+static VALUE Font_height(VALUE self)
+{
+  return INT2FIX(TTF_FontHeight(Get_TTF_Font(self)));
+}
 
-static SDL_Surface* ttf_wrap_RenderUTF8_Solid(TTF_Font *font,
-					      const char *text,
-					      SDL_Color fg,
-					      SDL_Color bg)
+static VALUE Font_ascent(VALUE self)
+{
+  return INT2FIX(TTF_FontAscent(Get_TTF_Font(self)));
+}
+
+static VALUE Font_descent(VALUE self)
+{
+  return INT2FIX(TTF_FontDescent(Get_TTF_Font(self)));
+}
+
+static VALUE Font_lineSkip(VALUE self)
+{
+  return INT2FIX(TTF_FontLineSkip(Get_TTF_Font(self)));
+}
+
+static SDL_Color rgb_to_SDL_Color(VALUE r, VALUE g, VALUE b)
+{
+  SDL_Color color;
+  color.r = NUM2UINT(r);
+  color.g = NUM2UINT(g);
+  color.b = NUM2UINT(b);
+  color.unused = 0;
+  return color;
+}
+
+static VALUE render(VALUE self, VALUE text,
+                    VALUE fgr,VALUE fgg,VALUE fgb,
+                    VALUE bgr,VALUE bgg,VALUE bgb,
+                    RenderFunc renderer)
+{
+  SDL_Surface *surface;
+  
+  rb_secure(4);
+  StringValue(text);
+
+  surface = renderer(Get_TTF_Font(self),
+                     RSTRING(text)->ptr,
+                     rgb_to_SDL_Color(fgr, fgg, fgb),
+                     rgb_to_SDL_Color(bgr, bgg, bgb));
+  
+  if(surface == NULL)
+    return Qnil;
+
+  return Surface_create(surface);
+}
+
+static SDL_Surface* wrap_RenderUTF8_Solid(TTF_Font *font,
+                                          const char *text,
+                                          SDL_Color fg,
+                                          SDL_Color bg)
 {
   return TTF_RenderUTF8_Solid(font,text,fg);
 }
 
-static VALUE sdl_ttf_drawSolidUTF8(VALUE obj,VALUE dest,VALUE text,VALUE x,
-				   VALUE y,VALUE r,VALUE g,VALUE b)
-{
-  return ttf_draw(obj,dest,text,x,y,r,g,b,1,1,1,ttf_wrap_RenderUTF8_Solid);
-}
-static SDL_Surface* ttf_wrap_RenderUTF8_Blended(TTF_Font *font,
-						const char *text,
-						SDL_Color fg,
-						SDL_Color bg)
+static SDL_Surface* wrap_RenderUTF8_Blended(TTF_Font *font,
+                                            const char *text,
+                                            SDL_Color fg,
+                                            SDL_Color bg)
 {
   return TTF_RenderUTF8_Blended(font,text,fg);
 }
 
-static VALUE sdl_ttf_drawBlendedUTF8(VALUE obj,VALUE dest,VALUE text,VALUE x,
-				   VALUE y,VALUE r,VALUE g,VALUE b)
+
+/* 1 is ruby's zero */
+static VALUE Font_renderSolidUTF8(VALUE self, VALUE text,
+                                  VALUE r, VALUE g, VALUE b)
+				     
 {
-  return ttf_draw(obj,dest,text,x,y,r,g,b,1,1,1,ttf_wrap_RenderUTF8_Blended);
+  return render(self, text, r, g, b, 1, 1, 1,wrap_RenderUTF8_Solid);
 }
 
-static VALUE sdl_ttf_drawShadedUTF8(VALUE obj,VALUE dest, VALUE text,VALUE x,
-				    VALUE y,VALUE fgr,VALUE fgg,VALUE fgb,
-				    VALUE bgr,VALUE bgg,VALUE bgb)
+static VALUE Font_renderBlendedUTF8(VALUE self, VALUE text,
+                                    VALUE r, VALUE g, VALUE b)
+				     
 {
-  return ttf_draw(obj,dest,text,x,y,fgr,fgg,fgb,bgr,bgg,bgb,
-		  TTF_RenderUTF8_Shaded);
+  return render(self, text, r, g, b, 1, 1, 1, wrap_RenderUTF8_Blended);
 }
 
-static VALUE ttf_render(VALUE obj,VALUE text,VALUE fgr,VALUE fgg,VALUE fgb,
-			VALUE bgr,VALUE bgg,VALUE bgb,RenderFunc render)
-{
-  TTF_Font *font;
-  SDL_Surface *surface;
-  SDL_Color fg,bg;
-  
-  Data_Get_Struct(obj,TTF_Font,font);
-  fg.r=NUM2UINT(fgr); fg.g=NUM2UINT(fgg); fg.b=NUM2UINT(fgb);
-  bg.r=NUM2UINT(bgr); bg.g=NUM2UINT(bgg); bg.b=NUM2UINT(bgb);
-  
-  surface = render( font, GETCSTR(text), fg, bg );
-
-  if( surface == NULL )
-    return Qnil;
-
-  return Data_Wrap_Struct(cSurface,0,sdl_freeSurface,surface);
-}
-
-static VALUE sdl_ttf_renderSolidUTF8(VALUE obj,VALUE text,VALUE r,
-				     VALUE g,VALUE b)
-{
-  return ttf_render(obj,text,r,g,b,1,1,1,ttf_wrap_RenderUTF8_Solid);
-}
-
-static VALUE sdl_ttf_renderBlendedUTF8(VALUE obj,VALUE text,VALUE r,
-				     VALUE g,VALUE b)
-{
-  return ttf_render(obj,text,r,g,b,1,1,1,ttf_wrap_RenderUTF8_Blended);
-}
-
-static VALUE sdl_ttf_renderShadedUTF8(VALUE obj,VALUE text,
+static VALUE Font_renderShadedUTF8(VALUE self, VALUE text,
 				      VALUE fgr,VALUE fgg,VALUE fgb,
 				      VALUE bgr,VALUE bgg,VALUE bgb)
 {
-  return ttf_render(obj,text,fgr,fgg,fgb,bgr,bgg,bgb,TTF_RenderUTF8_Shaded);
+  return render(self, text, fgr, fgg, fgb, bgr, bgg, bgb, TTF_RenderUTF8_Shaded);
 }
 
-static void defineConstForTTF()
+void rubysdl_init_TTF(VALUE mSDL)
 {
-  rb_define_const(cTTF,"STYLE_NORMAL",UINT2NUM(TTF_STYLE_NORMAL));
-  rb_define_const(cTTF,"STYLE_BOLD",UINT2NUM(TTF_STYLE_BOLD));
-  rb_define_const(cTTF,"STYLE_ITALIC",UINT2NUM(TTF_STYLE_ITALIC));
-  rb_define_const(cTTF,"STYLE_UNDERLINE",UINT2NUM(TTF_STYLE_UNDERLINE));
-}
-void init_ttf()
-{
-  cTTF=rb_define_class_under(mSDL,"TTF",rb_cObject);
-  rb_define_singleton_method(cTTF,"init",sdl_ttf_init,0);
-  rb_define_singleton_method(cTTF,"init?",sdl_ttf_wasInit,0);
-  rb_define_singleton_method(cTTF,"open",sdl_ttf_open,-1);
+  cTTFFont = rb_define_class_under(mSDL, "TTF", rb_cObject);
+                                         
+  rb_undef_alloc_func(cTTFFont);
   
-  rb_define_method(cTTF,"style",sdl_ttf_getFontStyle,0);
-  rb_define_method(cTTF,"style=",sdl_ttf_setFontStyle,1);
-  rb_define_method(cTTF,"textSize",sdl_ttf_sizeText,1);
-  rb_define_method(cTTF,"faces",sdl_ttf_getFontFaces,0);
-  rb_define_method(cTTF,"fixedWidth?",sdl_ttf_FontFaceIsFixedWidth,0);
-  rb_define_method(cTTF,"familyName",sdl_ttf_FontFaceFamilyName,0);
-  rb_define_method(cTTF,"styleName",sdl_ttf_FontFaceStyleName,0);
+  rb_define_singleton_method(cTTFFont,"init",TTF_s_init,0);
+  rb_define_singleton_method(cTTFFont,"init?", TTF_s_init_p,0);
+  rb_define_singleton_method(cTTFFont,"open",Font_s_open,-1);
+  
+  rb_define_method(cTTFFont,"style",Font_style,0);
+  rb_define_method(cTTFFont,"style=",Font_set_style,1);
+  rb_define_method(cTTFFont,"textSize",Font_textSize,1);
+  rb_define_method(cTTFFont,"faces",Font_faces,0);
+  rb_define_method(cTTFFont,"fixedWidth?",Font_fixedWidth_p,0);
+  rb_define_method(cTTFFont,"familyName",Font_familyName,0);
+  rb_define_method(cTTFFont,"styleName",Font_styleName,0);
 
-  rb_define_method(cTTF,"height",sdl_ttf_fontHeight,0);
-  rb_define_method(cTTF,"ascent",sdl_ttf_fontAscent,0);
-  rb_define_method(cTTF,"descent",sdl_ttf_fontDescent,0);
-  rb_define_method(cTTF,"lineSkip",sdl_ttf_fontLineSkip,0);
+  rb_define_method(cTTFFont,"height",Font_height,0);
+  rb_define_method(cTTFFont,"ascent",Font_ascent,0);
+  rb_define_method(cTTFFont,"descent",Font_descent,0);
+  rb_define_method(cTTFFont,"lineSkip",Font_lineSkip,0);
   
-  rb_define_method(cTTF,"drawSolidUTF8",sdl_ttf_drawSolidUTF8,7);
-  rb_define_method(cTTF,"drawBlendedUTF8",sdl_ttf_drawBlendedUTF8,7);
-  rb_define_method(cTTF,"drawShadedUTF8",sdl_ttf_drawShadedUTF8,10);
+  rb_define_method(cTTFFont,"renderSolidUTF8",Font_renderSolidUTF8,4);
+  rb_define_method(cTTFFont,"renderBlendedUTF8",Font_renderBlendedUTF8,4);
+  rb_define_method(cTTFFont,"renderShadedUTF8",Font_renderShadedUTF8,7);
 
-  rb_define_method(cTTF,"renderSolidUTF8",sdl_ttf_renderSolidUTF8,4);
-  rb_define_method(cTTF,"renderBlendedUTF8",sdl_ttf_renderBlendedUTF8,4);
-  rb_define_method(cTTF,"renderShadedUTF8",sdl_ttf_renderShadedUTF8,7);
-  
-  defineConstForTTF();
+  rb_define_const(cTTFFont,"STYLE_NORMAL",UINT2NUM(TTF_STYLE_NORMAL));
+  rb_define_const(cTTFFont,"STYLE_BOLD",UINT2NUM(TTF_STYLE_BOLD));
+  rb_define_const(cTTFFont,"STYLE_ITALIC",UINT2NUM(TTF_STYLE_ITALIC));
+  rb_define_const(cTTFFont,"STYLE_UNDERLINE",UINT2NUM(TTF_STYLE_UNDERLINE));
 }
-void quit_ttf()
+
+void rubysdl_quit_TTF(void)
 {
-  if(ttf_initialized){
+  if(ttf_init)
     TTF_Quit();
-    ttf_finalized=1;
-  }
 }
-
+#else /* HAVE_SDL_TTF */
+void rubysdl_init_TTF(void)
+{
+}
+void rubysdl_quit_TTF(void)
+{
+}
 #endif /* HAVE_SDL_TTF */

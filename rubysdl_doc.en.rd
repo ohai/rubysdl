@@ -1572,10 +1572,10 @@ Object
 === class method
 
 --- SDL::Joystick.pall
-      Return whether Joystick.updateAll is called automatically.
+      Return whether ((<SDL::Joystick.updateAll>)) is called automatically.
       
 --- SDL::JoyStick.pall=(polling)
-      Set whether Joystick.updateAll is called automatically and
+      Set whether ((<SDL::Joystick.updateAll>)) is called automatically and
       whether joystick events are processed.
       Default is true, and you shouldn't change.
 
@@ -1599,6 +1599,7 @@ Object
 
 --- SDL::Joystick.updateAll
 --- SDL::Joystick.update_all
+--- SDL::Joystick.update
       Updates the state(position, buttons, etc.) of all open joysticks.
 
 === method

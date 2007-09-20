@@ -21,115 +21,101 @@
 #include "SDL_kanji.h"
 #include "rubysdl.h"
 
-static VALUE cKanji;
+static VALUE cKanjiFont;
+typedef int (*Drawer)(Kanji_Font*, int, int, SDL_Surface*, const char*, SDL_Color);
 
-static VALUE kanji_open(VALUE obj,VALUE filename,VALUE size)
+DEFINE_GET_STRUCT(Kanji_Font, Get_Kanji_Font, cKanjiFont, "SDL::Kanji::Font");
+     
+static VALUE Font_s_open(VALUE klass, VALUE filename, VALUE size)
 {
   Kanji_Font* font;
 
-  font = Kanji_OpenFont(GETCSTR(filename),NUM2INT(size));
-  if( font == NULL )
-    rb_raise(eSDLError,"Couldn't open bdf font: %s",GETCSTR(filename));
-  return Data_Wrap_Struct(cKanji,0,Kanji_CloseFont,font);
+  rb_secure(4);
+  SafeStringValue(filename);
+  
+  font = Kanji_OpenFont(RSTRING(filename)->ptr, NUM2INT(size));
+  if(font == NULL)
+    rb_raise(eSDLError,"Couldn't open bdf font: %s", RSTRING(filename)->ptr);
+  return Data_Wrap_Struct(cKanjiFont, 0, Kanji_CloseFont, font);
 }
 
-static VALUE kanji_setCodingSystem(VALUE obj,VALUE sys)
+static VALUE Font_setCodingSystem(VALUE self, VALUE sys)
 {
-  Kanji_Font* font;
-
-  Data_Get_Struct(obj,Kanji_Font,font);
-  
-  Kanji_SetCodingSystem(font,NUM2INT(sys));
+  Kanji_SetCodingSystem(Get_Kanji_Font(self), NUM2INT(sys));
   return Qnil;
 }
                         
-static VALUE kanji_addFont(VALUE obj, VALUE filename)
+static VALUE Font_add(VALUE self, VALUE filename)
 {
-  Kanji_Font* font;
-
-  Data_Get_Struct(obj,Kanji_Font,font);
-  if( Kanji_AddFont(font,GETCSTR(filename)) == -1)
-    rb_raise(eSDLError,"Couldn't use font: %s",GETCSTR(filename));
+  rb_secure(4);
+  SafeStringValue(filename);
+  if(Kanji_AddFont(Get_Kanji_Font(self), RSTRING(filename)->ptr) == -1)
+    rb_raise(eSDLError, "Couldn't use font: %s", RSTRING(filename)->ptr);
   return Qnil;
 }
 
-static VALUE kanji_textwidth(VALUE obj,VALUE text)
+static VALUE Font_textwidth(VALUE self, VALUE text)
 {
-  Kanji_Font* font;
-
-  Data_Get_Struct(obj,Kanji_Font,font);
-  return INT2FIX(Kanji_FontWidth(font,GETCSTR(text)));
+  StringValue(text);
+  return INT2FIX(Kanji_FontWidth(Get_Kanji_Font(self), RSTRING(text)->ptr));
 }
 
-static VALUE kanji_width(VALUE obj)
+static VALUE Font_width(VALUE self)
 {
-  Kanji_Font* font;
-
-  Data_Get_Struct(obj,Kanji_Font,font);
-  return INT2FIX(Kanji_FontWidth(font,NULL));
+  return INT2FIX(Kanji_FontWidth(Get_Kanji_Font(self), NULL));
 }
 
-static VALUE kanji_height(VALUE obj)
+static VALUE Font_height(VALUE self)
 {
-  Kanji_Font* font;
-   
-  Data_Get_Struct(obj,Kanji_Font,font);
-  return INT2FIX(Kanji_FontHeight(font));
+  return INT2FIX(Kanji_FontHeight(Get_Kanji_Font(self)));
 }
 
-static VALUE kanji_putText(VALUE obj,VALUE surface,VALUE text,VALUE x,VALUE y,
-                           VALUE r, VALUE g, VALUE b)
+static void Font_put(VALUE self, VALUE surface, VALUE text,
+                     VALUE x, VALUE y,
+                     VALUE r, VALUE g, VALUE b, Drawer draw)
 {
-  Kanji_Font* font;
-  SDL_Surface* target;
   SDL_Color color;
-  
-  if(!rb_obj_is_kind_of(surface,cSurface))
-    rb_raise( rb_eArgError,"type mismatch(expect Surface)" );
-  
-  Data_Get_Struct(obj,Kanji_Font,font);
-  Data_Get_Struct(surface,SDL_Surface,target);
 
-  color.r = NUM2INT(r);color.g = NUM2INT(g); color.b = NUM2INT(b);
-  Kanji_PutText(font,NUM2INT(x),NUM2INT(y),target,GETCSTR(text),
-                color);
-  return Qnil;
-}
-
-static VALUE kanji_putTextTate(VALUE obj,VALUE surface,VALUE text,VALUE x,VALUE y,
-                               VALUE r, VALUE g, VALUE b)
-{
-  Kanji_Font* font;
-  SDL_Surface* target;
-  SDL_Color color;
+  rb_secure(4);
+  SafeStringValue(text);
   
-  if(!rb_obj_is_kind_of(surface,cSurface))
-    rb_raise( rb_eArgError,"type mismatch(expect Surface)" );
-  
-  Data_Get_Struct(obj,Kanji_Font,font);
-  Data_Get_Struct(surface,SDL_Surface,target);
-
   color.r = NUM2INT(r);color.g = NUM2INT(g); color.b = NUM2INT(b);
   
-  Kanji_PutTextTate(font,NUM2INT(x),NUM2INT(y),target,GETCSTR(text),
-                    color);
+  draw(Get_Kanji_Font(self), NUM2INT(x), NUM2INT(y),
+       Get_SDL_Surface(surface), RSTRING(text)->ptr, color);
+}
+  
+static VALUE Font_putText(VALUE self, VALUE surface, VALUE text,
+                          VALUE x, VALUE y,
+                          VALUE r, VALUE g, VALUE b)
+{
+  Font_put(self, surface, text, x, y, r, g, b, Kanji_PutText);
   return Qnil;
 }
 
-void init_kanji(void)
+static VALUE Font_putTextTate(VALUE self, VALUE surface, VALUE text,
+                              VALUE x, VALUE y,
+                              VALUE r, VALUE g, VALUE b)
 {
-  cKanji = rb_define_class_under(mSDL,"Kanji",rb_cObject);
+  Font_put(self, surface, text, x, y, r, g, b, Kanji_PutTextTate);
+  return Qnil;
+}
 
-  rb_define_singleton_method(cKanji,"open",kanji_open,2);
-  rb_define_method(cKanji,"add",kanji_addFont,1);
-  rb_define_method(cKanji,"setCodingSystem",kanji_setCodingSystem,1);
-  rb_define_method(cKanji,"textwidth",kanji_textwidth,1);
-  rb_define_method(cKanji,"width",kanji_width,0);
-  rb_define_method(cKanji,"height",kanji_height,0);
-  rb_define_method(cKanji,"put",kanji_putText,7);
-  rb_define_method(cKanji,"putTate",kanji_putTextTate,7);
+void rubysdl_init_Kanji(VALUE mSDL)
+{
+  cKanjiFont = rb_define_class_under(mSDL, "Kanji", rb_cObject); 
+  rb_undef_alloc_func(cKanjiFont);
   
-  rb_define_const(cKanji,"SJIS",INT2NUM(KANJI_SJIS));
-  rb_define_const(cKanji,"EUC",INT2NUM(KANJI_EUC));
-  rb_define_const(cKanji,"JIS",INT2NUM(KANJI_JIS));
+  rb_define_singleton_method(cKanjiFont, "open", Font_s_open, 2);
+  rb_define_method(cKanjiFont, "add", Font_add, 1);
+  rb_define_method(cKanjiFont, "setCodingSystem", Font_setCodingSystem, 1);
+  rb_define_method(cKanjiFont, "textwidth", Font_textwidth, 1);
+  rb_define_method(cKanjiFont, "width", Font_width, 0);
+  rb_define_method(cKanjiFont, "height", Font_height, 0);
+  rb_define_method(cKanjiFont, "put", Font_putText, 7);
+  rb_define_method(cKanjiFont, "putTate", Font_putTextTate, 7);
+  
+  rb_define_const(cKanjiFont, "SJIS", INT2NUM(KANJI_SJIS));
+  rb_define_const(cKanjiFont, "EUC", INT2NUM(KANJI_EUC));
+  rb_define_const(cKanjiFont, "JIS", INT2NUM(KANJI_JIS));
 }

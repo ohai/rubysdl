@@ -29,7 +29,7 @@ static VALUE sdl_delay(VALUE mod,VALUE ms)
   return Qnil;
 }
 
-void init_time()
+void rubysdl_init_time(VALUE mSDL)
 {
   rb_define_module_function(mSDL,"getTicks",sdl_getTicks,0);
   rb_define_module_function(mSDL,"delay",sdl_delay,1);
