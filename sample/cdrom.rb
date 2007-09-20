@@ -2,7 +2,14 @@ require 'sdl'
 
 SDL.init( SDL::INIT_CDROM )
 
-print SDL::CD.numDrive,"\n"
+num_drive = SDL::CD.numDrive
+if num_drive == 0
+  print "No cdrom drive is detected\n"
+  exit
+else
+  print "#{num_drive} cdrom drives are detected\n"
+end
+
 print SDL::CD.indexName(0),"\n"
 cd=SDL::CD.open(0)
 cd.status
