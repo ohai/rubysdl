@@ -9,12 +9,10 @@ image = image.displayFormat
 
 event=SDL::Event.new
 i=0;
-while true 
-  if  event.poll != 0 then
-    if event.type==SDL::Event::QUIT then
-      break
-    end
-    if event.type==SDL::Event::KEYDOWN then
+while true
+  while event = SDL::Event2.poll
+    case event
+    when SDL::Event2::Quit, SDL::Event2::KeyDown
       exit
     end
   end

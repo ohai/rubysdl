@@ -1,13 +1,12 @@
 require 'sdl'
-require 'sdl1_compatible'
 require 'opengl'
 
 SDL.init SDL::INIT_VIDEO
-SDL::GL.setAttr SDL::GL::RED_SIZE,5
-SDL::GL.setAttr SDL::GL::GREEN_SIZE,5
-SDL::GL.setAttr SDL::GL::BLUE_SIZE,5
-SDL::GL.setAttr SDL::GL::DEPTH_SIZE,16
-SDL::GL.setAttr SDL::GL::DOUBLEBUFFER,1
+SDL.setGLAttr SDL::GL_RED_SIZE,5
+SDL.setGLAttr SDL::GL_GREEN_SIZE,5
+SDL.setGLAttr SDL::GL_BLUE_SIZE,5
+SDL.setGLAttr SDL::GL_DEPTH_SIZE,16
+SDL.setGLAttr SDL::GL_DOUBLEBUFFER,1
 SDL.setVideoMode 640,400,16,SDL::OPENGL
 GL::Viewport( 0, 0, 640, 400 );
 GL::MatrixMode( GL::PROJECTION );
@@ -47,9 +46,9 @@ cube =
 
 loop do
 
-  while event = SDL::Event.poll
+  while event = SDL::Event2.poll
     case event
-    when SDL::Event::Quit, SDL::Event::KeyDown
+    when SDL::Event2::Quit, SDL::Event2::KeyDown
       exit
     end
   end
@@ -159,6 +158,6 @@ loop do
   GL::MatrixMode(GL::MODELVIEW);
   GL::Rotate(5.0, 1.0, 1.0, 1.0);
   
-  SDL::GL.swapBuffers
+  SDL.GLSwapBuffers
 
 end
