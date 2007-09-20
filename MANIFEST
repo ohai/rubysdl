@@ -8,6 +8,7 @@ depend
 extconf.rb
 lib/rubysdl_aliases.rb
 lib/sdl.rb
+lib/rubysdl_compatible_1.rb
 rubysdl.h
 rubysdl_const_list.txt
 rubysdl_doc_old.rd
