@@ -234,4 +234,4 @@ if defined?(GL) then
 end
 
 require 'rubysdl_aliases.rb'
-require 'rubysdl_compatible_10.rb'
+require 'rubysdl_compatible_ver1.rb'
