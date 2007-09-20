@@ -35,39 +35,66 @@ static int Mix_opened(void)
   return Mix_QuerySpec(NULL, NULL, NULL);
 }
 
+typedef struct {
+  Mix_Chunk* chunk;
+} Wave;
+
+typedef struct {
+  Mix_Music* music;
+} Music;
+
+DEFINE_GET_STRUCT(Wave, GetWave, cWave, "SDL::Mixer::Wave");
 static Mix_Chunk* Get_Mix_Chunk(VALUE obj)
 {
-  Mix_Chunk* chunk;
-  
-  if( !rb_obj_is_kind_of(obj, cWave) )
-    rb_raise(rb_eTypeError, "wrong argument type %s (expected SDL::Wave)",
-             rb_obj_classname(obj));
-  
-  Data_Get_Struct(obj, Mix_Chunk, chunk);
-  return chunk;
+  Wave* wave = GetWave(obj);
+  if(wave->chunk == NULL)
+    rb_raise(eSDLError, "Wave data is already disposed");
+  return wave->chunk;
+}
+static void Wave_free(Wave* wave)
+{
+  if(Mix_opened() && wave->chunk)
+    Mix_FreeChunk(wave->chunk);
+  free(wave);
+}
+static VALUE Wave_s_alloc(VALUE klass)
+{
+  Wave* wave = ALLOC(Wave);
+  wave->chunk = NULL;
+  return Data_Wrap_Struct(klass, 0, Wave_free, wave);
+}
+static VALUE Wave_create(Mix_Chunk* chunk)
+{
+  VALUE newobj = Wave_s_alloc(cWave);
+  GetWave(newobj)->chunk = chunk;
+  return newobj;
 }
 
+DEFINE_GET_STRUCT(Music, GetMusic, cMusic, "SDL::Mixer::Music");
 static Mix_Music* Get_Mix_Music(VALUE obj)
 {
-  Mix_Music* mus;
-
-  if( !rb_obj_is_kind_of(obj, cMusic) )
-    rb_raise(rb_eTypeError, "wrong argument type %s (expected SDL::Music)",
-             rb_obj_classname(obj));
-  Data_Get_Struct(obj, Mix_Music, mus);
-  return mus;
+  Music* mus = GetMusic(obj);
+  if(mus->music == NULL)
+    rb_raise(eSDLError, "Wave data is already disposed");
+  return mus->music;
 }
-
-static void mix_FreeChunk(Mix_Chunk *chunk)
+static void Music_free(Music* mus)
 {
-  if(Mix_opened())
-    Mix_FreeChunk( chunk );
+  if(Mix_opened() && mus->music)
+    Mix_FreeMusic(mus->music);
+  free(mus);
 }
-
-static void mix_FreeMusic(Mix_Music *music)
+static VALUE Music_s_alloc(VALUE klass)
 {
-  if(Mix_opened())
-    Mix_FreeMusic( music );
+  Music* mus = ALLOC(Music);
+  mus->music = NULL;
+  return Data_Wrap_Struct(klass, 0, Music_free, mus);
+}
+static VALUE Music_create(Mix_Music* music)
+{
+  VALUE newobj = Music_s_alloc(cMusic);
+  GetMusic(newobj)->music = music;
+  return newobj;
 }
 
 static VALUE Mixer_s_driverName(VALUE mod)
@@ -219,7 +246,7 @@ static VALUE Wave_s_load(VALUE class, VALUE filename)
     rb_raise(eSDLError, "Couldn't load wave file %s: %s",
              RSTRING(filename)->ptr, SDL_GetError());
   }
-  return Data_Wrap_Struct(class, 0, mix_FreeChunk, chunk);
+  return Wave_create(chunk);
 }
 
 static VALUE Wave_s_loadFromIO(VALUE class, VALUE io)
@@ -230,7 +257,7 @@ static VALUE Wave_s_loadFromIO(VALUE class, VALUE io)
     rb_raise(eSDLError, "Couldn't load wave file from IO: %s",
              Mix_GetError());
   }
-  return Data_Wrap_Struct(class, 0, mix_FreeChunk, wave);
+  return Wave_create(wave);
 }
  
 /* Volume setting functions and methods : volume in 0..128 */
@@ -357,9 +384,9 @@ static VALUE Music_s_load(VALUE class, VALUE filename)
   music = Mix_LoadMUS(RSTRING(filename)->ptr);
   if( music == NULL )
         rb_raise(eSDLError, 
-	     "Couldn't load %s: %s", RSTRING(filename)->ptr,
+                 "Couldn't load %s: %s", RSTRING(filename)->ptr,
                  SDL_GetError());
-  return Data_Wrap_Struct(class, 0, mix_FreeMusic, music);
+  return Music_create(music);
 }
 
 #ifdef HAVE_MIX_LOADMUS_RW
@@ -378,12 +405,32 @@ static VALUE Mixer_s_loadMusFromString(VALUE class, VALUE str)
     rb_raise(eSDLError,
 	     "Couldn't load from String: %s",Mix_GetError());
   
-  result = Data_Wrap_Struct(class, 0, mix_FreeMusic, music);
+  result = Music_create(music);
   rb_iv_set(result, "buf", buf);
   
   return result;
 }
 #endif
+
+static VALUE Wave_destroy(VALUE self)
+{
+  Wave* wave = GetWave(self);
+  if (wave->chunk) {
+    Mix_FreeChunk(wave->chunk);
+    wave->chunk = NULL;
+  }
+  return Qnil;
+}
+
+static VALUE Music_destroy(VALUE self)
+{
+  Music* mus = GetMusic(self);
+  if (mus->music) {
+    Mix_FreeMusic(mus->music);
+    mus->music = NULL;
+  }
+  return Qnil;
+}
 
 void rubysdl_init_Mixer(VALUE mSDL)
 {
@@ -432,7 +479,8 @@ void rubysdl_init_Mixer(VALUE mSDL)
   rb_define_singleton_method(cMusic, "loadFromString",
                              Mixer_s_loadMusFromString,1);
 #endif
-
+  rb_define_method(cWave, "destroy", Wave_destroy, 0);
+  rb_define_method(cMusic, "destroy", Music_destroy, 0);
 
   /* to avoid to do garbage collect when playing */
   rb_global_variable( &playing_wave );
