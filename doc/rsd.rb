@@ -56,7 +56,7 @@ def rsd2rd(input)
     raise "There isn't #{v} at #{part["NAME"]}" unless part.key?(v)
   end
 
-  if !part.key?("DESC") && !part.key("OBSOLETE")
+  if !part.has_key?("DESC") && !part.has_key?("OBSOLETE")
     raise  "There isn't DESC and OBSOLETE at #{part["NAME"]}"
   end
 
