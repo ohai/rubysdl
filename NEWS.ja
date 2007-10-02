@@ -1,3 +1,76 @@
+version 2.0 alpha 1
+内部構造を大幅に変更
+SDL::Event2をSDL::Eventに変更し、かつてのSDL::Eventは廃止
+以下のメソッドを廃止
+* SDL::Surface#draw_ellispe
+* SDL::Surface#draw_filled_ellispe
+* SDL::Surface#rotate_surface
+* SDL::Surface#rotate_scaled_surface
+* SDL.rotate
+* SDL.rotate_blit
+* SDL.rotate_scaled_blit
+* SDL.rotate_xy_scaled
+以下のメソッドを追加
+* SDL::Surface#destroy
+* SDL::Joystick#close
+* SDL::Mixer#close
+* SDL::Mixer::Wave#destroy
+* SDL::Mixer::Music#destroy
+SDL::GLモジュールを追加
+SDL::PixelFormat(SDL::Surface::Formatのほうが良い？)の実装を変更
+Surfaceのフォーマットを指定するのにSDL::PixelFormatが使えるように変更
+以下の描画メソッドの(antialias, fill, alphaをあらわす)引数を追加
+* SDL::Surface#draw_line
+* SDL::Surface#draw_circle
+* SDL::Surface#draw_rect
+* SDL::Surface#draw_ellipse
+* SDL::Surface#draw_bezier
+以下のようにメソッドを移動、旧来のものも利用はできます
+* SDL.auto_lock? -> SDL::Surface.auto_lock?
+* SDL.auto_lock_on -> SDL::Surface.auto_lock_on
+* SDL.auto_lock_off -> SDL::Surface.auto_lock_off
+* SDL.transform_blit -> SDL::Surface#transform_blit
+* SDL.blitSurface -> SDL::Surface.blit
+* SDL.get_video_surface -> SDL::Screen.get
+* SDL.set_video_mode -> SDL::Screen.open
+* SDL.check_video_mode -> SDL::Screen.check_mode
+* SDL.list_modes -> SDL::Screen.list_modes
+* SDL.set_gamma -> SDL::Screen.set_gamma
+* SDL.get_gamma_ramp -> SDL::Screen.get_gamma_ramp
+* SDL.set_gamma_ramp -> SDL::Screen.set_gamma_ramp
+* SDL.video_driver_name -> SDL::Screen.driver_name
+* SDL.video_info -> SDL::Screen.info
+* SDL::Surface#get_rgb -> SDL::PixelFormat#get_rgb
+* SDL::Surface#get_rgba -> SDL::PixelFormat#get_rgba
+* SDL::Surface#map_rgb -> SDL::PixelFormat#map_rgb
+* SDL::Surface#map_rgba -> SDL::PixelFormat#map_rgba
+* SDL::Surface#get_palette -> SDL::PixelFormat#palette
+* SDL::Surface#bpp -> SDL::PixelFormat#bpp
+* SDL::Surface#bytes_per_pixel -> SDL::PixelFormat#bytes_per_pixel
+* SDL::Surface#[RGBA]mask -> SDL::PixelFormat#[RGBA]mask
+* SDL::Surface#[RGBA]shift -> SDL::PixelFormat#[RGBA]shift
+* SDL::Surface#[RGBA]loss -> SDL::PixelFormat#[RGBA]loss
+* SDL::Surface#colorkey -> SDL::PixelFormat#colorkey
+* SDL::Surface#alpha -> SDL::PixelFormat#alpha
+* SDL.get_GL_attr -> SDL::GL.get_attr
+* SDL.set_GL_attr -> SDL::GL.set_attr
+* SDL.GL_swap_buffers -> SDL::GL.swap_buffers
+以下のように定数を移動。旧来のものも利用はできます。
+* GL_RED_SIZE -> GL::RED_SIZE
+* GL_GREEN_SIZE -> GL::GREEN_SIZE
+* GL_BLUE_SIZE -> GL::BLUE_SIZE
+* GL_ALPHA_SIZE -> GL::ALPHA_SIZE
+* GL_BUFFER_SIZE -> GL::BUFFER_SIZE
+* GL_DOUBLEBUFFER -> GL::DOUBLEBUFFER
+* GL_DEPTH_SIZE -> GL::DEPTH_SIZE
+* GL_STENCIL_SIZE -> GL::STENCIL_SIZE
+* GL_ACCUM_RED_SIZE -> GL::ACCUM_RED_SIZE
+* GL_ACCUM_GREEN_SIZE -> GL::ACCUM_GREEN_SIZE
+* GL_ACCUM_BLUE_SIZE -> GL::ACCUM_BLUE_SIZE
+* GL_ACCUM_ALPHA_SIZE -> GL::ACCUM_ALPHA_SIZE
+OpenGL関連のドキュメントを追加
+
+
 version 1.3.1
 SMPEG有、SDL_mixer無の場合の問題を修正
 以下のメソッドを追加

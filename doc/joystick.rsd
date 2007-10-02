@@ -384,4 +384,19 @@ EXAMPLE
 delta_x, delta_y = joy.ball(0)
 printf("トラックボールの相対移動値- X:%d, Y:%d\n", delta_x, delta_y)
 
+%%
+NAME close
+MOD Joystick
+TYPE #
+PURPOSE オープンされているジョイスティックをクローズします。
 
+PROTO
+close
+
+DESC
+@[Joystick.open] でオープンされたジョイスティックデバイスを
+クローズします。
+
+SEEALSO
+Joystick.open
+Joystick.open?

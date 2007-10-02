@@ -36,7 +36,7 @@ SDL はあなたが求めたモードをエミュレートし、
 更新の際に変換しているかもしれません。
 最もよい方法は、
 望まれるものに最も近いビデオモードを
-@[問い合わせ|video_info]、
+@[問い合わせ|Screen.info]、
 そのピクセルフォーマットに合わせて画像を
 @[変換|Surface#display_format]することです。
 
@@ -65,7 +65,7 @@ METHODS(Surface)
 このクラスは @[Surface] のサブクラスであり、実際に画面に表示される
 サーフェスを表わします。
 
-ビデオフレームバッファは @[set_video_mode] と @[get_video_surface]
+ビデオフレームバッファは @[Screen.open] と @[Screen.get]
 から得られます。
 
 メソッドおよびクラスメソッドのリスト
@@ -73,7 +73,7 @@ METHODS(Screen)
 
 == SDL::VideoInfo
 ビデオターゲットの情報を表わすクラスです。
-このクラスのインスタンスは @[video_info] から返り値として得られます。
+このクラスのインスタンスは @[Screen.info] から返り値として得られます。
 これは以下のメソッドを持ちます。
 
 --- SDL::VideoInfo#hw_available
@@ -121,6 +121,13 @@ METHODS(Screen)
 
     一ピクセルあたりのバイト数
 
+== SDL::PixelFormat
+サーフェスのフォーマットを表すクラスです。
+詳しくは((<色、ピクセルフォーマット、ピクセル値について>))
+をみてください。
+
+メソッドおよびクラスメソッドのリスト
+METHODS(PixelFormat)
 
 == 色、ピクセルフォーマット、ピクセル値について
 まずは Ruby/SDL において重要なことを先に書きます。
@@ -129,8 +136,8 @@ Ruby/SDLにおいて色はRGBAそれぞれ0から255までの値を取ります。
 このRGBA値と符号無し32ビット整数との変換規則をピクセルフォーマットと
 呼び、変換後の値をピクセル値と呼びます。
 ピクセルフォーマットはサーフェスごとに決まっていて、
-変換は@[Surface#map_rgb]、@[Surface#map_rgba]、
-@[Surface#get_rgb]、@[Surface#get_rgba]というメソッドでします。
+変換は@[PixelFormat#map_rgb]、@[PixelFormat#map_rgba]、
+@[PixelFormat#get_rgb]、@[PixelFormat#get_rgba]というメソッドでします。
 メソッドの引数などで色を指定する場合、[231, 251, 100] というような
 要素が3個の配列(RGB,A=255)、
 [231, 251, 100, 128]という要素が4個の配列(RGBA)、もしくはピクセル値の
@@ -160,14 +167,14 @@ R,G,Bの 255*255*255の情報を適当にそのメモリに収まるように変換します。
 の組であると解釈できます。
 
 この色データとピクセル値の相互変換は
-@[Surface#map_rgb]、@[Surface#get_rgb]というメソッドでします。
+@[PixelFormat#map_rgb]、@[PixelFormat#get_rgb]というメソッドでします。
 
 また、各メソッドの引数で色を指定する場合は、[r, g, b]という要素が整数3個の
 配列、もしくはそのサーフェスのピクセルフォーマットで変換したピクセル値の
 どちらでも使える場合がほとんどです。
 
 最後にα値について解説します。この値はある画像と別の画像を重ね合わせる
-時に意味のある値です。@[blit_surface]などで2つの画像が重ね合わされる場合、
+時に意味のある値です。@[Surface.blit]などで2つの画像が重ね合わされる場合、
 通常下の画像は上の画像で完全に隠されてしまいます。しかし上の画像に
 α値を指定しておくと、上の画像の色と下の画像の色が混ぜ合されます。
 この混ぜ合せの割合をα値と呼びます。SDLではα値は0から255までの値をとりえます。
@@ -175,7 +182,7 @@ R,G,Bの 255*255*255の情報を適当にそのメモリに収まるように変換します。
 この値はbppが32の場合には、各ピクセルごとに指定することができます。
 つまりピクセル値には R,G,B のほかアルファ(Alpha)値を含めることができると
 いうことです。このα値を含めた変換には
-@[Surface#map_rgba]、[Surface#get_rgba]を使います。
+@[PixelFormat#map_rgba]、[PixelFormat#get_rgba]を使います。
 また各メソッドの引数でアルファ付きの色を指定する場合は、[r,g,b,a]という
 要素が整数4個の配列を使うことが可能です。
 
@@ -185,10 +192,21 @@ NAME get_video_surface
 TYPE .
 PURPOSE 現在の表示サーフェスを返します。
 RVAL Screen
+OBSOLETE Screen.get
 
 PROTO
 get_video_surface
 getVideoSurface
+
+%%
+NAME get
+MOD Screen
+TYPE .
+PURPOSE 現在の表示サーフェスを返します。
+RVAL Screen
+
+PROTO
+get
 
 DESC
 このメソッドは現在の表示サーフェスを返します。
@@ -206,15 +224,26 @@ NAME video_info
 TYPE .
 PURPOSE ビデオハードウェアについての情報を返します。
 RVAL VideoInfo
+OBSOLETE Screen.info
 
 PROTO
 video_info
 videoInfo
 
+%%
+NAME info
+MOD Screen
+TYPE .
+PURPOSE ビデオハードウェアについての情報を返します。
+RVAL VideoInfo
+
+PROTO
+info
+
 DESC
 この関数はビデオハードウェアに関する@[情報|VideoInfo]を返します。
 
-@[set_video_mode]の前にこれが呼ばれると、
+@[Screen.open]の前にこれが呼ばれると、
 返されたオブジェクトのbppアトリビュートには
 「最も適した」ビデオモードのピクセルフォーマットが入ります。
 
@@ -224,7 +253,7 @@ RET
 EXCEPTION *
 
 SEEALSO
-set_video_mode
+Screen.open
 VideoInfo
 
 %%
@@ -232,10 +261,22 @@ NAME video_driver_name
 TYPE .
 PURPOSE ビデオドライバの名前を取得します。
 RVAL String
+OBSOLETE Screen.driver_name
 
 PROTO
 video_driver_name
 videoDriverName
+
+%%
+NAME driver_name
+MOD Screen
+TYPE .
+PURPOSE ビデオドライバの名前を取得します。
+RVAL String
+
+PROTO
+driver_name
+driverName
 
 DESC
 ドライバ名は "x11" や "windib" のように単なる 1 語の識別子です。
@@ -254,6 +295,18 @@ NAME list_modes
 TYPE .
 PURPOSE 与えられたフォーマットとビデオのフラグに対し、利用可能な画面モードの配列を返します。
 RVAL nil/true/Array of [UINT, UINT]
+OBSOLETE Screen.list_modes
+
+PROTO
+list_modes(flags)
+listModes(flags)
+
+%%
+NAME list_modes
+MOD Screen
+TYPE .
+PURPOSE 与えられたフォーマットとビデオのフラグに対し、利用可能な画面モードの配列を返します。
+RVAL nil/true/Array of [UINT, UINT]
 
 PROTO
 list_modes(flags)
@@ -263,7 +316,7 @@ DESC
 与えられたビデオのフラグに対し、
 利用可能な画面モードの配列を返します。
 
-フラグは@[set_video_mode]
+フラグは@[Screen.open]
 で使われるものと同じであり、モードが有効かどうかを決定する際に
 強い役割を果たします。
 SDL::HWSURFACEをフラグとして渡すと、
@@ -280,7 +333,7 @@ true を返します。
 
 EXAMPLE
 # 利用可能なフルスクリーンハードウェアモードを取得する
-modes = SDL.list_modes(SDL::FULLSCREEN|SDL::HWSURFACE)
+modes = SDL::Screen.list_modes(SDL::FULLSCREEN|SDL::HWSURFACE)
 
 # 利用可能なモードがあるかどうかチェック
 if modes == nil
@@ -298,56 +351,79 @@ else
 end
 
 SEEALSO
-set_video_mode
-video_info
+Screen.open
+Screen.info
 
 %%
 NAME check_video_mode
 TYPE .
 PURPOSE ある特定のビデオモードがサポートされているかチェックします。
 RVAL Integer
+OBSOLETE Screen.check_mode
 
 PROTO
 check_video_mode(w,h,bpp,flags)
 checkVideoMode(w,h,bpp,flags)
 
+%%
+NAME check_mode
+MOD Screen
+TYPE .
+PURPOSE ある特定のビデオモードがサポートされているかチェックします。
+RVAL Integer
+
+PROTO
+check_mode(w,h,bpp,flags)
+checkMode(w,h,bpp,flags)
+
 DESC
 要求されたモードがどのピクセル深度においてもサポートされていない場合は
 0を返し、
 あるいは与えられた横幅・高さと
-要求された@[サーフェス|Surface] フラグ(@[set_video_mode]を見て下さい)
+要求された@[サーフェス|Surface] フラグ(@[Screen.open]を見て下さい)
 において利用可能な最も近いピクセル深度を返します。
 
 ピクセル深度の値は推奨されるモードに過ぎません。
-ビデオモードの@[設定|set_video_mode]時に
+ビデオモードの@[設定|Screen.open]時に
 普通にあなたの望むピクセル深度を要求することができ、
 SDL はシャドウビデオサーフェスを使ってそのピクセル深度を
 エミュレートするでしょう。
 
 EXAMPLE
 puts "640x480@16bpp のモードをチェックしています。"
-bpp = SDL.check_video_mode(640, 480, 16, SDL::HWSURFACE)
+bpp = SDL::Screen.check_mode(640, 480, 16, SDL::HWSURFACE)
 if bpp == 0
   puts "利用可能なモードではありません。"
   exit 1
 end
 
 puts "SDL は 640x480@#{bpp}bpp を推奨します。"
-screen = SDL.set_video_mode(640, 480, bpp, SDL_HWSURFACE)
+screen = SDL::Screen.open(640, 480, bpp, SDL_HWSURFACE)
 
 SEEALSO
-set_video_mode
-video_info
+Screen.open
+Screen.info
 
 %%
 NAME set_video_mode
 TYPE .
 PURPOSE 指定された横幅・高さ・ピクセル深度を用いてビデオモードを設定します。
 RVAL Screen
+OBSOLETE Screen.open
 
 PROTO
 setVideoMode(w,h,bpp,flags)
 set_video_mode(w,h,bpp,flags)
+
+%%
+NAME open
+MOD Screen
+TYPE .
+PURPOSE 指定された横幅・高さ・ピクセル深度を用いてビデオモードを設定します。
+RVAL Screen
+
+PROTO
+open(w,h,bpp,flags)
 
 DESC
 指定された幅・高さ・ピクセル深度(1ピクセルのビット数)を用いて
@@ -390,7 +466,7 @@ $[flags] パラメータは@[Surface#flags]と同じです。
   一段階解像度の高いモードが使われ、黒い背景の中央に表示ウインドウが置かれます。
 :SDL::OPENGL
   OpenGL の描画コンテキストを作成します。
-  前もって@[set_GL_attr]によって OpenGL のビデオ属性を
+  前もって@[GL.set_attr]によって OpenGL のビデオ属性を
   設定しておく必要があります。
 :SDL::OPENGLBLIT
   上と同様に OpenGL の描画コンテキストを作成しますが、
@@ -404,8 +480,8 @@ $[flags] パラメータは@[Surface#flags]と同じです。
 :SDL::RESIZABLE
   リサイズ可能なウィンドウを作成します。
   ユーザーの手でウィンドウがリサイズされた場合は、
-  @[Event2::VideoResize]イベントが発生し、
-  新しいサイズで @[set_video_mode]が再度呼ばれることがあります。
+  @[Event::VideoResize]イベントが発生し、
+  新しいサイズで @[Screen.open]が再度呼ばれることがあります。
 :SDL::NOFRAME
   もし可能であれば、
   SDL がタイトルバーなし、あるいはフレームによる装飾なしの
@@ -433,19 +509,6 @@ Surface#lock
 Surface#set_colors
 Screen#flip
 Screen
-
-%%
-NAME open
-MOD Screen
-TYPE .
-PURPOSE 指定された横幅・高さ・ピクセル深度を用いてビデオモードを設定します。
-RVAL Screen
-
-PROTO
-open(w,h,bpp,flags)
-
-DESC
-@[set_video_mode] の別名です。
 
 %%
 NAME update_rect
@@ -596,7 +659,7 @@ SDL::HWPALETTE フラグがセットされている
 マッピングする論理パレットと、
 ハードウェアが色を画面にマッピングする方法を決定する
 物理パレットです。
-@[blit_surface] は
+@[Surface.blit] は
 サーフェスのピクセルフォーマット間で変換が必要な場合、
 サーフェスを blit 転送する際に常に論理パレットを使います。
 このため、さまざまな特殊色効果
@@ -610,7 +673,7 @@ $[flags] に指定することで、
 $[self]が現在の表示と
 関連付けられているサーフェスのときは、
 表示のカラーマップは要求された色で更新されます。
-@[set_video_mode] に
+@[Screen.open] に
 SDL::HWPALETTE がセットされていた場合は、
 このメソッドは常に true を返し、
 ウィンドウのカラーマップが歪められなければならない場合や、
@@ -636,17 +699,28 @@ EXAMPLE
 # 色情報で埋める
 colors = Array.new(256){|i| [i, i, i]}
 # 表示サーフェスを作成
-screen = SDL.set_video_mode(640, 480, 8, SDL::HWPALETTE)
+screen = SDL::Screen.open(640, 480, 8, SDL::HWPALETTE)
 
 # パレットのセット
 screen.set_palette(SDL::LOGPAL|SDL::PHYSPAL, colors, 0)
 
 SEEALSO
 Surface#set_colors
-set_video_mode
+Screen.open
 
 %%
 NAME set_gamma
+TYPE .
+PURPOSE 表示用のカラーガンマ関数をセットします。
+OBSOLETE Screen.set_gamma
+
+PROTO
+set_gamma(redgamma,greengamma,bluegamma)
+setGamma(redgamma,greengamma,bluegamma)
+
+%%
+NAME set_gamma
+MOD Screen
 TYPE .
 PURPOSE 表示用のカラーガンマ関数をセットします。
 
@@ -661,7 +735,7 @@ DESC
 (つまり、何の調整も行われません)
 
 この関数は「ガンマ関数」のパラメータに基いてガンマを調整します。
-@[set_gamma_ramp] を使うと、
+@[Screen.set_gamma_ramp] を使うと、
 ガンマ調整の参照テーブルを直接指定することができます。
 
 EXCEPTION *
@@ -669,11 +743,23 @@ NOTES
 全ての表示ハードウェアがガンマを変更することができるわけではありません。
 
 SEEALSO
-get_gamma_ramp
-set_gamma_ramp
+Screen.get_gamma_ramp
+Screen.set_gamma_ramp
 
 %%
 NAME get_gamma_ramp
+TYPE .
+PURPOSE 表示のためのカラーガンマ値の変換テーブルを取得します。
+RVAL Array of UINT
+OBSOLETE Screen.get_gamma_ramp
+
+PROTO
+get_gamma_ramp
+getGammaRamp
+
+%%
+NAME get_gamma_ramp
+MOD Screen
 TYPE .
 PURPOSE 表示のためのカラーガンマ値の変換テーブルを取得します。
 RVAL Array of UINT
@@ -695,11 +781,21 @@ NOTES
 EXCEPTION *
 
 SEEALSO
-set_gamma
-set_gamma_ramp
+Screen.set_gamma
+Screen.set_gamma_ramp
 
 %%
 NAME set_gamma_ramp
+TYPE .
+PURPOSE 表示用にカラーガンマの参照テーブルをセットします。
+OBSOLETE Screen.set_gamma_ramp
+PROTO
+set_gamma_ramp(table)
+setGammaRamp(table)
+
+%%
+NAME set_gamma_ramp
+MOD Screen
 TYPE .
 PURPOSE 表示用にカラーガンマの参照テーブルをセットします。
 
@@ -709,20 +805,20 @@ setGammaRamp(table)
 
 DESC
 各色チャンネルについて、表示用のガンマ参照テーブルをセットします。
-引数 $[tables] は @[get_gamma_ramp] と同じフォーマットで、
+引数 $[tables] は @[Screen.get_gamma_ramp] と同じフォーマットで、
 対応するチャンネルの入力と出力間の写像を表現します。
 入力は配列に対するインデックスであり、出力はそのインデックスにおける
 16 ビットのガンマ値で、出力の色精度に合わせてスケーリングされます。
 
 この関数は参照テーブルに基いてガンマを調整しますが、
-@[set_gamma] を用いて
+@[Screen.set_gamma] を用いて
 「ガンマ関数」パラメータに基いて計算されたガンマも持つことができます。
 
 EXCEPTION *
 
 SEEALSO
-set_gamma
-get_gamma_ramp
+Screen.set_gamma
+Screen.get_gamma_ramp
 
 %%
 NAME map_rgb
@@ -730,11 +826,23 @@ MOD Surface
 TYPE #
 PURPOSE RGB カラー値をピクセルフォーマットに写像します。
 RVAL UINT
+OBSOLETE PixelFormat#map_rgb
 
 PROTO
 map_rgb(r,g,b)
 mapRGB(r,g,b)
 
+%%
+NAME map_rgb
+MOD PixelFormat
+TYPE #
+PURPOSE RGB カラー値をピクセルフォーマットに写像します。
+RVAL UINT
+
+PROTO
+map_rgb(r,g,b)
+mapRGB(r,g,b
+)
 DESC
 RGB カラーの値を$[self]のピクセルフォーマットに写像し、
 ピクセル値を 32bit 符号無し整数 として返します。
@@ -755,14 +863,26 @@ RET
 8bpp では 2**8 より小さい)
 
 SEEALSO
-Surface#get_rgb
-Surface#get_rgba
-Surface#map_rgba
+PixelFormat#get_rgb
+PixelFormat#get_rgba
+PixelFormat#map_rgba
 ((<色、ピクセルフォーマット、ピクセル値について>))
 
 %%
 NAME map_rgba
 MOD Surface
+TYPE #
+PURPOSE RGBA カラー値をピクセルフォーマットに写像します。
+RVAL UINT
+OBSOLETE PixelFormat#map_rgba
+
+PROTO
+map_rgba(r,g,b,a)
+mapRGBA(r,g,b,a)
+
+%%
+NAME map_rgba
+MOD PixelFormat
 TYPE #
 PURPOSE RGBA カラー値をピクセルフォーマットに写像します。
 RVAL UINT
@@ -792,9 +912,9 @@ RET
 8bpp では 2**8 より小さい)
 
 SEEALSO
-Surface#get_rgb
-Surface#get_rgba
-Surface#map_rgb
+PixelFormat#get_rgb
+PixelFormat#get_rgba
+PixelFormat#map_rgb
 ((<色、ピクセルフォーマット、ピクセル値について>))
 
 %%
@@ -803,6 +923,18 @@ MOD Surface
 TYPE #
 PURPOSE 指定されたピクセルフォーマット内のピクセルから RGB 値を取得します。
 RVAL [UINT, UINT, UINT]
+OBSOLETE PixelFormat#get_rgb
+PROTO
+get_rgb(pixel)
+getRGB(pixel)
+
+%%
+NAME get_rgb
+MOD PixelFormat
+TYPE #
+PURPOSE 指定されたピクセルフォーマット内のピクセルから RGB 値を取得します。
+RVAL [UINT, UINT, UINT]
+
 PROTO
 get_rgb(pixel)
 getRGB(pixel)
@@ -818,14 +950,26 @@ RGB 各チャンネルが 8 ビット未満のピクセルフォーマットから
 [0xf8, 0xfc, 0xf8] ではなく [0xff, 0xff, 0xff] を返します)
 
 SEEALSO
-Surface#get_rgba
-Surface#map_rgb
-Surface#map_rgba
+PixelFormat#get_rgba
+PixelFormat#map_rgb
+PixelFormat#map_rgba
 ((<色、ピクセルフォーマット、ピクセル値について>))
 
 %%
 NAME get_rgba
 MOD Surface
+TYPE #
+PURPOSE 指定されたピクセルフォーマット内のピクセルから RGBA 値を取得します。
+RVAL [UINT, UINT, UINT, UINT]
+OBSOLETE PixelFormat#get_rgba
+
+PROTO
+get_rgba(pixel)
+getRGBA(pixel)
+
+%%
+NAME get_rgba
+MOD PixelFormat
 TYPE #
 PURPOSE 指定されたピクセルフォーマット内のピクセルから RGBA 値を取得します。
 RVAL [UINT, UINT, UINT, UINT]
@@ -846,9 +990,9 @@ RGB 各チャンネルが 8 ビット未満のピクセルフォーマットから
 サーフェスにαチャンネルがない場合は、αには 0xff (100% 不透明) が返されます。
 
 SEEALSO
-Surface#get_rgba
-Surface#map_rgb
-Surface#map_rgba
+PixelFormat#get_rgba
+PixelFormat#map_rgb
+PixelFormat#map_rgba
 ((<色、ピクセルフォーマット、ピクセル値について>))
 
 %%
@@ -860,11 +1004,11 @@ RVAL Surface
 
 PROTO
 new(flags,w,h,depth,Rmask,Gmask,Bmask,Amask)
-new(flags,w,h,surface)
+new(flags,w,h,format)
 
 DESC
 大きさが $[w] x $[h] の空のサーフェスを確保します。
-(@[set_video_mode]の後で呼ばれなければいけません)
+(@[Screen.open]の後で呼ばれなければいけません)
 
 $[depth] が 8 ビットの場合は、
 サーフェスに空のパレットが確保されます。
@@ -897,7 +1041,7 @@ $[flags] は作られるサーフェスのタイプを指定し、
   サーフェスはなるだけビデオメモリに置かれます。
   サーフェスを作った後にこのフラグをセット・リセットしたい場合は
   @[Surface#set_alpha]を使って下さい。
-また、depth,Rmask,Gmask,Bmask,Amaskの代わりに @[Surface] のインスタンス
+また、depth,Rmask,Gmask,Bmask,Amaskの代わりに @[PixelFormat] のインスタンス
 を渡すとこれらの値が与えたインスタンスと同じになります。
 
 RET
@@ -936,7 +1080,7 @@ surface = SDL::Surface.new(SDL::SWSURFACE, width, height, 32,
 
 SEEALSO
 Surface.new_from
-set_video_mode
+Screen.oepn
 Surface#lock
 Surface#set_alpha
 Surface#set_color_key
@@ -1159,17 +1303,17 @@ $[flag] が SDL::SRCCOLORKEY ならば、$[key] は転送元の画像の透明色です。
 
 $[flag] に SDL::RLEACCEL が
 セットされている場合は、
-@[blit_surface] で描かれる時に、
+@[Surface.blit] で描かれる時に、
 サーフェスは RLE アクセラレーションを使って描きます。
 最初にサーフェスに対して
-@[blit_surface] か @[Surface#display_format] が
+@[Surface.blit] か @[Surface#display_format] が
 呼ばれた時に、実際に RLE アクセラレーションのためエンコードされます。
 
 flag が 0 ならば、この関数は現在のカラーキーをクリアします。
 
 EXCEPTION *
 SEEALSO
-blit_surface
+Surface.blit
 Surface#display_format
 Surface#map_rgb
 Surface#set_alpha
@@ -1266,7 +1410,7 @@ SEEALSO
 Surface#map_rgba
 Surface#get_rgba
 Surface#display_format
-blit_surface
+Surface.blit
 Surface#alpha
 
 %%
@@ -1289,7 +1433,7 @@ DESC
 
 SEEALSO
 Surface#get_clip_rect
-blit_surface
+Surface.blit
 
 %%
 NAME get_clip_rect
@@ -1312,17 +1456,29 @@ RET
 
 SEEALSO
 Surface#set_clip_rect
-blit_surface
+Surface.blit
 
 %%
 NAME blit_surface
 TYPE .
 PURPOSE 転送元サーフェスから転送先サーフェスへ高速 blit 転送を行います。
 RVAL 0/-2
+OBSOLETE Surface.blit
 
 PROTO
 blit_surface(src,srcX,srcY,srcW,srcH,dst,dstX,dstY)
 blitSurface(src,srcX,srcY,srcW,srcH,dst,dstX,dstY)
+
+
+%%
+NAME blit
+MOD Surface
+TYPE .
+PURPOSE 転送元サーフェスから転送先サーフェスへ高速 blit 転送を行います。
+RVAL 0/-2
+
+PROTO
+blit(src,srcX,srcY,srcW,srcH,dst,dstX,dstY)
 
 DESC
 転送元サーフェスから転送先サーフェスへ高速 blit 転送を行います
@@ -1365,19 +1521,6 @@ RET
 サーフェスのロックも失敗するでしょう。
 
 %%
-NAME blit
-MOD Surface
-TYPE .
-PURPOSE 転送元サーフェスから転送先サーフェスへ高速 blit 転送を行います。
-RVAL 0/-2
-
-PROTO
-blit(src,srcX,srcY,srcW,srcH,dst,dstX,dstY)
-
-DESC
-@[blit_surface] の別名です。
-
-%%
 NAME fill_rect
 MOD Surface
 TYPE #
@@ -1403,7 +1546,7 @@ EXCEPTION *
 SEEALSO
 Surface#map_rgb
 Surface#map_rgba
-blit_surface
+Surface.blit
 
 %%
 NAME display_format
@@ -1526,6 +1669,20 @@ Surface
 Screen
 
 %%
+NAME format
+MOD Surface
+TYPE #
+PURPOSE サーフェスのピクセルフォーマット
+RVAL PixelFormat
+
+PROTO
+format
+
+DESC
+サーフェスのピクセルフォーマットを
+@[PixelFormat]のインスタンスとして返します。
+
+%%
 NAME w
 MOD Surface
 TYPE #
@@ -1569,23 +1726,20 @@ pixels
 
 DESC
 実際のピクセルデータをStringのインスタンスで返します。
-ピクセルデータの形式は@[Surface#flags]、SDL::Surface#[RGBA]mask、
-@[Surface#bpp]によります。
+ピクセルデータの形式は@[Surface#flags]、
+@[Surface#pitch]および@[Surface#format]によります。
 
 NOTES
 これにアクセスするには@[ロック|Surface#lock]が必要です。
 
 SEEALSO
 Surface#flags
-Surface#Rmask
-Surface#Gmask
-Surface#Bmask
-Surface#Amask
-Surface#bpp
+Surface#pitch
+Surface#format
 
 %%
 NAME Rmask
-MOD Surface
+MOD PixelFormat
 TYPE #
 PURPOSE 赤チャンネルの値を取得するのに使われるビットマスク
 RVAL UINT
@@ -1598,7 +1752,7 @@ DESC
 
 %%
 NAME Gmask
-MOD Surface
+MOD PixelFormat
 TYPE #
 PURPOSE 緑チャンネルの値を取得するのに使われるビットマスク
 RVAL UINT
@@ -1611,7 +1765,7 @@ DESC
 
 %%
 NAME Bmask
-MOD Surface
+MOD PixelFormat
 TYPE #
 PURPOSE 青チャンネルの値を取得するのに使われるビットマスク
 RVAL UINT
@@ -1624,7 +1778,7 @@ DESC
 
 %%
 NAME Amask
-MOD Surface
+MOD PixelFormat
 TYPE #
 PURPOSE αチャンネルの値を取得するのに使われるビットマスク
 RVAL UINT
@@ -1637,7 +1791,7 @@ DESC
 
 %%
 NAME Rloss
-MOD Surface
+MOD PixelFormat
 TYPE #
 PURPOSE 赤チャンネルで失われる精度
 RVAL UINT
@@ -1651,7 +1805,7 @@ DESC
 
 %%
 NAME Gloss
-MOD Surface
+MOD PixelFormat
 TYPE #
 PURPOSE 緑チャンネルで失われる精度
 RVAL UINT
@@ -1665,7 +1819,7 @@ DESC
 
 %%
 NAME Bloss
-MOD Surface
+MOD PixelFormat
 TYPE #
 PURPOSE 青チャンネルで失われる精度
 RVAL UINT
@@ -1679,7 +1833,7 @@ DESC
 
 %%
 NAME Aloss
-MOD Surface
+MOD PixelFormat
 TYPE #
 PURPOSE αチャンネルで失われる精度
 RVAL UINT
@@ -1693,7 +1847,7 @@ DESC
 
 %%
 NAME Rshift
-MOD Surface
+MOD PixelFormat
 TYPE #
 PURPOSE ピクセル値の赤チャンネルの2進数の左シフト数
 RVAL UINT
@@ -1707,7 +1861,7 @@ DESC
 
 %%
 NAME Gshift
-MOD Surface
+MOD PixelFormat
 TYPE #
 PURPOSE ピクセル値の緑チャンネルの2進数の左シフト数
 RVAL UINT
@@ -1721,7 +1875,7 @@ DESC
 
 %%
 NAME Bshift
-MOD Surface
+MOD PixelFormat
 TYPE #
 PURPOSE ピクセル値の青チャンネルの2進数の左シフト数
 RVAL UINT
@@ -1735,7 +1889,7 @@ DESC
 
 %%
 NAME Ashift
-MOD Surface
+MOD PixelFormat
 TYPE #
 PURPOSE ピクセル値のαチャンネルの2進数の左シフト数
 RVAL UINT
@@ -1783,8 +1937,55 @@ SEEALSO
 Surface#set_alpha
 
 %%
+NAME colorkey
+MOD PixelFormat
+TYPE #
+PURPOSE 透明ピクセルのピクセル値
+RVAL UINT
+
+PROTO
+colorkey
+
+DESC
+透明ピクセルのピクセル値を正の整数で返します。
+
+SEEALSO
+Surface
+Surface#set_color_key
+((<色、ピクセルフォーマット、ピクセル値について>))
+
+%%
+NAME alpha
+MOD PixelFormat
+TYPE #
+PURPOSE サーフェス全体のα値
+RVAL UINT
+
+PROTO
+alpha
+
+DESC
+サーフェス全体のα値を0から255までの整数で返します。
+0が透明で、255が不透明です。
+
+SEEALSO
+Surface#set_alpha
+
+
+%%
 NAME bpp
 MOD Surface
+TYPE #
+PURPOSE サーフェスの各ピクセルを表わすのに使われるビット数
+RVAL UINT
+OBSOLETE PixelFormat#bpp
+
+PROTO
+bpp
+
+%%
+NAME bpp
+MOD PixelFormat
 TYPE #
 PURPOSE サーフェスの各ピクセルを表わすのに使われるビット数
 RVAL UINT
@@ -1903,11 +2104,11 @@ $[self]の($[x], $[y])で指定した位置にサーフェス $[src] を高速 blit 転送
 します。
 
 これは、
-  SDL.blit_surface(src, 0, 0, src.w, src.h, self, x, y)
+  SDL::Surface.blit(src, 0, 0, src.w, src.h, self, x, y)
 と同じです。
 
 SEEALSO
-blit_surface
+Surface.blit
 
 %%
 NAME copy_rect
@@ -1924,7 +2125,7 @@ DESC
 コピーした新しいサーフェスを作り、返します。
 
 NOTES
-このメソッドは内部で @[blit_surface] を呼ぶため、ロックされたサーフェス上で
+このメソッドは内部で @[Surface.blit] を呼ぶため、ロックされたサーフェス上で
 呼ばれるべきではありません。
 
 EXCEPTION *
@@ -1935,12 +2136,25 @@ TYPE .
 DEP SGE
 PURPOSE サーフェスを自動でロックするかどうかを返す。
 RVAL true/false
+OBSOLETE Surface.auto_lock?
 
 PROTO
 auto_lock?
 autoLock?
 auto_lock
 autoLock
+
+%%
+NAME auto_lock?
+MOD Surface
+TYPE .
+DEP SGE
+PURPOSE サーフェスを自動でロックするかどうかを返す。
+RVAL true/false
+
+PROTO
+auto_lock?
+autoLock?
 
 DESC
 サーフェスに対する@[ロック|Surface#lock]が必要な操作をするとき、
@@ -1950,11 +2164,23 @@ Ruby/SDLが自動的にロック/アンロックするか
 SEEALSO
 Surface#lock
 Surface#unlock
-auto_lock_on
-auto_lock_off
+Surface.auto_lock_on
+Surface.auto_lock_off
 
 %%
 NAME auto_lock_on
+TYPE .
+DEP SGE
+PURPOSE 自動ロックを利用するようにします。
+OBSOLETE Surface.auto_lock_on
+
+PROTO
+auto_lock_on
+autoLockON
+
+%%
+NAME auto_lock_on
+MOD Surface
 TYPE .
 DEP SGE
 PURPOSE 自動ロックを利用するようにします。
@@ -1969,11 +2195,23 @@ DESC
 
 SEEALSO
 Surface#lock
-auto_lock?
-auto_lock_off
+Surface.auto_lock?
+Surface.auto_lock_off
 
 %%
 NAME auto_lock_off
+TYPE .
+DEP SGE
+PURPOSE 自動ロックを利用しないようにします。
+OBSOLETE Surface.auto_lock_off
+
+PROTO
+auto_lock_off
+autoLockOFF
+
+%%
+NAME auto_lock_off
+MOD Surface
 TYPE .
 DEP SGE
 PURPOSE 自動ロックを利用しないようにします。
@@ -1988,14 +2226,15 @@ DESC
 
 SEEALSO
 Surface#lock
-auto_lock?
-auto_lock_on
+Surface.auto_lock?
+Surface.auto_lock_on
 
 %%
 NAME auto_lock=
 TYPE .
 DEP SGE
 PURPOSE 自動ロックを使うかどうかを設定します。
+OBSOLETE Surface.auto_lock_on
 
 PROTO
 auto_lock=(locking)
@@ -2014,6 +2253,17 @@ auto_lock_off
 
 %%
 NAME transform
+TYPE .
+DEP SGE
+PURPOSE 回転縮小拡大描画をします。
+OBSOLETE Surface.transform
+
+PROTO
+transform(src,dst,angle,xscale,yscale,px,py,qx,qy,flags)
+
+%%
+NAME transform
+MOD Surface
 TYPE .
 DEP SGE
 PURPOSE 回転縮小拡大描画をします。
@@ -2054,15 +2304,27 @@ $[src]が32bpp RGBA フォーマットの場合には、SDL::TRANSFORM_SAFEを使うべきです。
 
 このメソッドはアルファブレンディングは一切しませんが、アルファチャンネルの
 値は保ちます。もし、アルファブレンディング、カラーキーの効果のある
-回転縮小拡大描画をしたい場合は@[transform_blit]をかわりに利用してください。
+回転縮小拡大描画をしたい場合は@[Surface.transform_blit]をかわりに利用してください。
 
 SEEALSO
-transform_blit
+Surface.transform_blit
 Surface#transform_surface
 Surface.new
 
 %%
 NAME transform_blit
+TYPE .
+DEP SGE
+PURPOSE カラーキーおよびアルファブレンドが有効な回転縮小拡大描画をします。
+OBSOLETE Surface.transform_blit
+
+PROTO
+transform_blit(src,dst,angle,xscale,yscale,px,py,qx,qy,flags)
+transformBlit(src,dst,angle,xscale,yscale,px,py,qx,qy,flags)
+
+%%
+NAME transform_blit
+MOD Surface
 TYPE .
 DEP SGE
 PURPOSE カラーキーおよびアルファブレンドが有効な回転縮小拡大描画をします。
@@ -2072,12 +2334,13 @@ transform_blit(src,dst,angle,xscale,yscale,px,py,qx,qy,flags)
 transformBlit(src,dst,angle,xscale,yscale,px,py,qx,qy,flags)
 
 DESC
-回転縮小拡大描画をします。引数の意味などは @[transform] と同様です。
-@[transform] との違いは $[src] に設定されたカラーキー(抜き色)
+回転縮小拡大描画をします。引数の意味などは 
+@[Surface.transform] と同様です。
+@[Surface.transform] との違いは $[src] に設定されたカラーキー(抜き色)
 およびアルファブレンディングが有効になることです。
 
 SEEALSO
-transform
+Surface.transform
 Surface#transform_surface
 Surface#set_color_key
 Surface#set_alpha
@@ -2091,16 +2354,17 @@ LOCK
 PURPOSE 直線を描画します。
 
 PROTO
-draw_line(x1,x2,y1,y2,color)
-drawLine(x1,x2,y1,y2,color)
+draw_line(x1,x2,y1,y2,color, aa=false, alpha=nil)
+drawLine(x1,x2,y1,y2,color, aa=false, alpha=nil)
 
 DESC
-($[x1], $[y1])から($[x2], $[y2])までの直線を $[color] で指定した色で
-描画します。
+($[x1], $[y1])から($[x2], $[y2])までの直線を $[color]
+で指定した色で描画します。$[aa]が真ならば
+アンチエイリアシングされた直線を描画します。
+$[alpha]が整数である場合はその値をα値として
+アルファブレンディングで描画します。
 
 SEEALSO
-Surface#draw_aa_line
-Surface#draw_line_alpha
 Surface#draw_rect
 
 %%
@@ -2115,6 +2379,7 @@ PROTO
 draw_aa_line(x1,x2,y1,y2,color)
 drawAALine(x1,x2,y1,y2,color)
 
+OBSOLETE Surface#draw_line
 DESC
 ($[x1], $[y1])から($[x2], $[y2])までの直線を $[color] で指定した色で
 アンチエイリアスして描画します。
@@ -2129,6 +2394,7 @@ TYPE #
 DEP SGE
 LOCK
 PURPOSE アルファブレンディングした直線を描画します。
+OBSOLETE Surface#draw_line
 
 PROTO
 draw_line_alpha(x1,x2,y1,y2,color,alpha)
@@ -2148,6 +2414,7 @@ TYPE #
 DEP SGE
 LOCK
 PURPOSE アルファブレンディングした直線を描画します。
+OBSOLETE Surface#draw_line
 
 PROTO
 draw_aa_line_alpha(x1,x2,y1,y2,color,alpha)
@@ -2169,12 +2436,16 @@ LOCK
 PURPOSE 長方形を描画します。
 
 PROTO
-draw_rect(x,y,w,h,color)
-drawRect(x,y,w,h,color)
+draw_rect(x,y,w,h,color, fill=false, alpha=nil)
+drawRect(x,y,w,h,color, fill=false, alpha=nil)
 
 DESC
-($[x], $[y])が左上の点で$[w]が幅、$[h]が高さの長方形を $[color] で
-指定した色で描画します。中を塗り潰しません。
+($[x], $[y])が左上の点で$[w]が幅、$[h]が高さの長方形を
+ $[color] で
+指定した色で描画します。$[fill]が真ならを中を塗り潰し、
+偽なら塗り潰しません。
+また、$[alpha]が整数ならばその値をα値としてアルファ
+ブレンディング描画します。
 
 SEEALSO
 Surface#fill_rect
@@ -2186,6 +2457,7 @@ TYPE #
 DEP SGE
 LOCK
 PURPOSE 長方形をアルファブレンディング描画します。
+OBSOLETE Surface#draw_rect
 
 PROTO
 draw_rect_alpha(x,y,w,h,color,alpha)
@@ -2206,6 +2478,7 @@ TYPE #
 DEP SGE
 LOCK
 PURPOSE 塗り潰した長方形をアルファブレンディング描画します。
+OBSOLETE Surface#draw_rect
 
 PROTO
 draw_filled_rect_alpha(x,y,w,h,color,alpha)
@@ -2228,20 +2501,23 @@ LOCK
 PURPOSE 円を描画します。
 
 PROTO
-draw_circle(x,y,r,color)
-drawCircle(x,y,r,color)
+draw_circle(x,y,r,color,fill=false,aa=false,alpha=0)
+drawCircle(x,y,r,color,fill=false,aa=false,alpha=0)
 
 DESC
-中心 ($[x],$[y])、半径 $[r]の円を $[color] で指定した色で描画します。
+中心 ($[x],$[y])、半径 $[r]の円を $[color] で指定した色
+で描画します。$[fill]が真なら中を塗り潰し、偽なら塗り潰しません。
+$[aa]が真ならアンチエイリアスをかけます。
+また、$[alpha]を整数にするとその値をα値として
+アルファブレンディング描画します。
+
+NOTES
+塗り潰し($[fill])、アンチエイリアス($[aa])、
+アルファブレンディング($[alpha])をすべて有効にして
+描画することはできません。
 
 SEEALSO
 Surface#draw_ellipse
-Surface#draw_filled_circle
-Surface#draw_aa_circle
-Surface#draw_aa_filled_circle
-Surface#draw_circle_alpha
-Surface#draw_filled_circle_alpha
-Surface#draw_aa_circle_alpha
 
 %%
 NAME draw_filled_circle
@@ -2250,6 +2526,7 @@ TYPE #
 DEP SGE
 LOCK
 PURPOSE 塗り潰した円を描画します。
+OBSOLETE draw_circle
 
 PROTO
 draw_filled_circle(x,y,r,color)
@@ -2269,6 +2546,7 @@ TYPE #
 DEP SGE
 LOCK
 PURPOSE アンチエイリアスをかけた円を描画します。
+OBSOLETE draw_circle
 
 PROTO
 draw_aa_circle(x,y,r,color)
@@ -2288,6 +2566,7 @@ TYPE #
 DEP SGE
 LOCK
 PURPOSE 塗り潰した円をアンチエイリアスをかけて描画します。
+OBSOLETE draw_circle
 
 PROTO
 draw_aa_filled_circle(x,y,r,color)
@@ -2307,6 +2586,7 @@ TYPE #
 DEP SGE
 LOCK
 PURPOSE 円をアルファブレンディング描画します。
+OBSOLETE draw_circle
 
 PROTO
 draw_circle_alpha(x,y,r,color,alpha)
@@ -2326,6 +2606,7 @@ TYPE #
 DEP SGE
 LOCK
 PURPOSE 塗り潰した円をアルファブレンディング描画します。
+OBSOLETE draw_circle
 
 PROTO
 draw_filled_circle_alpha(x,y,r,color,alpha)
@@ -2345,6 +2626,7 @@ TYPE #
 DEP SGE
 LOCK
 PURPOSE 円をアルファブレンディング、アンチエイリアス描画します。
+OBSOLETE draw_circle
 
 PROTO
 draw_aa_circle_alpha(x,y,r,color,alpha)
@@ -2366,20 +2648,23 @@ LOCK
 PURPOSE 楕円を描画します。
 
 PROTO
-draw_ellipse(x,y,rx,ry,color)
-drawEllipse(x,y,rx,ry,color)
+draw_ellipse(x,y,rx,ry,color, fill=false, aa=false, alpha=nil)
+drawEllipse(x,y,rx,ry,color, fill=false, aa=false, alpha=nil) )
 
 DESC
 中心 ($[x],$[y])、X方向の半径 $[xr]、Y方向の半径 $[ry] の楕円を $[color] で指定した色で描画します。
+$[fill]が真なら中を塗り潰し、偽なら塗り潰しません。
+$[aa]が真ならアンチエイリアスをかけます。
+また、$[alpha]を整数にするとその値をα値として
+アルファブレンディング描画します。
+
+NOTES
+塗り潰し($[fill])、アンチエイリアス($[aa])、
+アルファブレンディング($[alpha])をすべて有効にして
+描画することはできません。
 
 SEEALSO
 Surface#draw_circle
-Surface#draw_filled_ellipse
-Surface#draw_aa_ellipse
-Surface#draw_aa_filled_ellipse
-Surface#draw_ellipse_alpha
-Surface#draw_filled_ellipse_alpha
-Surface#draw_aa_ellipse_alpha
 
 %%
 NAME draw_filled_ellipse
@@ -2388,6 +2673,7 @@ TYPE #
 DEP SGE
 LOCK
 PURPOSE 塗り潰した楕円を描画します。
+OBSOLETE Surface#draw_ellipse
 
 PROTO
 draw_filled_ellipse(x,y,rx,ry,color)
@@ -2407,6 +2693,7 @@ TYPE #
 DEP SGE
 LOCK
 PURPOSE アンチエイリアスをかけた楕円を描画します。
+OBSOLETE Surface#draw_ellipse
 
 PROTO
 draw_aa_ellipse(x,y,rx,ry,color)
@@ -2426,6 +2713,7 @@ TYPE #
 DEP SGE
 LOCK
 PURPOSE 塗り潰した楕円をアンチエイリアスをかけて描画します。
+OBSOLETE Surface#draw_ellipse
 
 PROTO
 draw_aa_filled_ellipse(x,y,rx,ry,color)
@@ -2445,6 +2733,7 @@ TYPE #
 DEP SGE
 LOCK
 PURPOSE 楕円をアルファブレンディング描画します。
+OBSOLETE Surface#draw_ellipse
 
 PROTO
 draw_ellipse_alpha(x,y,rx,ry,color,alpha)
@@ -2464,6 +2753,7 @@ TYPE #
 DEP SGE
 LOCK
 PURPOSE 塗り潰した楕円をアルファブレンディング描画します。
+OBSOLETE Surface#draw_ellipse
 
 PROTO
 draw_filled_ellipse_alpha(x,y,rx,ry,color,alpha)
@@ -2483,6 +2773,7 @@ TYPE #
 DEP SGE
 LOCK
 PURPOSE 楕円をアルファブレンディング、アンチエイリアス描画します。
+OBSOLETE Surface#draw_ellipse
 
 PROTO
 draw_aa_ellipse_alpha(x,y,rx,ry,color,alpha)
@@ -2504,19 +2795,18 @@ LOCK
 PURPOSE ベジエ曲線を描く
 
 PROTO
-draw_bezier(x1,y1,x2,y2,x3,y3,x4,y4,level,color)
-drawBezier(x1,y1,x2,y2,x3,y3,x4,y4,level,color)
+draw_bezier(x1,y1,x2,y2,x3,y3,x4,y4,level,color,aa=false,alpha=nil)
+drawBezier(x1,y1,x2,y2,x3,y3,x4,y4,level,color,aa=false,alpha=nil)
 
 DESC
 ($[x1], $[y1]) から ($[x4], $[y4])までのベジエ曲線を
 ($[x2], $[y2]) と ($[x3], $[y3]) をコントロールポイントとして
 $[color]で指定した色で
-描画する。$[leve] は曲線の近似度で、4から7を使うと良い。
-
-SEEALSO
-Surface#draw_aa_bezier
-Surface#draw_bezier_alpha
-Surface#draw_aa_bezier_alpha
+描画します。$[leve] は曲線の近似度で、
+4から7を使うと良いでしょう。
+$[aa]が真ならアンチエイリアスをかけます。
+また、$[alpha]を整数にするとその値をα値として
+アルファブレンディング描画します。
 
 %%
 NAME draw_aa_bezier
@@ -2525,6 +2815,7 @@ TYPE #
 DEP SGE
 LOCK
 PURPOSE アンチエイリアスをかけたベジエ曲線を描く
+OBSOLETE Surface#draw_bezier
 
 PROTO
 draw_aa_bezier(x1,y1,x2,y2,x3,y3,x4,y4,level,color)
@@ -2546,6 +2837,7 @@ TYPE #
 DEP SGE
 LOCK
 PURPOSE ベジエ曲線をアルファブレンディングして描く
+OBSOLETE Surface#draw_bezier
 
 PROTO
 draw_bezier_alpha(x1,y1,x2,y2,x3,y3,x4,y4,level,color,alpha)
@@ -2567,6 +2859,7 @@ TYPE #
 DEP SGE
 LOCK
 PURPOSE アンチエイリアスしたベジエ曲線をアルファブレンディングして描く
+OBSOLETE Surface#draw_bezier
 
 PROTO
 draw_aa_bezier_alpha(x1,y1,x2,y2,x3,y3,x4,y4,level,color,alpha)
@@ -2597,8 +2890,8 @@ transformSurface(bgcolor,angle,xscale,yscale,flags)
 DESC
 $[self] を拡大縮小変形したサーフェスを生成し返す。
 回転によって生じた隙間は $[bgcolor] で指定した色で埋められる。
-引数 $[angle]、$[xscale]、$[yscale]、$[flags] は @[transform]
-と同じ意味である。
+引数 $[angle]、$[xscale]、$[yscale]、$[flags] は 
+@[Surface.transform] と同じ意味である。
 
 新しいサーフェスは $[self] と同じ bpp およびピクセルフォーマットを
 持つ。
@@ -2606,6 +2899,6 @@ $[self] を拡大縮小変形したサーフェスを生成し返す。
 EXCEPTION *
 
 SEEALSO
-transform
-transform_blit
+Surface.transform
+Surface.transform_blit
 

@@ -31,7 +31,7 @@ def format(lines,spaces)
   end
 end
 
-MethodDesc = Struct.new(:output, :purpose, :fullname, :module, :lock)
+MethodDesc = Struct.new(:output, :purpose, :fullname, :module, :lock, :obsolete)
 
 def rsd2rd(input)
   part = Hash.new{""}
@@ -68,7 +68,7 @@ def rsd2rd(input)
   part["PROTO"].each{|proto| output << "--- #{ns}#{part["TYPE"]}#{proto}"}
   output << "\n"
   if part.key?("OBSOLETE")
-    otuput << format("このメソッドの利用は推奨されません。代わりに@[#{part["OBSOLETE"]}]を利用してください。\n", 4)
+    output << format("このメソッドの利用は推奨されません。代わりに@[#{part["OBSOLETE"]}]を利用してください。\n", 4)
   end
   
   output << format(part["DESC"],4)
@@ -107,11 +107,13 @@ def rsd2rd(input)
                  part["PURPOSE"],
                  "#{ns}#{part["TYPE"]}#{part["NAME"]}",
                  part["MOD"],
-                 part.key?("LOCK"))
+                 part.key?("LOCK"),
+                 part.has_key?("OBSOLETE"))
 end
 
 def toc(methods)
-  methods.map{|m| "  * ((<#{m.fullname}>)) -- #{inline(m.purpose)}" }.join("\n")
+  methods.reject{|m| m.obsolete}.
+    map{|m| "  * ((<#{m.fullname}>)) -- #{inline(m.purpose)}" }.join("\n")
 end
 
 def locklist(methods)
@@ -119,7 +121,7 @@ def locklist(methods)
 end
 
 def methodlist(mod, methods)
-  methods.find_all{|m| m.module == mod}.
+  methods.find_all{|m| m.module == mod && !m.obsolete}.
     map{|m| "* ((<#{m.fullname}>)) -- #{inline(m.purpose)}"}.
     join("\n")
 end
