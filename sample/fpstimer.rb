@@ -56,7 +56,7 @@ class FPSTimerSample
   end
 
   def get_ticks
-    SDL.getTicks / 1000.0
+    SDL.get_ticks / 1000.0
   end
 
   def calc_real_fps
@@ -117,7 +117,7 @@ class FPSTimerLight
 
   private
   def get_ticks
-    SDL.getTicks * N
+    SDL.get_ticks * N
   end
   
   def wait(nxt)
@@ -163,7 +163,7 @@ if __FILE__ == $0
   log = []
   
   timer.reset
-  old = SDL.getTicks
+  old = SDL.get_ticks
   300.times do
     sleep 0.005 if rand(5) == 0
     timer.wait_frame do

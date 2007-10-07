@@ -1,11 +1,11 @@
 require 'sdl'
 
-SDL.init( SDL::INIT_VIDEO )
-screen = SDL::Screen.open(640,480,16,SDL::SWSURFACE)
-SDL::WM::setCaption('testsprite.rb','testsprite.rb icon')
-image = SDL::Surface.loadBMP("icon.bmp")
-image.setColorKey( SDL::SRCCOLORKEY ,0)
-$image = image.displayFormat
+SDL.init(SDL::INIT_VIDEO)
+screen = SDL::Screen.open(640, 480, 16, SDL::SWSURFACE)
+SDL::WM::set_caption('testsprite.rb','testsprite.rb icon')
+image = SDL::Surface.load_bmp("icon.bmp")
+image.set_color_key(SDL::SRCCOLORKEY ,0)
+$image = image.display_format
 
 class Sprite
   def initialize
@@ -38,7 +38,7 @@ class Sprite
   end
   
   def draw(screen)
-    SDL::Surface.blit($image,0,0,32,32,screen,@x,@y)
+    SDL::Surface.blit($image, 0, 0, 32, 32, screen, @x, @y)
   end
   
 end
@@ -56,13 +56,14 @@ while true
       exit
     end
   end
-  screen.fillRect(0,0,640,480,0)
+  screen.fill_rect(0, 0, 640, 480, 0)
   
   sprites.each {|i|
     i.move
     i.draw(screen)
   }
-  screen.updateRect(0,0,0,0)
+  
+  screen.update_rect(0, 0, 0, 0)
 end
 
 

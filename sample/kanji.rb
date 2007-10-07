@@ -7,11 +7,11 @@
 require 'sdl'
 
 SDL.init( SDL::INIT_VIDEO )
-screen = SDL::setVideoMode(640,480,16,SDL::SWSURFACE)
+screen = SDL::Screen.open(640,480,16,SDL::SWSURFACE)
 
 font = SDL::Kanji.open("8x16.bdf",16)
 font.add("jiskan16.bdf")
-font.setCodingSystem(SDL::Kanji::EUC)
+font.set_coding_system(SDL::Kanji::EUC)
 
 y = 0
 x = 0
@@ -23,14 +23,14 @@ while true
       exit
     end
   end
-  screen.fillRect(0,0,640,480,0)
+  screen.fill_rect(0,0,640,480,0)
 
   y = (y + 1) % 480
   x = (x + 1) % 640
   
   font.put(screen,"SDL Kanjiのテスト中",40,y,128,128,0)
-  font.putTate(screen,"縦書きもできます。",x,60,128,128,0)
+  font.put_tate(screen,"縦書きもできます。",x,60,128,128,0)
                
-  screen.updateRect(0,0,0,0)
+  screen.update_rect(0,0,0,0)
   sleep 0.005
 end

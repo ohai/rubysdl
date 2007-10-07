@@ -1,13 +1,15 @@
 require 'sdl'
 require 'opengl'
 
+# initialize SDL and opengl
 SDL.init SDL::INIT_VIDEO
-SDL.setGLAttr SDL::GL_RED_SIZE,5
-SDL.setGLAttr SDL::GL_GREEN_SIZE,5
-SDL.setGLAttr SDL::GL_BLUE_SIZE,5
-SDL.setGLAttr SDL::GL_DEPTH_SIZE,16
-SDL.setGLAttr SDL::GL_DOUBLEBUFFER,1
-SDL.setVideoMode 640,400,16,SDL::OPENGL
+SDL::GL.set_attr SDL::GL_RED_SIZE,5
+SDL::GL.set_attr SDL::GL_GREEN_SIZE,5
+SDL::GL.set_attr SDL::GL_BLUE_SIZE,5
+SDL::GL.set_attr SDL::GL_DEPTH_SIZE,16
+SDL::GL.set_attr SDL::GL_DOUBLEBUFFER,1
+SDL::Screen.open 640,400,16,SDL::OPENGL
+
 GL::Viewport( 0, 0, 640, 400 );
 GL::MatrixMode( GL::PROJECTION );
 GL::LoadIdentity( );
@@ -158,6 +160,6 @@ loop do
   GL::MatrixMode(GL::MODELVIEW);
   GL::Rotate(5.0, 1.0, 1.0, 1.0);
   
-  SDL.GLSwapBuffers
+  SDL::GL.swap_buffers
 
 end

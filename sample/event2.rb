@@ -1,11 +1,11 @@
 require 'sdl'
 
 SDL.init( SDL::INIT_VIDEO )
-screen = SDL::setVideoMode(640,480,16,SDL::SWSURFACE)
-SDL::WM::setCaption $0,$0
+screen = SDL::Screen.open(640,480,16,SDL::SWSURFACE)
+SDL::WM::set_caption $0,$0
 
 loop do
-  if event=SDL::Event.poll then
+  while event=SDL::Event.poll 
     case event
     when SDL::Event::Active
       print "Active ", (event.gain)?"gain":"lost","\n"
@@ -27,6 +27,8 @@ loop do
       
     end
   end
+
+  sleep 0.05
 end
   
 	

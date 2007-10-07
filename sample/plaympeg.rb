@@ -4,7 +4,7 @@ require 'sdl'
 SDL.init( SDL::INIT_VIDEO|SDL::INIT_AUDIO )
 SDL::Mixer.open
 
-screen = SDL.setVideoMode( 320, 240, 16, SDL::SWSURFACE )
+screen = SDL::Screen.open( 320, 240, 16, SDL::SWSURFACE )
 
 mpeg = SDL::MPEG.load( 'sample.mpg' )
 
@@ -12,11 +12,11 @@ info = mpeg.info
 
 p(info)
 
-mpeg.enableAudio true
-mpeg.enableVideo true
+mpeg.enable_audio true
+mpeg.enable_video true
 
-mpeg.setDisplay(screen)
-mpeg.setDisplayRegion( 0, 0, screen.w, screen.h )
+mpeg.set_display(screen)
+mpeg.set_display_region( 0, 0, screen.w, screen.h )
 mpeg.play
 
 loop do

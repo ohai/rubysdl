@@ -1,7 +1,7 @@
 require 'sdl'
 
 SDL.init( SDL::INIT_VIDEO )
-screen = SDL::setVideoMode(640,480,16,SDL::SWSURFACE)
+screen = SDL::Screen.open(640,480,16,SDL::SWSURFACE)
 
 font = SDL::BMFont.open("font.bmp",SDL::BMFont::TRANSPARENT)
 
@@ -14,7 +14,7 @@ while true
       exit
     end
   end
-  screen.fillRect(0,0,640,480,0)
+  screen.fill_rect(0,0,640,480,0)
 
   y = (y + 1) % 480
   font.textout(screen,"BitMapFont Testing..",40,y)

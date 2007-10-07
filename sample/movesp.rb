@@ -1,12 +1,12 @@
 require 'sdl'
 
-SDL.init( SDL::INIT_VIDEO )
+SDL.init(SDL::INIT_VIDEO)
 
-screen = SDL::setVideoMode(640,480,16,SDL::SWSURFACE)
+screen = SDL::Screen.open(640,480,16,SDL::SWSURFACE)
 
-image = SDL::Surface.loadBMP("icon.bmp")
-image.setColorKey( SDL::SRCCOLORKEY || SDL::RLEACCEL ,0)
-$image = image.displayFormat
+image = SDL::Surface.load_bmp("icon.bmp")
+image.set_color_key( SDL::SRCCOLORKEY || SDL::RLEACCEL ,0)
+$image = image.display_format
 
 
 class Sprite
@@ -40,7 +40,7 @@ class Sprite
   end
   
   def draw(screen)
-    SDL.blitSurface($image,0,0,32,32,screen,@x,@y)
+    SDL::Surface.blit($image,0,0,32,32,screen,@x,@y)
   end
   
 end
@@ -64,11 +64,12 @@ class MovableSp
   end
   
   def draw(screen)
-    SDL.blitSurface($image,0,0,32,32,screen,300+@lr*50,200+@ud*50)
+    SDL::Surface.blit($image,0,0,32,32,screen,300+@lr*50,200+@ud*50)
   end
 end
 
 sprites << MovableSp.new
+black = screen.format.map_rgb(0, 0, 0)
 
 while true
   while event = SDL::Event.poll
@@ -80,14 +81,14 @@ while true
     end
   end
   
-  screen.fillRect(0,0,640,480,0)
+  screen.fill_rect(0,0,640,480,black)
   SDL::Key.scan
   
   sprites.each {|i|
     i.move
     i.draw(screen)
   }
-  screen.updateRect(0,0,0,0)
+  screen.update_rect(0,0,0,0)
 end
 
 

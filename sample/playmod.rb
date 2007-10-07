@@ -4,11 +4,10 @@ require 'sdl'
 SDL::init(SDL::INIT_AUDIO)
 
 SDL::Mixer.open(22050)
-SDL::Mixer::playMusic?
 music = SDL::Mixer::Music.load("sample.it")
 
-SDL::Mixer.playMusic(music,0)
+SDL::Mixer.play_music(music,0)
 
-while SDL::Mixer::playMusic?
+while SDL::Mixer::play_music?
   sleep 1
 end

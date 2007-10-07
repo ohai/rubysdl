@@ -1,12 +1,12 @@
 require 'sdl'
 
 SDL.init( SDL::INIT_VIDEO )
-screen = SDL::setVideoMode(640,480,16,SDL::SWSURFACE)
-SDL::WM::setCaption('collision.rb','collision.rb icon')
-$image = SDL::Surface.loadBMP("icon.bmp")
-$image.setColorKey( SDL::SRCCOLORKEY ,0)
-$image = $image.displayFormat
-$cMap = $image.makeCollisionMap
+screen = SDL::Screen.open(640,480,16,SDL::SWSURFACE)
+SDL::WM::set_caption('collision.rb','collision.rb icon')
+$image = SDL::Surface.load_bmp("icon.bmp")
+$image.set_color_key( SDL::SRCCOLORKEY ,0)
+$image = $image.display_format
+$cMap = $image.make_collision_map
 
 class Sprite
 
@@ -21,8 +21,8 @@ class Sprite
   end
   
   def move
-    @x, @dx = moveCoord(@x, @dx, xMax)
-    @y, @dy = moveCoord(@y, @dy, yMax)
+    @x, @dx = move_coord(@x, @dx, xMax)
+    @y, @dy = move_coord(@y, @dy, yMax)
   end
 
   def bounce
@@ -32,16 +32,16 @@ class Sprite
   end
 
   def draw
-    SDL.blitSurface($image,0,0,$image.w,$image.h,@screen,@x,@y)
+    SDL::Surface.blit($image,0,0,$image.w,$image.h,@screen,@x,@y)
   end
   
-  def collidingWith(sprite)
-    $cMap.collisionCheck(@x, @y, $cMap, sprite.x, sprite.y) != nil
+  def collide_with?(sprite)
+    $cMap.collision_check(@x, @y, $cMap, sprite.x, sprite.y) != nil
   end
 
   private
 
-  def moveCoord(coord, delta, max)
+  def move_coord(coord, delta, max)
     coord += delta
     if coord >= max then
       delta *= -1
@@ -64,11 +64,11 @@ class Sprite
   
 end
 
-def detectCollisions(sprites)
+def detect_collisions(sprites)
   collisions = []
   for i in (0 ... sprites.size - 1) do
     for j in (i + 1 ... sprites.size) do
-      if sprites[i].collidingWith(sprites[j])
+      if sprites[i].collide_with?(sprites[j])
         collisions << sprites[i]
         collisions << sprites[j]
       end
@@ -79,7 +79,7 @@ end
 
 sprites = (1..8).collect {Sprite.new(screen)}
 
-
+background = screen.format.map_rgb(64, 64, 64)
 while true
   while event = SDL::Event.poll
     case event
@@ -88,10 +88,10 @@ while true
     end
   end
 
-  screen.fillRect(0,0,640,480,screen.mapRGB(64, 64, 64))
+  screen.fill_rect(0,0,640,480,background)
   sprites.each {|i| i.move}
-  detectCollisions(sprites).each {|i| i.bounce}
+  detect_collisions(sprites).each {|i| i.bounce}
   sprites.each {|i| i.draw}
-  screen.updateRect(0,0,0,0)
+  screen.update_rect(0,0,0,0)
 end
 

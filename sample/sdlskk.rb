@@ -29,10 +29,10 @@ bind.set_default_key
 
 context = SDL::SKK::Context.new( dict, table, bind, use_minibuffer )
 
-screen = SDL::setVideoMode( 640, 480, 16, SDL::SWSURFACE )
-SDL::WM.setCaption( $0, $0 )
+screen = SDL::Screen.open( 640, 480, 16, SDL::SWSURFACE )
+SDL::WM.set_caption( $0, $0 )
 
-BLACK = screen.mapRGB( 0, 0, 0 )
+BLACK = screen.format.map_rgb( 0, 0, 0 )
 loop do
 
   while event = SDL::Event.poll do
@@ -53,17 +53,17 @@ loop do
 
   text_surface = context.render_str( font, 255, 0, 255 )
 
-  screen.fillRect( 0, 0, 640, 480, BLACK )
-  SDL.blitSurface( text_surface, 0, 0, 0, 0, screen, 0, 0 )
+  screen.fill_rect( 0, 0, 640, 480, BLACK )
+  SDL::Surface.blit( text_surface, 0, 0, 0, 0, screen, 0, 0 )
 
   if use_minibuffer then
     minibuffer_surface = context.render_minibuffer_str( font, 255, 0, 255 )
     if minibuffer_surface then
-      SDL.blitSurface( minibuffer_surface, 0, 0, 0, 0, screen, 0, 40 )
+      SDL::Surface.blit( minibuffer_surface, 0, 0, 0, 0, screen, 0, 40 )
     end
   end
   
-  screen.updateRect( 0, 0, 0, 0 )
+  screen.update_rect( 0, 0, 0, 0 )
 
   sleep 0.05
   
