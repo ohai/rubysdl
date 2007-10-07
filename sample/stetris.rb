@@ -117,9 +117,9 @@ end
 
 class Level
   def load_render_data
-    @image = SDL::Surface.loadBMP("icon.bmp")
-    @image.setColorKey( SDL::SRCCOLORKEY ,0)
-    @image = @image.displayFormat
+    @image = SDL::Surface.load_bmp("icon.bmp")
+    @image.set_color_key( SDL::SRCCOLORKEY ,0)
+    @image = @image.display_format
     @step_x = 32  # todo: image width
     @step_y = 32  # todo: image height
     # todo: raise exception is level does not fit to screen!
@@ -139,14 +139,14 @@ class Level
     x = @offset_x
     cells.each do |cell|
       i = (cell == 0) ? 63 : 255
-      @image.setAlpha(SDL::SRCALPHA,i)
+      @image.set_alpha(SDL::SRCALPHA,i)
       $screen.put(@image,x,y)
       x += @step_x
     end
   end
   FILL = (20 * 256*256) + (0 * 256) + 10
   def render_removal(rows)
-    $screen.fillRect(0,0,640,512,0)
+    $screen.fill_rect(0,0,640,512,0)
     render
     rows.reverse_each do |row|
       y = (row * @step_y) + @offset_y
@@ -155,7 +155,7 @@ class Level
 	i = 0
 	x = @offset_x
 	while i < @width
-	  $screen.fillRect(x,y,@step_x,@step_y,FILL)
+	  $screen.fill_rect(x,y,@step_x,@step_y,FILL)
 	  $screen.flip
 	  i += 1
 	  x += @step_x
@@ -165,7 +165,7 @@ class Level
 	i = 0
 	x = @offset_x + ((@width-1)*@step_x)
 	while i < @width
-	  $screen.fillRect(x,y,@step_x,@step_y,FILL)
+	  $screen.fill_rect(x,y,@step_x,@step_y,FILL)
 	  $screen.flip
 	  i += 1
 	  x -= @step_x
@@ -177,7 +177,7 @@ class Level
 end
 
 SDL.init( SDL::INIT_VIDEO )
-$screen = SDL::setVideoMode(640,512,24,SDL::SWSURFACE)
+$screen = SDL::Screen.open(640,512,24,SDL::SWSURFACE)
 level = Level.new
 level.test
 level.load_render_data
@@ -268,8 +268,7 @@ loop do
   end
   
   # repaint screen
-  $screen.fillRect(0,0,640,512,0)
+  $screen.fill_rect(0,0,640,512,0)
   level.render
-  GC.start # release memory.. otherwise it would grow steady
   $screen.flip
 end
