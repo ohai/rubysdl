@@ -2256,13 +2256,13 @@ NAME transform
 TYPE .
 DEP SGE
 PURPOSE 回転縮小拡大描画をします。
-OBSOLETE Surface.transform
+OBSOLETE Surface.transform_draw
 
 PROTO
 transform(src,dst,angle,xscale,yscale,px,py,qx,qy,flags)
 
 %%
-NAME transform
+NAME transform_draw
 MOD Surface
 TYPE .
 DEP SGE
