@@ -3,7 +3,7 @@ module SDL
   # compatible method definition
   module_function
   def blitSurface(*args)
-    SDL::Screen.blit(*args)
+    SDL::Surface.blit(*args)
   end
 
   def getVideoSurface
@@ -220,7 +220,8 @@ module SDL
       alias draw_filled_circle_alpha drawFilledCircleAlpha
       alias draw_ellipse_alpha drawEllipseAlpha
       alias draw_filled_ellipse_alpha drawFilledEllipseAlpha
-
+      alias draw_filled_ellipse drawFilledEllipse
+      
       alias draw_aa_line_alpha drawAALineAlpha
       alias draw_aa_circle_alpha drawAACircleAlpha
       alias draw_aa_ellipse_alpha drawAAEllipseAlpha
