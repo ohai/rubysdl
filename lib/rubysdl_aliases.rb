@@ -135,6 +135,13 @@ module SDL
   end
 end
 
+# rubysdl_mouse.c
+module SDL
+  class << Mouse
+    alias set_cursor setCursor
+  end
+end
+
 # rubysdl_joystick.c
 module SDL
   class << Joystick
