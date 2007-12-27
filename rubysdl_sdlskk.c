@@ -169,8 +169,8 @@ static VALUE Dictionary_load(VALUE self, VALUE filename, VALUE users)
   rb_secure(4);
   SafeStringValue(filename);
   
-  if(!SDLSKK_Dict_load(dict, RSTRING(filename)->ptr, RTEST(users)))
-    rb_raise(eSDLError, "Couldn't load %s", RSTRING(filename)->ptr);
+  if(!SDLSKK_Dict_load(dict, RSTRING_PTR(filename), RTEST(users)))
+    rb_raise(eSDLError, "Couldn't load %s", RSTRING_PTR(filename));
 
   return Qnil;
 }
@@ -181,8 +181,8 @@ static VALUE Dictionary_save(VALUE self, VALUE filename)
   rb_secure(4);
   SafeStringValue(self);
   
-  if(!SDLSKK_Dict_save_user_dict(dict, RSTRING(filename)->ptr))
-    rb_raise(eSDLError, "Couldn't save %s", RSTRING(filename)->ptr);
+  if(!SDLSKK_Dict_save_user_dict(dict, RSTRING_PTR(filename)))
+    rb_raise(eSDLError, "Couldn't save %s", RSTRING_PTR(filename));
   return Qnil;
 }
 
@@ -192,10 +192,10 @@ static VALUE RomKanaRuleTable_s_new(VALUE klass, VALUE table_file)
   rb_secure(4);
   SafeStringValue(table_file);
   
-  rule_table = SDLSKK_RomKanaRuleTable_new(RSTRING(table_file)->ptr);
+  rule_table = SDLSKK_RomKanaRuleTable_new(RSTRING_PTR(table_file));
 
   if(rule_table == NULL)
-    rb_raise(eSDLError, "Couldn't load %s", RSTRING(table_file)->ptr);
+    rb_raise(eSDLError, "Couldn't load %s", RSTRING_PTR(table_file));
   
   return Data_Wrap_Struct(klass, 0, SDLSKK_RomKanaRuleTable_delete, rule_table);
 }

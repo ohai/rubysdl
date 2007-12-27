@@ -394,9 +394,9 @@ static VALUE BMFont_open(VALUE klass,  VALUE file,  VALUE flags)
   rb_secure(4);
   SafeStringValue(file);
   
-  font = sge_BF_OpenFont(RSTRING(file)->ptr, NUM2UINT(flags));
+  font = sge_BF_OpenFont(RSTRING_PTR(file), NUM2UINT(flags));
   if(font == NULL)
-    rb_raise(eSDLError, "Couldn't open font: %s", RSTRING(file)->ptr);
+    rb_raise(eSDLError, "Couldn't open font: %s", RSTRING_PTR(file));
   
   return Data_Wrap_Struct(cBMFont, 0, bf_close, font);
 }
@@ -423,7 +423,7 @@ static VALUE BMFont_textSize(VALUE self, VALUE text)
   StringValue(text);
   SDL_Rect rect;
   rect = sge_BF_TextSize(Get_sge_bmpFont(self),
-                         RSTRING(text)->ptr);
+                         RSTRING_PTR(text));
   return rb_ary_new3(2, INT2FIX(rect.w), INT2FIX(rect.h));
 }
 
@@ -436,7 +436,7 @@ static VALUE BMFont_textout(VALUE self,
   StringValue(string);
   
   sge_BF_textout(Get_SDL_Surface(surface), Get_sge_bmpFont(self),
-                 RSTRING(string)->ptr, NUM2INT(x), NUM2INT(y));
+                 RSTRING_PTR(string), NUM2INT(x), NUM2INT(y));
   return Qnil;
 }
 

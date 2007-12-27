@@ -241,10 +241,10 @@ static VALUE Wave_s_load(VALUE class, VALUE filename)
   rb_secure(4);
   SafeStringValue(filename);
   
-  chunk = Mix_LoadWAV(RSTRING(filename)->ptr);
+  chunk = Mix_LoadWAV(RSTRING_PTR(filename));
   if( chunk == NULL ){
     rb_raise(eSDLError, "Couldn't load wave file %s: %s",
-             RSTRING(filename)->ptr, SDL_GetError());
+             RSTRING_PTR(filename), SDL_GetError());
   }
   return Wave_create(chunk);
 }
@@ -381,10 +381,10 @@ static VALUE Music_s_load(VALUE class, VALUE filename)
   rb_secure(4);
   SafeStringValue(filename);
   
-  music = Mix_LoadMUS(RSTRING(filename)->ptr);
+  music = Mix_LoadMUS(RSTRING_PTR(filename));
   if( music == NULL )
         rb_raise(eSDLError, 
-                 "Couldn't load %s: %s", RSTRING(filename)->ptr,
+                 "Couldn't load %s: %s", RSTRING_PTR(filename),
                  SDL_GetError());
   return Music_create(music);
 }
@@ -398,8 +398,8 @@ static VALUE Mixer_s_loadMusFromString(VALUE class, VALUE str)
   
   StringValue(str);
   buf = rb_str_dup(str);
-  music = Mix_LoadMUS_RW(SDL_RWFromConstMem(RSTRING(buf)->ptr,
-                                            RSTRING(buf)->len));
+  music = Mix_LoadMUS_RW(SDL_RWFromConstMem(RSTRING_PTR(buf),
+                                            RSTRING_LEN(buf)));
   
   if( music == NULL )
     rb_raise(eSDLError,

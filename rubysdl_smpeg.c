@@ -90,10 +90,10 @@ static VALUE MPEG_s_load(VALUE klass, VALUE filename)
   rb_secure(4);
   SafeStringValue(filename);
   
-  smpeg = SMPEG_new(RSTRING(filename)->ptr, NULL, 0);
+  smpeg = SMPEG_new(RSTRING_PTR(filename), NULL, 0);
   if( SMPEG_error(smpeg) ){
     snprintf(error_msg, sizeof(error_msg), "Couldn't load %s: %s", 
-	     RSTRING(filename)->ptr, SMPEG_error(smpeg));
+	     RSTRING_PTR(filename), SMPEG_error(smpeg));
     SMPEG_delete(smpeg);
     rb_raise(eSDLError, "%s", error_msg);
   }

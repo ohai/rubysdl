@@ -33,7 +33,7 @@ static VALUE WM_s_setCaption(VALUE mod, VALUE title, VALUE icon)
   SafeStringValue(title);
   SafeStringValue(icon);
   
-  SDL_WM_SetCaption(RSTRING(title)->ptr, RSTRING(icon)->ptr);
+  SDL_WM_SetCaption(RSTRING_PTR(title), RSTRING_PTR(icon));
   return Qnil;
 }
 static VALUE WM_s_set_icon(VALUE mod, VALUE icon)

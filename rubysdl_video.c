@@ -88,7 +88,7 @@ static VALUE Screen_create(SDL_Surface* surface)
 Uint32 VALUE2COLOR(VALUE color,SDL_PixelFormat *format)
 {
   if( rb_obj_is_kind_of( color, rb_cArray ) ){
-    switch( RARRAY(color)->len ){
+    switch( RARRAY_LEN(color) ){
     case 3:
       return SDL_MapRGB(format,
 			NUM2UINT(rb_ary_entry(color,0)),
@@ -340,8 +340,8 @@ static VALUE Surface_s_createFrom(VALUE klass,VALUE pixels,VALUE w,
   void* pixel_data;
   
   StringValue(pixels);
-  pixel_data = ALLOC_N(char, RSTRING(pixels)->len);
-  memcpy(pixel_data,RSTRING(pixels)->ptr,RSTRING(pixels)->len);
+  pixel_data = ALLOC_N(char, RSTRING_LEN(pixels));
+  memcpy(pixel_data,RSTRING_PTR(pixels),RSTRING_LEN(pixels));
   
   surface = SDL_CreateRGBSurfaceFrom(pixel_data,NUM2INT(w),NUM2INT(h),
                                      NUM2UINT(depth),NUM2INT(pitch),
@@ -360,10 +360,10 @@ static VALUE Surface_s_loadBMP(VALUE klass,VALUE filename)
   rb_secure(4);
   SafeStringValue(filename);
   
-  image = SDL_LoadBMP(RSTRING(filename)->ptr);
+  image = SDL_LoadBMP(RSTRING_PTR(filename));
   if(image == NULL){
     rb_raise(eSDLError,"Couldn't Load BMP file %s : %s",
-	     RSTRING(filename)->ptr,SDL_GetError());
+	     RSTRING_PTR(filename),SDL_GetError());
   }
   return Surface_create(image);
 }
@@ -383,8 +383,8 @@ static VALUE Surface_saveBMP(VALUE self,VALUE filename)
 {
   rb_secure(4);
   SafeStringValue(filename);
-  if( SDL_SaveBMP(Get_SDL_Surface(self), RSTRING(filename)->ptr)==-1 ){
-    rb_raise(eSDLError,"cannot save %s: %s",RSTRING(filename)->ptr,SDL_GetError());
+  if( SDL_SaveBMP(Get_SDL_Surface(self), RSTRING_PTR(filename))==-1 ){
+    rb_raise(eSDLError,"cannot save %s: %s",RSTRING_PTR(filename),SDL_GetError());
   }
   return Qnil;
 }
@@ -561,7 +561,7 @@ static void check_colors(VALUE colors,VALUE firstcolor)
   
   Check_Type(colors,T_ARRAY);
   
-  if( RARRAY(colors)->len+NUM2INT(firstcolor) > 256 )
+  if( RARRAY_LEN(colors)+NUM2INT(firstcolor) > 256 )
     rb_raise(eSDLError,"colors is too large");
 }
 static void set_colors_to_array(VALUE colors,SDL_Color palette[])
@@ -569,10 +569,10 @@ static void set_colors_to_array(VALUE colors,SDL_Color palette[])
   VALUE color;
   int i;
   
-  for( i=0; i < RARRAY(colors)->len; ++i){
+  for( i=0; i < RARRAY_LEN(colors); ++i){
     color = rb_ary_entry(colors,i);
     Check_Type(color,T_ARRAY);
-    if( RARRAY(color)->len != 3)
+    if( RARRAY_LEN(color) != 3)
       rb_raise(rb_eArgError,"a color must be array that has 3 length");
     palette[i].r = NUM2INT(rb_ary_entry(color,0));
     palette[i].g = NUM2INT(rb_ary_entry(color,1));
@@ -591,7 +591,7 @@ static VALUE Surface_setPalette(VALUE self,VALUE flags,
 
   rb_secure(4);
   return INT2BOOL(SDL_SetPalette(Get_SDL_Surface(self), NUM2UINT(flags), palette,
-                                 NUM2INT(firstcolor), RARRAY(colors)->len));
+                                 NUM2INT(firstcolor), RARRAY_LEN(colors)));
 }
 
 static VALUE Surface_setColors(VALUE self,VALUE colors,VALUE firstcolor)
@@ -602,7 +602,7 @@ static VALUE Surface_setColors(VALUE self,VALUE colors,VALUE firstcolor)
   check_colors(colors,firstcolor);
   set_colors_to_array(colors,palette);
   return INT2BOOL(SDL_SetColors(Get_SDL_Surface(self), palette,
-                                NUM2INT(firstcolor), RARRAY(colors)->len));
+                                NUM2INT(firstcolor), RARRAY_LEN(colors)));
 }
 
 static VALUE PixelFormat_pallete(VALUE self)

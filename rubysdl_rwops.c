@@ -26,8 +26,8 @@ static int rubyio_read(SDL_RWops* context, void* ptr, int size, int maxnum)
   str = rb_funcall(io, rb_intern("read"), 1, INT2NUM(size*maxnum));
   StringValue(str);
   
-  memcpy(ptr, RSTRING(str)->ptr, RSTRING(str)->len);
-  return RSTRING(str)->len/size;
+  memcpy(ptr, RSTRING_PTR(str), RSTRING_LEN(str));
+  return RSTRING_LEN(str)/size;
 }
 
 static int rubyio_write(SDL_RWops* context, const void* ptr, int size, int num)

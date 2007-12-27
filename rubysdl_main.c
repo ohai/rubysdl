@@ -46,8 +46,8 @@ static VALUE sdl_s_putenv(VALUE mod, VALUE var)
   rb_secure(4);
   SafeStringValue(var);
   
-  if( putenv(RSTRING(var)->ptr) < 0 ){
-    rb_raise(eSDLError, "Can't put environ variable: %s",  RSTRING(var)->ptr);
+  if( putenv(RSTRING_PTR(var)) < 0 ){
+    rb_raise(eSDLError, "Can't put environ variable: %s",  RSTRING_PTR(var));
   }
   return Qnil;
 }
@@ -56,9 +56,9 @@ static VALUE sdl_s_getenv(VALUE mod, VALUE name)
 {
   char* result;
   SafeStringValue(name);
-  result = getenv(RSTRING(name)->ptr);
+  result = getenv(RSTRING_PTR(name));
   if(result == NULL){
-    rb_raise(eSDLError, "Can't get environ variable: %s",  RSTRING(name)->ptr);
+    rb_raise(eSDLError, "Can't get environ variable: %s",  RSTRING_PTR(name));
   }
   return rb_str_new2(result);
 }

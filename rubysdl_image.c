@@ -28,10 +28,10 @@ static VALUE Surface_s_load(VALUE klass, VALUE filename)
   rb_secure(4);
   SafeStringValue(filename);
 
-  surface = IMG_Load(RSTRING(filename)->ptr);
+  surface = IMG_Load(RSTRING_PTR(filename));
   if(surface == NULL)
     rb_raise(eSDLError,"Couldn't load %s: %s",
-             RSTRING(filename)->ptr, SDL_GetError());
+             RSTRING_PTR(filename), SDL_GetError());
   return Surface_create(surface);
 }
 static VALUE Surface_s_loadFromIO(VALUE class,VALUE io)

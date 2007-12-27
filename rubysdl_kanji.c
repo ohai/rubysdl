@@ -33,9 +33,9 @@ static VALUE Font_s_open(VALUE klass, VALUE filename, VALUE size)
   rb_secure(4);
   SafeStringValue(filename);
   
-  font = Kanji_OpenFont(RSTRING(filename)->ptr, NUM2INT(size));
+  font = Kanji_OpenFont(RSTRING_PTR(filename), NUM2INT(size));
   if(font == NULL)
-    rb_raise(eSDLError,"Couldn't open bdf font: %s", RSTRING(filename)->ptr);
+    rb_raise(eSDLError,"Couldn't open bdf font: %s", RSTRING_PTR(filename));
   return Data_Wrap_Struct(cKanjiFont, 0, Kanji_CloseFont, font);
 }
 
@@ -49,15 +49,15 @@ static VALUE Font_add(VALUE self, VALUE filename)
 {
   rb_secure(4);
   SafeStringValue(filename);
-  if(Kanji_AddFont(Get_Kanji_Font(self), RSTRING(filename)->ptr) == -1)
-    rb_raise(eSDLError, "Couldn't use font: %s", RSTRING(filename)->ptr);
+  if(Kanji_AddFont(Get_Kanji_Font(self), RSTRING_PTR(filename)) == -1)
+    rb_raise(eSDLError, "Couldn't use font: %s", RSTRING_PTR(filename));
   return Qnil;
 }
 
 static VALUE Font_textwidth(VALUE self, VALUE text)
 {
   StringValue(text);
-  return INT2FIX(Kanji_FontWidth(Get_Kanji_Font(self), RSTRING(text)->ptr));
+  return INT2FIX(Kanji_FontWidth(Get_Kanji_Font(self), RSTRING_PTR(text)));
 }
 
 static VALUE Font_width(VALUE self)
@@ -82,7 +82,7 @@ static void Font_put(VALUE self, VALUE surface, VALUE text,
   color.r = NUM2INT(r);color.g = NUM2INT(g); color.b = NUM2INT(b);
   
   draw(Get_Kanji_Font(self), NUM2INT(x), NUM2INT(y),
-       Get_SDL_Surface(surface), RSTRING(text)->ptr, color);
+       Get_SDL_Surface(surface), RSTRING_PTR(text), color);
 }
   
 static VALUE Font_putText(VALUE self, VALUE surface, VALUE text,

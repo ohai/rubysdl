@@ -59,14 +59,14 @@ static VALUE Font_s_open(int argc, VALUE *argv, VALUE class)
   SafeStringValue(filename);
   
   if(NIL_P(index))
-    font = TTF_OpenFont(RSTRING(filename)->ptr, NUM2INT(size));
+    font = TTF_OpenFont(RSTRING_PTR(filename), NUM2INT(size));
   else
-    font = TTF_OpenFontIndex(RSTRING(filename)->ptr,
+    font = TTF_OpenFontIndex(RSTRING_PTR(filename),
                              NUM2INT(size), NUM2INT(index));
   
   if(font == NULL)
     rb_raise(eSDLError,"Couldn't open font %s: %s",
-             RSTRING(filename)->ptr, TTF_GetError());
+             RSTRING_PTR(filename), TTF_GetError());
   return Data_Wrap_Struct(class, 0, Font_free, font);
 }
 
@@ -114,7 +114,7 @@ static VALUE Font_textSize(VALUE self, VALUE text)
   int w,h;
   
   StringValue(text);
-  TTF_SizeUTF8(Get_TTF_Font(self), RSTRING(text)->ptr, &w, &h);
+  TTF_SizeUTF8(Get_TTF_Font(self), RSTRING_PTR(text), &w, &h);
   return rb_ary_new3(2, INT2FIX(w), INT2FIX(h));
 }
 
@@ -159,7 +159,7 @@ static VALUE render(VALUE self, VALUE text,
   StringValue(text);
 
   surface = renderer(Get_TTF_Font(self),
-                     RSTRING(text)->ptr,
+                     RSTRING_PTR(text),
                      rgb_to_SDL_Color(fgr, fgg, fgb),
                      rgb_to_SDL_Color(bgr, bgg, bgb));
   

@@ -49,8 +49,8 @@ static VALUE Mouse_s_setCursor_imp(VALUE mod,VALUE data,VALUE mask,VALUE w,
   SafeStringValue(data);
   SafeStringValue(mask);
   
-  new_cursor = SDL_CreateCursor((Uint8 *)RSTRING(data)->ptr,
-                                (Uint8 *)RSTRING(mask)->ptr,
+  new_cursor = SDL_CreateCursor((Uint8 *)RSTRING_PTR(data),
+                                (Uint8 *)RSTRING_PTR(mask),
                                 NUM2INT(w), NUM2INT(h),
                                 NUM2INT(hot_x),NUM2INT(hot_y));
   if(new_cursor == NULL)
