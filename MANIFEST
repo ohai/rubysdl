@@ -8,7 +8,7 @@ depend
 extconf.rb
 lib/rubysdl_aliases.rb
 lib/sdl.rb
-lib/rubysdl_compatible_1.rb
+lib/rubysdl_compatible_ver1.rb
 rubysdl.h
 rubysdl_const_list.txt
 rubysdl_doc_old.rd
@@ -30,7 +30,6 @@ rubysdl_joystick.c
 rubysdl_image.c
 rubysdl_opengl.c
 rubysdl_pixel.c
-rubysdl_event2.c
 rubysdl_smpeg.c
 rubysdl_sdlskk.c
 rubysdl_kanji.c
