@@ -68,7 +68,7 @@ int rubysdl_is_quit(void)
 {
   return is_quit;
 }
-static void sdl_quit()
+static void sdl_quit(VALUE v)
 {
   if(rubysdl_is_quit())
     return;
@@ -80,7 +80,7 @@ static void sdl_quit()
 
 static VALUE sdl_s_quit(VALUE obj)
 {
-  sdl_quit();
+  sdl_quit(0);
   return Qnil;
 }
 
