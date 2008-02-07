@@ -420,8 +420,8 @@ static VALUE BMFont_getWidth(VALUE self)
 
 static VALUE BMFont_textSize(VALUE self, VALUE text)
 {
-  StringValue(text);
   SDL_Rect rect;
+  StringValue(text);
   rect = sge_BF_TextSize(Get_sge_bmpFont(self),
                          RSTRING_PTR(text));
   return rb_ary_new3(2, INT2FIX(rect.w), INT2FIX(rect.h));
