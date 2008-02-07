@@ -17,8 +17,8 @@
   License along with this library; if not, write to the Free Software
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
   */
-#ifdef HAVE_SDL_IMAGE
 #include "rubysdl.h"
+#ifdef HAVE_SDL_IMAGE
 #include <SDL_image.h>
 
 static VALUE Surface_s_load(VALUE klass, VALUE filename)

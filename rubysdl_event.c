@@ -206,8 +206,9 @@ static VALUE Event_s_new(VALUE class)
 static VALUE Event_s_push(VALUE class, VALUE event)
 {
   SDL_Event e;
+  VALUE eventClass;
   rb_secure(4);
-  VALUE eventClass = CLASS_OF(event);
+  eventClass = CLASS_OF(event);
   if(eventClass == cActiveEvent){
     e.type = SDL_ACTIVEEVENT;
     e.active.gain = rb_iv_get(event, "@gain");
