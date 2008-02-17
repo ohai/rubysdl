@@ -1,0 +1,159 @@
+= OpenGL関連
+* ((<OpenGL 関連機能概要>))
+
+* OpenGL関連メソッド
+TOC
+
+== OpenGL 関連機能概要
+Ruby/SDL は、いくつかのプラットフォーム(Linux/X11,
+Win32, MacOS X, etc)において、
+OpenGL コンテキストを生成し使うことができます。
+これにより、OpenGLと同時に
+Ruby/SDLのオーディオ・イベント処理・
+タイマーを使うことができます。
+
+Ruby/SDL そのものは OpenGL 用のメソッドを持っていません。
+((<OpenGL Interface|URL:http://www2.giganet.net/~yoshi/>))
+などを利用してください。
+
+=== 初期化
+OpenGL を使うための Ruby/SDLの初期化は、
+普通に Ruby/SDL を初期化するのと
+大きな違いはありません。3 つの違いがあります。
+@[Screen.open]にSDL::OPENGLを渡す必要があり、
+@[GL.set_attr]を使って
+いくつかの GL 属性(デプスバッファのサイズ・
+フレームバッファのサイズ)を指定する必要があり、
+そして最後にダブルバッファを使いたいなら
+@[Screen.open]にSDL::DOUBLEBUF
+フラグを渡すことによって((*ではなく*))、
+GL アトリビュートとして指定する必要があります。
+
+EXAMPLE
+  # まず、ビデオサブシステムを初期化
+  SDL.init(SDL::INIT_VIDEO)
+  # いくつかのビデオ情報を取得
+  info = SDL::Screen.info 
+  # 画面を640x480にセット
+  width = 640;
+  height = 480;
+  # 画面から要求していたピクセル深度を取得。
+  bpp = info.bpp
+  # ここで、OpenGL ウィンドウのために
+  # 要求されたウィンドウ属性を設定したい。
+  # RGB 各チャンネルに *少なくとも* 5 ビット欲しい。
+  # また、少なくとも 16 ビットのデプスバッファも欲しい。
+  #
+  # 最後にする事はダブルバッファウィンドウの要求である。
+  # '1' でダブルバッファが有効になり、
+  # '0' で無効になる。
+  #
+  # SDL::Screen.open へのフラグにおいて
+  # SDL::DOUBLEBUF を使わない事に注意。
+  # それは GL アトリビュートに影響せず、
+  # 標準の 2D blit 転送の設定だけに影響する。
+  SDL::GL.set_attr(SDL::GL::RED_SIZE, 5)
+  SDL::GL.set_attr(SDL::GL::GREEN_SIZE, 5)
+  SDL::GL.set_attr(SDL::GL::BLUE_SIZE, 5)
+  SDL::GL.set_attr(SDL::GL::DEPTH_SIZE, 16)
+  SDL::GL.set_attr(SDL::GL::DOUBLEBUFFER, 1)
+
+  # SDL がフルスクリーンビデオモードにおいて
+  # OpenGL ウィンドウを提供してくれるよう要求したい。
+  flags = SDL:;OPENGL | SDL::FULLSCREEN
+
+  # ビデオモードを設定。
+  SDL::Screen.open(width, height, bpp, flags)
+
+=== GL属性
+@[GL.get_attr] や @[GL.set_attr] では以下の属性を利用
+できます。
+* SDL::GL::RED_SIZE フレームバッファの赤チャンネルのサイズ(ビット数)
+* SDL::GL::GREEN_SIZE フレームバッファの緑チャンネルのサイズ(ビット数)
+* SDL::GL::BLUE_SIZE フレームバッファの青チャンネルのサイズ(ビット数)
+* SDL::GL::ALPHA_SIZE フレームバッファのαチャンネルのサイズ(ビット数) 
+* SDL::GL::DOUBLEBUFFER 0 または 1 の値を取り、ダブルバッファを有効または無効にする。
+* SDL::GL::BUFFER_SIZE フレームバッファのサイズ(ビット数)
+* SDL::GL::DEPTH_SIZE デプスバッファのサイズ(ビット数)
+* SDL::GL::STENCIL_SIZE ステンシルバッファのサイズ(ビット数)
+* SDL::GL::ACCUM_RED_SIZE アキュムレーションバッファの赤チャンネルのサイズ(ビット数)
+* SDL::GL::ACCUM_GREEN_SIZE アキュムレーションバッファの緑チャンネルのサイズ(ビット数) 
+* SDL::GL::ACCUM_BLUE_SIZE アキュムレーションバッファの青チャンネルのサイズ(ビット数)
+* SDL::GL::ACCUM_ALPHA_SIZE アキュムレーションバッファのαチャンネルのサイズ(ビット数)
+
+=== 描画
+描画は基本的に OpenGL のAPIがそのまま使えます。
+しかし、ダブルバッファ画面を使うときは、
+バッファを交換し画面を更新するために
+@[GL.swap_buffers]を使う必要があります。
+OpenGL でダブルバッファを要求するためには、
+@[GL.set_attr](SDL::GL::DOUBLEBUFFER, 1)
+とする必要があり、実際に得られたかどうかを確認するために
+@[GL.get_attr](SDL::GL::DOUBLEBUFFER)
+とします。
+
+== Methods
+%%%
+NAME get_attr
+MOD GL
+TYPE .
+PURPOSE 特殊な SDL/OpenGL 属性の値を取得します。
+RVAL Integer
+
+PROTO
+get_attr(attr)
+getAttr(attr)
+
+DESC
+((<OpenGL属性|GL属性>)) attr の値を返します。
+これは、@[GL.set_attr]の呼び出しの後に、あなたの指定した
+属性が期待通りにセットされたかどうかをチェックするのに有効
+です。
+
+EXCEPTION *
+SEEALSO
+GL.set_attr
+
+%%
+NAME set_attr
+MOD GL
+TYPE .
+PURPOSE 特殊な SDL/OpenGL 属性をセットします。
+
+PROTO
+set_attr(attr, val)
+setAttr(attr, val)
+
+DESC
+OpenGLの((<属性|GL属性>)) attr を val にセットします。
+セットした属性は、@[Screen.open]
+の呼び出しまでは有効になりません。
+@[Screen.open]の呼び出しの後は、@[GL.get_attr]
+を使って値をチェックすべきです。
+
+EXCEPTION *
+NOTES
+OpenGL ビデオモードをセットする時、
+ダブルバッファを有効にするためには
+SDL;;DOUBLEBUF は必要ではありません。
+ダブルバッファは SDL::GL::DOUBLEBUFFER 属性を使うことで
+有効または無効になります。
+
+SEEALSO
+GL.get_attr
+
+%%
+NAME swap_buffers
+MOD GL
+TYPE .
+PURPOSE OpenGL のフレームバッファを入れ替えます/表示を更新します。
+PROTO
+swap_buffers()
+swapBuffers()
+
+DESC
+ダブルバッファがサポートされている場合に OpenGL のバッファを入れ替えます。
+
+SEEALSO
+GL.set_attr
+GL::Screen.open

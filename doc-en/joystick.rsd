@@ -1,0 +1,402 @@
+= Joystick
+* ((<Joystick Outline>))
+* ((<SDL::Joystick>))
+* Joystick Methods
+TOC
+
+== Joystick Outline
+Joysticks, and other similar input devices, have a very 
+strong role
+in game playing and SDL provides comprehensive support for them.
+Axes, Buttons, POV Hats and trackballs are all supported.
+
+Joystick support is initialized
+by passed the SDL::INIT_JOYSTICK flag
+to @[init]. Once initilized joysticks must be opened
+using @[Joystick.open].
+
+While using the functions describe in this secton 
+may seem like the best way
+to access and read from joysticks, in most cases they aren't.
+Ideally joysticks should be read
+using the @[Event] system.
+To enable this, you must set the joystick event processing state
+with @[Joystick.poll=].
+Joysticks must be @[opened|Joystick.open]
+before they can be used of course.
+
+* NOTES
+
+  If you are ((*not*)) handling the joystick
+  via the event queue then you must explicitly 
+  request a joystick update by calling @[Joystick.update_all].
+
+  Force Feedback is not yet support.
+
+== SDL::Joystick
+The class represents one joystick.
+
+METHODS(Joystick)
+
+== Methods
+%%%
+NAME num
+MOD Joystick
+TYPE .
+PURPOSE Count available joysticks.
+RVAL Integer
+
+PROTO
+num
+
+DESC
+Counts the number of joysticks attached to the system.
+
+SEEALSO
+Joystick.index_name
+Joystick.open
+
+%%
+NAME index_name
+MOD Joystick
+TYPE .
+PURPOSE Get joystick name.
+RVAL String
+
+PROTO
+index_name(index)
+indexName(index)
+
+DESC
+Get the implementation dependent name of joystick. 
+The $[index] parameter
+refers to the N'th joystick on the system.
+
+EXAMPLE
+# Print the names of all attached joysticks
+num_joy = SDL::Joystick.num
+printf("%d joysticks found\n", num_joy)
+num_joy.times do |i|
+  puts SDL::Joystick.index_name(i)
+end
+
+SEEALSO
+Joystick.open
+
+%%
+NAME open
+MOD Joystick
+TYPE .
+PURPOSE Opens a joystick for use.
+RVAL SDL::Joystick
+
+PROTO
+open(index)
+
+DESC
+Opens a joystick for use within SDL. The $[index] refers to the N'th
+joystick in the system. A joystick must be opened before it can be
+used.
+
+
+RET
+Returns a @[Joystick] instance on success.
+
+EXCEPTION *
+
+EXAMPLE
+# Check for joystick
+if SDL::Joystick.num > 0
+  # Open joystick
+  joy = SDL::Joystick.open(0)
+
+  printf("Opened Joystick 0\n");
+  printf("Name: %s\n", SDL::Joystick.name(0))
+  printf("Number of Axes: %d\n", joy.num_axes)
+  printf("Number of Buttons: %d\n", joy.num_buttons)
+  printf("Number of Balls: %d\n", joy.num_balls)
+end  
+
+%%
+NAME open?
+MOD Joystick
+TYPE .
+PURPOSE Determine if a joystick has been opened
+RVAL true/false
+
+PROTO
+open?(index)
+
+DESC
+Determines whether a joystick has already been opened within the
+application. $[index] refers to the N'th joystick on the system.
+
+RET
+Returns true if the joystick has been opened, or false if it has not.
+
+SEEALSO
+Joystick.open
+
+%%
+NAME index
+MOD Joystick
+TYPE #
+PURPOSE Get the index of an joystick.
+RVAL Integer
+
+PROTO
+index
+
+DESC
+Returns the index of $[self].
+
+%%
+NAME num_axes
+MOD Joystick
+TYPE #
+PURPOSE Get the number of joystick axes
+RVAL Integer
+
+PROTO
+num_axes
+numAxes
+
+DESC
+Return the number of axes available.
+
+NOTES
+This method counts two dimensional axes as two axes.
+
+SEEALSO
+Joystick#axis
+
+%%
+NAME num_balls
+MOD Joystick
+TYPE #
+PURPOSE Get the number of joystick trackballs
+RVAL Integer
+
+PROTO
+num_balls
+numBalls
+
+DESC
+Return the number of trackballs available.
+
+SEEALSO
+Joystick#ball
+
+%%
+NAME num_hats
+MOD Joystick
+TYPE #
+PURPOSE Get the number of joystick hats
+RVAL Integer
+
+PROTO
+num_hats
+numHats
+
+DESC
+Return the number of hats available.
+
+SEEALSO
+Joystick#hat
+
+%%
+NAME num_buttons
+MOD Joystick
+TYPE #
+PURPOSE Get the number of joystick buttons
+RVAL Integer
+
+PROTO
+num_buttons
+numButtons
+
+DESC
+Return the number of buttons available.
+
+SEEALSO
+Joystick#button
+
+%%
+NAME poll=
+MOD Joystick
+TYPE .
+PURPOSE Enable/disable joystick event polling
+
+PROTO
+poll=(enable)
+
+DESC
+This function is used to enable or disable joystick event
+processing. With joystick event processing disabled you will have
+to update joystick states with @[Joystick.update_all] and read the
+joystick information manually.
+
+Joystick event polling is enabled by default.
+
+NOTE
+Joystick event handling is preferred.
+
+Even if joystick event processing is enabled,
+individual joysticks must be opened before they generate
+events.
+
+Calling this method may delete all events
+currently in SDL's event queue.
+
+SEEALSO
+Joystick.update_all
+Joystick.poll
+Event2::JoyAxis
+Event2::JoyBall
+Event2::JoyButtonDown
+Event2::JoyButtonUp
+Event2::JoyHat
+
+%%
+NAME poll
+MOD Joystick
+TYPE .
+PURPOSE Gets the current state of joysick event polling
+RVAL true/false
+
+PROTO
+poll
+
+DESC
+Returns true if joysick event polling is enabled, otherwise 
+returns false. You will also read @[Joystick.poll=].
+
+%%
+NAME update_all
+MOD Joystick
+TYPE .
+PURPOSE Updates the state of all joysticks
+
+PROTO
+update_all
+updateAll
+
+DESC
+Updates the state(position, buttons, etc.) of all open joysticks.
+If joystick events have been enabled with @[Joystick.poll=]
+then this is called automatically in the event loop.
+
+%%
+NAME axis
+MOD Joystick
+TYPE #
+PURPOSE Get the current state of an axis
+RVAL Integer
+
+PROTO
+axis(axis_index)
+
+DESC
+Returns the current state of given $[axis_index] on $[self].
+
+On most modern joysticks the X axis is usually represented by
+axis 0 and the Y axis by axis 1. The value returned by
+this method is a signed integer (-32768 to 32767)
+representing the current position of the axis, it may be
+necessary to impose certain tolerances on these values to account
+for jitter.
+
+EXAMPLE
+joy = SDL::Joystick.open(0)
+  .
+  .
+x_move = joy.axis(0)
+y_move = joy.axis(1)
+
+SEEALSO
+Joystick#num_axes
+
+%%
+NAME hat
+MOD Joystick
+TYPE #
+PURPOSE Get the current state of a joystick hat
+RVAL UINT
+
+PROTO
+hat(hat_index)
+
+DESC
+Returns the current state of the given $[hat_index].
+
+RET
+The current state is returned as a unsinged integer
+which is an OR'd combination of one or more of the following
+
+* SDL::Joystick::HAT_CENTERED
+* SDL::Joystick::HAT_UP
+* SDL::Joystick::HAT_RIGHT
+* SDL::Joystick::HAT_DOWN
+* SDL::Joystick::HAT_LEFT
+* SDL::Joystick::HAT_RIGHTUP
+* SDL::Joystick::HAT_RIGHTDOWN
+* SDL::Joystick::HAT_LEFTUP
+* SDL::Joystick::HAT_LEFTDOWN
+
+SEEALSO
+Joystick#num_hats
+
+%%
+NAME button
+MOD Joystick
+TYPE #
+PURPOSE Get the current state of a given button
+RVAL true/false
+
+PROTO
+button(button_index)
+
+DESC
+returns the current state of the given $[button_index].
+Returns true if the button is pressed, otherwise returns false.
+
+SEEALSO
+Joystick#num_buttons
+
+%%
+NAME ball
+MOD Joystick
+TYPE #
+PURPOSE Get relative trackball motion
+RVAL [Integer, Integer]
+
+PROTO
+ball(ball_index)
+
+DESC
+Get the ball axis change.
+Trackballs can only return relative motion since the last call to
+this method, these motion deltas are returned as 
+an array of two elements, [dx, dy].
+
+EXCEPTION *
+
+EXAMPLE
+delta_x, delta_y = joy.ball(0)
+printf("Trackball Delta- X:%d, Y:%d\n", delta_x, delta_y)
+
+%%
+NAME close
+MOD Joystick
+TYPE #
+PURPOSE Closes a previously opened joystick
+
+PROTO
+close
+
+DESC
+Close a joystick that was previously opened with @[Joystick.open].
+
+SEEALSO
+Joystick.open
+Joystick.open?
