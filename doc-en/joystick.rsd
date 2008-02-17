@@ -1,10 +1,10 @@
 = Joystick
-* ((<Joystick Outline>))
+* ((<Joystick Overview>))
 * ((<SDL::Joystick>))
-* Joystick Methods
+* Methods for Joystick 
 TOC
 
-== Joystick Outline
+== Joystick Overview
 Joysticks, and other similar input devices, have a very 
 strong role
 in game playing and SDL provides comprehensive support for them.
