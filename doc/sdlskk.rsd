@@ -354,15 +354,15 @@ input(event)
 DESC
 イベント経由でキーボードからの入力を受け付け、
 コンテキストの状態を変更します。
-$[event] には @[Event2] のインスタンスを与えます。
-@[Event2::KeyDown] 以外のイベントは無視します。
+$[event] には @[Event] のインスタンスを与えます。
+@[Event::KeyDown] 以外のイベントは無視します。
 
 EXAMPLE
-while event = SDL::Event2.poll do
+while event = SDL::Event.poll do
   case event
-  when SDL::Event2::Quit
+  when SDL::Event::Quit
     exit
-  when SDL::Event2::KeyDown
+  when SDL::Event::KeyDown
     if event.sym == SDL::Key::ESCAPE then
       exit
     end

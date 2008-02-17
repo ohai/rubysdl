@@ -163,9 +163,9 @@ screen = SDL.setVideoMode(640, 480, 16, SDL::SWSURFACE)
 
 # メインループ、とりあえず何もしない
 unless $terminated
-  while event = SDL::Event2.poll
+  while event = SDL::Event.poll
     case event
-    when SDL::Event2::KeyDown, SDL::Event2::Quit
+    when SDL::Event::KeyDown, SDL::Event::Quit
       exit
     end
   end

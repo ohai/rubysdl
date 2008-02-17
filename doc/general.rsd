@@ -14,6 +14,15 @@
 * ((<SDLSKK>))
 * ((<MPEG playback>))
 
+= このドキュメントについて
+このドキュメントはRuby/SDLのリファレンスマニュアルです。
+Ruby/SDLの各機能、各クラス、各メソッドを解説しています。
+
+このリファレンスは
+((<URL:http://www.tacoworks.jp/software/SDLdoc-jp/index-j.html>))
+におけるSDLdoc日本語翻訳プロジェクトの成果を利用しています。
+プロジェクトのみなさんに感謝します。
+
 = Ruby/SDLの概要
 Ruby/SDL は ((<SDL|URL:http://www.libsdl.org/>)) を
 ((<Ruby|URL:http://www.ruby-lang.org/>)) から利用するための

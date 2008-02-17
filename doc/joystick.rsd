@@ -242,14 +242,23 @@ DESC
 
 デフォルトでは有効になっています。
 
+NOTE
+これを無効にするのはおすすめしません。
+
+これを有効にしても、@[Joystick.open]でデバイスをオープンしない
+限りそのジョイステックに関するイベントは発生しません。
+
+このメソッドを呼ぶとイベントキューの中身を勝手に捨てて
+しまう可能性があるので注意してください。
+
 SEEALSO
 Joystick.update_all
 Joystick.poll
-Event2::JoyAxis
-Event2::JoyBall
-Event2::JoyButtonDown
-Event2::JoyButtonUp
-Event2::JoyHat
+Event::JoyAxis
+Event::JoyBall
+Event::JoyButtonDown
+Event::JoyButtonUp
+Event::JoyHat
 
 %%
 NAME poll
