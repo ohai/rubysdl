@@ -1,28 +1,26 @@
 = Window Management
-* ((<Window Management概要>))
-* ((<Window Management関連メソッド>))
+* ((<Window Management Overview>))
+* ((<Methods for Window Management>))
 TOC
 
-== Window Management概要
-SDL はウィンドウ管理の機能の一部を提供しており、
-アプリケーションが自身のタイトルを変更したり、
-フルスクリーンモードがサポートされていれば
-ウィンドウモードとフルスクリーンモードとを切り換える
-ことができます。
+== Window Management Overview
+SDL provides a small set of window management functions
+which allow applications to change their title and toggle
+from windowed mode to fullscreen (if available)
 
-== Window Management関連メソッド
+== Methods for Window Management
 %%%
 NAME caption
 MOD WM
 TYPE .
-PURPOSE ウィンドウのタイトルとアイコン名を取得します。
+PURPOSE Gets the window title and icon name.
 RVAL [String, String]
 
 PROTO
 caption
 
 DESC
-ウィンドウのタイトルとアイコン名を文字列2個の配列で返します。
+Returns the window title and icon name as an array with two element.
 
 SEEALSO
 WM.set_caption
@@ -31,14 +29,14 @@ WM.set_caption
 NAME set_caption
 MOD WM
 TYPE .
-PURPOSE ウィンドウのタイトルとアイコン名をセットします。
+PURPOSE Sets the window tile and icon name.
 
 PROTO
 set_caption(title, icon)
 setCaption(title, icon)
 
 DESC
-表示ウィンドウのタイトルバーとアイコン名をセットします。
+Sets the title-bar and icon name of the display window.
 
 SEEALSO
 WM.caption
@@ -48,18 +46,17 @@ WM.icon=
 NAME icon=
 MOD WM
 TYPE .
-PURPOSE 表示ウィンドウにアイコンをセットします。
+PURPOSE Sets the icon for the display window.
 
 PROTO
 icon=(icon_image)
 
 DESC
-表示ウィンドウにアイコンをセットします。
-Win32 のアイコンは 32×32 でなければいけません。
+Sets the icon for the display window. Win32 icons must be 32x32.
 
-このモジュール関数は、@[set_video_mode] を
-初めて呼ぶ前に呼ばれなければいけません。
-$[icon]としては @[Surface] のインスタンスを与えます。
+This function must be called before the first call to 
+@[Screen.open].
+$[icon_image] should be an instance of @[Surface]
 
 EXAMPLE
 SDL::WM.icon = SDL::Surface.load_bmp("icon.bmp")
@@ -72,16 +69,17 @@ WM.caption
 NAME iconify
 MOD WM
 TYPE .
-PURPOSE ウィンドウをアイコン化/最小化します。
+PURPOSE Iconify/Minimise the window
 
 PROTO
 iconify
 
 DESC
-ウィンドウを管理する環境でアプリケーションが実行されている場合、
-SDL はアプリケーションをアイコン化/最小化することを試みます。
-もし成功すれば、アプリケーションは @[Event2::APPACTIVE] を失なった
-イベントを受け取るでしょう。
+If the application is running in a window managed environment
+SDL attempts to iconify/minimise
+it. If this method is successful,
+the application will receive a @[Event::APPACTIVE]
+loss event.
 
 EXCEPTION *
 
@@ -89,7 +87,7 @@ EXCEPTION *
 NAME grab_input
 MOD WM
 TYPE .
-PURPOSE マウスとキーボード入力をつかんで離さないようにします。
+PURPOSE Grabs mouse and keyboard input.
 RVAL Integer
 
 PROTO
@@ -97,17 +95,18 @@ grab_input(mode)
 grabInput(mode)
 
 DESC
-つかむ(Grabbing)とは、マウスがアプリケーションウィンドウに閉じ込められ、
-ほぼ全てのキーボード入力が直接アプリケーションに転送され、
-ウィンドウマネージャにも解釈されないことを表します。
+Grabbing means that the mouse is confined to the application window,
+and nearly all keyboard input is passed directly to the application,
+and not interpreted by a window manager, if any.
 
-$[mode] として以下の定数を与えることができます。
+You can use following three constants as $[mode].
 * SDL::WM::GRAB_QUERY
 * SDL::WM::GRAB_OFF
 * SDL::WM::GRAB_ON
 
-$[mode] が SDL::WM::GRAB_QUERY のときは、
-grab モードは変更されないで現在の grab モードが返されます。
+When $[mode] is SDL::WM::GRAB_QUERY, 
+the grab mode is not changed, but the current grab mode is returned.
 
 RET
-現在の、あるいは新しいモードを返します。
+Returns the current/new mode.
+
