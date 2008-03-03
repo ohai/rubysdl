@@ -39,9 +39,6 @@ static int rubyio_pseudo_seek(SDL_RWops* context, int offset, int whence)
 {
   volatile VALUE io = (VALUE)context->hidden.unknown.data1;
   volatile VALUE str; 
-  if(offset < 0)
-    rb_raise(eSDLError, "cannot seek backward");
-  
   
   switch(whence){
   case SEEK_SET:
@@ -49,7 +46,13 @@ static int rubyio_pseudo_seek(SDL_RWops* context, int offset, int whence)
     rb_funcall(io, rb_intern("read"), 1, INT2NUM(offset));
     break;
   case SEEK_CUR:
-    str = rb_funcall(io, rb_intern("read"), 1, INT2NUM(offset));
+    if (offset >= 0) {
+      str = rb_funcall(io, rb_intern("read"), 1, INT2NUM(offset));
+    } else {
+      int d = NUM2INT(rb_funcall(io, rb_intern("tell"), 0)) + offset;
+      rb_funcall(io, rb_intern("rewind"), 0);
+      rb_funcall(io, rb_intern("read"), 1, INT2NUM(d));
+    }
     break;
   case SEEK_END:
     rb_raise(eSDLError, "cannot seek SEEK_END");
