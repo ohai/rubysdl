@@ -102,64 +102,59 @@ init
 %%
 NAME getenv
 TYPE .
-PURPOSE Gets environmental variable
+PURPOSE Get an environmental variable
 RVAL String
 
 PROTO
 getenv(var)
 
 DESC
-$[var]で指定した環境変数を得ます。
+Returns the environment variable string matched by $[var].
 
-RET
-環境変数の値を文字列で返します。
 
 %%
 NAME putenv
 TYPE .
-PURPOSE 環境変数を変更します。
+PURPOSE Change or add an  environmental variable
 
 PROTO
 putenv(string)
 
 DESC
-環境変数の追加または値の変更を行います。$[string] は "name=value"
-という形式を取ります。
+Add or Change the value of environmental variables.
+The argument $[string] is of the form "name=value"
 
-Windows上でSDL_WINDOWIDやSDL_VIDEODRIVERといった環境変数を使って
-SDLの実行に影響を与えたいときに利用します。
-SDLの仕様によりWindowsでは ENV を直接変更してもこれらの機能が使え
-ないためこのような関数が存在しま。Unix上では ENV を使うのと同じ
-効果があります。
+If you want to change SDL_WINDOWID or SDL_VIDEODRIVER environmental variable 
+to modify the behavior of SDL in your program, you should use 
+this function instead of ENV.
 
-EXCEPTION
-失敗時には例外@[Error]を発生させます。
+EXCEPTION *
 
 EXAMPLE
-# http://moriq.tdiary.net/20051006.html より
-# Ruby/SDL と Apolloの併用
+# from http://moriq.tdiary.net/20051006.html 
+# Apollo with Ruby/SDL
 require 'phi'
 require 'sdl'
 
-# フォームの生成
+# Create form
 form = Phi::Form.new
 $terminated = false
 form.on_close{ $terminated = true }
 form.caption = "Ruby/SDL on Phi::Form"
-# パネルをフォームの上に作る
+# Create a panel on new form
 panel = Phi::Panel.new(form)
 panel.align = Phi::AL_LEFT
 
-# WINDOWID hackを使い、パネルにSDLのウインドウをのせる
+# Put SDL window on panel with WINDOWID hack
 SDL.putenv("SDL_VIDEODRIVER=windib")
 SDL.putenv("SDL_WINDOWID=#{panel.handle}")
 form.show
 
-# SDL本体の初期化など
+# initialize SDL
 SDL.init(SDL::INIT_VIDEO)
 screen = SDL.setVideoMode(640, 480, 16, SDL::SWSURFACE)
 
-# メインループ、とりあえず何もしない
+# main loop
 unless $terminated
   while event = SDL::Event2.poll
     case event
