@@ -46,7 +46,11 @@ def rsd2rd(input)
     when /^(PROTO|DESC|NOTES|RET|EXCEPTION|EXAMPLE|BUG|SEEALSO|COMMENT)\s*$/
       mode = $1
     when "EXCEPTION *\n"
-      part["EXCEPTION"] = "失敗したときには例外@[Error]を発生させます。\n"
+      if $english
+        part["EXCEPTION"] = "Raises @[Error] on failure"
+      else
+        part["EXCEPTION"] = "失敗したときには例外@[Error]を発生させます。\n"
+      end
     else
       part[mode] += line
     end
@@ -68,19 +72,31 @@ def rsd2rd(input)
   part["PROTO"].each{|proto| output << "--- #{ns}#{part["TYPE"]}#{proto}"}
   output << "\n"
   if part.key?("OBSOLETE")
-    output << format("このメソッドの利用は推奨されません。代わりに@[#{part["OBSOLETE"]}]を利用してください。\n", 4)
+    if $english
+      output << format("This method is obsolete. Please use @[#{part["OBSOLETE"]}] instead.\n", 4)
+    else
+      output << format("このメソッドの利用は推奨されません。代わりに@[#{part["OBSOLETE"]}]を利用してください。\n", 4)
+    end
   end
   
   output << format(part["DESC"],4)
   
   if part.key?("LOCK")
     output << "\n"
-    output << format("このメソッドを使うにはサーフェスを@[ロック|Surface#lock]する必要があります。\n@[auto_lock?]が真の場合はシステムが自動的にロック/アンロックします。",4)
+    if $english
+      output << format("This method needs @[Locking|Surface#lock].\nIf @[auto_lock?] is true, Ruby/SDL automatically locks/unlocks the surface.",4)
+    else
+      output << format("このメソッドを使うにはサーフェスを@[ロック|Surface#lock]する必要があります。\n@[auto_lock?]が真の場合はシステムが自動的にロック/アンロックします。",4)
+    end
   end
   output << format(part["RET"],4)
   output << format(part["EXCEPTION"],4)
   if part.key?("DEP")
-    output << "\n    このメソッドを使うには #{part["DEP"]} が必要です。\n"
+    if $english
+      output << "\n    You need #{part["DEP"]} to use this method.\n"
+    else
+      output << "\n    このメソッドを使うには #{part["DEP"]} が必要です。\n"
+    end
   end
   if part.key?("EXAMPLE")
     output << "\n    EXAMPLE\n"
@@ -124,6 +140,12 @@ def methodlist(mod, methods)
   methods.find_all{|m| m.module == mod && !m.obsolete}.
     map{|m| "* ((<#{m.fullname}>)) -- #{inline(m.purpose)}"}.
     join("\n")
+end
+
+if ARGV.size == 1 && ARGV.shift == "-e"
+  $english = true
+else
+  $english = false
 end
 
 synop, descs = ARGF.read.split(/^%%%$/)
