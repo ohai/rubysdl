@@ -1,103 +1,102 @@
-= OpenGL関連
-* ((<OpenGL 関連機能概要>))
+= OpenGL
+* ((<OpenGL outline>))
 
-* OpenGL関連メソッド
+* OpenGL related methods
 TOC
 
-== OpenGL 関連機能概要
-Ruby/SDL は、いくつかのプラットフォーム(Linux/X11,
-Win32, MacOS X, etc)において、
-OpenGL コンテキストを生成し使うことができます。
-これにより、OpenGLと同時に
-Ruby/SDLのオーディオ・イベント処理・
-タイマーを使うことができます。
+== OpenGL outline
+Ruby/SDL has the ability to create and use OpenGL
+contexts on several platforms(Linux/
+X11, Win32, Mac OS X, etc).
+This allows you to use SDL's audio, event handling and times in your
+OpenGL applications (a function often performed by GLUT).
 
-Ruby/SDL そのものは OpenGL 用のメソッドを持っていません。
-((<OpenGL Interface|URL:http://www2.giganet.net/~yoshi/>))
-などを利用してください。
+Ruby/SDL has no OpenGL methods, please use
+((<OpenGL Interface|URL:http://www2.giganet.net/~yoshi/>)) or
+((<riko|http://www.kumaryu.net/?(Ruby)+Riko>))
+with Ruby/SDL.
 
-=== 初期化
-OpenGL を使うための Ruby/SDLの初期化は、
-普通に Ruby/SDL を初期化するのと
-大きな違いはありません。3 つの違いがあります。
-@[Screen.open]にSDL::OPENGLを渡す必要があり、
-@[GL.set_attr]を使って
-いくつかの GL 属性(デプスバッファのサイズ・
-フレームバッファのサイズ)を指定する必要があり、
-そして最後にダブルバッファを使いたいなら
-@[Screen.open]にSDL::DOUBLEBUF
-フラグを渡すことによって((*ではなく*))、
-GL アトリビュートとして指定する必要があります。
+=== Initialisation
+Initialising Ruby/SDL to use OpenGL is not very
+different to initialising Ruby/SDL normally.
+There are three differences; you must pass
+SDL::OPENGL to @[Screen.open], you
+must specify several GL attributes (depth buffer size, framebuffer sizes) using 
+@[GL.set_attr] and finally, if you wish to use double buffering you must
+specify it as a GL attribute, ((*not*)) by passing the SDL::DOUBLEBUF flag to
+SDL::DOUBLEBUF.
+
 
 EXAMPLE
-  # まず、ビデオサブシステムを初期化
+  # First, initialize SDL's video subsystem.
   SDL.init(SDL::INIT_VIDEO)
-  # いくつかのビデオ情報を取得
-  info = SDL::Screen.info 
-  # 画面を640x480にセット
-  width = 640;
-  height = 480;
-  # 画面から要求していたピクセル深度を取得。
+  # Let's get some video information.
+  info = SDL::Screen.info
+  # Set our width/height to 640/480 (you would
+  # of course let the user decide this in a normal
+  # app).
+  width = 640
+  height = 480
+  # We get the bpp we will request from the display.
   bpp = info.bpp
-  # ここで、OpenGL ウィンドウのために
-  # 要求されたウィンドウ属性を設定したい。
-  # RGB 各チャンネルに *少なくとも* 5 ビット欲しい。
-  # また、少なくとも 16 ビットのデプスバッファも欲しい。
+  # Now, we want to setup our requested
+  # window attributes for our OpenGL window.
+  # We want *at least* 5 bits of red, green
+  # and blue. We also want at least a 16-bit
+  # depth buffer.
   #
-  # 最後にする事はダブルバッファウィンドウの要求である。
-  # '1' でダブルバッファが有効になり、
-  # '0' で無効になる。
+  # The last thing we do is request a double
+  # buffered window. '1' turns on double
+  # buffering, '0' turns it off.
   #
-  # SDL::Screen.open へのフラグにおいて
-  # SDL::DOUBLEBUF を使わない事に注意。
-  # それは GL アトリビュートに影響せず、
-  # 標準の 2D blit 転送の設定だけに影響する。
+  # Note that we do not use SDL::DOUBLEBUF in
+  # the flags to SDL::Screen.open. That does
+  # not affect the GL attribute state, only
+  # the standard 2D blitting setup.
   SDL::GL.set_attr(SDL::GL::RED_SIZE, 5)
   SDL::GL.set_attr(SDL::GL::GREEN_SIZE, 5)
   SDL::GL.set_attr(SDL::GL::BLUE_SIZE, 5)
   SDL::GL.set_attr(SDL::GL::DEPTH_SIZE, 16)
   SDL::GL.set_attr(SDL::GL::DOUBLEBUFFER, 1)
 
-  # SDL がフルスクリーンビデオモードにおいて
-  # OpenGL ウィンドウを提供してくれるよう要求したい。
+  # We want to request that SDL provide us
+  # with an OpenGL window, in a fullscreen
+  # video mode.
   flags = SDL:;OPENGL | SDL::FULLSCREEN
 
-  # ビデオモードを設定。
+  # Set the video mode
   SDL::Screen.open(width, height, bpp, flags)
 
-=== GL属性
-@[GL.get_attr] や @[GL.set_attr] では以下の属性を利用
-できます。
-* SDL::GL::RED_SIZE フレームバッファの赤チャンネルのサイズ(ビット数)
-* SDL::GL::GREEN_SIZE フレームバッファの緑チャンネルのサイズ(ビット数)
-* SDL::GL::BLUE_SIZE フレームバッファの青チャンネルのサイズ(ビット数)
-* SDL::GL::ALPHA_SIZE フレームバッファのαチャンネルのサイズ(ビット数) 
-* SDL::GL::DOUBLEBUFFER 0 または 1 の値を取り、ダブルバッファを有効または無効にする。
-* SDL::GL::BUFFER_SIZE フレームバッファのサイズ(ビット数)
-* SDL::GL::DEPTH_SIZE デプスバッファのサイズ(ビット数)
-* SDL::GL::STENCIL_SIZE ステンシルバッファのサイズ(ビット数)
-* SDL::GL::ACCUM_RED_SIZE アキュムレーションバッファの赤チャンネルのサイズ(ビット数)
-* SDL::GL::ACCUM_GREEN_SIZE アキュムレーションバッファの緑チャンネルのサイズ(ビット数) 
-* SDL::GL::ACCUM_BLUE_SIZE アキュムレーションバッファの青チャンネルのサイズ(ビット数)
-* SDL::GL::ACCUM_ALPHA_SIZE アキュムレーションバッファのαチャンネルのサイズ(ビット数)
+=== GL attribute
+You can use @[GL.get_attr] and @[GL.set_attr] with following attributes:
+* SDL::GL::RED_SIZE         Size of the framebuffer red component, in bits
+* SDL::GL::GREEN_SIZE       Size of the framebuffer green component, in bits
+* SDL::GL::BLUE_SIZE        Size of the framebuffer blue component, in bits
+* SDL::GL::ALPHA_SIZE       Size of the framebuffer alpha component, in bits
+* SDL::GL::DOUBLEBUFFER     0 or 1, enable or disable double buffering
+* SDL::GL::BUFFER_SIZE      Size of the framebuffer, in bits
+* SDL::GL::DEPTH_SIZE       Size of the depth buffer, in bits
+* SDL::GL::STENCIL_SIZE     Size of the stencil buffer, in bits
+* SDL::GL::ACCUM_RED_SIZE   Size of the accumulation buffer red component, in bits
+* SDL::GL::ACCUM_GREEN_SIZE Size of the accumulation buffer green component, in bits
+* SDL::GL::ACCUM_BLUE_SIZE  Size of the accumulation buffer blue component, in bits
+* SDL::GL::ACCUM_ALPHA_SIZE Size of the accumulation buffer alpha component, in bits
 
-=== 描画
-描画は基本的に OpenGL のAPIがそのまま使えます。
-しかし、ダブルバッファ画面を使うときは、
-バッファを交換し画面を更新するために
-@[GL.swap_buffers]を使う必要があります。
-OpenGL でダブルバッファを要求するためには、
-@[GL.set_attr](SDL::GL::DOUBLEBUFFER, 1)
-とする必要があり、実際に得られたかどうかを確認するために
-@[GL.get_attr](SDL::GL::DOUBLEBUFFER)
-とします。
+=== Drawing
+Apart from initialisation, using OpenGL within Ruby/SDL
+is the same as using OpenGL
+with any other API, e.g. GLUT. You still use all the same function calls and data
+types. However if you are using a double-buffered display, then you must use 
+@[GL.swap_buffers] to swap the buffers and update the display. To request
+double-buffering with OpenGL, use @[GL.set_attr] with SDL::GL::DOUBLEBUFFER,
+and use @[GL.get_attr] to see if you actually got it.
 
 == Methods
 %%%
 NAME get_attr
 MOD GL
 TYPE .
-PURPOSE 特殊な SDL/OpenGL 属性の値を取得します。
+PURPOSE Get the value of a special SDL/OpenGL attribute
 RVAL Integer
 
 PROTO
@@ -105,10 +104,10 @@ get_attr(attr)
 getAttr(attr)
 
 DESC
-((<OpenGL属性|GL属性>)) attr の値を返します。
-これは、@[GL.set_attr]の呼び出しの後に、あなたの指定した
-属性が期待通りにセットされたかどうかをチェックするのに有効
-です。
+Returns the value of the SDL/OpenGL @[attribute|GL attribute] $[attr].
+This is useful after
+a call to @[Screen.open] to check whether your attributes have been set as you
+expected.
 
 EXCEPTION *
 SEEALSO
@@ -118,26 +117,23 @@ GL.set_attr
 NAME set_attr
 MOD GL
 TYPE .
-PURPOSE 特殊な SDL/OpenGL 属性をセットします。
+PURPOSE Set a special SDL/OpenGL attribute
 
 PROTO
 set_attr(attr, val)
 setAttr(attr, val)
 
 DESC
-OpenGLの((<属性|GL属性>)) attr を val にセットします。
-セットした属性は、@[Screen.open]
-の呼び出しまでは有効になりません。
-@[Screen.open]の呼び出しの後は、@[GL.get_attr]
-を使って値をチェックすべきです。
+Sets the OpenGL @[attribute|GL attribute] $[attr] to $[value].
+The attributes you set don't take effect
+until after a call to @[Screen.open]. You should use @[GL.get_attr] to
+check the values after a @[Screen.open] call.
 
 EXCEPTION *
 NOTES
-OpenGL ビデオモードをセットする時、
-ダブルバッファを有効にするためには
-SDL;;DOUBLEBUF は必要ではありません。
-ダブルバッファは SDL::GL::DOUBLEBUFFER 属性を使うことで
-有効または無効になります。
+The SDL::DOUBLEBUF flag is not required to enable double buffering when
+setting an OpenGL video mode. Double buffering is enabled or disabled using
+the SDL::GL::DOUBLEBUFFER attribute.
 
 SEEALSO
 GL.get_attr
@@ -146,13 +142,13 @@ GL.get_attr
 NAME swap_buffers
 MOD GL
 TYPE .
-PURPOSE OpenGL のフレームバッファを入れ替えます/表示を更新します。
+PURPOSE Swap OpenGL framebuffers/Update Display
 PROTO
 swap_buffers()
 swapBuffers()
 
 DESC
-ダブルバッファがサポートされている場合に OpenGL のバッファを入れ替えます。
+Swap the OpenGL buffers, if double-buffering is supported.
 
 SEEALSO
 GL.set_attr
