@@ -1,50 +1,44 @@
 = CD-ROM
-* ((<CD-ROM機能概説>))
+* ((<CD-ROM outline>))
 * ((<SDL::CD>))
-* ((<CD-ROM関連メソッド>))
+* ((<CD-ROM methods>))
 TOC
 
-== CD-ROM機能概説
-SDL は一度に 32 までのローカル CD-ROM ドライブの
-オーディオ制御をサポートします。
+== CD-ROM outline
+SDL supports audio control of up to 32 local CD-ROM drives at once.
 
-トラック一覧の取得・再生・停止そして CD-ROM の取り出しを含む、
-CD プレーヤの全ての基本的な機能を実行するためにこの API を使います。
-(現在はマルチチェンジャーの CD ドライブはサポートしていません)
+You use this API to perform all the basic functions of a CD player, including
+listing the tracks, playing, stopping, and ejecting the CD-ROM. (Currently,
+multi-changer CD drives are not supported.)
 
-Ruby/SDL のどの CD-ROM 関連メソッドを呼ぶ前に、
-まず @[init](SDL::INIT_CDROM) を呼ばなければいけません。
-これは CD-ROM ドライブを探してシステムをスキャンし、
-プログラムがオーディオ制御できるようセットアップします。
+Before you call any of the SDL CD-ROM functions, you must first call
+@[init](SDL::INIT_CDROM),
+which scans the system for CD-ROM drives, and sets the program
+up for audio control.
 
-ライブラリを初期化した後は、
-@[CD.num_drives] を使って
-利用可能なドライブがいくつあるかを知ることができます。
-リストの最初のドライブはデフォルト CD-ROM ドライブです。
-ドライブを選択し、@[CD.open] でオープンした後は、
-ステータスをチェックし CD がドライブにあるなら再生を開始することができます。
+After you have initialized the library, you can find out how many drives are
+available using the @[CD.num_drives]. The first drive listed is the
+system default CD-ROM drive. After you have chosen a drive, and have opened it
+with @[CD.open], you can check the status and start playing if there's a CD in
+the drive.
 
-CD-ROM は 1 つまたはそれ以上のトラックで構成され、
-個々のトラックはある数の「フレーム」で構成されています。
-フレームは CD の基礎データの単位で、
-それぞれのフレームはサイズにして 2K であり、
-CD は通常の再生スピードにおいて 1 秒間に 75(= SDL::CD::FPS)
-フレーム再生されます。
-SDL は CD 上のフレーム数を使って動作しますが、
-@[CD.frames_to_msf] を使うことで、
-より見慣れた分/秒のフォーマットに簡単に変換することができます。
-またこの変換の逆は @[CD.msf_to_frames] でできます。
+A CD-ROM is organized into one or more tracks, each consisting of a certain number
+of "frames". Each frame is ~2K in size, and at normal playing speed,
+a CD plays 75(SDL::CD::FPS)
+frames per second. SDL works with the number of frames on a CD, but this can
+easily be converted to the more familiar minutes/seconds format by using
+@[CD.frames_to_msf].
 
 == SDL::CD
-@[CD.open] によってオープンされた CDROM デバイスを表し、
-ディスクにおけるトラックのレイアウトの情報を格納します。
+This class represents opened CDROM device and stores information on the
+layout of the tracks on the disc.
 
 == CD-ROM関連メソッド
 %%%
 NAME num_drives
 MOD CD
 TYPE .
-PURPOSE システム上の CD-ROM の数を返します。
+PURPOSE Returns the number of CD-ROM drives on the system.
 RVAL Integer
 
 PROTO
@@ -52,7 +46,7 @@ num_drives
 numDrives
 
 DESC
-システム上の CD-ROM の数を返します。
+Returns the number of CD-ROM drives on the system.
 
 SEEALSO
 CD.open
@@ -61,7 +55,7 @@ CD.open
 NAME index_name
 MOD CD
 TYPE .
-PURPOSE CD-ROM について、人間に読めるシステム非依存の ID を返します。
+PURPOSE Returns a human-readable, system-dependent identifier for the CD-ROM.
 RVAL String
 
 PROTO
@@ -69,12 +63,11 @@ index_name(drive)
 indexName(drive)
 
 DESC
-CD-ROM について、人間に読めるシステム非依存の ID を文字列で返します。
-$[drive] はドライブのインデックス番号です。
-インデックス番号は 0 で始まり、@[CD.num_drives]-1 で
-終わります。
+Returns a human-readable, system-dependent identifier for the CD-ROM. $[drive]
+is the index of the drive.
+Drive indices start to 0 and end at @[CD.num_drives]-1.
 
-返り値は例えば以下のような文字列です。
+Examples of return strings.
 * "/dev/cdrom"
 * "E:"
 * "/dev/disk/ide/1/master"
@@ -86,74 +79,74 @@ CD.num_drives
 NAME open
 MOD CD
 TYPE .
-PURPOSE CD-ROM ドライブにアクセスするためにオープンします。
+PURPOSE Opens a CD-ROM drive for access.
 RVAL SDL::CD
 
 PROTO
 open(drive)
 
 DESC
-CD-ROM ドライブにアクセスするためにオープンします。
-成功した場合は @[CD] のインスタンスを返します。
+Opens a CD-ROM drive for access. It returns @[CD] object on success.
+
+Drives are numbered starting with 0. Drive 0 is the system default CD-ROM.
 
 EXCEPTION
-ドライブが正しくないか、ビジー状態のときは例外 @[Error] を発生させます。
+Raise @[Error] if the drive was invalid or busy.
 
 EXAMPLE
 SDL.init SDL::INIT_CDROM
 
-# CD ドライブをチェック 
+# Check for CD drives
 if SDL::CD.num_drives == 0
-  # 見つからなかった 
-  STDERR.print "利用可能な CDROM デバイスがありません\n"
+  # None found
+  STDERR.print "No CDROM devices available\n"
   exit 255
 end
 
 begin
-  # デフォルトドライブをオープン
+  # Open the default drive
   cdrom = SDL::CD.open(0)
 rescue SDL::Error
-  # オープンできなかった
-  STDERR.puts "ドライブがオープンできませんでした"
+  STDERR.puts "Couldn't open drive"
   exit 255
 end
 
-# ボリュームの情報を表示 
-printf "名前: %s\n", SDL::CD.index_name(0)
-printf "トラック数: %d\n", cdrom.num_tracks
+# Print volume info
+printf "Name: %s\n", SDL::CD.index_name(0)
+printf "Tracks: %d\n", cdrom.num_tracks
 num_tracks.times do |cur_track|
   min, sec, frame = SDL::CD.frames_to_msf(cdrom.track_length(cur_track))
-  printf "\tトラック %d: 長さ %d:%d\n", cur_track, min, sec
+  printf "\tTrack %d: Length %d:%d\n", cur_track, min, sec
 end
 
 %%
 NAME status
 MOD CD
 TYPE #
-PURPOSE 指定されたドライブの現在の状態を返します。
+PURPOSE Returns the current status of the given drive.
 RVAL UINT
 
 PROTO
 status
 
 DESC
-この関数は指定されたドライブの現在の状態を返します。
-状態は次のいずれかです。
+This method returns the current status of the given drive. Status is described
+like so:
 * SDL::CD::TRAYEMPTY
 * SDL::CD::STOPPED
 * SDL::CD::PLAYING
 * SDL::CD::PAUSED
 * SDL::CD::ERROR
 
-ドライブに CD が入っていると、
+If the drive has a CD in it,
 @[current_track], @[current_frame], @[num_tracks], @[track_type],
-@[track_lenght]の情報が更新されます。
+and @[track_length] are updated.
 
 EXAMPLE
 def play_track(track)
   raise "not cd in drive" unless $cdrom.in_drive?
 
-  # 実際の CD のトラック数で切り捨て
+  # clamp to the actual number of tracks on the CD
   track = $cdrom.num_tracks-1 if track >= $cdrom.num_tracks
   $cdrom.play_tracks(track, 0, 1, 0)
 end
@@ -162,16 +155,13 @@ end
 NAME play
 MOD CD
 TYPE #
-PURPOSE CD を再生します。
+PURPOSE Play a CD
 
 PROTO
 play(start, length)
 
 DESC
-$[self] で示されるCDを
-フレーム $[start]から
-$[length] フレームだけ
-再生します。
+Plays the given cdrom, starting a frame $[start] for length $[frames].
 
 EXCEPTION *
 
@@ -182,46 +172,42 @@ CD#play_tracks
 NAME play_tracks
 MOD CD
 TYPE #
-PURPOSE 指定された CD トラックを再生します。
+PURPOSE Play the given CD track(s)
 
 PROTO
 play_tracks(start_track, start_frame, ntracks, nframes)
 
 DESC
-$[start_track] 番目のトラックから
-$[ntracks] トラック分、
-指定された CD を再生します。
+This method plays the given CD starting at track $[start_track], for $[ntracks]
+tracks.
 
-$[start_frame] は
-再生を始める $[start_track] の先頭から数えた
-フレームのオフセット値です。
-$[nframes] は
-再生を終了する最後のトラック
-($[start_track]+$[ntracks]) の
-先頭から数えたフレームのオフセット値です。
+$[start_frame] is the frame offset, from the beginning of the $[start_track],
+at which to start. $nframes] is the frame offset, from the beginning
+of the last track
+($[start_track]+$[ntracks]), at which to end playing.
 
-このメソッドは、@[CD#status]を
-呼んで CD のトラック情報を取得した後にのみ、呼ぶべきです。
+THis methods should only be called after calling @[CD#status] to get track
+information about the CD.
 
 NOTES
-データトラックは無視されます。
+Data tracks are ignored.
 
 EXCEPTION *
 
 EXAMPLE
-# 前もって cdrom がオープンされたデバイスだと仮定 
-# CD 全体を再生 
+# assuming cdrom is a previously opened device
+# Play the entire CD
 if cdrom.in_drive?
   cdrom.play_tracks 0, 0, 0, 0
-
-# 最初のトラックを再生 
+end
+# Play the first track
 if cdrom.in_drive?
   cdrom.play_tracks 0, 0, 1, 0
-
-# 2 番目のトラックの最初から 15 秒を再生 
+end
+# 2 Play first 15 seconds of the 2nd track
 if cdrom.in_drive?
   cdrom.play_tracks 1, 0, 0, SDL::CD::FPS*15
-
+end
 SEEALSO
 CD#play
 CD#status
@@ -230,13 +216,13 @@ CD#status
 NAME pause
 MOD CD
 TYPE #
-PURPOSE CD-ROM の再生を一時停止します。
+PURPOSE Pauses a CDROM
 
 PROTO
 pause
 
 DESC
-指定された CD-ROM の再生を一時停止します。
+Pauses play on the given cdrom.
 
 EXCEPTION *
 
@@ -248,13 +234,13 @@ CD#resume
 NAME resume
 MOD CD
 TYPE #
-PURPOSE CD-ROM の再生を再開します。
+PURPOSE Resumes a CDROM
 
 PROTO
 resume
 
 DESC
-指定した CD-ROM の再生を再開します。
+Resumes play on the given cdrom.
 
 EXCEPTION *
 
@@ -266,13 +252,13 @@ CD#pause
 NAME stop
 MOD CD
 TYPE #
-PURPOSE CD-ROM の再生を停止します。
+PURPOSE Stops a CDROM
 
 PROTO
 stop
 
 DESC
-指定された CD-ROM の再生を停止します。
+Stops play on the given cdrom.
 
 EXCEPTION *
 
@@ -283,13 +269,13 @@ CD#play
 NAME eject
 MOD CD
 TYPE #
-PURPOSE CD-ROM を取り出します。
+PURPOSE Ejects a CDROM
 
 PROTO
 eject
 
 DESC
-指定された CD-ROM を取り出します。
+Ejects the given cdrom.
 
 EXCEPTION *
 
@@ -297,7 +283,7 @@ EXCEPTION *
 NAME num_tracks
 MOD CD
 TYPE #
-PURPOSE CD のトラック数を返します。
+PURPOSE Gets number of tracks on the CD.
 RVAL Integer
 
 PROTO
@@ -305,8 +291,8 @@ num_tracks
 numTracks
 
 DESC
-指定された CD-ROM のトラック数を返します。
-@[CD#status]で内容が更新されます。
+Returns the number of tracks on the given cdrom.
+@[CD#status] updates this value.
 
 SEEALSO
 CD#status
@@ -315,7 +301,7 @@ CD#status
 NAME current_track
 MOD CD
 TYPE #
-PURPOSE 現在のトラックを返します。
+PURPOSE Gets current track.
 RVAL Integer
 
 PROTO
@@ -323,8 +309,8 @@ current_track
 currentTrack
 
 DESC
-指定された CD-ROM の現在のトラックを返します。
-@[CD#status]で内容が更新されます。
+Returns the currently playing track.
+@[CD#status] updates this value.
 
 SEEALSO
 CD#status
@@ -333,7 +319,7 @@ CD#status
 NAME current_frame
 MOD CD
 TYPE #
-PURPOSE トラック内の現在のフレームオフセット値を返します。
+PURPOSE Gets current frame offset within the track
 RVAL Integer
 
 PROTO
@@ -341,8 +327,8 @@ current_frame
 currentFrame
 
 DESC
-指定された CD-ROM のトラック内の現在演奏しているフレームオフセット値を返します。
-@[CD#status]で内容が更新されます。
+Returns the current frame offset with the playing track.
+@[CD#status] updates this value.
 
 SEEALSO
 CD#status
@@ -351,7 +337,7 @@ CD#status
 NAME track_type
 MOD CD
 TYPE #
-PURPOSE トラックの種類を返します。
+PURPOSE Gets track type.
 RVAL UINT
 
 PROTO
@@ -359,14 +345,14 @@ track_type(track)
 trackType(track)
 
 DESC
-$[track] で指定したトラックの種類を返します。
-SDL::CD::AUDIO_TRACK か SDL::CD::DATA_TRACK のいずれかを返します。
+Returns the track type in $[track].
+SDL::CD::AUDIO_TRACK or SDL::CD::DATA_TRACK is returned.
 
 %%
 NAME track_length
 MOD CD
 TYPE #
-PURPOSE トラックの長さを返します。
+PURPOSE Gets length of track.
 RVAL Integer
 
 PROTO
@@ -374,20 +360,20 @@ track_length(track)
 trackLength(track)
 
 DESC
-$[track] で指定したトラックの長さをフレーム単位で返します。
+Returns length, in frame, of $[track].
 
 %%
 NAME in_drive?
 MOD CD
 TYPE #
-PURPOSE ドライブにディスクがあるかどうかを調べます。
+PURPOSE Check disc in drive
 RVAL true/false
 
 PROTO
 in_drive?
 
 DESC
-ドライブにディスクがあるなら true を返します。
+Returns true if drive is not empty, otherwise returns false.
 
 SEEALSO
 CD#status
@@ -396,7 +382,7 @@ CD#status
 NAME frames_to_msf
 MOD CD
 TYPE .
-PURPOSE フレーム数を分/秒/フレームに分解します。
+PURPOSE Convert frames into minitus/seconds/frames
 RVAL [Integer, Integer, Integer]
 
 PROTO
@@ -404,8 +390,8 @@ frames_to_msf(frames)
 framesToMSF(frames)
 
 DESC
-フレーム数を分/秒/フレームに変換し、[分, 秒, フレーム] という整数3個の
-配列にして返します。
+Converts frames into minitus/seconds/frames, and returns an array like
+[min, sec, frames].
 
 SEEALSO
 CD.msf_to_frames
@@ -414,7 +400,7 @@ CD.msf_to_frames
 NAME msf_to_frames
 MOD CD
 TYPE .
-PURPOSE 分/秒/フレームという値をフレーム数に変換します。
+PURPOSE Convert minitus/seconds/frames into frames
 RVAL Integer
 
 PROTO
@@ -422,7 +408,7 @@ msf_to_frames(min, sec, frames)
 MSFToFrames(min, sec, frames)
 
 DESC
-分/秒/フレームという値をフレーム数に変換します。
+Convert minitus/seconds/frames into frames and returns frames.
 
 SEEALSO
 CD.frames_to_msf
