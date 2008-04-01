@@ -213,15 +213,15 @@ EXAMPLE
 # CD 全体を再生 
 if cdrom.in_drive?
   cdrom.play_tracks 0, 0, 0, 0
-
+end
 # 最初のトラックを再生 
 if cdrom.in_drive?
   cdrom.play_tracks 0, 0, 1, 0
-
+end
 # 2 番目のトラックの最初から 15 秒を再生 
 if cdrom.in_drive?
   cdrom.play_tracks 1, 0, 0, SDL::CD::FPS*15
-
+end
 SEEALSO
 CD#play
 CD#status
