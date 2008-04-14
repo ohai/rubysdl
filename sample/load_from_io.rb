@@ -21,6 +21,7 @@ img3 = Zlib::GzipReader.open("icon.bmp.gz"){|f| SDL::Surface.loadBMPFromIO(f) }
 img4 = File.open("icon.png"){|f| SDL::Surface.loadFromIO(f) }
 
 mus = SDL::Mixer::Music.loadFromString(File.read("track01.ogg"))
+wav = File.open('sample.wav'){|f| SDL::Mixer::Wave.loadFromIO(f) }
 
 SDL.blitSurface(img,0,0,32,32,screen,100,100)
 SDL.blitSurface(img2,0,0,32,32,screen,200,100)
@@ -29,6 +30,7 @@ SDL.blitSurface(img4,0,0,32,32,screen,400,100)
 screen.updateRect(0, 0, 0, 0)
 
 SDL::Mixer.playMusic(mus, -1)
+SDL::Mixer.playChannel(0, wav, 0)
 
 while true
   while event = SDL::Event2.poll
