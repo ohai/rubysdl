@@ -13,7 +13,7 @@ OpenGL applications (a function often performed by GLUT).
 
 Ruby/SDL has no OpenGL methods, please use
 ((<OpenGL Interface|URL:http://www2.giganet.net/~yoshi/>)) or
-((<riko|http://www.kumaryu.net/?(Ruby)+Riko>))
+((<riko|URL:http://www.kumaryu.net/?(Ruby)+Riko>))
 with Ruby/SDL.
 
 === Initialisation
@@ -104,7 +104,7 @@ get_attr(attr)
 getAttr(attr)
 
 DESC
-Returns the value of the SDL/OpenGL @[attribute|GL attribute] $[attr].
+Returns the value of the SDL/OpenGL ((<attribute|GL attribute>)) $[attr].
 This is useful after
 a call to @[Screen.open] to check whether your attributes have been set as you
 expected.
@@ -124,7 +124,7 @@ set_attr(attr, val)
 setAttr(attr, val)
 
 DESC
-Sets the OpenGL @[attribute|GL attribute] $[attr] to $[value].
+Sets the OpenGL ((<attribute|GL attribute>)) $[attr] to $[value].
 The attributes you set don't take effect
 until after a call to @[Screen.open]. You should use @[GL.get_attr] to
 check the values after a @[Screen.open] call.
@@ -152,4 +152,4 @@ Swap the OpenGL buffers, if double-buffering is supported.
 
 SEEALSO
 GL.set_attr
-GL::Screen.open
+Screen.open

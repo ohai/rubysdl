@@ -1,32 +1,34 @@
-= 衝突判定
-* ((<衝突判定システムの概要>))
+= Collision Detection
+* ((<Collision Detection outline>))
 * ((<SDL::CollisionMap>))
 
-* ((<衝突判定関連メソッド>))
+* ((<Collision Detection Methods>))
 TOC
 
-== 衝突判定システムの概要
-Ruby/SDL には ((<SGE|URL:http://www.etek.chalmers.se/~e8cal1/sge/index.html>))
-由来の衝突判定システムがあります。
-基本的な仕組みは、判定のある部分と無い部分の2値の長方形画像を生成し、
-それを2つ持ってきて、重なっている部分を1ピクセルずつ見ていくことで
-その2つが衝突しているか、つまり重なっているかどうかを判定します。
+== Collision Detection outline
+Ruby/SDL has collision detection system
+derived from 
+((<SGE|URL:http://www.etek.chalmers.se/~e8cal1/sge/index.html>)).
+This enables you to pixel-pixel checking after
+creating binary image by  @[Surface#make_collision_map].
 
-sample/collision.rb も参考にしてください。
+Please see sample/collision.rb too.
 
 == SDL::CollisionMap
-衝突判定のための2値画像を表わすクラスです。
-@[Surface#make_collision_map] によってのみインスタンスが作れます。
+This class represents binary image used by collision 
+detections.
+You can create this instance only by 
+@[Surface#make_collision_map].
 
 METHODS(CollisionMap)
 
-== 衝突判定関連メソッド
+== Collision Detection Methods
 %%%
 NAME make_collision_map
 MOD Surface
 TYPE #
 DEP SGE
-PURPOSE 衝突判定のためのCollisionMapを生成する。
+PURPOSE Creates a new collision map
 RVAL SDL::CollisionMap
 
 PROTO
@@ -34,9 +36,12 @@ make_collision_map
 makeCollisionMap
 
 DESC
-@[Surface] のインスタンスから @[CollisionMap] を生成します。
-$[self] のピクセルのうちカラーキーで透明ピクセルになっている
-所が衝突しない所、そうでないピクセルが衝突するピクセルになります。
+Creates a new collision map from @[Surface] object.
+Use @[Surface#set_color_key] before calling this method.
+Every non-transparent pixel is set to
+solid in the collision map. 
+
+Returns a new @[CollisionMap] object.
 
 EXCEPTION *
 
@@ -51,20 +56,22 @@ NAME collision_check
 MOD CollisionMap
 TYPE #
 DEP SGE
-PURPOSE 衝突判定をします。
+PURPOSE Does pixel collision detection.
 RVAL true/false
 
 PROTO
 collision_check(x1, y1, cmap, x2, y2)
 
 DESC
-$[self] の左上が 座標 ($[x1], $[y1])、もうひとつの
-@[CollisionMap] のインスタンス $[cmap] の左上が ($[x2], $[y2])に
-ある場合に、この2つが重なっているかどうかを判定し、重なっている
-なら true を、いないなら false を返します。
+Does pixel perfect collision detection with 
+$[self] and $[cmap]. 
+The ($[x1],$[y1]) and ($[x2],$[y2])
+coords are the positions of the upper left corners of the
+images. Returns true if any solid
+pixels of the two images overlap or else false.
 
-このメソッドは内部で @[CollisionMap#bounding_box_check] を
-呼んでいます。
+This method calls @[CollisionMap#bounding_box_check] 
+internally.
 
 SEEALSO
 CollisionMap#bounding_box_check
@@ -74,7 +81,7 @@ NAME bounding_box_check
 MOD CollisionMap
 TYPE #
 DEP SGE
-PURPOSE 2つの長方形が重なっているかどうかを判定します。
+PURPOSE Checks if two shapes overlap.
 RVAL true/false
 
 PROTO
@@ -82,12 +89,16 @@ bounding_box_check(x1, y1, cmap, x2, y2)
 boundingBoxCheck(x1, y1, cmap, x2, y2)
 
 DESC
-@[CollisionMap] のインスタンスを長方形と見なし、
-$[self] の左上が ($[x1], $[y1])、$[cmap] の左上の点が ($[x2], $[y2])に
-あるとして2つの長方形が重なっているかどうかを判定します。
+
+Checks if two rectangles 
+(the bounding boxes, $[self] and $[cmap]) overlap. 
+The ($[x1],$[y1]) and ($[x2],$[y2])
+coords are the positions of the upper left corners of the
+images.
 
 RET
-長方形が重なっていれば true を、いなければ false を返します。
+Returns true if two rectangles overlap, otherwise
+returns false.
 
 SEEALSO
 CollisionMap#collision_check
@@ -99,13 +110,13 @@ NAME clear
 MOD CollisionMap
 TYPE #
 DEP SGE
-PURPOSE 指定した範囲を衝突なしの状態にします。
+PURPOSE Clears an area in the collision map
 
 PROTO
 clear(x, y, w, h)
 
 DESC
-引数で指定した長方形を衝突なしの状態にします。
+Clears an area in the collision map from anything solid.
 
 SEEALSO
 CollisionMap#set
@@ -115,13 +126,13 @@ NAME set
 MOD CollisionMap
 TYPE #
 DEP SGE
-PURPOSE 指定した範囲を衝突ありの状態にします。
+PURPOSE Makes an area in the collision map solid
 
 PROTO
 set(x, y, w, h)
 
 DESC
-引数で指定した長方形を衝突ありの状態にします。
+Makes an area in the collision map solid.
 
 SEEALSO
 CollisionMap#set
@@ -131,14 +142,14 @@ NAME w
 MOD CollisionMap
 TYPE #
 DEP SGE
-PURPOSE 衝突判定用画像の幅を返します。
+PURPOSE Gets width of collision map
 RVAL Integer
 
 PROTO
 w
 
 DESC
-衝突判定用画像の幅を返します。
+Returns width of collision map.
 
 SEEALSO
 CollisionMap#h
@@ -148,14 +159,15 @@ NAME h
 MOD CollisionMap
 TYPE #
 DEP SGE
-PURPOSE 衝突判定用画像の高さを返します。
+PURPOSE Get height of collision map
 RVAL Integer
 
 PROTO
 h
 
 DESC
-衝突判定用画像の高さを返します。
+Returns height of collision map.
+
 
 SEEALSO
 CollisionMap#w

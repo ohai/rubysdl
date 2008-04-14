@@ -1,4 +1,4 @@
-= Ã‹º°
+= Contents
 * ((<"Ruby/SDL Outline">))
 * ((<Initialize>))
 * ((<Video>))
@@ -10,7 +10,7 @@
 * ((<Audio>))
 * ((<Time>))
 * ((<Font>))
-* ((<Collision detection>))
+* ((<Collision Detection>))
 * ((<SDLSKK>))
 * ((<MPEG playback>))
 
@@ -29,9 +29,9 @@ Ruby/SDL has following functions.
   ((<SGE|URL:http://www.etek.chalmers.se/~e8cal1/sge/index.html>))
 * ((<Using OpenGL|OpenGL>)) via ((<OpenGL Interface|URL:http://www2.giganet.net/~yoshi/>))
 * ((<Dealing with time|Time>))
-* ((<SKK like Japanese input>)) with ((<SDLSKK|URL:http://www.kmc.gr.jp/~ohai/sdlskk.html>))
+* ((<SKK like Japanese input|SDLSKK>)) with ((<SDLSKK|URL:http://www.kmc.gr.jp/~ohai/sdlskk.html>))
 * ((<MPEG playback>)) with ((<SMPGE|URL:http://www.icculus.org/smpeg/>))
-* ((<Window Management>)) and ((<Collision detection>))
+* ((<Window Management>)) and ((<Collision Detection>))
 
 == SDL::Error
 A Exception class for SDL specific errors.

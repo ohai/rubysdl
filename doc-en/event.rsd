@@ -82,12 +82,12 @@ We can check for the mouse motion event type within our switch statement like so
 
 All we need do now is read the information out of this object as instance 
 of @[Event::MouseMotion].
-
-      puts "We got a motion event"
-      puts "Current mouse position is: (#{event.x}, #{event.y})"
-    else
-      puts "Unhandled Event!"
-    end
+  
+    puts "We got a motion event"
+    puts "Current mouse position is: (#{event.x}, #{event.y})"
+  else
+    puts "Unhandled Event!"
+  end
   end
   puts "Event queue is empty."
 
@@ -165,7 +165,7 @@ This event occurs when ever a user moves an axis on the joystick.
 METHODS(Event::JoyAxis)
 
 * SEEALSO
-    @[Joystick#num_axes]¡¢@[Joystick#axis]
+  @[Joystick#num_axes], @[Joystick#axis]
 
 == SDL::Event::JoyBall
 Class for joystick ball motion event.
@@ -176,7 +176,7 @@ METHODS(Event::JoyBall)
 
 * SEEALSO
 
-  @[Joystick#num_balls]¡¢@[Joystick#ball]
+  @[Joystick#num_balls], @[Joystick#ball]
 
 == SDL::Event::JoyHat
 Class for joystick hat position change event.
@@ -185,7 +185,7 @@ METHODS(Event::JoyHat)
 
 * SEEALSO
   
-  @[Joystick#num_hats]¡¢@[Joystick#hat]
+  @[Joystick#num_hats], @[Joystick#hat]
 
 == SDL::Event::JoyButtonDown
 Class for joystick button press event.
@@ -196,7 +196,7 @@ METHODS(Event::JoyButtonDown)
 
 * SEEALSO
 
-  @[Joystick#num_buttons]¡¢@[Joystick#button]
+  @[Joystick#num_buttons], @[Joystick#button]
 
 == SDL::Event::JoyButtonUp
 Class for joystick button release event.
@@ -207,7 +207,7 @@ METHODS(Event::JoyButtonUp)
 
 * SEEALSO
 
-  @[Joystick#num_buttons]¡¢@[Joystick#button]
+  @[Joystick#num_buttons], @[Joystick#button]
 
 == SDL::Event::Quit
 Class for quit reqested event.
@@ -254,39 +254,39 @@ METHODS(Key)
 === Key symbol
 Key symbol constants definitions.
 * SDL::Key::BACKSPACE  '\b'  backspace  
-* SDL::Key::TAB  '\t'  tab  
-* SDL::Key::CLEAR     clear   
-* SDL::Key::RETURN  '\r'  return  
-* SDL::Key::PAUSE    pause  
-* SDL::Key::ESCAPE  '^['  escape  
-* SDL::Key::SPACE  ' '   space 
-* SDL::Key::EXCLAIM  '!'   exclaim 
-* SDL::Key::QUOTEDBL  '"'   quotedbl 
+* SDL::Key::TAB  '\t' tab  
+* SDL::Key::CLEAR     clear
+* SDL::Key::RETURN  '\r'  return
+* SDL::Key::PAUSE    pause
+* SDL::Key::ESCAPE  '^['  escape
+* SDL::Key::SPACE  ' '   space
+* SDL::Key::EXCLAIM  '!'   exclaim
+* SDL::Key::QUOTEDBL  '"'   quotedbl
 * SDL::Key::HASH  '#'   hash
 * SDL::Key::DOLLAR  '$'   dollar
-* SDL::Key::AMPERSAND  '&'   ampersand
-* SDL::Key::QUOTE  '''   quote
+* SDL::Key::AMPERSAND  '&'  ampersand
+* SDL::Key::QUOTE  '''  quote
 * SDL::Key::LEFTPAREN  '('   left parenthesis
-* SDL::Key::RIGHTPAREN  ')'   right parenthesis
-* SDL::Key::ASTERISK  '*'   asterisk
-* SDL::Key::PLUS  '+'   plus sign
-* SDL::Key::COMMA  ','   comma
-* SDL::Key::MINUS  '-'   minus sign
-* SDL::Key::PERIOD  '.'   period
-* SDL::Key::SLASH  '/'   forward slash
-* SDL::Key::K0  '0'  0  
-* SDL::Key::K1  '1'  1  
-* SDL::Key::K2  '2'  2  
-* SDL::Key::K3  '3'  3  
-* SDL::Key::K4  '4'  4  
-* SDL::Key::K5  '5'  5  
-* SDL::Key::K6  '6'  6  
-* SDL::Key::K7  '7'  7  
-* SDL::Key::K8  '8'  8  
-* SDL::Key::K9  '9'  9  
-* SDL::Key::COLON  ':'   colon
-* SDL::Key::SEMICOLON  ';'   semicolon
-* SDL::Key::LESS  '&lt;'   less-than sign
+* SDL::Key::RIGHTPAREN  ')'  right parenthesis
+* SDL::Key::ASTERISK  '*'  asterisk
+* SDL::Key::PLUS  '+'  plus sign
+* SDL::Key::COMMA  ','  comma
+* SDL::Key::MINUS  '-'  minus sign
+* SDL::Key::PERIOD  '.'  period
+* SDL::Key::SLASH  '/'  forward slash
+* SDL::Key::K0  '0'  0
+* SDL::Key::K1  '1'  1
+* SDL::Key::K2  '2'  2
+* SDL::Key::K3  '3'  3
+* SDL::Key::K4  '4'  4
+* SDL::Key::K5  '5'  5
+* SDL::Key::K6  '6'  6
+* SDL::Key::K7  '7'  7
+* SDL::Key::K8  '8'  8
+* SDL::Key::K9  '9'  9
+* SDL::Key::COLON  ':'  colon
+* SDL::Key::SEMICOLON  ';'  semicolon
+* SDL::Key::LESS  '&lt;'  less-than sign
 * SDL::Key::EQUALS  '='   equals sign
 * SDL::Key::GREATER  '&gt;'   greater-than sign
 * SDL::Key::QUESTION  '?'   question mark
@@ -368,14 +368,14 @@ Key symbol constants definitions.
 * SDL::Key::NUMLOCK    numlock  
 * SDL::Key::CAPSLOCK    capslock  
 * SDL::Key::SCROLLOCK    scrollock  
-* SDL::Key::RSHIFT     right shift ±¦shift  
-* SDL::Key::LSHIFT     left shift º¸shift  
-* SDL::Key::RCTRL     right ctrl ±¦ctrl  
-* SDL::Key::LCTRL     left ctrl º¸ctrl  
-* SDL::Key::RALT     right alt ±¦alt  
-* SDL::Key::LALT     left alt º¸alt  
-* SDL::Key::RMETA     right meta ±¦meta  
-* SDL::Key::LMETA     left meta º¸meta  
+* SDL::Key::RSHIFT     right shift
+* SDL::Key::LSHIFT     left shift
+* SDL::Key::RCTRL     right ctrl
+* SDL::Key::LCTRL     left ctrl
+* SDL::Key::RALT     right alt
+* SDL::Key::LALT     left alt
+* SDL::Key::RMETA     right meta
+* SDL::Key::LMETA     left meta
 * SDL::Key::LSUPER     left windows key
 * SDL::Key::RSUPER     right windows key
 * SDL::Key::MODE     mode shift
@@ -444,7 +444,7 @@ DESC
 Waits indefinitely for the next available event and return that event.
 
 If event object is returned, the next event is removed
- from the queue and stored in that area.
+from the queue and stored in that area.
 
 EXCEPTION
 Raise @[Error] if there was an error while waiting

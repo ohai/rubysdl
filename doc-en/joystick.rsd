@@ -98,7 +98,6 @@ Opens a joystick for use within SDL. The $[index] refers to the N'th
 joystick in the system. A joystick must be opened before it can be
 used.
 
-
 RET
 Returns a @[Joystick] instance on success.
 

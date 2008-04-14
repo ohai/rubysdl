@@ -1,13 +1,15 @@
 = Time
 TOC
-DLは時間を扱うクロスプラットフォームな方法をいくつか提供しています。
-提供しているものは現在の時間を得る方法と短時間待つ方法です。
+SDL provides several cross-platform functions for dealing with
+time.
+It provides a way to get the current time
+and a way to wait a little while.
 
 ==Methods
 %%%
 NAME get_ticks
 TYPE .
-PURPOSE SDLライブラリの初期化からの経過ミリ秒数を取得します。
+PURPOSE Get the number of milliseconds since the SDL library initialization
 RVAL UINT
 
 PROTO
@@ -15,9 +17,9 @@ get_ticks
 getTicks
 
 DESC
-SDLライブラリが初期化されてからのミリ秒数を得ることができます。
-プログラムが49日間以上
-実行される場合にはこの値は戻ってしまう(wrap)ことに注意して下さい。
+Get the number of milliseconds since @[init] is called
+Note that this value wraps if the program runs
+for more than ~49 days.
 
 SEEALSO
 delay
@@ -25,21 +27,20 @@ delay
 %%
 NAME delay
 TYPE .
-PURPOSE 指定されたミリ秒間停止して復帰します。
+PURPOSE Wait a specified number of milliseconds before returning
 
 PROTO
 delay(ms)
 
 DESC
-指定されたミリ秒間停止して復帰します。このモジュール関数は
-((*少くとも*))指定されたミリ秒間停止します。
-しかしOSのスケジューリングによってはもっと長くなることもあります。
+Wait a specified number of milliseconds before returning.
+This method will wait ((*at least*)) the specified time, 
+but possible longer due to OS scheduling.
 
 NOTES
-((*少くとも*))10ミリ秒の遅延を考えて下さい。
-プラットフォームによってはもっと短かい時間の場合もありますが、
-この値が最も一般的です。
+Count on a delay granularity of ((*at least*)) 10 ms. Some
+platforms have shorter clock ticks but this is the most
+common.
 
-この関数を使って停止している間は Ruby のスレッドは切り替わりません。
-Kernel#sleep を使ったほうが良いでしょう。
-
+Ruby's threads cannot preempt while waiting with this method.
+You can use Kernel#sleep instead.

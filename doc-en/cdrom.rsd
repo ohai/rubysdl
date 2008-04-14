@@ -33,7 +33,7 @@ easily be converted to the more familiar minutes/seconds format by using
 This class represents opened CDROM device and stores information on the
 layout of the tracks on the disc.
 
-== CD-ROM関連メソッド
+== CD-ROM methods
 %%%
 NAME num_drives
 MOD CD

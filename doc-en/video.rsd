@@ -1,196 +1,155 @@
 = Video
-* ((<Video Subsystem 概要>))
+* ((<Video Subsystem Outline>))
 * ((<SDL::Screen>))
 * ((<SDL::Surface>))
 * ((<SDL::VideoInfo>))
-* ((<色、ピクセルフォーマット、ピクセル値について>))
+* ((<Color, PixelFormat and Pixel value>))
 
-* Video関連メソッド
+* Methods
 TOC
 
-== Video Subsystem 概要
-SDL は表示フレームバッファに対するとてもシンプルなインターフェースを
-提供します。
-フレームバッファはあなたが直接書くことができる
-オフスクリーンサーフェスとして表現されます。
-スクリーンに書いたものを画面に表示させるには、
-画面の必要な部分が更新されることを保証する
-@[更新|Screen#update_rect]関数を呼んで下さい。
+== Video Subsystem Outline
+SDL presents a very simple interface to the display framebuffer.
+The framebuffer is represented as an offscreen surface to which
+you can write directly. If you want the screen to show what you
+have written, call the @[update|Screen#update_rect]
+function which will guarantee that
+the desired portion of the screen is updated.
 
-Ruby/SDL のいかなるビデオ関連メソッドを呼ぶ前に、
-最初に @[init](SDL::INIT_VIDEO)を呼ばなければいけません。
-これは SDL 内のビデオとイベントを初期化します。
+Before you call any of the SDL video functions, you must first
+call @[init](SDL::INIT_VIDEO), which initializes the video and
+events in the SDL library. 
 
-アプリケーションでサウンドとビデオを共に使うときは、
-サウンドデバイスをオープンする前に
-@[init](SDL::INIT_AUDIO|SDL::INIT_VIDEO)
-を呼ぶ必要があります。
-そうしないと、Win32 の DirectX において
-フルスクリーン表示モードにセットすることができないでしょう。
+If you use both sound and video in your application, you need to
+call @[init](SDL::INIT_AUDIO | SDL::INIT_VIDEO) before opening
+the sound device, otherwise under Win32 DirectX, you won't be
+able to set full-screen display modes.
 
-ライブラリを初期化した後は、ビデオ表示を順番にスタートさせることができます。
-最も簡単な方法は、共通のスクリーン解像度とピクセル深度を選び、
-エラーをチェックしつつビデオを初期化することです。
-おそらくあなたが望んだものが得られるでしょうが、
-SDL はあなたが求めたモードをエミュレートし、
-更新の際に変換しているかもしれません。
-最もよい方法は、
-望まれるものに最も近いビデオモードを
-@[問い合わせ|Screen.info]、
-そのピクセルフォーマットに合わせて画像を
-@[変換|Surface#display_format]することです。
+After you have initialized the library, you can start up the
+video display in a number of ways. The easiest way is to pick a
+common screen resolution and depth and just initialize the
+video, checking for errors. You will probably get what you want,
+but SDL may be emulating your requested mode and converting the
+display on update. The best way is to @[query|Screen.info], 
+for the best video
+mode closest to the desired one, and then 
+@[convert|Surface#display_format] your images to 
+that pixel format.
 
-SDL は現在 1 ピクセル 8 bit 以上のいかなるピクセル深度もサポートしています。
-8 bpp のフォーマットは 8 bit のパレットモードとしてみなされ、
-12, 15, 16, 24, そして 32 bpp は
-「パックドピクセル」モードとしてみなされます。
-これは、個々のピクセルが RGB 各チャンネルの輝度を
-ピクセルのビットの中にパッキングして持っているということです。
+SDL currently supports any bit depth >= 8 bits per pixel. 8 bpp
+formats are considered 8-bit palettized modes, while 12, 15, 16,
+24, and 32 bits per pixel are considered "packed pixel" modes,
+meaning each pixel contains the RGB color components packed in
+the bits of the pixel.
 
-ビデオモードを初期化した後は、
-返値として得られたサーフェスに対し、他のフレームバッファのように書き込み、
-いつものように更新処理を呼ぶことができます。
+After you have initialized your video mode, you can take the
+surface that was returned, and write to it like any other
+framebuffer, calling the update routine as you go.
 
 == SDL::Surface
-絵のサーフェスを表わすクラスです。
+Graphical Surface class.
 
-このクラスは描画される「絵」のメモリを表現しています。
+This class represent areas of "graphical" memory, memory that
+can be drawn to. 
 
-メソッドおよびクラスメソッドのリスト
 METHODS(Surface)
 
 == SDL::Screen
-画面に対応するサーフェスを表わすクラスです。
+Video framebuffer class. 
 
-このクラスは @[Surface] のサブクラスであり、実際に画面に表示される
-サーフェスを表わします。
+This class is subclass of @[Surface], and contents 
+is shown in display.
 
-ビデオフレームバッファは @[Screen.open] と @[Screen.get]
-から得られます。
+The video framebuffer is returned by 
+@[Screen.open] and @[Screen.get].
 
-メソッドおよびクラスメソッドのリスト
 METHODS(Screen)
 
 == SDL::VideoInfo
-ビデオターゲットの情報を表わすクラスです。
-このクラスのインスタンスは @[Screen.info] から返り値として得られます。
-これは以下のメソッドを持ちます。
+Video Target information class.
+
+The instance of this class is returned by @[Screen.info]. It
+contains information on either the 'best' available mode (if
+called before @[Screen.open]) or the current video mode.
+
+This class has following methods.
 
 --- SDL::VideoInfo#hw_available
 
-    ハードウェアサーフェスを作ることは可能かどうか
+    Is it possible to create hardware surfaces?
 
 --- SDL::VideoInfo#wm_available
-
-    ウィンドウマネージャが利用できるかどうか
+    
+    Is there a window manager available?
 
 --- SDL::VideoInfo#blit_hw
-
-    ハードウェア間の blit はアクセラレーションが有効かどうか
+    
+    Are hardware to hardware blits accelerated?
 
 --- SDL::VideoInfo#blit_hw_CC
-
-    ハードウェア間のカラーキー blit はアクセラレーションが有効かどうか
+    
+    Are hardware to hardware colorkey blits accelerated?
 
 --- SDL::VideoInfo#blit_hw_A
-
-    ハードウェア間のα blit はアクセラレーションが有効かどうか
+    
+    Are hardware to hardware alpha blits accelerated?
 
 --- SDL::VideoInfo#blit_sw
-
-    ソフトウェアからハードウェアへの blit はアクセラレーションが有効かどうか
+    
+    Are software to hardware blits accelerated?
 
 --- SDL::VideoInfo#blit_sw_CC
-
-    ソフトウェアからハードウェアへのカラーキー blit はアクセラレーション
-    が有効かどうか
+    
+    Are software to hardware colorkey blits accelerated?
 
 --- SDL::VideoInfo#blit_sw_A
-
-    ソフトウェアからハードウェアへのα blit はアクセラレーションが有効かどうか
+    
+    Are software to hardware alpha blits accelerated?
 
 --- SDL::VideoInfo#blit_fill
-
-    色の塗潰しはアクセラレーションが有効かどうか
+    
+    Are color fills accelerated?
 
 --- SDL::VideoInfo#video_mem
-
-    ビデオメモリの総容量(Kbyte)
+    
+    Total amount of video memory in Kilobytes
 
 --- SDL::VideoInfo#bpp
-
-    一ピクセルあたりのバイト数
+    
+    bits per pixel of the video device
 
 == SDL::PixelFormat
-サーフェスのフォーマットを表すクラスです。
-詳しくは((<色、ピクセルフォーマット、ピクセル値について>))
-をみてください。
+Surface format information class.
+Please see ((<Color, PixelFormat and Pixel value>)).
 
-メソッドおよびクラスメソッドのリスト
 METHODS(PixelFormat)
 
-== 色、ピクセルフォーマット、ピクセル値について
-まずは Ruby/SDL において重要なことを先に書きます。
-Ruby/SDLにおいて色はRGBAそれぞれ0から255までの値を取ります。
-性能のため SDL 内部ではRGBA値を32ビット符号無し整数でパッキングします。
-このRGBA値と符号無し32ビット整数との変換規則をピクセルフォーマットと
-呼び、変換後の値をピクセル値と呼びます。
-ピクセルフォーマットはサーフェスごとに決まっていて、
-変換は@[PixelFormat#map_rgb]、@[PixelFormat#map_rgba]、
-@[PixelFormat#get_rgb]、@[PixelFormat#get_rgba]というメソッドでします。
-メソッドの引数などで色を指定する場合、[231, 251, 100] というような
-要素が3個の配列(RGB,A=255)、
-[231, 251, 100, 128]という要素が4個の配列(RGBA)、もしくはピクセル値の
-いずれでも使えます。またメソッドの返り値として色情報が得られる場合は
-通常ピクセル値が得られます。
+== Color, PixelFormat and Pixel value
 
-以下はより基本的でより詳しい内容です。
+=== Outline
+In Ruby/SDL, color is described as four elements
+of 8-bit unsigned interger(from 0 to 255), Red, Green,
+Blue and Alpha. In Ruby/SDL, this values are
+packed as unsigned n-bit integer(n=8,16,24,32).
+The rules of this conversion is called PixelFormat
+and converted n-bit integer is called pixel value.
+Each surface has one PixelFormat, and you can use
+@[Surface#format] to get PixelFormat from surface object.
+You can also covert from or to pixel values calling
+@[PixelFormat#map_rgb], @[PixelFormat#map_rgba],
+@[PixelFormat#get_rgb] and @[PixelFormat#get_rgba].
+You can use pixel value or 3 elements array 
+or 4 elements array as color parameter.
+Return values are normally pixel values.
 
-Ruby/SDLにおける絵は、ピクセルの集合として表されます。
-ピクセルと呼ばれる小さな正方形を縦横に並べ、そのそれぞれに
-色をわりあてることで画像を表現します。
-例えば 640x480 の絵は 307200個 = 640×480 のピクセルで表わされます。
+=== Details
+Not documented yet.
 
-そして、その色は光の3原色である赤(Red)、緑(Green)、青(Blue)それぞれの値
-を0から255までで指定することで決めます。例えば [R,G,B] = [0,0,0] ならば黒、
-[255, 255, 0]ならば黄色、[160, 32, 240]で紫、などです。
-
-そしてこの情報をバイト列に変換して保存します。一つのピクセルに対し
-8ビット、16ビット、24ビット、もしくは32ビットのメモリを割当て、
-R,G,Bの 255*255*255の情報を適当にそのメモリに収まるように変換します。
-このビット数をbpp(Bits Per Pixel)と呼びます。
-そしてこの色の情報 -> バイト列の変換規則をピクセルフォーマットと呼びます。
-また、ピクセル1個分の色データをピクセルフォーマットで変換したものを
-ピクセル値と呼びます。性能のため SDL 内部ではこのピクセル値を
-よく利用します。
-それぞれのサーフェスは、このピクセルフォーマットと「絵を表わすバイト列」
-の組であると解釈できます。
-
-この色データとピクセル値の相互変換は
-@[PixelFormat#map_rgb]、@[PixelFormat#get_rgb]というメソッドでします。
-
-また、各メソッドの引数で色を指定する場合は、[r, g, b]という要素が整数3個の
-配列、もしくはそのサーフェスのピクセルフォーマットで変換したピクセル値の
-どちらでも使える場合がほとんどです。
-
-最後にα値について解説します。この値はある画像と別の画像を重ね合わせる
-時に意味のある値です。@[Surface.blit]などで2つの画像が重ね合わされる場合、
-通常下の画像は上の画像で完全に隠されてしまいます。しかし上の画像に
-α値を指定しておくと、上の画像の色と下の画像の色が混ぜ合されます。
-この混ぜ合せの割合をα値と呼びます。SDLではα値は0から255までの値をとりえます。
-0が完全な透明で、255が完全な不透明です。
-この値はbppが32の場合には、各ピクセルごとに指定することができます。
-つまりピクセル値には R,G,B のほかアルファ(Alpha)値を含めることができると
-いうことです。このα値を含めた変換には
-@[PixelFormat#map_rgba]、[PixelFormat#get_rgba]を使います。
-また各メソッドの引数でアルファ付きの色を指定する場合は、[r,g,b,a]という
-要素が整数4個の配列を使うことが可能です。
-
-== Methods 
+== Video Methods 
 %%%
 NAME get_video_surface
 TYPE .
-PURPOSE 現在の表示サーフェスを返します。
+PURPOSE returns the current display surface
 RVAL Screen
 OBSOLETE Screen.get
 
@@ -202,27 +161,27 @@ getVideoSurface
 NAME get
 MOD Screen
 TYPE .
-PURPOSE 現在の表示サーフェスを返します。
+PURPOSE returns the current display surface
 RVAL Screen
 
 PROTO
 get
 
 DESC
-このメソッドは現在の表示サーフェスを返します。
-SDL が表示サーフェス上でフォーマット変換を行っている場合は、
-この関数は実際のビデオサーフェスではなく、(SDL を使う側に
-見せている) 変換前のサーフェスを返します。
+This method returns the current display surface.
+If SDL is doing format conversion on the display surface, this
+method returns the publicly visible surface, not the real
+video surface.
 
 RET
-@[Screen]のインスタンスを返します。
+Returns the instance of @[Screen].
 
 EXCEPTION *
 
 %%
 NAME video_info
 TYPE .
-PURPOSE ビデオハードウェアについての情報を返します。
+PURPOSE returns information about the video hardware
 RVAL VideoInfo
 OBSOLETE Screen.info
 
@@ -234,21 +193,20 @@ videoInfo
 NAME info
 MOD Screen
 TYPE .
-PURPOSE ビデオハードウェアについての情報を返します。
+PURPOSE returns information about the video hardware
 RVAL VideoInfo
 
 PROTO
 info
 
 DESC
-この関数はビデオハードウェアに関する@[情報|VideoInfo]を返します。
-
-@[Screen.open]の前にこれが呼ばれると、
-返されたオブジェクトのbppアトリビュートには
-「最も適した」ビデオモードのピクセルフォーマットが入ります。
+This function returns a @[information|VideoInfo] about
+the video hardware. If this is called before @[Screen.open],
+bpp attribute of the returned object will contain the pixel
+format of the "best" video mode.
 
 RET
-情報を@[VideoInfo]のインスタンスで返します。
+Returns the instance of @[VideoInfo].
 
 EXCEPTION *
 
@@ -259,7 +217,7 @@ VideoInfo
 %%
 NAME video_driver_name
 TYPE .
-PURPOSE ビデオドライバの名前を取得します。
+PURPOSE Obtain the name of the video driver
 RVAL String
 OBSOLETE Screen.driver_name
 
@@ -271,7 +229,7 @@ videoDriverName
 NAME driver_name
 MOD Screen
 TYPE .
-PURPOSE ビデオドライバの名前を取得します。
+PURPOSE Obtain the name of the video driver
 RVAL String
 
 PROTO
@@ -279,13 +237,15 @@ driver_name
 driverName
 
 DESC
-ドライバ名は "x11" や "windib" のように単なる 1 語の識別子です。
+The driver name is a simple one
+word identifier like "x11" or "windib".
 
 RET
-ドライバ名を文字列で返します。
+Returns driver name as string.
 
 EXCEPTION
-ビデオがまだ@[init]で初期化されていないなら例外@[Error]を発生させます。
+Raises @[Error] if video has not been initialized with 
+@[init].
 
 SEEALSO
 init
@@ -293,7 +253,7 @@ init
 %%
 NAME list_modes
 TYPE .
-PURPOSE 与えられたフォーマットとビデオのフラグに対し、利用可能な画面モードの配列を返します。
+PURPOSE Returns an array of available screen dimensions for the given format and video flags
 RVAL nil/true/Array of [UINT, UINT]
 OBSOLETE Screen.list_modes
 
@@ -305,7 +265,7 @@ listModes(flags)
 NAME list_modes
 MOD Screen
 TYPE .
-PURPOSE 与えられたフォーマットとビデオのフラグに対し、利用可能な画面モードの配列を返します。
+PURPOSE Returns an array of available screen dimensions for the given format and video flags
 RVAL nil/true/Array of [UINT, UINT]
 
 PROTO
@@ -313,40 +273,36 @@ list_modes(flags)
 listModes(flags)
 
 DESC
-与えられたビデオのフラグに対し、
-利用可能な画面モードの配列を返します。
+Return an array of available screen dimensions for
+the given format and video flags, sorted largest to smallest.
 
-フラグは@[Screen.open]
-で使われるものと同じであり、モードが有効かどうかを決定する際に
-強い役割を果たします。
-SDL::HWSURFACEをフラグとして渡すと、
-ハードウェアのビデオサーフェスがサポートするモードだけが返されます。
-
-RET
-大きい方から小さい方にソートされています。
-ある特定のフォーマットに対し利用可能なモードがない場合は
-nil を返し、
-与えられたフォーマットに対しどのモードでも OK の場合は
-true を返します。
-利用可能なモードが有限個しか存在しない場合は、
-[縦方向の解像度, 横方向の解像度]という配列の配列を返します。
+Returns nil if there are no dimensions available for a
+particular format, or true if any dimension is okay for the given
+format.
+The flag parameter is an OR'd
+combination of surface flags. The flags are the same as those
+used @[Screen.open] and they play a strong role in deciding
+what modes are valid.
+For instance, if you pass SDL::HWSURFACE as
+a flag only modes that support hardware video surfaces will be
+returned.
 
 EXAMPLE
-# 利用可能なフルスクリーンハードウェアモードを取得する
+# Get available fullscreen/hardware modes
 modes = SDL::Screen.list_modes(SDL::FULLSCREEN|SDL::HWSURFACE)
 
-# 利用可能なモードがあるかどうかチェック
+# Check is there are any modes available
 if modes == nil
-  puts "利用可能なモードがありません!"
+  puts "No modes available!"
   exit 1
 end
 
-# 解像度が制限されているかどうかチェック
+# Check is there are any modes available
 if modes == true
-  puts "全解像度が利用可能です。"
+  puts "All resolutions available."
 else
-  # 有効なモードを表示
-  puts "利用可能なモード"
+  # Print valid modes
+  puts "Available Modes"
   modes.each{|w, h| puts "  #{w} x #{h}"}
 end
 
@@ -357,7 +313,7 @@ Screen.info
 %%
 NAME check_video_mode
 TYPE .
-PURPOSE ある特定のビデオモードがサポートされているかチェックします。
+PURPOSE Check to see if a particular video mode is supported.
 RVAL Integer
 OBSOLETE Screen.check_mode
 
@@ -369,7 +325,7 @@ checkVideoMode(w,h,bpp,flags)
 NAME check_mode
 MOD Screen
 TYPE .
-PURPOSE ある特定のビデオモードがサポートされているかチェックします。
+PURPOSE Check to see if a particular video mode is supported.
 RVAL Integer
 
 PROTO
@@ -377,27 +333,28 @@ check_mode(w,h,bpp,flags)
 checkMode(w,h,bpp,flags)
 
 DESC
-要求されたモードがどのピクセル深度においてもサポートされていない場合は
-0を返し、
-あるいは与えられた横幅・高さと
-要求された@[サーフェス|Surface] フラグ(@[Screen.open]を見て下さい)
-において利用可能な最も近いピクセル深度を返します。
+Returns 0 if the requested mode is not supported
+under any bit depth,
+or returns the bits-per-pixel of the
+closest available mode with the given width, height and
+requested surface flags (see @[Screen.open]).
 
-ピクセル深度の値は推奨されるモードに過ぎません。
-ビデオモードの@[設定|Screen.open]時に
-普通にあなたの望むピクセル深度を要求することができ、
-SDL はシャドウビデオサーフェスを使ってそのピクセル深度を
-エミュレートするでしょう。
+The bits-per-pixel value returned is only a suggested mode. You
+can usually request and bpp you want when 
+@[setting|Screen.opn] the video mode
+and SDL will emulate that color depth with a shadow video
+surface.
+
 
 EXAMPLE
-puts "640x480@16bpp のモードをチェックしています。"
+puts "Checking mode 640x480@16bpp."
 bpp = SDL::Screen.check_mode(640, 480, 16, SDL::HWSURFACE)
 if bpp == 0
-  puts "利用可能なモードではありません。"
+  puts "Mode not available."
   exit 1
 end
 
-puts "SDL は 640x480@#{bpp}bpp を推奨します。"
+puts "SDL Recomemends 640x480@#{bpp}bpp."
 screen = SDL::Screen.open(640, 480, bpp, SDL_HWSURFACE)
 
 SEEALSO
@@ -407,7 +364,7 @@ Screen.info
 %%
 NAME set_video_mode
 TYPE .
-PURPOSE 指定された横幅・高さ・ピクセル深度を用いてビデオモードを設定します。
+PURPOSE Set up a video mode with the specified width, height and bits-per-pixel.
 RVAL Screen
 OBSOLETE Screen.open
 
@@ -419,89 +376,93 @@ set_video_mode(w,h,bpp,flags)
 NAME open
 MOD Screen
 TYPE .
-PURPOSE 指定された横幅・高さ・ピクセル深度を用いてビデオモードを設定します。
+PURPOSE Set up a video mode with the specified width, height and bits-per-pixel.
 RVAL Screen
 
 PROTO
 open(w,h,bpp,flags)
 
 DESC
-指定された幅・高さ・ピクセル深度(1ピクセルのビット数)を用いて
-ビデオモードを設定します。
-$[bpp] が 0 ならば、現在表示されているピクセル深度として扱われます。
+Set up a video mode with the specified width, height and
+bits-per-pixel.
 
-$[flags] パラメータは@[Surface#flags]と同じです。
-以下の値の OR による組み合わせが有効です。
+If bpp is 0, it is treated as the current display bits per
+pixel.
+
+The flags parameter is the same as the @[Surface#flags]
+OR'd combinations of the following values
+are valid.
 
 :SDL::SWSURFACE
-  システムメモリからビデオサーフェスを作成します。
+  Create the video surface in system memory
 :SDL::HWSURFACE
-  ビデオメモリからビデオサーフェスを作成します。
+  Create the video surface in video memory
 :SDL::ASYNCBLIT
-  表示サーフェスの非同期更新の使用を有効にします。
-  これは通常、単一 CPU における blit 転送は遅くなりますが、
-  SMP システムにおいてスピードの向上をもたらすかも知れません。
+  Enables the use of asynchronous updates of the
+  display surface. This will usually slow down
+  blitting on single CPU machines, but may
+  provide a speed increase on SMP systems.
 :SDL::ANYFORMAT
-  普通は、もし要求されたピクセル深度のビデオサーフェス
-  ($[bpp]) が使えない場合は、
-  SDL はシャドウサーフェスでこれをエミュレートします。
-  SDL::ANYFORMATはこれを禁止し、
-  SDL はピクセル深度とは無関係にビデオサーフェスを使うことになります。
+  Normally, if a video surface of the requested
+  bits-per-pixel ($[bpp]) is not available, SDL will
+  emulate one with a shadow surface. Passing
+  SDL_ANYFORMAT prevents this and causes SDL to
+  use the video surface, regardless of its pixel
+  depth.
 :SDL::HWPALETTE
-  SDL がパレットに対する排他的なアクセスをできるようにします。
-  このフラグがないと、
-  @[Surface#set_colors]や@[Surface#set_palette]を用いて要求した色が、
-  常に取得できるとは限りません。
+  Give SDL exclusive palette access. Without this
+  flag you may not always get the the colors you
+  request with @[Surface#set_colors] or @[Surface#set_palette].
 :SDL::DOUBLEBUF
-  ハードウェアによるダブルバッファを有効にします。
-  (SDL::HWSURFACE と一緒の時のみ)
-  @[Screen#flip] の呼び出し
-  によってバッファを切り替え、画面を更新します。
-  全ての描画は、その瞬間に表示されていない方のサーフェスに行われます。
-  ダブルバッファを有効にできなかった場合は、
-  @[Screen#flip] は画面全体に対し単に@[Screen#update_rect]を行います。
+  Enable hardware double buffering; only valid
+  with SDL::HWSURFACE. Calling @[Screen#flip] will flip
+  the buffers and update the screen. All drawing
+  will take place on the surface that is not
+  displayed at the moment. If double buffering
+  could not be enabled then @[Screen#flip] will just
+  perform a @[Screen#update_rect] on the entire screen.
 :SDL::FULLSCREEN
-  SDL はフルスクリーンモードの使用を試みます。
-  どういう理由であれ、ハードウェアによる解像度変更ができない場合は
-  一段階解像度の高いモードが使われ、黒い背景の中央に表示ウインドウが置かれます。
+  SDL will attempt to use a fullscreen mode. If a
+  hardware resolution change is not possible (for
+  whatever reason), the next higher resolution
+  will be used and the display window centered on
+  a black background.
 :SDL::OPENGL
-  OpenGL の描画コンテキストを作成します。
-  前もって@[GL.set_attr]によって OpenGL のビデオ属性を
-  設定しておく必要があります。
+  Create an OpenGL rendering context. You should
+  have previously set OpenGL video attributes
+  with @[GL.set_attr].
 :SDL::OPENGLBLIT
-  上と同様に OpenGL の描画コンテキストを作成しますが、
-  通常の blit 転送を可能にします。
-  画面(2D)のサーフェスはαチャンネルを持つことが可能で、
-  画面のサーフェスへの変更を更新するために、
-  @[Screen#update_rect]を使わなければいけません。
-  注意: このオプションは互換性のためにのみ
-  残されており、新しいコードでこの機能を使うことは
-  ((*推奨されていません*))。
+  Create an OpenGL rendering context, like above,
+  but allow normal blitting operations. The
+  screen (2D) surface may have an alpha channel,
+  and @[Screen.update_rect] must be used for updating
+  changes to the screen surface. NOTE: This
+  option is kept for compatibility only, and is
+  ((*not recommended*)) for new code.
+
 :SDL::RESIZABLE
-  リサイズ可能なウィンドウを作成します。
-  ユーザーの手でウィンドウがリサイズされた場合は、
-  @[Event::VideoResize]イベントが発生し、
-  新しいサイズで @[Screen.open]が再度呼ばれることがあります。
+  Create a resizable window. When the window is
+  resized by the user a @[Event::VideoResize] event is
+  generated and @[Screen.open] can be called
+  again with the new size.
 :SDL::NOFRAME
-  もし可能であれば、
-  SDL がタイトルバーなし、あるいはフレームによる装飾なしの
-  ウィンドウが生成することになります。
-  フルスクリーンモードの場合自動的にこのフラグを設定します。
+  If possible, SDL::NOFRAME causes SDL to create a
+  window with no title bar or frame decoration.
+  Fullscreen modes automatically have this flag
+  set.
 
 NOTES
-SDL.set_video_modeがどの$[flags]をを満たすことができたかは、
-返り値のサーフェスの@[Surface#flags]にセットされています。
+Whatever flags @[Screen.open] could satisfy are set
+in the $[Surface#flags] of the returned surface.
 
-$[bpp] パラメータはピクセルごとのビット数です。
-そのため、$[bpp] が 24 の場合は 3 バイト/ピクセルの
-パッキングされた表現方法が使われます。
-より一般的な 4 バイト/ピクセルのモードについては、
-$[bpp] が 32 の場合に使われます。
-幾分奇妙ですが、15 と 16 の場合はいずれも 2 バイト/ピクセルのモードを
-要求しますが、異なるピクセルフォーマットです。
+The $[bpp] parameter is the number of bits per pixel, so
+a $[bpp] of 24 uses the packed representation of 3 bytes/pixel.
+For the more common 4 bytes/pixel mode, use a $[bpp] of 32.
+Somewhat oddly, both 15 and 16 will request a 2 bytes/pixel
+mode, but different pixel formats.
 
 RET
-フレームバッファのサーフェスを@[Screen]のインスタンスで返します。
+Returns the framebuffer surface as instace of @[Screen].
 
 EXCEPTION *
 SEEALSO
@@ -514,21 +475,22 @@ Screen
 NAME update_rect
 MOD Screen
 TYPE #
-PURPOSE 与えられた領域の画面を更新します。
+PURPOSE Makes sure the given area is updated on the given screen.
 
 PROTO
 updateRect(x,y,w,h)
 update_rect(x,y,w,h)
 
 DESC
-与えられた領域の画面を更新します。
-矩形は画面の境界内の収まっていなければなりません。
-(つまりクリッピングはされません)
+Makes sure the given area is updated on the given screen. The
+rectangle must be confined within the screen boundaries (no
+clipping is done).
 
-$[x]、$[y]、$[w]、$[h]がすべて 0 ならば、画面全体を更新します。
+If $[x], $[y], $[w] and $[h] are all 0, this method
+update the entire screen.
 
-この関数は$[self]が@[ロック|Surface#lock]されている間は呼んでは
-いけません。
+This method should not be called while screen is
+$[locked|Surface#lock].
 
 SEEALSO
 Surface#lock
@@ -538,20 +500,21 @@ Screen#update_rects
 NAME update_rects
 MOD Screen
 TYPE #
-PURPOSE 与えられた矩形リストに従い、画面を更新します。
+PURPOSE Makes sure the given list of rectangles is updated on the given screen
 
 PROTO
 update_rects(*rects)
 updateRects(*rects)
 
 DESC
-与えられた矩形の配列に従い、画面を更新します。
-個々の矩形は[x, y, w, h]という配列で指定します。
-矩形は画面の境界内の収まっていなければなりません。
-(つまりクリッピングはされません)
+Makes sure the given list of rectangles is updated on the given
+screen. Each rectangle parameter should be an array
+of 4 elements as [x, y, w, h].
+The rectangles must all be confined within the screen
+boundaries (no clipping is done).
 
-この関数は$[self]が@[ロック|Surface#lock]されている間は呼んでは
-いけません。
+This method should not be called while screen($[self]),
+is @[locked|Surface#lock].
 
 SEEALSO
 Surface#lock
@@ -561,19 +524,18 @@ Screen#update_rect
 NAME flip
 MOD Screen
 TYPE #
-PURPOSE スクリーンバッファを交換します。
+PURPOSE Swaps screen buffers
 
 PROTO
 flip
 
 DESC
-ダブルバッファをサポートするハードウェアにおいて、
-この関数は切替を設定して帰ってします。
-ハードウェアは垂直帰線区間を待ち、
-次のビデオサーフェスの blit 転送やロックが戻る前に
-ビデオバッファを交換します。
-ダブルバッファをサポートしないハードウェアにおいては、
-$[self].update_rect(0, 0, 0, 0) を呼ぶのと同等です。
+On hardware that supports double-buffering, this function sets
+up a flip and returns. The hardware will wait for vertical
+retrace, and then swap video buffers before the next video
+surface blit or lock will return. On hardware that doesn't
+support double-buffering, this is equivalent to calling 
+$[self].@[update_rect|Screen#update_rect](0, 0, 0, 0)
 
 EXCEPTION *
 
@@ -585,7 +547,7 @@ Screen#update_rect
 NAME set_colors
 MOD Surface
 TYPE #
-PURPOSE 与えられた 8 bit サーフェスのカラーマップの一部をセットします。
+PURPOSE Sets a portion of the colormap for the given 8-bit surface.
 RVAL true/false
 
 PROTO
@@ -593,56 +555,56 @@ set_colors(colors,firstcolor)
 setColors(colors,firstcolor)
 
 DESC
-$[self] が現在の表示と関連付けられたサーフェスの場合は、
-表示カラーマップは要求された色で更新されます。@[set_video_mode] フラグに
-SDL::HWPALETTE がセットされていた場合は、
-SDL::Surface#set_colors は常にtrueを返し、
-ウィンドウのカラーマップが歪められていたり、
-エミュレーションの下で動いている場合でも、
-パレットはあなたが望んだ通りにセットされることが保証されています。
+Sets a portion of the colormap for the given 8-bit surface.
 
-$[colors]として色情報の配列を与える必要があります。色情報とは
-R、G、Bそれぞれ0から255までの値を持つ要素が3個の配列です。
+When $[self] is the surface associated with the current display,
+the display colormap will be updated with the requested colors.
+If SDL::HWPALETTE was set in @[Screen.open] flags,
+this method will always return true, and the palette is
+guaranteed to be set the way you desire, even if the window
+colormap has to be warped or run under emulation.
 
-SDL::HWPALETTE がセットされた、パレット化された(8 bit)
-画面サーフェスには 2 種類のパレット、すなわち
-サーフェスに対する(あるいはサーフェスからの)マッピング blit に
-使われる論理パレットと、
-ハードウェアが色を画面にどうマッピングするかを決定する物理パレット
-とがあります。
-SDL::Surface#SDL_set_colors は(存在するなら)双方のパレットを変更します。
-これは (SDL::LOGPAL | SDL::PHYSPAL) を
-$[flags] にセットして @[Surface#set_palette] を呼ぶのと同等です。
+$[colors] is array of colors, one color has three componets,
+R, G, B and each component is 8-bits in size.
+
+Palettized (8-bit) screen surfaces with the SDL::HWPALETTE flag
+have two palettes, a logical palette that is used for mapping
+blits to/from the surface and a physical palette (that
+determines how the hardware will map the colors to the display).
+SDL_SetColors modifies both palettes (if present), and is
+equivalent to calling @[Surface#set_palette] 
+with the flags set to (SDL::OGPAL | SDL::PHYSPAL).
 
 RET
-$[self] がパレット化されたサーフェスではない場合は、
-この関数は何もせず、false を返します。
-全ての色がこのメソッドに
-渡した通りにセットされた場合は、true を返します。
-必ずしも全ての色エントリが与えられた通りにセットされた訳ではない場合は、
-false を返すので、
-実際の色パレットを決めるサーフェスパレットを見る必要があります。
+If $[self] is not a palettized surface, this method does
+nothing, returning false.
+If all of the colors were set as passed to
+this method, it will return true.
+If not all the color entries
+were set exactly as given, it will return false,
+and you should look
+at the surface palette to determine the actual color palette.
 
 EXAMPLE
-# グレースケールのパレットでサーフェスを作成
+# Create a display surface with a grayscale palette
 
-# 色情報で埋める
+# Fill colors with color information
 colors = Array.new(256){|i| [i, i, i]}
-# 表示サーフェスを作成
-screen = SDL.set_video_mode(640, 480, 8, SDL::HWPALETTE)
+# Create display
+screen = SDL::Screen.open(640, 480, 8, SDL::HWPALETTE)
 
-# パレットのセット
+# Set palette
 screen.set_colors(colors, 0)
 
 SEEALSO
 Surface#set_palette
-set_video_mode
+Screen.open
 
 %%
 NAME set_palette
 MOD Surface
 TYPE #
-PURPOSE 8 ビットサーフェスのパレットに色をセットします。
+PURPOSE Sets the colors in the palette of an 8-bit surface
 RVAL true/false
 
 PROTO
@@ -650,58 +612,51 @@ set_palette(flags,colors,firstcolor)
 setPalette(flags,colors,firstcolor)
 
 DESC
-与えられた 8 ビットサーフェスに対し、パレットの一部をセットします。
+Sets a portion of the palette for the given 8-bit surface.
 
-SDL::HWPALETTE フラグがセットされている
-パレット(8ビット) の画面サーフェスには
-2種類のパレットがあります。
-すなわち、サーフェスからの(あるいはサーフェスに対する) blit 転送を
-マッピングする論理パレットと、
-ハードウェアが色を画面にマッピングする方法を決定する
-物理パレットです。
-@[Surface.blit] は
-サーフェスのピクセルフォーマット間で変換が必要な場合、
-サーフェスを blit 転送する際に常に論理パレットを使います。
-このため、さまざまな特殊色効果
-(画面のフェード・カラーフラッシュ・画面の霞み)を得るために
-パレットを片方だけ変更することはしばしば有用です。
+Palettized (8-bit) screen surfaces with the SDL::HWPALETTE flag
+have two palettes, a logical palette that is used for mapping
+blits to/from the surface and a physical palette (that
+determines how the hardware will map the colors to the display).
+@[Surface.blit] always uses the logical palette when blitting
+surfaces (if it has to convert between surface pixel formats).
+Because of this, it is often useful to modify only one or the
+other palette to achieve various special color effects (e.g.,
+screen fading, color flashes, screen dimming).
 
-この関数は
-SDL::LOGPAL か SDL::PHYSPAL を
-$[flags] に指定することで、
-論理または物理パレットのいずれかを変更することができます。
-$[self]が現在の表示と
-関連付けられているサーフェスのときは、
-表示のカラーマップは要求された色で更新されます。
-@[Screen.open] に
-SDL::HWPALETTE がセットされていた場合は、
-このメソッドは常に true を返し、
-ウィンドウのカラーマップが歪められなければならない場合や、
-エミュレーション下で動いている場合であっても、
-パレットにはあなたが望んだ方法でセットされることが保証されます。
+This method can modify either the logical or physical palette
+by specifing SDL::LOGPAL or SDL::PHYSPALthe in the $[flags]
+parameter.
 
-$[colors]として色情報の配列を与えます。色情報とは
-R、G、Bそれぞれ0から255までの値を持つ要素が3個の配列です。
-256**3 = 16777216色が使えます。
+When $[self] is the surface associated with the current display,
+the display colormap will be updated with the requested colors.
+If SDL::HWPALETTE was set in @[Screen.open] flags,
+this method will always return true, and the palette is
+guaranteed to be set the way you desire, even if the window
+colormap has to be warped or run under emulation.
+
+$[colors] is array of colors, one color has three componets,
+R, G, B and each component is 8-bits in size.
 
 RET
-$[self]がパレット化されたサーフェスでない場合は、
-この関数は false を返して何もしません。
-全ての色がこのメソッドに渡された通りにセットされると、
-true を返します。
-必ずしも全ての色エントリが与えられた通りにセットされた訳ではない場合は、
-false を返すので、
-実際の色パレットを決定するサーフェスパレットを見る必要があります。
+If surface is not a palettized surface, this function does
+nothing, returning false.
+If all of the colors were set as passed to
+this method, it will return true.
+If not all the color entries
+were set exactly as given, it will return false,
+ and you should look
+at the surface palette to determine the actual color palette.
 
 EXAMPLE
-# グレースケールのパレットでサーフェスを作成
+# Create a display surface with a grayscale palette
 
-# 色情報で埋める
+# Fill colors with color information
 colors = Array.new(256){|i| [i, i, i]}
-# 表示サーフェスを作成
+# Create display
 screen = SDL::Screen.open(640, 480, 8, SDL::HWPALETTE)
 
-# パレットのセット
+# Setpalette
 screen.set_palette(SDL::LOGPAL|SDL::PHYSPAL, colors, 0)
 
 SEEALSO
@@ -711,7 +666,7 @@ Screen.open
 %%
 NAME set_gamma
 TYPE .
-PURPOSE 表示用のカラーガンマ関数をセットします。
+PURPOSE Sets the color gamma function for the display
 OBSOLETE Screen.set_gamma
 
 PROTO
@@ -722,25 +677,26 @@ setGamma(redgamma,greengamma,bluegamma)
 NAME set_gamma
 MOD Screen
 TYPE .
-PURPOSE 表示用のカラーガンマ関数をセットします。
+PURPOSE Sets the color gamma function for the display
 
 PROTO
 set_gamma(redgamma,greengamma,bluegamma)
 setGamma(redgamma,greengamma,bluegamma)
 
 DESC
-各カラーチャンネルについて、表示用の「ガンマ関数」をセットします。
-ガンマは画面に表示される色の明るさ・コントラストを制御します。
-ガンマ値 1.0 は単位元です。
-(つまり、何の調整も行われません)
+Sets the "gamma function" for the display of each color
+component. Gamma controls the brightness/contrast of colors
+displayed on the screen. A gamma value of 1.0 is identity (i.e.,
+no adjustment is made).
 
-この関数は「ガンマ関数」のパラメータに基いてガンマを調整します。
-@[Screen.set_gamma_ramp] を使うと、
-ガンマ調整の参照テーブルを直接指定することができます。
+This function adjusts the gamma based on the "gamma function"
+parameter, you can directly specify lookup tables for gamma
+adjustment with @[Screen.set_gamma_ramp].
+
 
 EXCEPTION *
 NOTES
-全ての表示ハードウェアがガンマを変更することができるわけではありません。
+Not all display hardware is able to change gamma.
 
 SEEALSO
 Screen.get_gamma_ramp
@@ -749,7 +705,7 @@ Screen.set_gamma_ramp
 %%
 NAME get_gamma_ramp
 TYPE .
-PURPOSE 表示のためのカラーガンマ値の変換テーブルを取得します。
+PURPOSE Gets the color gamma lookup tables for the display
 RVAL Array of UINT
 OBSOLETE Screen.get_gamma_ramp
 
@@ -761,7 +717,7 @@ getGammaRamp
 NAME get_gamma_ramp
 MOD Screen
 TYPE .
-PURPOSE 表示のためのカラーガンマ値の変換テーブルを取得します。
+PURPOSE Gets the color gamma lookup tables for the display
 RVAL Array of UINT
 
 PROTO
@@ -769,14 +725,15 @@ get_gamma_ramp
 getGammaRamp
 
 DESC
-現在表示に使われているガンマ値の変換テーブルを取得します。
-それぞれのテーブル(R, G, B)は 256 個の16bit符号なし整数値の配列です。
+Gets the gamma translation lookup tables currently used by the
+display. Each table is an array of 256 16bit unsigned integer
+values.
 
 RET
-3個の「256個の16bit符号なし整数値の配列」の配列を返します。
+Returns an array of 3 elements of an array of 256 16bit unsigned integer.
 
 NOTES
-全ての表示ハードウェアがガンマを変換できるわけではありません。
+Not all display hardware is able to change gamma.
 
 EXCEPTION *
 
@@ -787,7 +744,7 @@ Screen.set_gamma_ramp
 %%
 NAME set_gamma_ramp
 TYPE .
-PURPOSE 表示用にカラーガンマの参照テーブルをセットします。
+PURPOSE Sets the color gamma lookup tables for the display
 OBSOLETE Screen.set_gamma_ramp
 PROTO
 set_gamma_ramp(table)
@@ -797,22 +754,24 @@ setGammaRamp(table)
 NAME set_gamma_ramp
 MOD Screen
 TYPE .
-PURPOSE 表示用にカラーガンマの参照テーブルをセットします。
+PURPOSE Sets the color gamma lookup tables for the display
 
 PROTO
-set_gamma_ramp(table)
-setGammaRamp(table)
+set_gamma_ramp(tables)
+setGammaRamp(tables)
 
 DESC
-各色チャンネルについて、表示用のガンマ参照テーブルをセットします。
-引数 $[tables] は @[Screen.get_gamma_ramp] と同じフォーマットで、
-対応するチャンネルの入力と出力間の写像を表現します。
-入力は配列に対するインデックスであり、出力はそのインデックスにおける
-16 ビットのガンマ値で、出力の色精度に合わせてスケーリングされます。
+Sets the gamma lookup tables for the display for each color
+component. 
+$[tables] parameter is same as @[Screen.get_gamma_ramp],
+representing a mapping between the input and output for that
+channel. The input is the index into the array, and the output
+is the 16-bit gamma value at that index, scaled to the output
+color precision. 
 
-この関数は参照テーブルに基いてガンマを調整しますが、
-@[Screen.set_gamma] を用いて
-「ガンマ関数」パラメータに基いて計算されたガンマも持つことができます。
+This function adjusts the gamma based on lookup tables, you can
+also have the gamma calculated based on a "gamma function"
+parameter with @[Screen.set_gamma].
 
 EXCEPTION *
 
@@ -824,7 +783,7 @@ Screen.get_gamma_ramp
 NAME map_rgb
 MOD Surface
 TYPE #
-PURPOSE RGB カラー値をピクセルフォーマットに写像します。
+PURPOSE Map a RGB color value to a pixel format.
 RVAL UINT
 OBSOLETE PixelFormat#map_rgb
 
@@ -836,43 +795,44 @@ mapRGB(r,g,b)
 NAME map_rgb
 MOD PixelFormat
 TYPE #
-PURPOSE RGB カラー値をピクセルフォーマットに写像します。
+PURPOSE RGB Map a RGB color value to a pixel format.
 RVAL UINT
 
 PROTO
 map_rgb(r,g,b)
-mapRGB(r,g,b
-)
+mapRGB(r,g,b)
+
 DESC
-RGB カラーの値を$[self]のピクセルフォーマットに写像し、
-ピクセル値を 32bit 符号無し整数 として返します。
-$[r]、$[g]、$[b] は0から255までの値をとれます。
+Maps the RGB color value to the specified pixel format and
+returns the pixel value as a 32-bit integer.
+$[r], $[g], $[b] should be more than and equal to 0,
+and less than or equal to 255.
 
-フォーマットがパレット (8ビット) を持つ場合は、
-パレット内において最も近い色のインデックスが返されます。
+If the format has a palette (8-bit) the index of the closest
+matching color in the palette will be returned.
 
-指定されたピクセルフォーマットがαチャンネルを持つ場合は、
-全て 1 のビット(完全に不透明)として返されます。
+If the specified pixel format has an alpha component it will be
+returned as all 1 bits (fully opaque).
 
 RET
-与えられたピクセルフォーマット上において、
-与えられた RGB カラー値を最も良く近似するピクセル値です。
-ピクセルフォーマットのピクセル深度が 32bpp より小さい場合は、
-返値の使用されていない上位ビットは安全に無視することができます。
-(例えば、16bpp のフォーマットでは返値は 2**16 より小さく、
-8bpp では 2**8 より小さい)
+A pixel value best approximating the given RGB color value for a
+given pixel format. If the pixel format bpp (color depth) is
+less than 32-bpp then the unused upper bits of the return value
+can safely be ignored (e.g., with a 16-bpp format the return
+value can be assigned to a 16-bit unsigned integer,
+and similarly a 8-bit unsigned integer for an 8-bpp format).
 
 SEEALSO
 PixelFormat#get_rgb
 PixelFormat#get_rgba
 PixelFormat#map_rgba
-((<色、ピクセルフォーマット、ピクセル値について>))
+((<Color, PixelFormat and Pixel value>))
 
 %%
 NAME map_rgba
 MOD Surface
 TYPE #
-PURPOSE RGBA カラー値をピクセルフォーマットに写像します。
+PURPOSE RGBA Map a RGBA color value to a pixel format.
 RVAL UINT
 OBSOLETE PixelFormat#map_rgba
 
@@ -884,7 +844,7 @@ mapRGBA(r,g,b,a)
 NAME map_rgba
 MOD PixelFormat
 TYPE #
-PURPOSE RGBA カラー値をピクセルフォーマットに写像します。
+PURPOSE Map a RGBA color value to a pixel format.
 RVAL UINT
 
 PROTO
@@ -892,36 +852,36 @@ map_rgba(r,g,b,a)
 mapRGBA(r,g,b,a)
 
 DESC
-RGBA カラーの値を$[self]のピクセルフォーマットに写像し、
-ピクセル値を 32bit 符号無し整数 として返します。
-$[r]、$[g]、$[b]、$[a] は0から255までの値をとれます。
+Maps the RGBA color value to the specified pixel format and
+returns the pixel value as a 32-bit integer.
+$[r], $[g], $[b] should be more than and equal to 0,
+and less than or equal to 255.
 
-フォーマットがパレット (8ビット) を持つ場合は、
-パレット内において最も近い色のインデックスが返されます。
+If the format has a palette (8-bit) the index of the closest
+matching color in the palette will be returned.
 
-指定されたピクセルフォーマットがαチャンネルを持たない場合は、
-(パレットを持つフォーマットの中でそうであるように)
-α値は無視されます。
+If the specified pixel format has no alpha component the alpha
+value will be ignored (as it will be in formats with a palette).
 
 RET
-与えられたピクセルフォーマット上において、
-与えられた RGBA カラー値を最も良く近似するピクセル値です。
-ピクセルフォーマットのピクセル深度が 32bpp より小さい場合は、
-返値の使用されていない上位ビットは安全に無視することができます。
-(例えば、16bpp のフォーマットでは返値は 2**16 より小さく、
-8bpp では 2**8 より小さい)
+A pixel value best approximating the given RGBA color value for a
+given pixel format. If the pixel format bpp (color depth) is
+less than 32-bpp then the unused upper bits of the return value
+can safely be ignored (e.g., with a 16-bpp format the return
+value can be assigned to a 16-bit unsigned integer,
+and similarly a 8-bit unsigned integer for an 8-bpp format).
 
 SEEALSO
 PixelFormat#get_rgb
 PixelFormat#get_rgba
 PixelFormat#map_rgb
-((<色、ピクセルフォーマット、ピクセル値について>))
+((<Color, PixelFormat and Pixel value>))
 
 %%
 NAME get_rgb
 MOD Surface
 TYPE #
-PURPOSE 指定されたピクセルフォーマット内のピクセルから RGB 値を取得します。
+PURPOSE Get RGB values from a pixel in the specified pixel format.
 RVAL [UINT, UINT, UINT]
 OBSOLETE PixelFormat#get_rgb
 PROTO
@@ -932,7 +892,7 @@ getRGB(pixel)
 NAME get_rgb
 MOD PixelFormat
 TYPE #
-PURPOSE 指定されたピクセルフォーマット内のピクセルから RGB 値を取得します。
+PURPOSE Get RGB values from a pixel in the specified pixel format.
 RVAL [UINT, UINT, UINT]
 
 PROTO
@@ -940,26 +900,26 @@ get_rgb(pixel)
 getRGB(pixel)
 
 DESC
-$[self]のピクセルフォーマットによるピクセル値から
-RGB 各チャンネルの値を要素数3の配列で取得します。
+Get RGB component values from a pixel stored in the specified
+pixel format. It returns an array of 3 elements.
 
-このメソッドは
-RGB 各チャンネルが 8 ビット未満のピクセルフォーマットから
-色チャンネルを変換する際にも 8 ビット全体 [0〜255] の範囲を使います。
-(例えば、16 ビット RGB565 フォーマットにおける完全な白色は
-[0xf8, 0xfc, 0xf8] ではなく [0xff, 0xff, 0xff] を返します)
+This function uses the entire 8-bit [0..255] range when
+converting color components from pixel formats with less than
+8-bits per RGB component (e.g., a completely white pixel in
+16-bit RGB565 format would return [0xff, 0xff, 0xff] not [0xf8,
+0xfc, 0xf8]).
 
 SEEALSO
 PixelFormat#get_rgba
 PixelFormat#map_rgb
 PixelFormat#map_rgba
-((<色、ピクセルフォーマット、ピクセル値について>))
+((<Color, PixelFormat and Pixel value>))
 
 %%
 NAME get_rgba
 MOD Surface
 TYPE #
-PURPOSE 指定されたピクセルフォーマット内のピクセルから RGBA 値を取得します。
+PURPOSE Get RGBA values from a pixel in the specified pixel format.
 RVAL [UINT, UINT, UINT, UINT]
 OBSOLETE PixelFormat#get_rgba
 
@@ -971,7 +931,7 @@ getRGBA(pixel)
 NAME get_rgba
 MOD PixelFormat
 TYPE #
-PURPOSE 指定されたピクセルフォーマット内のピクセルから RGBA 値を取得します。
+PURPOSE Get RGBA values from a pixel in the specified pixel format.
 RVAL [UINT, UINT, UINT, UINT]
 
 PROTO
@@ -979,27 +939,30 @@ get_rgba(pixel)
 getRGBA(pixel)
 
 DESC
-指定されたピクセルフォーマットに格納されたピクセルから
-RGBA 各チャンネルの値を要素数4の配列で取得します。
+Get RGBA component values as array of four elements 
+from a pixel stored in the specified
+pixel format.
 
-RGB 各チャンネルが 8 ビット未満のピクセルフォーマットから
-色チャンネルを変換する際にも 8 ビット全体 [0〜255] の範囲を使います。
-(例えば、16 ビット RGB565 フォーマットにおける完全な白色は
-[0xf8, 0xfc, 0xf8] ではなく [0xff, 0xff, 0xff] を返します)
+This function uses the entire 8-bit [0..255] range when
+converting color components from pixel formats with less than
+8-bits per RGB component (e.g., a completely white pixel in
+16-bit RGB565 format would return [0xff, 0xff, 0xff] not [0xf8,
+0xfc, 0xf8]).
 
-サーフェスにαチャンネルがない場合は、αには 0xff (100% 不透明) が返されます。
+If the surface has no alpha component, the alpha will be
+returned as 0xff (100% opaque).
 
 SEEALSO
 PixelFormat#get_rgba
 PixelFormat#map_rgb
 PixelFormat#map_rgba
-((<色、ピクセルフォーマット、ピクセル値について>))
+((<Color, PixelFormat and Pixel value>))
 
 %%
 NAME new
 MOD Surface
 TYPE .
-PURPOSE 空の @[Surface] のインスタンスを生成します。
+PURPOSE Create an empty @[Surface]
 RVAL Surface
 
 PROTO
@@ -1007,59 +970,58 @@ new(flags,w,h,depth,Rmask,Gmask,Bmask,Amask)
 new(flags,w,h,format)
 
 DESC
-大きさが $[w] x $[h] の空のサーフェスを確保します。
-(@[Screen.open]の後で呼ばれなければいけません)
+Allocate an empty surface 
+(must be called after @[Screen.open])
 
-$[depth] が 8 ビットの場合は、
-サーフェスに空のパレットが確保されます。
-そうでない場合は、
-与えられた$[Rmask]、$[Gmask]、$[Bmask]、$[Amask] を使って
-「パッキングされたピクセル」が作られます。
-$[flags] は作られるサーフェスのタイプを指定し、
-以下の取りうる値の OR による組み合わせとなります。
+If depth is 8 bits an empty palette is allocated for the
+surface, otherwise a 'packed-pixel' format is created
+using the $[RGBAmask]'s provided (see @[PixelFormat]). 
+The $[flags]
+specifies the type of surface that should be created, it is an
+OR'd combination of the following possible values.
 
 :SDL::SWSURFACE
-  SDL はシステムメモリからサーフェスを作ります。
-  ピクセルレベルのアクセスのパフォーマンスを向上されますが、
-  いくつかのハードウェアによる blit 転送の
-  利点を得ることができなくなるかも知れません。
+  SDL will create the surface in system memory.
+  This improves the performance of pixel level
+  access, however you may not be able to take
+  advantage of some types of hardware blitting.
 :SDL::HWSURFACE
-  SDL はビデオメモリからサーフェスを作ろうとします。
-  これにより SDL はビデオメモリ同士の bilt 転送
-  (しばしばアクセラレーションが利きます) の利点を得ることができます。
+  SDL will attempt to create the surface in
+  video memory. This will allow SDL to take
+  advantage of Video->Video blits (which are
+  often accelerated).
 :SDL::SRCCOLORKEY
-  このフラグはサーフェスを blit する際にカラーキーを有効にします。
-  SDL::HWSURFACE も指定されており、
-  カラーキー付きの blit 転送もハードウェアによるアクセラレーションが利く場合は、
-  SDL はサーフェスをビデオメモリに作ろうとします。
-  サーフェスを作った後にこのフラグをセット・リセットしたい場合は
-  @[Surface#set_color_key] を使って下さい。
+  This flag turns on colourkeying for blits from
+  this surface. If SDL::HWSURFACE is also
+  specified and colourkeyed blits are
+  hardware-accelerated, then SDL will attempt to
+  place the surface in video memory. Use
+  @[Surface#set_color_key] to set or clear this flag
+  after surface creation.
 :SDL::SRCALPHA
-  このフラグはサーフェスからの blit 転送におけるαブレンディングを有効にします。
-  SDL::HWSURFACE も指定され、
-  αブレンディング blit 転送がハードウェアによるアクセラレーションが利く場合は
-  サーフェスはなるだけビデオメモリに置かれます。
-  サーフェスを作った後にこのフラグをセット・リセットしたい場合は
-  @[Surface#set_alpha]を使って下さい。
-また、depth,Rmask,Gmask,Bmask,Amaskの代わりに @[PixelFormat] のインスタンス
-を渡すとこれらの値が与えたインスタンスと同じになります。
+  This flag turns on alpha-blending for blits
+  from this surface. If SDL::HWSURFACE is also
+  specified and alpha-blending blits are
+  hardware-accelerated, then the surface will be
+  placed in video memory if possible. Use
+  @[Surface#set_alpha] to set or clear this flag after
+  surface creation.
 
 RET
-@[Surface]のインスタンスを返します。
+Returns the instance of @[Surface].
 
 EXCEPTION *
 
 NOTES
-αチャンネルが指定されている
-(つまり $[Amask] が 0 でない) 場合は、
-SDL::SRCALPHA フラグは自動的にセットされます。
-サーフェスを作った後は、@[Surface#set_alpha]を
-呼ぶことでこのフラグを取り除くことができます。
+  Note: If an alpha-channel is specified (that is, if $[Amask] is
+  nonzero), then the SDL::SRCALPHA flag is automatically set.
+  You may remove this flag by calling @[Surface#set_alpha] after
+  surface creation.
 
 EXAMPLE
-# テクスチャ用として OpenGL に要求される、
-# 個々々のピクセルのバイトが RGBA の順番で並んだ
-# 32 ビットのサーフェスを生成
+# Create a 32-bit surface with the bytes of 
+# each pixel in R,G,B,A order,
+# as expected by OpenGL for textures
 
 big_endian = ([1].pack("N") == [1].pack("L"))
 
@@ -1089,22 +1051,25 @@ Surface#set_color_key
 NAME new_from
 MOD Surface
 TYPE .
-PURPOSE ピクセルデータから @[Surface] のインスタンスを生成します。
+PURPOSE Create an @[Surface] object from pixel data
 RVAL Surface
 
 PROTO
 new_from(pixels,w,h,depth,pitch,Rmask,Gmask,Bmask,Amask)
 
 DESC
-与えられたピクセルデータ($[pixels]、 Stringのインスタンス)から
-@[Surface] のインスタンスを生成します。
-$[pixels] に格納されたデータは $[depth] のものであるとみなされます。
-$[pitch] は各スキャンラインの長さ(バイト数)です。
+Creates an @[Surface] object from the provided pixel data.
 
-他のパラメータについての詳しい記述については、@[Surface.new]を見てください。
+The data stored in $[pixels](String object)
+ is assumed to be of the depth
+specified in the parameter list. 
+$[pitch] is the length of each scanline in bytes.
+
+See @[Surface.new] for a more detailed description of the
+other parameters.
 
 RET
-生成されたサーフェスを返します。
+Returns the created surface.
 
 EXCEPTION *
 
@@ -1115,54 +1080,47 @@ Surface.new
 NAME lock
 MOD Surface
 TYPE #
-PURPOSE 直接アクセスのためにサーフェスをロックします。
+PURPOSE Lock a surface for directly access.
 
 PROTO
 lock
 
 DESC
-ピクセルに直接アクセスするためにサーフェスをロックします。
-@[Surface#lock] と @[Surface#unlock] の呼びだしの間、
-サーフェスへ直接読み書きができます。
-ひとたびサーフェスへのアクセスが終了したら、
-@[Surface#unlock] を使って解放する必要があります。
+This method sets up a surface for directly accessing the pixels. Between calls to @[Surface#lock] 
+and @[Surface#unlock] you can write to and read from surface directly.
+Once you are done accessing the surface, you should use @[Surface#unlock] to release it.
 
-サーフェスへ直接読み書きをする、ロックが必要なメソッドは
-以下の通りです。
+Not all surfaces require locking. If @[Surface#must_lock?] returns false, then you can read and write to
+the surface at any time, and the pixel format of the surface will not change.
 
+No operating system or library calls should be made between lock/unlock pairs, as critical system locks
+may be held during this time.
+
+It should be noted, that since SDL 1.1.8 surface locks are recursive. This means that you can lock a
+surface multiple times, but each lock must have a match unlock.
+  surface.lock
+  # Surface is locked
+  # Direct pixel access on surface here
+  surface.lock
+  # More direct pixel access on surface
+  surface.unlock
+  # Surface is still locked
+  # Note: Is versions < 1.1.8, the surface would have been
+  # no longer locked at this stage
+  surface.unlock
+  # Surface is now unlocked
+
+You shoud lock before colling following methods:
 * @[Surface#pixels]
 LOCKLIST
 
-また@[auto_lock?]が真である場合には、ロックが必要なメソッドが呼ばれた
-場合自動的にロックの設定と解放をするため、このメソッドを呼ぶ必要
-はありません。
+NOTES
+If @[Surface#auto_lock?] returns true, you need not call this method
+because Ruby/SDL automatically locks surface when you call methods that 
+need locking.
 
-すべてのサーフェスがロックを必要とする訳ではありません。
-@[Surface#must_lock?]が偽ならば
-いつでも読み書きすることができ、サーフェスのピクセルフォーマット
-は変更されません。
-
-この時間の間にクリティカルなシステムロックが行われることがあるため、
-ロック/アンロック間では、いかなる OS システムコールやライブラリコールも
-呼ばれるべきではありません。
-
-明記しておくべきことに、
-SDL 1.1.8 以降ではサーフェスのロックは再帰的である、という点があります。
-これは複数のサーフェスロックをかけることができるということですが、
-個々のロックには対応するアンロックがなければいけません。
-  surface.lock
-  # サーフェスはロックされている 
-  # ここでサーフェス上の直接ピクセルアクセス
-  surface.lock
-  # さらにサーフェス上の直接ピクセルアクセス
-  surface.unlock
-  # サーフェスはまだロックされている
-  # 注記: バージョンが 1.1.8 以下の場合は、
-  # この段階でサーフェスはもうロックされていない
-  surface.unlock
-  # サーフェスは今アンロックされている
 EXCEPTION
-サーフェスのロックができなかった場合は例外@[Error]を返します。
+Raises @[Error], if the surface couldn't be locked.
 
 SEEALSO
 Surface#unlock
@@ -1176,17 +1134,16 @@ auto_lock=
 NAME unlock
 MOD Surface
 TYPE #
-PURPOSE 以前にロックされたサーフェスのロックを解除します。
+PURPOSE Unlocks a previously locked surface.
 
 PROTO
 unlock
 
 DESC
-@[Surface#lock]を使ってロックされたサーフェスは
-このメソッドでロックを解除しなければいけません。
-サーフェスのロックはできるだけ早く解除されるべきです。
+Surfaces that were previously locked using @[Surfaces#lock] must be unlocked with @[Surfaces#unlock].
+Surfaces should be unlocked as soon as possible.
 
-1.1.8 以降、サーフェスのロックは再帰的であることに注意すべきです。
+It should be noted that since 1.1.8, surface locks are recursive.
 
 SEEALSO
 Surface#lock
@@ -1195,7 +1152,7 @@ Surface#lock
 NAME must_lock?
 MOD Surface
 TYPE #
-PURPOSE ロックが必要かどうかを返します。
+PURPOSE Get whether the surface require locking or not.
 RVAL true/false
 
 PROTO
@@ -1203,8 +1160,8 @@ must_lock?
 mustLock?
 
 DESC
-サーフェスのピクセルに直接アクセスするときに @[Surface#lock] による
-ロックが必要かどうかを true/false で返します。
+Returns true if $[self] require locking for direct access to the pixels, 
+otherwise returns false.
 
 SEEALSO
 Surface#lock
@@ -1213,7 +1170,7 @@ Surface#lock
 NAME load_bmp
 MOD Surface
 TYPE .
-PURPOSE Windows の BMP ファイルをサーフェスにロードします。
+PURPOSE Load a Windows BMP file into an SDL_Surface.
 RVAL Surface
 
 PROTO
@@ -1221,10 +1178,10 @@ load_bmp(filename)
 loadBMP(filename)
 
 DESC
-Windows の BMP ファイルからサーフェスをロードします。
+Loads a surface from a named Windows BMP file.
 
 RET
-@[Surface]のインスタンスを返します。
+Returns the new @[Surface] object.
 
 EXCEPTION *
 
@@ -1236,7 +1193,7 @@ Surface.load
 NAME load_bmp_from_io
 MOD Surface
 TYPE .
-PURPOSE RubyのIOオブジェクトから BMP ファイルをサーフェスにロードします。
+PURPOSE Load a Windows BMP file into an Surface from IO object.
 RVAL Surface
 
 PROTO
@@ -1244,10 +1201,17 @@ load_bmp_from_io(io)
 loadBMPFromIO(io)
 
 DESC
-RubyのIOオブジェクトから BMP ファイルをサーフェスにロードします。
+Loads a surface from a ruby's IO object.
+IO object means the ruby object that has following methods:
+* read
+* rewind
+* tell
+
+For example, instances of IO class, StringIO class and Zlib::GZipReader class
+are IO object.
 
 RET
-@[Surface]のインスタンスを返します。
+Returns the new @[Surface] object.
 
 EXCEPTION *
 
@@ -1255,23 +1219,18 @@ SEEALSO
 Surface.load_bmp
 Surface.load_from_io
 
-NOTES
-RubyのIOオブジェクトとは、read、rewind、tell という3つのメソッドを
-持つオブジェクトです。IO、StringIO、Zlib::GzipReaderなどが
-利用できます。
-
 %%
 NAME save_bmp
 MOD Surface
 TYPE #
-PURPOSE サーフェスを Windows の BMP ファイルとしてセーブします。
+PURPOSE Save an SDL_Surface as a Windows BMP file.
 
 PROTO
 save_bmp(filename)
 saveBMP(filename)
 
 DESC
-$[self]の内容をWindows の BMP ファイル $[filename] にセーブします。
+Saves the $[self] surface as a Windows BMP file named $[filename].
 
 EXCEPTION *
 SEEALSO
@@ -1281,35 +1240,34 @@ Surface.load_bmp
 NAME set_color_key
 MOD Surface
 TYPE #
-PURPOSE blit 転送可能なサーフェスのカラーキー(透明ピクセル)と、RLE アクセラレーションをセットします。
+PURPOSE Sets the color key (transparent pixel) in a blittable surface and RLE acceleration.
 
 PROTO
 set_color_key(flag,key)
 setColorKey(flag,key)
 
 DESC
-blit 転送可能なサーフェスのカラーキー(透明ピクセル)をセットし、
-RLE アクセラレーションを有効または無効にします。
-$[key]はピクセル値もしくは色を表す配列で指定できます。
+Sets the color key (transparent pixel) in a blittable $[surface|Surface]
+and enables or disables RLE blit acceleration.
+$[key] parameter should be pixel value or color array.
 
-RLE (Run-length encoding) アクセラレーションは、
-透明ピクセル(つまり$[key]と同じ値のピクセル)が
-水平方向に長く続いている場合に、
-画像の blit 転送を実質スピードアップさせることができます。
-$[key]としてピクセル値を使う場合、$[self]と
-同じピクセルフォーマットのものでなければいけません。
+RLE acceleration can substantially speed up blitting 
+of images with large horizontal runs of transparent
+pixels (i.e., pixels that match the $[key] value). 
+The key must be of the same pixel format as the surface,
+if pixel value is used.
+In that case, @[PixelFormat#map_rgb]
+is often useful for obtaining an acceptable value.
 
-$[flag] が SDL::SRCCOLORKEY ならば、$[key] は転送元の画像の透明色です。
+If $[flag] is SDL_SRCCOLORKEY then $[key] is the transparent pixel color in the source image of a blit.
 
-$[flag] に SDL::RLEACCEL が
-セットされている場合は、
-@[Surface.blit] で描かれる時に、
-サーフェスは RLE アクセラレーションを使って描きます。
-最初にサーフェスに対して
-@[Surface.blit] か @[Surface#display_format] が
-呼ばれた時に、実際に RLE アクセラレーションのためエンコードされます。
+If $[flag] is OR'd with SDL::RLEACCEL then the surface will 
+be draw using RLE acceleration when drawn with 
+@[Surface.blit]. The surface will actually be encoded 
+for RLE acceleration the first time @[Surface.blit]
+or @[Surface#display_format] is called on the surface.
 
-flag が 0 ならば、この関数は現在のカラーキーをクリアします。
+If $[flag] is 0, this function clears any current color key.
 
 EXCEPTION *
 SEEALSO
@@ -1323,87 +1281,78 @@ Surface#colorkey
 NAME set_alpha
 MOD Surface
 TYPE #
-PURPOSE サーフェスのアルファ値を調整します。
+PURPOSE Adjust the alpha properties of a surface
 
 PROTO
 set_alpha(flags,alpha)
 setAlpha(flags,alpha)
 
 DESC
-このメソッドはサーフェス単位のα値をセットしたり、
-αブレンディングを有効に、また無効にするために使われます。
+This method is used for setting the per-surface alpha value and/or enabling and disabling alpha
+blending.
 
-$[flags] は、αブレンディングが使われるべきかどうか
-SDL::SRCALPHA、
-また blit の際に RLE アクセラレーションを使うべきかどうか
-SDL::RLEACCELを指定するのに使われます。
-$[flags] はこれらの 2 つのオプションの OR による
-組み合わせか、どちらか 1 つか、または 0 になり得るでしょう。
-SDL::SRCALPHA がフラグとして渡されないと、
-サーフェスを blit するときに全てのα情報は無視されます。
-$[alpha] パラメータはサーフェス単位のα値です。
-つまり、サーフェス単位のαを使うには、サーフェスのαチャンネルは不要であり、
-blit は未だ SDL::RLEACCEL によってアクセラレートされる
-ことが可能です。
+The surface parameter specifies which surface whose 
+alpha attributes you wish to adjust. $[flags] is used to
+specify whether alpha blending should be used (SDL::SRCALPHA)
+ and whether the surface should use RLE
+acceleration for blitting (SDL::RLEACCEL). $[flags] 
+can be an OR'd combination of these two options, one of
+these options or 0. If SDL::SRCALPHA is not passed as a flag
+ then all alpha information is ignored when
+blitting the surface. The alpha parameter is the 
+per-surface alpha value; a surface need not have an
+alpha channel to use per-surface alpha and blitting can still be accelerated with SDL::RLEACCEL.
 
-αは以下の方法でサーフェスの blit に影響を及ぼします。
+Alpha effects surface blitting in the following ways:
 
-:RGBA->RGB SDL::SRCALPHA あり
-  転送元のピクセルはαチャンネルを使って転送先のピクセルとαブレンドされます。
-:RGBA->RGB SDL::SRCALPHA なし
-  転送元ピクセルから RGB データがコピーされます。
-  転送元のαチャンネルとサーフェス単位のα値は無視されます。
+:RGBA->RGB with SDL::SRCALPHA    
+  The source is alpha-blended with the destination, using the alpha channel.
+  SDL_SRCCOLORKEY and the per-surface alpha are ignored.
 
-:RGB->RGBA SDL::SRCALPHA あり
-  転送元ピクセルはサーフェス単位のα値を使って転送先ピクセルとαブレンドされます。
-  SDL::SRCCOLORKEY がセットされている場合は、
-  カラーキーの値と一致しないピクセルだけがコピーされます。
-  コピーされるピクセルのαチャンネルは不透明にセットされます。
+:RGBA->RGB without SDL::SRCALPHA
+  The RGB data is copied from the source. The source alpha channel and the per-surface
+  alpha value are ignored.
 
-:RGB->RGBA SDL::SRCALPHA なし
-  RGB データは転送元のピクセルからコピーされ、コピーされたピクセルのα値は不透明にセットされます。
-  SDL::SRCCOLORKEY がセットされている場合は、
-  カラーキーの値に一致しないピクセルだけがコピーされます。
+:RGB->RGBA with SDL::SRCALPHA
+  The source is alpha-blended with the destination using the per-surface alpha value. If
+  SDL::SRCCOLORKEY is set, only the pixels not matching the colorkey value are copied. The
+  alpha channel of the copied pixels is set to opaque.
 
-:RGBA->RGBA SDL::SRCALPHA あり
-  転送元のピクセルはαチャンネルを使って転送先のピクセルとαブレンドされます。
-  転送先のピクセルのαチャンネルは変更されません。
-  SDL::SRCCOLORKEY は無視されます。
+:RGB->RGBA without SDL::SRCALPHA
+  The RGB data is copied from the source and the alpha value of the copied pixels is set to
+  opaque. If SDL::SRCCOLORKEY is set, only the pixels not matching the colorkey value are
+  copied.   
+                                                                                                         
+:RGBA->RGBA with  SDL::SRCALPHA
+  The source is alpha-blended with the destination using the source alpha channel. The     
+  alpha channel in the destination surface is left untouched. SDL::SRCCOLORKEY is ignored.  
 
-:RGBA->RGBA SDL::SRCALPHA なし
-  RGBA データが転送先サーフェスにコピーされます。
-  SDL::SRCCOLORKEY がセットされている場合は、
-  カラーキーの値と一致しないピクセルだけがコピーされます。
+RGBA->RGBA witout SDL::SRCALPHA
+  The RGBA data is copied to the destination surface. If SDL::SRCCOLORKEY is set, only the  
+  pixels not matching the colorkey value are copied.
 
-:RGB->RGB SDL::SRCALPHA あり
-  転送元ピクセルはサーフェス単位のα値を使って転送先ピクセルとαブレンドされます。
-  SDL::SRCCOLORKEY がセットされている場合は、
-  カラーキーの値と一致しないピクセルだけがコピーされます。
+RGB->RGB with SDL_SRCALPHA
+  The source is alpha-blended with the destination using the per-surface alpha value. If
+  SDL_SRCCOLORKEY is set, only the pixels not matching the colorkey value are copied.
 
-:RGB->RGB SDL::SRCALPHA なし
-  転送元ピクセルから RGB データがコピーされます。
-  SDL::SRCCOLORKEY がセットされている場合は、
-  カラーキーの値と一致しないピクセルだけがコピーされます。
-
+RGB->RGB witout SDL_SRCALPHA
+  The RGB data is copied from the source. If SDL_SRCCOLORKEY is set, only the pixels not
+  matching the colorkey value are copied.
 
 NOTES
-この関数と SDL のαブレンディングの意味合いがバージョン 1.1.4 から変わりました。
-バージョン 1.1.5 までは、α値 0 は不透明で、255 は透明とみなされていました。
-これは今では反転されました。
-つまり、0 (SDL::ALPHA_TRANSPARENT) は透明であり、
-255 (SDL::ALPHA_OPAQUE) は不透明とみなされています。
+Note: This method and the semantics of SDL alpha blending have changed since version 1.1.4. Up
+until version 1.1.5, an alpha value of 0 was considered opaque and a value of 255 was considered
+transparent. This has now been inverted: 0 (SDL::ALPHA_TRANSPARENT) is now considered transparent and
+255 (SDL::ALPHA_OPAQUE) is now considered opaque.
+The per-surface alpha value of 128 is considered a special case and is optimised, so it's much
+faster than other per-surface values.
 
-サーフェス単位のα値 128 は特殊な場合とみなされて最適化されるため、
-他の値よりもはるかに高速です。
+Note that RGBA->RGBA blits (with SDL::SRCALPHA set) keep the alpha of the destination surface.
+This means that you cannot compose two arbitrary RGBA surfaces this way and get the result you would
+expect from "overlaying" them; the destination alpha will work as a mask.
 
-SDL::SRCALPHA がセットされた状態での RGBA->RGBA の blit は
-転送先サーフェスのαをそのまま維持することに注意して下さい。
-これは、2 つの任意の RGBA サーフェスを合成して
-それらの「重ね合わせ」が期待されるような結果を得ることはできないということです。
-転送先のαはマスクとして働きます。
-
-また、ピクセル単位のαとサーフェス単位のαは合成できないことにも注意して下さい。
-ピクセル単位のαが有効な時は必ずそちらが使われます。
+Also note that per-pixel and per-surface alpha cannot be combined; the per-pixel alpha is always used
+if available
 
 EXCEPTION *
 SEEALSO
@@ -1417,19 +1366,19 @@ Surface#alpha
 NAME set_clip_rect
 MOD Surface
 TYPE #
-PURPOSE サーフェスのクリッピング矩形をセットします。
+PURPOSE Sets the clipping rectangle for a surface.
 
 PROTO
 set_clip_rect(x,y,w,h)
 setClipRect(x,y,w,h)
 
 DESC
-サーフェスのクリッピング矩形をセットします。
-このサーフェスが blit 転送の転送先である場合は、
-クリッピング矩形の内部の領域だけが描画されます。
+Sets the clipping rectangle for a surface. 
+When this surface is the destination of a blit, only the area
+within the clip rectangle will be drawn into.
 
-引数によって指定された矩形はサーフェスの端でクリッピングされ、
-サーフェスに対するクリッピング矩形がサーフェスの端に出ないようにします。
+The rectangle pointed to by rect will be clipped to the edges of the surface so that the clip rectangle
+for a surface can never fall outside the edges of the surface.
 
 SEEALSO
 Surface#get_clip_rect
@@ -1439,7 +1388,7 @@ Surface.blit
 NAME get_clip_rect
 MOD Surface
 TYPE #
-PURPOSE サーフェスのクリッピング矩形を取得します。
+PURPOSE Gets the clipping rectangle for a surface.
 RVAL [Integer, Integer, UINT, UINT]
 
 PROTO
@@ -1447,12 +1396,11 @@ get_clip_rect
 getClipRect
 
 DESC
-サーフェスのクリッピング矩形を取得します。
-このサーフェスが blit の転送の場合は、
-クリッピング矩形の内部の領域のみが描画されます。
+Gets the clipping rectangle for a surface. When this surface is the destination of a blit, only the area
+within the clip rectangle is drawn into.
 
 RET
-[x, y, w, h]という整数4個の配列を返します。
+Returns 4 element array as [x, y, w, h].
 
 SEEALSO
 Surface#set_clip_rect
@@ -1461,7 +1409,7 @@ Surface.blit
 %%
 NAME blit_surface
 TYPE .
-PURPOSE 転送元サーフェスから転送先サーフェスへ高速 blit 転送を行います。
+PURPOSE Performs a fast blit from the source surface to the destination surface.
 RVAL 0/-2
 OBSOLETE Surface.blit
 
@@ -1474,73 +1422,72 @@ blitSurface(src,srcX,srcY,srcW,srcH,dst,dstX,dstY)
 NAME blit
 MOD Surface
 TYPE .
-PURPOSE 転送元サーフェスから転送先サーフェスへ高速 blit 転送を行います。
+PURPOSE This performs a fast blit from the source surface to the destination surface.
 RVAL 0/-2
 
 PROTO
 blit(src,srcX,srcY,srcW,srcH,dst,dstX,dstY)
 
 DESC
-転送元サーフェスから転送先サーフェスへ高速 blit 転送を行います
-$[src]が転送元、$[dst]が転送先のサーフィスとなります。
-$[srcX]、$[srcY]、$[srcW]、$[srcH]がすべて0の場合は$[src]
-全体がコピーされます。
+This performs a fast blit from the source surface to the destination surface.
 
-blit 関数はロックされたサーフェス上で呼ばれるべきではありません。
+$[src] is source surface, $[dst] is destination surface, 
+$[srcX], $[srcY], $[srcW], $[srcH] is source rectangle, 
+and $[dstX], $[dstY] is destination point.
+If all of $[srcX], $[srcY], $[srcW], $[srcH] is zero, the entire surface is copied.
 
-blit 操作の結果は
-SDL::SRCAPLHA がセットされているか否かによって
-大きく変化します。
-これがどのように結果に影響するかについては、
-Surface#set_alpha を見て下さい。
-以下の擬似コードのようにカラーキーとα属性もサーフェスの blit に作用します。
+The blit function should not be called on a locked surface.
 
-  if 転送元サーフェスに SDL::SRCALPHA がセットされている
-    if 転送元サーフェスにαチャンネルがある (つまり Amask != 0)
-      ピクセル単位のα値を使い、カラーキーを無視して blit
-    elsif 転送元サーフェスに SDL::SRCCOLORKEY がセットされている
-      カラーキーとサーフェス単位のα値を使って blit
+The results of blitting operations vary greatly depending on whether SDL::SRCAPLHA is set or not. See 
+@[Surface#set_alpha] for an explaination of how this 
+affects your results. Colorkeying and alpha attributes also
+interact with surface blitting, as the following pseudo-code should hopefully explain.
+
+  if source surface has SDL::SRCALPHA set 
+    if source surface has alpha channel (that is, Amask != 0)
+      blit using per-pixel alpha, ignoring any colour key
+    elsif source surface has SDL::SRCCOLORKEY set
+      blit using the colour key AND the per-surface alpha value
     else
-      サーフェス単位のα値を使って blit
+      blit using the per-surface alpha value
     end
-  elsif 転送元サーフェスに SDL::SRCCOLORKEY がセットされている
-    カラーキーを使って blit
+  elsif source surface has SDL::SRCCOLORKEY se
+    blit using the colour key
   else
-    普通の矩形 blit
+    ordinary opaque rectangular blit
   end
 
 RET
-成功時には0を返します。
-どちらかのサーフェスがビデオメモリにあり、このメソッドが
--2 を返す場合は、ビデオメモリが失われたため、
-画像込みでもう一度ロードして blit する必要があります。
+If the blit is successful, it returns 0.
 
-これは DirextX5.0 の下で、
-システムがあなたのフルスクリーンアプリケーションを切り換える時に発生します。
-あなたがビデオメモリに再度アクセスするまでは
-サーフェスのロックも失敗するでしょう。
+If either of the surfaces were in video memory, 
+and the blit returns -2, the video memory was lost, so it
+should be reloaded with artwork and re-blitted.
+
+This happens under DirectX 5.0 when the system switches away from your fullscreen application. Locking
+the surface will also fail until you have access to the video memory again.
 
 %%
 NAME fill_rect
 MOD Surface
 TYPE #
-PURPOSE 与えられた矩形領域と色で高速な塗り潰しを行います。
+PURPOSE This function performs a fast fill of the given rectangle with some color
 
 PROTO
 fill_rect(x,y,w,h,color)
 fillRect(x,y,w,h,color)
 
 DESC
-与えられた矩形領域と $[color] で
-高速な塗り潰しを行います。
-$[color]は((<色、ピクセルフォーマット、ピクセル値について>))に書かれて
-いる方法で指定できます。
+This method performs a fast fill of the given rectangle with $[color].
 
-色の値がα値を含んでいる場合は、塗り潰し先は単にそのα情報で「塗り潰され」、
-ブレンディングは起こりません。
-塗り潰し先にクリッピング矩形がある場合(@[Surface#set_clip_rect]に
-よってセットされます)は、この関数はクリッピング矩形と 指定した矩形が
-重なった領域でクリッピングされます。
+Please see ((<Color, PixelFormat and Pixel value>)) to specify $[color].
+If the color value contains an alpha value then the destination is simply "filled"
+with that alpha information, no blending takes place.
+
+If there is a clip rectangle set on the destination (set via @[Surface#set_clip_rect])
+then this function will clip based on the intersection of the clip rectangle 
+and the dstrect rectangle and the dstrect rectangle
+will be modified to represent the area actually filled.
 
 EXCEPTION *
 SEEALSO
@@ -1552,7 +1499,7 @@ Surface.blit
 NAME display_format
 MOD Surface
 TYPE #
-PURPOSE サーフェスを表示フォーマットに変換します。
+PURPOSE Convert a surface to the display format
 RVAL Surface
 
 PROTO
@@ -1560,19 +1507,19 @@ display_format
 displayFormat
 
 DESC
-このメソッドは$[self]を表示サーフェス上への高速 blit に適するように、
-ビデオフレームバッファのピクセルフォーマットとパレットの
-新しいサーフェスを作ります。
+This method copies $[self] to a new surface of the pixel format and colors of the video
+framebuffer, suitable for fast blitting onto the display surface.
 
-ハードウェアによるカラーキーやαの blit 転送のアクセラレーション
-の利点を得たい場合は、
-このメソッドを呼ぶ前にカラーキーとα値をセットしておくべきです。
+If you want to take advantage of hardware colorkey or alpha blit acceleration, you should set the
+colorkey and alpha value before calling this function.
+
+If you want an alpha channel, see @[Surface#display_format_alpha].
 
 RET
-変換後のサーフェスを返します。
+Returns converted surface object.
 
 EXCEPTION
-変換に失敗するか、メモリを使い切った時は例外@[Error]を返します。
+Raises @[Error] if the conversion fails or runs out of memory.
 
 SEEALSO
 Surface#display_format_alpha
@@ -1583,7 +1530,7 @@ Surface#set_color_key
 NAME display_format_alpha
 MOD Surface
 TYPE #
-PURPOSE サーフェスを表示フォーマットに変換します。
+PURPOSE Convert a surface to the display format
 RVAL Surface
 
 PROTO
@@ -1591,26 +1538,21 @@ display_format_alpha
 displaFormatAlpha
 
 DESC
-このメソッドは$[self]を表示サーフェス上への高速 blit に適するように、
-ビデオフレームバッファのピクセルフォーマット・色にαチャンネルを加えた
-新しいサーフェスにコピーします。
+This method copies $[self] to a new surface of the pixel format and colors of the video
+framebuffer plus an alpha channel, suitable for fast blitting onto the display surface.
 
-ハードウェアによるカラーキーやαの blit 転送のアクセラレーション
-の利点を得たい場合は、
-このメソッドを呼ぶ前にカラーキーとα値をセットしておくべきです。
+If you want to take advantage of hardware colorkey or alpha blit acceleration, you should set the
+colorkey and alpha value before calling this function.
 
-$[self]に SDL::SRCCOLORKEY フラグがセットされている
-場合は、この関数はカラーキーをαチャンネルに変換することに使うことが
-できます。
-そうして生成されたサーフェスは、
-カラーキーに一致するピクセルでは透明(α=0)に、
-他の場所では不透明(α=255)になります。
+This function can be used to convert a colourkey to an alpha channel, if the SDL::SRCCOLORKEY flag is set
+on the surface. The generated surface will then be transparent (alpha=0) where the pixels match the
+colourkey, and opaque (alpha=255) elsewhere.
 
 RET
-変換後のサーフェスを返します。
+Returns converted surface object.
 
 EXCEPTION
-変換に失敗するか、メモリを使い切った時は例外@[Error]を返します。
+Raises @[Error] if the conversion fails or runs out of memory.
 
 SEEALSO
 Surface#display_format
@@ -1621,48 +1563,47 @@ Surface#set_color_key
 NAME flags
 MOD Surface
 TYPE #
-PURPOSE サーフェスのフラグ
+PURPOSE Get surface flags
 RVAL UINT
 
 PROTO
 flags
 
 DESC
-サーフェスにセットされているフラグを返します。以下のフラグが
-サポートされています。
+Returns the surface flags.
+The following are supported:
 
 :SDL::SWSURFACE
-  サーフェスがシステムメモリに格納されます。
+  Surface is stored in system memory
 :SDL::HWSURFACE
-  サーフェスがビデオメモリに格納されます。
+  Surface is stored in video memory
 :SDL::ASYNCBLIT
-  可能であればサーフェスは非同期 blit 転送を使用します。
+  Surface uses asynchronous blits if possible
 :SDL::ANYFORMAT
-  任意のピクセルフォーマットを許可します。(表示サーフェス)
+  Allows any pixel-format (Display surface)
 :SDL::HWPALETTE
-  サーフェスには排他的なパレットがあります。
+  Surface has exclusive palette
 :SDL::DOUBLEBUF
-  サーフェスはダブルバッファです。(表示サーフェス)
+  Surface is double buffered (Display surface)
 :SDL::FULLSCREEN
-  サーフェスはフルスクリーンです。(表示サーフェス)
+  Surface is full screen (Display Surface)
 :SDL::OPENGL
-  サーフェスには OpenGL コンテキストがあります。(表示サーフェス)
+  Surface has an OpenGL context (Display Surface)
 :SDL::OPENGLBLIT
-  サーフェスは OpenGL への blit 転送をサポートします。(表示サーフェス)
+  Surface supports OpenGL blitting (Display Surface)
 :SDL::RESIZABLE
-  サーフェスはサイズ変更が可能です。(表示サーフェス)
+  Surface is resizable (Display Surface)
 :SDL::HWACCEL
-  サーフェスの blit 転送にはハードウェアアクセラレーションを使います。
+  Surface blit uses hardware acceleration
 :SDL::SRCCOLORKEY
-  サーフェスはカラーキー付き blit 転送を使います。
+  Surface use colorkey blitting
 :SDL::RLEACCEL
-  カラーキー付き blit 転送は RLE (ランレングス圧縮)による
-  アクセラレーションが利きます。
+  Colorkey blitting is accelerated with RLE
 :SDL::SRCALPHA
-  サーフェスの blit 転送はαブレンディングを使います。
+  Surface blit uses alpha blending
 
 RET
-以上のフラグの OR を取ったものが返されます。
+Returns OR'd compination of above constants.
 
 SEEALSO
 Surface
@@ -1672,28 +1613,27 @@ Screen
 NAME format
 MOD Surface
 TYPE #
-PURPOSE サーフェスのピクセルフォーマット
+PURPOSE Get surface pixel format
 RVAL PixelFormat
 
 PROTO
 format
 
 DESC
-サーフェスのピクセルフォーマットを
-@[PixelFormat]のインスタンスとして返します。
+Returns @[PixelFormat] object.
 
 %%
 NAME w
 MOD Surface
 TYPE #
-PURPOSE サーフェスの幅
+PURPOSE Get surface width
 RVAL UINT
 
 PROTO
 w
 
 DESC
-サーフェスの幅のピクセル数を整数で返します。
+Returns width of the surface.
 
 SEEALSO
 Surface#h
@@ -1702,14 +1642,14 @@ Surface#h
 NAME h
 MOD Surface
 TYPE #
-PURPOSE サーフェスの高さ
+PURPOSE Get surface height
 RVAL UINT
 
 PROTO
 h
 
 DESC
-サーフェスの高さのピクセル数を整数で返します。
+Returns height of the surface
 
 SEEALSO
 Surface#w
@@ -1718,19 +1658,19 @@ Surface#w
 NAME pixels
 MOD Surface
 TYPE #
-PURPOSE 実際のピクセルデータを返します
+PURPOSE Get the actual pixel data
 RVAL String
 
 PROTO
 pixels
 
 DESC
-実際のピクセルデータをStringのインスタンスで返します。
-ピクセルデータの形式は@[Surface#flags]、
-@[Surface#pitch]および@[Surface#format]によります。
+Returns pixel data as String object.
+Examine @[Surface#flags], @[Surface#pitch] and @[Surface#format]
+to analyze pixel data.
 
 NOTES
-これにアクセスするには@[ロック|Surface#lock]が必要です。
+You must @[lock|Surface#lock] surface before calling this method.
 
 SEEALSO
 Surface#flags
@@ -1741,197 +1681,189 @@ Surface#format
 NAME Rmask
 MOD PixelFormat
 TYPE #
-PURPOSE 赤チャンネルの値を取得するのに使われるビットマスク
+PURPOSE Get binary mask used to retrieve red color value
 RVAL UINT
 
 PROTO
 Rmask
 
 DESC
-赤チャンネルの値を取得するのに使われるビットマスクを整数で返します。
+Returns binary mask allowing us to isolate red component.
 
 %%
 NAME Gmask
 MOD PixelFormat
 TYPE #
-PURPOSE 緑チャンネルの値を取得するのに使われるビットマスク
+PURPOSE Get binary mask used to retrieve green color value
 RVAL UINT
 
 PROTO
 Gmask
 
 DESC
-緑チャンネルの値を取得するのに使われるビットマスクを整数で返します。
+Returns binary mask allowing us to isolate green component.
 
 %%
 NAME Bmask
 MOD PixelFormat
 TYPE #
-PURPOSE 青チャンネルの値を取得するのに使われるビットマスク
+PURPOSE Get binary mask used to retrieve blue color value
 RVAL UINT
 
 PROTO
 Bmask
 
 DESC
-青チャンネルの値を取得するのに使われるビットマスクを整数で返します。
+Returns binary mask allowing us to isolate blue component.
 
 %%
 NAME Amask
 MOD PixelFormat
 TYPE #
-PURPOSE αチャンネルの値を取得するのに使われるビットマスク
+PURPOSE Get binary mask used to retrieve alpla value
 RVAL UINT
 
 PROTO
 Amask
 
 DESC
-αチャンネルの値を取得するのに使われるビットマスクを整数で返します。
+Returns binary mask allowing us to isolate alpha component.
 
 %%
 NAME Rloss
 MOD PixelFormat
 TYPE #
-PURPOSE 赤チャンネルで失われる精度
+PURPOSE Precision loss of red component
 RVAL UINT
 
 PROTO
 Rloss
 
 DESC
-赤チャンネルで8bitの値をパッキングするときに失われる
-ビット数を整数で返します。
+Returns the number of bits lost from red component when packing 8-bit color component in a pixel.
 
 %%
 NAME Gloss
 MOD PixelFormat
 TYPE #
-PURPOSE 緑チャンネルで失われる精度
+PURPOSE Precision loss of green component
 RVAL UINT
 
 PROTO
 Gloss
 
 DESC
-緑チャンネルで8bitの値をパッキングするときに失われる
-ビット数を整数で返します。
+Returns the number of bits lost from green component when packing 8-bit color component in a pixel.
 
 %%
 NAME Bloss
 MOD PixelFormat
 TYPE #
-PURPOSE 青チャンネルで失われる精度
+PURPOSE Precision loss of blue component
 RVAL UINT
 
 PROTO
 Bloss
 
 DESC
-青チャンネルで8bitの値をパッキングするときに失われる
-ビット数を整数で返します。
+Returns the number of bits lost from blue component when packing 8-bit color component in a pixel.
 
 %%
 NAME Aloss
 MOD PixelFormat
 TYPE #
-PURPOSE αチャンネルで失われる精度
+PURPOSE Precision loss of alpha component
 RVAL UINT
 
 PROTO
 Aloss
 
 DESC
-αチャンネルで8bitの値をパッキングするときに失われる
-ビット数を整数で返します。
+Returns the number of bits lost from alpha component when packing 8-bit color component in a pixel.
 
 %%
 NAME Rshift
 MOD PixelFormat
 TYPE #
-PURPOSE ピクセル値の赤チャンネルの2進数の左シフト数
+PURPOSE Binary left shift of red component in the pixel value
 RVAL UINT
 
 PROTO
 Rshift
 
 DESC
-ピクセル値の赤チャンネルの右端が何bit目にくるかを整数で
-返します。
+Returns the number of bits to the right of red component in the pixel value.
 
 %%
 NAME Gshift
 MOD PixelFormat
 TYPE #
-PURPOSE ピクセル値の緑チャンネルの2進数の左シフト数
+PURPOSE Binary left shift of green component in the pixel value
 RVAL UINT
 
 PROTO
 Gshift
 
 DESC
-ピクセル値の緑チャンネルの右端が何bit目にくるかを整数で
-返します。
+Returns the number of bits to the right of green component in the pixel value.
 
 %%
 NAME Bshift
 MOD PixelFormat
 TYPE #
-PURPOSE ピクセル値の青チャンネルの2進数の左シフト数
+PURPOSE Binary left shift of blue component in the pixel value
 RVAL UINT
 
 PROTO
 Bshift
 
 DESC
-ピクセル値の青チャンネルの右端が何bit目にくるかを整数で
-返します。
+Returns the number of bits to the right of blue component in the pixel value
 
 %%
 NAME Ashift
 MOD PixelFormat
 TYPE #
-PURPOSE ピクセル値のαチャンネルの2進数の左シフト数
+PURPOSE Binary left shift of alpha component in the pixel value
 RVAL UINT
 
 PROTO
 Ashift
 
 DESC
-ピクセル値のαチャンネルの右端が何bit目にくるかを整数で
-返します。
+Returns the number of bits to the right of alpha component in the pixel value.
 
 %%
 NAME colorkey
 MOD Surface
 TYPE #
-PURPOSE 透明ピクセルのピクセル値
+PURPOSE Pixel value of transparent pixels
 RVAL UINT
 
 PROTO
 colorkey
 
 DESC
-透明ピクセルのピクセル値を正の整数で返します。
+Returns pixel value of transparent pixels.
+
 
 SEEALSO
 Surface
 Surface#set_color_key
-((<色、ピクセルフォーマット、ピクセル値について>))
+((<Color, PixelFormat and Pixel value>))
 
 %%
 NAME alpha
 MOD Surface
 TYPE #
-PURPOSE サーフェス全体のα値
+PURPOSE Overall surface alpha value
 RVAL UINT
 
 PROTO
 alpha
 
 DESC
-サーフェス全体のα値を0から255までの整数で返します。
-0が透明で、255が不透明です。
+Returns surface alpha value from 0(transparent) to 255(opaque).
 
 SEEALSO
 Surface#set_alpha
@@ -1940,33 +1872,32 @@ Surface#set_alpha
 NAME colorkey
 MOD PixelFormat
 TYPE #
-PURPOSE 透明ピクセルのピクセル値
+PURPOSE Pixel value of transparent pixels.
 RVAL UINT
 
 PROTO
 colorkey
 
 DESC
-透明ピクセルのピクセル値を正の整数で返します。
+Returns pixel value of transparent pixels.
 
 SEEALSO
 Surface
 Surface#set_color_key
-((<色、ピクセルフォーマット、ピクセル値について>))
+((<Color, PixelFormat and Pixel value>))
 
 %%
 NAME alpha
 MOD PixelFormat
 TYPE #
-PURPOSE サーフェス全体のα値
+PURPOSE Overall surface alpha value
 RVAL UINT
 
 PROTO
 alpha
 
 DESC
-サーフェス全体のα値を0から255までの整数で返します。
-0が透明で、255が不透明です。
+Returns surface alpha value from 0(transparent) to 255(opaque).
 
 SEEALSO
 Surface#set_alpha
@@ -1976,7 +1907,7 @@ Surface#set_alpha
 NAME bpp
 MOD Surface
 TYPE #
-PURPOSE サーフェスの各ピクセルを表わすのに使われるビット数
+PURPOSE The number of bits used to represent each pixel in a surface
 RVAL UINT
 OBSOLETE PixelFormat#bpp
 
@@ -1987,38 +1918,34 @@ bpp
 NAME bpp
 MOD PixelFormat
 TYPE #
-PURPOSE サーフェスの各ピクセルを表わすのに使われるビット数
+PURPOSE The number of bits used to represent each pixel in a surface
 RVAL UINT
 
 PROTO
 bpp
 
 DESC
-サーフェスの各ピクセルを表わすのに使われるビット数を返します。
-通常8、16、24、32のいずれかです。
+Returns the number of bits used to represent each pixel in a surface.
+Usually 8, 16, 24 or 32.
 
 %%
 NAME load
 MOD Surface
 TYPE .
 DEP SDL_image
-PURPOSE 画像をサーフェスにロードします。
+PURPOSE Load image into an surface
 RVAL Surface
 
 PROTO
 load(filename)
 
 DESC
-画像のファイルをサーフェスにロードします。
-もし画像の形式が透明ピクセルをサポートしているならば、サーフェスに
-カラーキーがセットされます。
+Load image into an surface and returns @[surface|Surface] object.
+If image format supports transparent color, colorkey is set into new surfafe.
 
-対応しているフォーマットはBMP, PNM (PPM/PGM/PBM), XPM,
-XCF, PCX, GIF, JPEG, TIFF, TGA, PNG, LBMです。
-
-NOTES
-SDL_image のコンパイル時に使えるように指定しなかったフォーマット
-のファイルはこのメソッドではロードできません。
+Supoorted formats are
+BMP, PNM (PPM/PGM/PBM), XPM,
+XCF, PCX, GIF, JPEG, TIFF, TGA, PNG and LBM.
 
 EXCEPTION *
 
@@ -2026,7 +1953,7 @@ EXCEPTION *
 NAME load_from_io
 MOD Surface
 TYPE .
-PURPOSE RubyのIOオブジェクトから画像をサーフェスにロードします。
+PURPOSE Load a image file into an Surface from IO object.
 RVAL Surface
 
 PROTO
@@ -2034,19 +1961,18 @@ load_from_io(io)
 loadFromIO(io)
 
 DESC
-RubyのIOオブジェクトから画像データをサーフェスにロードします。
-もし画像の形式が透明ピクセルをサポートしているならば、サーフェスに
-カラーキーがセットされます。
+Loads a surface from a ruby's IO object.
+IO object means the ruby object that has following methods:
+* read
+* rewind
+* tell
 
-対応しているフォーマットはBMP, PNM (PPM/PGM/PBM), XPM,
-XCF, PCX, GIF, JPEG, TIFF, TGA, PNG, LBMです。
+If image format supports transparent color, colorkey is set into new surfafe.
+Supoorted formats are
+BMP, PNM (PPM/PGM/PBM), XPM,
+XCF, PCX, GIF, JPEG, TIFF, TGA, PNG and LBM.
 
 EXCEPTION *
-
-NOTES
-RubyのIOオブジェクトとは、read、rewind、tell という3つのメソッドを
-持つオブジェクトです。IO、StringIO、Zlib::GzipReaderなどが
-利用できます。
 
 SEEALSO
 Surface.load
@@ -2057,7 +1983,7 @@ NAME put_pixel
 MOD Surface
 TYPE #
 LOCK
-PURPOSE 指定した位置に点を書きます。
+PURPOSE Writes a pixel to the specified position
 
 PROTO
 put_pixel(x, y, color)
@@ -2065,18 +1991,18 @@ putPixel(x, y, color)
 []=(x, y, color)
 
 DESC
-サーフェスの($[x], $[y])で指定した位置に$[color]のピクセルを描画します。
-$[color]としてピクセル値もしくは色を表わす配列が利用できます。
+Writes $[color] pixel at ($[x], $[y]).
 
 SEEALSO
 Surface#get_pixel
+((<Color, PixelFormat and Pixel value>))
 
 %%
 NAME get_pixel
 MOD Surface
 TYPE #
 LOCK
-PURPOSE 指定した位置のピクセル値を得ます。
+PURPOSE Gets the color of the specified pixel.
 RVAL UINT
 
 PROTO
@@ -2085,27 +2011,27 @@ getPixel(x, y)
 [](x, y)
 
 DESC
-サーフェスの($[x], $[y])で指定した位置のピクセル値を得ます。
+Returns pixel value at ($[x], $[y]).
 
 SEEALSO
 Surface#put_pixel
+((<Color, PixelFormat and Pixel value>))
 
 %%
 NAME put
 MOD Surface
 TYPE #
-PURPOSE 指定したサーフェス全体を指定した位置に高速 blit 転送します。
+PURPOSE Performs a fast blit from entire surface.
 
 PROTO
 put(src, x, y)
 
 DESC
-$[self]の($[x], $[y])で指定した位置にサーフェス $[src] を高速 blit 転送
-します。
+Performs a fast blit from entire $[src] surface to $[self] at ($[x], $[y]).
 
-これは、
+This means:
   SDL::Surface.blit(src, 0, 0, src.w, src.h, self, x, y)
-と同じです。
+
 
 SEEALSO
 Surface.blit
@@ -2114,19 +2040,17 @@ Surface.blit
 NAME copy_rect
 MOD Surface
 TYPE #
-PURPOSE サーフェスの一部を切り出した新しいサーフェスを返します。
+PURPOSE Copies a part of surface.
 
 PROTO
 copy_rect(x,y,w,h)
 copyRect(x,y,w,h)
 
 DESC
-サーフェス $[self] の ($[x], $[y], $[w], $[h]) で指定される矩形を
-コピーした新しいサーフェスを作り、返します。
+Copies a ($[x], $[y], $[w], $[h]) rectangle from $[self] and return new $[surface|Surface] object.
 
 NOTES
-このメソッドは内部で @[Surface.blit] を呼ぶため、ロックされたサーフェス上で
-呼ばれるべきではありません。
+This method call @[Surface.blit] internally, therefore you must unlock surface before calling it.
 
 EXCEPTION *
 
@@ -2134,7 +2058,7 @@ EXCEPTION *
 NAME auto_lock?
 TYPE .
 DEP SGE
-PURPOSE サーフェスを自動でロックするかどうかを返す。
+PURPOSE Get whether surface is automatically locked
 RVAL true/false
 OBSOLETE Surface.auto_lock?
 
@@ -2149,7 +2073,7 @@ NAME auto_lock?
 MOD Surface
 TYPE .
 DEP SGE
-PURPOSE サーフェスを自動でロックするかどうかを返す。
+PURPOSE Get whether surface is automatically locked
 RVAL true/false
 
 PROTO
@@ -2157,9 +2081,10 @@ auto_lock?
 autoLock?
 
 DESC
-サーフェスに対する@[ロック|Surface#lock]が必要な操作をするとき、
-Ruby/SDLが自動的にロック/アンロックするか
-どうかを true/false で返します。デフォルトでは true です。
+Returns true if surface is automatically @[locked|Surface#lock]
+when necessary, otherwise returns false.
+
+Default is ON(true).
 
 SEEALSO
 Surface#lock
@@ -2171,7 +2096,7 @@ Surface.auto_lock_off
 NAME auto_lock_on
 TYPE .
 DEP SGE
-PURPOSE 自動ロックを利用するようにします。
+PURPOSE Switch on auto locking
 OBSOLETE Surface.auto_lock_on
 
 PROTO
@@ -2183,15 +2108,14 @@ NAME auto_lock_on
 MOD Surface
 TYPE .
 DEP SGE
-PURPOSE 自動ロックを利用するようにします。
+PURPOSE Switch on auto locking
 
 PROTO
 auto_lock_on
 autoLockON
 
 DESC
-自動ロックを利用するようにします。これを呼ぶと@[auto_lock?]が真に
-なります。
+Enables auto surface locking. 
 
 SEEALSO
 Surface#lock
@@ -2202,7 +2126,7 @@ Surface.auto_lock_off
 NAME auto_lock_off
 TYPE .
 DEP SGE
-PURPOSE 自動ロックを利用しないようにします。
+PURPOSE Switch off auto locking
 OBSOLETE Surface.auto_lock_off
 
 PROTO
@@ -2214,15 +2138,14 @@ NAME auto_lock_off
 MOD Surface
 TYPE .
 DEP SGE
-PURPOSE 自動ロックを利用しないようにします。
+PURPOSE Switch off auto locking.
 
 PROTO
 auto_lock_off
 autoLockOFF
 
 DESC
-自動ロックを利用しないようにします。これを呼ぶと@[auto_lock?]が偽に
-なります。
+Disables auto surface locking. 
 
 SEEALSO
 Surface#lock
@@ -2233,7 +2156,7 @@ Surface.auto_lock_on
 NAME auto_lock=
 TYPE .
 DEP SGE
-PURPOSE 自動ロックを使うかどうかを設定します。
+PURPOSE Set auto locking
 OBSOLETE Surface.auto_lock_on
 
 PROTO
@@ -2241,9 +2164,10 @@ auto_lock=(locking)
 autoLock=(locking)
 
 DESC
-自動ロックを使うかどうかを設定します。 SDL.auto_lock = true は
-SDL.auto_lock_on と同じで、 SDL.auto_lock = false は SDL.auto_lock_off と
-同じです。
+Enables or disables auto surface locking.
+'SDL.auto_lock = true' is same as @[Surface.auto_lock_on]
+and 'SDL.auto_lock = false' is same as 
+@[Surface.auto_lock_off].
 
 SEEALSO
 Surface#lock
@@ -2255,7 +2179,7 @@ auto_lock_off
 NAME transform
 TYPE .
 DEP SGE
-PURPOSE 回転縮小拡大描画をします。
+PURPOSE Draw a rotated and scaled image.
 OBSOLETE Surface.transform_draw
 
 PROTO
@@ -2266,45 +2190,55 @@ NAME transform_draw
 MOD Surface
 TYPE .
 DEP SGE
-PURPOSE 回転縮小拡大描画をします。
+PURPOSE Draw a rotated and scaled image.
 
 PROTO
-transform(src,dst,angle,xscale,yscale,px,py,qx,qy,flags)
+transform_draw(src,dst,angle,xscale,yscale,px,py,qx,qy,flags)
 
 DESC
-$[src]を回転縮小拡大したものを$[dst]に描画します。
-$[angle]は回転角度(単位はラジアンではなく度)、$[xscale]、$[yscale]は
-それぞれX方向とY方向の倍率、($[px], $[py]) は $[src]における回転の
-中心で、その点が$[dst]の($[qx], $[qy])にくるように描画されます。
-また、$[flags]としては以下の値のORを取ったものを与えます。
+Draws a rotated and scaled version of $[src] on $[dest].
+$[angle] the rotation angle in degrees, 
+$[xscale] and $[yscale] are x and y scaling factor,
+($[px], $[py]) is the pivot point to rotate around in the $[src],
+and ($[qx], $[qy]) is the destination point on $[dst] surface.
+
+$[flags] is OR'd combination of follwing values:
 
 :0
-  普通
+  Default
 :SDL::TRANSFORM_SAFE
-  $[src] と $[dst] のピクセルフォーマットが異なっていても正しく描画します。
-  $[src].bpp と $[dst].bpp が異なる場合は自動的に有効になります。
-  ただしれを有効にすると遅くなります。
+  Don't asume that the $[src] and $[dst] surfaces has
+  the same pixel format. This is the default when the two
+  surfaces don't have the same BPP. This is slower but will
+  render wierd pixel formats right.
 :SDL::TRANSFORM_AA
-  補完描画をします。遅いがみためが良くなります。
+  Use the interpolating renderer. Much slower but
+  can look better.
 :SDL::TRANSFORM_TMAP
-  テクスチャマッピングを使います。すこし速くなるが見た目は悪くなります。
-  このフラグを有効にした場合 $[px] 、$[py] や上で挙げたフラグを無視します。
+  Use texture mapping. This is a bit faster but
+  the result isn't as nice as in the normal mode. This mode
+  will also ignore the px/py coordinates and the other flags.
 
 NOTES
-最適なパフォーマンスを得るために、$[src] と $[dst] は同じピクセル
-フォーマットを使い、また24bpp以外のフォーマットを使ってください。
+To get optimal performance PLEASE make sure that the two
+surfaces has the same pixel format (color depth) and doesn't use
+24-bpp.
 
-@[Surface#set_clip_rect] で設定したクリッピング矩形は $[src]
-および $[dst] で有効です。
+You can set source and destination clipping rectangles with
+@[Surface#set_clip_rect].
 
-SDL::TRANSFORM_AA を使う場合は、高さ方向および幅方向にそれぞれ
-1ピクセルづつ間引かれます(パフォーマンスを良くするためです)。
+If you use the interpolated renderer the image will be
+clipped 1 pixel in hight and width (to optimize the
+performance).
 
-$[src]が32bpp RGBA フォーマットの場合には、SDL::TRANSFORM_SAFEを使うべきです。
+If you want to transform a 32-bpp RGBA (alpha) surface with
+the interpolated renderer, please use the 
+SDL::TRANSFORM_SAFE flag.
 
-このメソッドはアルファブレンディングは一切しませんが、アルファチャンネルの
-値は保ちます。もし、アルファブレンディング、カラーキーの効果のある
-回転縮小拡大描画をしたい場合は@[Surface.transform_blit]をかわりに利用してください。
+This function will not do any alpha blending, but it will
+try to preserve the alpha channel. If you want to rotate and
+alpha blend the result, please use @[Surface.transform_blit]
+and then blit that surface to its destination.
 
 SEEALSO
 Surface.transform_blit
@@ -2315,7 +2249,7 @@ Surface.new
 NAME transform_blit
 TYPE .
 DEP SGE
-PURPOSE カラーキーおよびアルファブレンドが有効な回転縮小拡大描画をします。
+PURPOSE Draw a rotated and scaled image with colorkey and blending
 OBSOLETE Surface.transform_blit
 
 PROTO
@@ -2327,17 +2261,16 @@ NAME transform_blit
 MOD Surface
 TYPE .
 DEP SGE
-PURPOSE カラーキーおよびアルファブレンドが有効な回転縮小拡大描画をします。
+PURPOSE Draw a rotated and scaled image with colorkey and blending
 
 PROTO
 transform_blit(src,dst,angle,xscale,yscale,px,py,qx,qy,flags)
 transformBlit(src,dst,angle,xscale,yscale,px,py,qx,qy,flags)
 
 DESC
-回転縮小拡大描画をします。引数の意味などは 
-@[Surface.transform] と同様です。
-@[Surface.transform] との違いは $[src] に設定されたカラーキー(抜き色)
-およびアルファブレンディングが有効になることです。
+Draw a rotated and scaled image. 
+This method is same as @[Surface.transform] except
+colorkey and blending are enabled. 
 
 SEEALSO
 Surface.transform
@@ -2351,18 +2284,18 @@ MOD Surface
 TYPE #
 DEP SGE
 LOCK
-PURPOSE 直線を描画します。
+PURPOSE Draw a line
 
 PROTO
 draw_line(x1,x2,y1,y2,color, aa=false, alpha=nil)
 drawLine(x1,x2,y1,y2,color, aa=false, alpha=nil)
 
 DESC
-($[x1], $[y1])から($[x2], $[y2])までの直線を $[color]
-で指定した色で描画します。$[aa]が真ならば
-アンチエイリアシングされた直線を描画します。
-$[alpha]が整数である場合はその値をα値として
-アルファブレンディングで描画します。
+Draws a $[color] line from ($[x1], $[y1]) to ($[x2], $[y2]).
+If $[aa] is true, draws an antialiased line.
+If $[alpha] is integer, draws blended line with alpha value
+is $[alpha]. 
+If $[alpha] is nil, draws a normal line.
 
 SEEALSO
 Surface#draw_rect
@@ -2373,7 +2306,7 @@ MOD Surface
 TYPE #
 DEP SGE
 LOCK
-PURPOSE アンチエイリアシングされた直線を描画します。
+PURPOSE Draw an antialiased line
 
 PROTO
 draw_aa_line(x1,x2,y1,y2,color)
@@ -2381,8 +2314,7 @@ drawAALine(x1,x2,y1,y2,color)
 
 OBSOLETE Surface#draw_line
 DESC
-($[x1], $[y1])から($[x2], $[y2])までの直線を $[color] で指定した色で
-アンチエイリアスして描画します。
+Draws a $[color] antialiased line from ($[x1], $[y1]) to ($[x2], $[y2]).
 
 SEEALSO
 Surface#draw_line
@@ -2393,7 +2325,7 @@ MOD Surface
 TYPE #
 DEP SGE
 LOCK
-PURPOSE アルファブレンディングした直線を描画します。
+PURPOSE Draw a blended line
 OBSOLETE Surface#draw_line
 
 PROTO
@@ -2401,8 +2333,8 @@ draw_line_alpha(x1,x2,y1,y2,color,alpha)
 drawLineAlpha(x1,x2,y1,y2,color,alpha)
 
 DESC
-($[x1], $[y1])から($[x2], $[y2])までの直線を $[color] で指定した色、
-$[alpha]で指定したα値で描画します。
+Draws a $[color] line from ($[x1], $[y1]) to ($[x2], $[y2])
+with blending.
 
 SEEALSO
 Surface#draw_line
@@ -2413,7 +2345,7 @@ MOD Surface
 TYPE #
 DEP SGE
 LOCK
-PURPOSE アルファブレンディングした直線を描画します。
+PURPOSE Draw an antialiased line with blending.
 OBSOLETE Surface#draw_line
 
 PROTO
@@ -2421,8 +2353,9 @@ draw_aa_line_alpha(x1,x2,y1,y2,color,alpha)
 drawAALineAlpha(x1,x2,y1,y2,color,alpha)
 
 DESC
-($[x1], $[y1])から($[x2], $[y2])までの直線を $[color] で指定した色、
-$[alpha]で指定したα値でアンチエイリアスをかけて描画します。
+Draws a antialiased $[color] line from 
+($[x1], $[y1]) to ($[x2], $[y2]) with blending.
+
 
 SEEALSO
 Surface#draw_line
@@ -2433,19 +2366,16 @@ MOD Surface
 TYPE #
 DEP SGE
 LOCK
-PURPOSE 長方形を描画します。
+PURPOSE Draws a rect
 
 PROTO
 draw_rect(x,y,w,h,color, fill=false, alpha=nil)
 drawRect(x,y,w,h,color, fill=false, alpha=nil)
 
 DESC
-($[x], $[y])が左上の点で$[w]が幅、$[h]が高さの長方形を
- $[color] で
-指定した色で描画します。$[fill]が真ならを中を塗り潰し、
-偽なら塗り潰しません。
-また、$[alpha]が整数ならばその値をα値としてアルファ
-ブレンディング描画します。
+Draws a rectangle with color $[color]. 
+Draw a filled rectangle if $[fill] is true,
+and a blended rectangle if $[alpha] is integer.
 
 SEEALSO
 Surface#fill_rect
@@ -2456,7 +2386,7 @@ MOD Surface
 TYPE #
 DEP SGE
 LOCK
-PURPOSE 長方形をアルファブレンディング描画します。
+PURPOSE Draws a rectangle with blending
 OBSOLETE Surface#draw_rect
 
 PROTO
@@ -2464,8 +2394,7 @@ draw_rect_alpha(x,y,w,h,color,alpha)
 drawRectAlpha(x,y,w,h,color,alpha)
 
 DESC
-($[x], $[y])が左上の点で$[w]が幅、$[h]が高さの長方形を $[color] で
-指定した色、$[alpha] で指定したα値で描画します。中を塗り潰しません。
+Draws a blended rectangle.
 
 SEEALSO
 Surface#fill_rect
@@ -2477,7 +2406,7 @@ MOD Surface
 TYPE #
 DEP SGE
 LOCK
-PURPOSE 塗り潰した長方形をアルファブレンディング描画します。
+PURPOSE Draws a filled blended rectangle.
 OBSOLETE Surface#draw_rect
 
 PROTO
@@ -2485,8 +2414,7 @@ draw_filled_rect_alpha(x,y,w,h,color,alpha)
 drawFilledRectAlpha(x,y,w,h,color,alpha)
 
 DESC
-($[x], $[y])が左上の点で$[w]が幅、$[h]が高さの中を塗り潰した
-長方形を $[color] で指定した色、$[alpha] で指定したα値で描画します。
+Draws a filled blended rectangle.
 
 SEEALSO
 Surface#fill_rect
@@ -2498,23 +2426,21 @@ MOD Surface
 TYPE #
 DEP SGE
 LOCK
-PURPOSE 円を描画します。
+PURPOSE Draws a circle
 
 PROTO
 draw_circle(x,y,r,color,fill=false,aa=false,alpha=0)
 drawCircle(x,y,r,color,fill=false,aa=false,alpha=0)
 
 DESC
-中心 ($[x],$[y])、半径 $[r]の円を $[color] で指定した色
-で描画します。$[fill]が真なら中を塗り潰し、偽なら塗り潰しません。
-$[aa]が真ならアンチエイリアスをかけます。
-また、$[alpha]を整数にするとその値をα値として
-アルファブレンディング描画します。
+Draws a circle. ($[x],$[y]) is center, 
+$[r] is radius and $[color] is drawing color.
+If $[fill] is true, draws a filled circle.
+If $[aa] is true, draws an antialiased circle.
+If $[alpha] is integer, draws a blended circle.
 
 NOTES
-塗り潰し($[fill])、アンチエイリアス($[aa])、
-アルファブレンディング($[alpha])をすべて有効にして
-描画することはできません。
+You cannot draw a filled antialiased blended circle.
 
 SEEALSO
 Surface#draw_ellipse
@@ -2525,7 +2451,7 @@ MOD Surface
 TYPE #
 DEP SGE
 LOCK
-PURPOSE 塗り潰した円を描画します。
+PURPOSE Draws a filled circle.
 OBSOLETE draw_circle
 
 PROTO
@@ -2533,8 +2459,7 @@ draw_filled_circle(x,y,r,color)
 drawFilledCircle(x,y,r,color)
 
 DESC
-中心 ($[x],$[y])、半径 $[r]の円を $[color] で指定した色で中を
-塗り潰して描画します。
+Draws a filled circle.
 
 SEEALSO
 Surface#draw_circle
@@ -2545,7 +2470,7 @@ MOD Surface
 TYPE #
 DEP SGE
 LOCK
-PURPOSE アンチエイリアスをかけた円を描画します。
+PURPOSE Draws an antialiased circle.
 OBSOLETE draw_circle
 
 PROTO
@@ -2553,8 +2478,7 @@ draw_aa_circle(x,y,r,color)
 drawAACircle(x,y,r,color)
 
 DESC
-中心 ($[x],$[y])、半径 $[r]の円を $[color] で指定した色で
-アンチエイリアスをかけて描画します。
+Draws an antialiased circle.
 
 SEEALSO
 Surface#draw_circle
@@ -2565,7 +2489,7 @@ MOD Surface
 TYPE #
 DEP SGE
 LOCK
-PURPOSE 塗り潰した円をアンチエイリアスをかけて描画します。
+PURPOSE Draws a filled antialiased circle
 OBSOLETE draw_circle
 
 PROTO
@@ -2573,8 +2497,7 @@ draw_aa_filled_circle(x,y,r,color)
 drawAAFilledCircle(x,y,r,color)
 
 DESC
-中心 ($[x],$[y])、半径 $[r]の円を $[color] で指定した色で
-中を塗り潰しアンチエイリアスをかけて描画します。
+Draws a filled antialiased circle.
 
 SEEALSO
 Surface#draw_circle
@@ -2585,7 +2508,7 @@ MOD Surface
 TYPE #
 DEP SGE
 LOCK
-PURPOSE 円をアルファブレンディング描画します。
+PURPOSE Draws blended circle
 OBSOLETE draw_circle
 
 PROTO
@@ -2593,8 +2516,7 @@ draw_circle_alpha(x,y,r,color,alpha)
 drawCircleAlpha(x,y,r,color,alpha)
 
 DESC
-中心 ($[x],$[y])、半径 $[r]の円を $[color] で指定した色、
-$[alpha]で指定したアルファ値で描画します。
+Draws blended circle.
 
 SEEALSO
 Surface#draw_circle
@@ -2605,7 +2527,7 @@ MOD Surface
 TYPE #
 DEP SGE
 LOCK
-PURPOSE 塗り潰した円をアルファブレンディング描画します。
+PURPOSE Draws a filled blended circle
 OBSOLETE draw_circle
 
 PROTO
@@ -2613,8 +2535,7 @@ draw_filled_circle_alpha(x,y,r,color,alpha)
 drawFilledCircleAlpha(x,y,r,color,alpha)
 
 DESC
-中心 ($[x],$[y])、半径 $[r]の中を塗り潰した円を $[color] で指定した色、
-$[alpha]で指定したアルファ値で描画します。
+Draws a filled blended circle.
 
 SEEALSO
 Surface#draw_circle
@@ -2625,7 +2546,7 @@ MOD Surface
 TYPE #
 DEP SGE
 LOCK
-PURPOSE 円をアルファブレンディング、アンチエイリアス描画します。
+PURPOSE Draws an antialiased blended circle
 OBSOLETE draw_circle
 
 PROTO
@@ -2633,8 +2554,7 @@ draw_aa_circle_alpha(x,y,r,color,alpha)
 drawAACircleAlpha(x,y,r,color,alpha)
 
 DESC
-中心 ($[x],$[y])、半径 $[r]の円を $[color] で指定した色、
-$[alpha]で指定したアルファ値でアンチエイリアスで描画します。
+Draws an antialiased blended circle
 
 SEEALSO
 Surface#draw_circle
@@ -2645,23 +2565,23 @@ MOD Surface
 TYPE #
 DEP SGE
 LOCK
-PURPOSE 楕円を描画します。
+PURPOSE Draws an ellipse.
 
 PROTO
 draw_ellipse(x,y,rx,ry,color, fill=false, aa=false, alpha=nil)
 drawEllipse(x,y,rx,ry,color, fill=false, aa=false, alpha=nil) )
 
 DESC
-中心 ($[x],$[y])、X方向の半径 $[xr]、Y方向の半径 $[ry] の楕円を $[color] で指定した色で描画します。
-$[fill]が真なら中を塗り潰し、偽なら塗り潰しません。
-$[aa]が真ならアンチエイリアスをかけます。
-また、$[alpha]を整数にするとその値をα値として
-アルファブレンディング描画します。
+
+Draws an ellipse. ($[x],$[y]) is center, 
+$[rx] is x-radius, $[ry] is y-radius
+and $[color] is drawing color.
+If $[fill] is true, draws a filled ellipse.
+If $[aa] is true, draws an antialiased ellipse.
+If $[alpha] is integer, draws a blended ellipse.
 
 NOTES
-塗り潰し($[fill])、アンチエイリアス($[aa])、
-アルファブレンディング($[alpha])をすべて有効にして
-描画することはできません。
+You cannot draw a filled antialiased blended ellipse.
 
 SEEALSO
 Surface#draw_circle
@@ -2672,7 +2592,7 @@ MOD Surface
 TYPE #
 DEP SGE
 LOCK
-PURPOSE 塗り潰した楕円を描画します。
+PURPOSE Draws a filled ellipse
 OBSOLETE Surface#draw_ellipse
 
 PROTO
@@ -2680,8 +2600,7 @@ draw_filled_ellipse(x,y,rx,ry,color)
 drawFilledEllipse(x,y,rx,ry,color)
 
 DESC
-中心 ($[x],$[y])、X方向の半径 $[xr]、Y方向の半径 $[ry] の楕円を $[color] で指定した色で中を
-塗り潰して描画します。
+Draws a filled ellipse.
 
 SEEALSO
 Surface#draw_ellipse
@@ -2692,7 +2611,7 @@ MOD Surface
 TYPE #
 DEP SGE
 LOCK
-PURPOSE アンチエイリアスをかけた楕円を描画します。
+PURPOSE Draws an antialiased ellipse
 OBSOLETE Surface#draw_ellipse
 
 PROTO
@@ -2700,8 +2619,7 @@ draw_aa_ellipse(x,y,rx,ry,color)
 drawAAEllipse(x,y,rx,ry,color)
 
 DESC
-中心 ($[x],$[y])、X方向の半径 $[xr]、Y方向の半径 $[ry] の楕円を $[color] で指定した色で
-アンチエイリアスをかけて描画します。
+Draws an antialiased ellipse.
 
 SEEALSO
 Surface#draw_ellipse
@@ -2712,7 +2630,7 @@ MOD Surface
 TYPE #
 DEP SGE
 LOCK
-PURPOSE 塗り潰した楕円をアンチエイリアスをかけて描画します。
+PURPOSE Draws a filled antialiased ellipse
 OBSOLETE Surface#draw_ellipse
 
 PROTO
@@ -2720,8 +2638,7 @@ draw_aa_filled_ellipse(x,y,rx,ry,color)
 drawAAFilledEllipse(x,y,rx,ry,color)
 
 DESC
-中心 ($[x],$[y])、X方向の半径 $[xr]、Y方向の半径 $[ry] の楕円を $[color] で指定した色で
-中を塗り潰しアンチエイリアスをかけて描画します。
+Draws a filled antialiased ellipse.
 
 SEEALSO
 Surface#draw_ellipse
@@ -2732,7 +2649,7 @@ MOD Surface
 TYPE #
 DEP SGE
 LOCK
-PURPOSE 楕円をアルファブレンディング描画します。
+PURPOSE Draws a blended ellipse
 OBSOLETE Surface#draw_ellipse
 
 PROTO
@@ -2740,8 +2657,7 @@ draw_ellipse_alpha(x,y,rx,ry,color,alpha)
 drawEllipseAlpha(x,y,rx,ry,color,alpha)
 
 DESC
-中心 ($[x],$[y])、X方向の半径 $[xr]、Y方向の半径 $[ry] の楕円を $[color] で指定した色、
-$[alpha]で指定したアルファ値で描画します。
+Draws a blended ellipse.
 
 SEEALSO
 Surface#draw_ellipse
@@ -2752,7 +2668,7 @@ MOD Surface
 TYPE #
 DEP SGE
 LOCK
-PURPOSE 塗り潰した楕円をアルファブレンディング描画します。
+PURPOSE Draws a filled blended ellipse
 OBSOLETE Surface#draw_ellipse
 
 PROTO
@@ -2760,8 +2676,7 @@ draw_filled_ellipse_alpha(x,y,rx,ry,color,alpha)
 drawFilledEllipseAlpha(x,y,rx,ry,color,alpha)
 
 DESC
-中心 ($[x],$[y])、X方向の半径 $[xr]、Y方向の半径 $[ry] の中を塗り潰した楕円を $[color] で指定した色、
-$[alpha]で指定したアルファ値で描画します。
+Draws a filled blended ellipse
 
 SEEALSO
 Surface#draw_ellipse
@@ -2772,7 +2687,7 @@ MOD Surface
 TYPE #
 DEP SGE
 LOCK
-PURPOSE 楕円をアルファブレンディング、アンチエイリアス描画します。
+PURPOSE Draws an antialiased blended ellipse
 OBSOLETE Surface#draw_ellipse
 
 PROTO
@@ -2780,8 +2695,7 @@ draw_aa_ellipse_alpha(x,y,rx,ry,color,alpha)
 drawAAEllipseAlpha(x,y,rx,ry,color,alpha)
 
 DESC
-中心 ($[x],$[y])、X方向の半径 $[xr]、Y方向の半径 $[ry] の楕円を $[color] で指定した色、
-$[alpha]で指定したアルファ値でアンチエイリアスで描画します。
+Draws an antialiased blended ellipse.
 
 SEEALSO
 Surface#draw_ellipse
@@ -2792,21 +2706,19 @@ MOD Surface
 TYPE #
 DEP SGE
 LOCK
-PURPOSE ベジエ曲線を描く
+PURPOSE Draws a bezier curve
 
 PROTO
 draw_bezier(x1,y1,x2,y2,x3,y3,x4,y4,level,color,aa=false,alpha=nil)
 drawBezier(x1,y1,x2,y2,x3,y3,x4,y4,level,color,aa=false,alpha=nil)
 
 DESC
-($[x1], $[y1]) から ($[x4], $[y4])までのベジエ曲線を
-($[x2], $[y2]) と ($[x3], $[y3]) をコントロールポイントとして
-$[color]で指定した色で
-描画します。$[leve] は曲線の近似度で、
-4から7を使うと良いでしょう。
-$[aa]が真ならアンチエイリアスをかけます。
-また、$[alpha]を整数にするとその値をα値として
-アルファブレンディング描画します。
+Draws a bezier curve from ($[x1], $[y1]) to ($[x4], $[y4])
+with the control points ($[x2], $[y2]) and ($[x3], $[y3]).
+$[level] indicates how
+good precision the function should use, 4-7 is normal.
+If $[aa] is true, draws an antialiased curve.
+If $[alpha] is integer, draws blended curve.
 
 %%
 NAME draw_aa_bezier
@@ -2814,7 +2726,7 @@ MOD Surface
 TYPE #
 DEP SGE
 LOCK
-PURPOSE アンチエイリアスをかけたベジエ曲線を描く
+PURPOSE Draws an antialiased bezier curve.
 OBSOLETE Surface#draw_bezier
 
 PROTO
@@ -2822,10 +2734,7 @@ draw_aa_bezier(x1,y1,x2,y2,x3,y3,x4,y4,level,color)
 drawAABezier(x1,y1,x2,y2,x3,y3,x4,y4,level,color)
 
 DESC
-($[x1], $[y1]) から ($[x4], $[y4])までのベジエ曲線を
-($[x2], $[y2]) と ($[x3], $[y3]) をコントロールポイントとして
-$[color]で指定した色でアンチエイリアスして
-描画する。$[leve] は曲線の近似度で、4から7を使うと良い。
+Draws an antialiased bezier curve.
 
 SEEALSO
 Surface#draw_bezier
@@ -2836,7 +2745,7 @@ MOD Surface
 TYPE #
 DEP SGE
 LOCK
-PURPOSE ベジエ曲線をアルファブレンディングして描く
+PURPOSE Draws a blended bezier curve.
 OBSOLETE Surface#draw_bezier
 
 PROTO
@@ -2844,10 +2753,7 @@ draw_bezier_alpha(x1,y1,x2,y2,x3,y3,x4,y4,level,color,alpha)
 drawBezierAlpha(x1,y1,x2,y2,x3,y3,x4,y4,level,color,alpha)
 
 DESC
-($[x1], $[y1]) から ($[x4], $[y4])までのベジエ曲線を
-($[x2], $[y2]) と ($[x3], $[y3]) をコントロールポイントとして
-$[color]で指定した色、$[alpha]で指定したα値で
-描画する。$[leve] は曲線の近似度で、4から7を使うと良い。
+Draws a blended bezier curve.
 
 SEEALSO
 Surface#draw_bezier
@@ -2858,7 +2764,7 @@ MOD Surface
 TYPE #
 DEP SGE
 LOCK
-PURPOSE アンチエイリアスしたベジエ曲線をアルファブレンディングして描く
+PURPOSE Draws an antialiased blended bezier curve
 OBSOLETE Surface#draw_bezier
 
 PROTO
@@ -2866,10 +2772,7 @@ draw_aa_bezier_alpha(x1,y1,x2,y2,x3,y3,x4,y4,level,color,alpha)
 drawAABezierAlpha(x1,y1,x2,y2,x3,y3,x4,y4,level,color,alpha)
 
 DESC
-($[x1], $[y1]) から ($[x4], $[y4])までのベジエ曲線を
-($[x2], $[y2]) と ($[x3], $[y3]) をコントロールポイントとして
-$[color]で指定した色、$[alpha]で指定したα値でアンチエイリアス
-描画する。$[leve] は曲線の近似度で、4から7を使うと良い。
+Draws an antialiased blended bezier curve.
 
 SEEALSO
 Surface#draw_bezier
@@ -2880,7 +2783,7 @@ MOD Surface
 TYPE #
 DEP SGE
 LOCK
-PURPOSE 拡大縮小変形した新しいサーフェスを生成する
+PURPOSE Creates an rotated an scaled surface
 RVAL Surface
 
 PROTO
@@ -2888,13 +2791,12 @@ transform_surface(bgcolor,angle,xscale,yscale,flags)
 transformSurface(bgcolor,angle,xscale,yscale,flags)
 
 DESC
-$[self] を拡大縮小変形したサーフェスを生成し返す。
-回転によって生じた隙間は $[bgcolor] で指定した色で埋められる。
-引数 $[angle]、$[xscale]、$[yscale]、$[flags] は 
-@[Surface.transform] と同じ意味である。
+Returns a rotated and scaled version of $[self].
+See $[Surface.transform] for more information.
+$[bgcolor] is background color that new surface have.
 
-新しいサーフェスは $[self] と同じ bpp およびピクセルフォーマットを
-持つ。
+The new surface object will have the same depth 
+and pixel format as $[self].
 
 EXCEPTION *
 

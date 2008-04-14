@@ -61,7 +61,7 @@ METHODS(Kanji)
 
 This class represets bdf font. 
 
-== フォント関連メソッド
+== Font methods
 %%%
 NAME init
 MOD TTF
@@ -284,7 +284,7 @@ RVAL Integer
 PROTO
 faces
 
-DES
+DESC
 Returns the number of faces(subfonts) in a font.
 
 %%
@@ -561,58 +561,63 @@ NAME open
 MOD BMFont
 TYPE .
 DEP SGE
-PURPOSE フォントをロードします。
+PURPOSE Load a bitmap font from file
 RVAL SDL::BMFont
 
 PROTO
 open(filename, flags)
 
 DESC
-$[filename] で指定したフォントをロードし、そのフォントを表わす
-オブジェクトを @[BMFont] のインスタンスとして返します。
+Load a bitmap font from $[filename] file and
+returns new @[BMFont] object.
 
-$[flags] としては以下の値を与えることができます。
+$[flags] is OR'd combination of following values:
 :SDL::BMFont::TRANSPARENT
-  @[Surface#set_color_key] で適当な透過色を与える(常に使うべき)。
+  Transparent (use @[Surface#set_color_key] internally, should usually be set)
 :SDL::BMFont::NOCONVERT
-  読み込んだフォント画像に対し @[Surface#display_format] を呼ばない。
+  Don't @[convert font surface to display format|Surface#display_format]
+  for faster blits.
 :SDL::BMFont::SFONT
-  読み込んだフォント画像を SFont フォーマットと仮定する。
-  これを与えない場合は独自形式と仮定する。
+  If you enabled support for SDL_img when compiling
+  SGE you can also set this flag, this enables you to
+  load Karl Bartel's SFont files.
 :SDL::BMFont::PALETTE
-  読みこんだサーフェスを 8bppパレット付きサーフェスに変換する。
-  これは SFont 形式のフォントに対しては使えません。
-  これをすると描画が少し遅くなりますが @[BMFont#set_color] は速くなります。
+  Converts the font surface to a palette surface
+  (8bit). Don't do this on color fonts or SFonts! Blits from the
+  font surface will be a bit slower but @[BMFont#set_color]
+  will be faster (O(1) instead of O(n^2)).
 
 %%
 NAME set_color
 MOD BMFont
 TYPE #
 DEP SGE
-PURPOSE フォントの色を変更します。
+PURPOSE Change font color
 
 PROTO
 set_color(r, g, b)
 setColor(r, g, b)
 
 DESC
-フォントの色を ($[r], $[g], $[b]) に変更します。多色フォントおよび
-SFontに対しては利用できません。このメソッドを何度も呼ぶのであれば
-@[BMFont.open] で ((<SDL::BMFont::PALETTE>)) を与えておくと良いでしょう。
+Changes the color of the font to ($[r], $[g], $[b]). 
+Doesn't work on 'color
+fonts' or SFonts. Use ((<SDL::BMFont::PALETTE>))
+when @[opening|BMFont.open] the font if
+you're going to use this function often.
 
 %%
 NAME height
 MOD BMFont
 TYPE #
 DEP SGE
-PURPOSE フォントの高さを得ます。
+PURPOSE Get height of the font
 RVAL Integer
 
 PROTO
 height
 
 DESC
-フォントの高さを返します。
+Returns height.
 
 SEEALSO
 BMFont#width
@@ -622,14 +627,15 @@ NAME width
 MOD BMFont
 TYPE #
 DEP SGE
-PURPOSE フォントの幅を得ます。
+PURPOSE Get width of one character in the font
 RVAL Integer
 
 PROTO
 width
 
 DESC
-文字一つ分の幅を返します。SFont に対しては使えません。
+Returns the width of one character in $[self] font.
+Doesn't work on SFonts.
 
 SEEALSO
 BMFont#height
@@ -639,7 +645,7 @@ NAME text_size
 MOD BMFont
 TYPE #
 DEP SGE
-PURPOSE 文字列の描画に必要なサーフェスの大きさを得ます。
+PURPOSE Get the size of surface needed
 RVAL [Integer, Integer]
 
 PROTO
@@ -647,9 +653,7 @@ text_size(string)
 textSize(string)
 
 DESC
-$[self] で表わされるフォントで $[string] を描画するのに必要な
-サーフェスの大きさを [幅, 高さ] という配列で返します。
-長さの単位はピクセル数です。
+Returns the width and height of the $[string] with $[self].
 
 SEEALSO
 BMFont#textout
@@ -659,16 +663,17 @@ NAME textout
 MOD BMFont
 TYPE #
 DEP SGE
-PURPOSE 文字列を描画します。
+PURPOSE Render the given string
 
 PROTO
 textout(surface, string, x, y)
 
 DESC
-$[string] を $[surface] の ($[x], $[y]) に描画します。
+Renders the given $[string] on surface with the given font. 
+($[x], $[y]) is the position of the left top corner. 
 
 COMMENT
-lockする？
+lock ?
 
 SEEALSO
 BMFont#text_size
@@ -677,16 +682,16 @@ BMFont#text_size
 NAME open
 MOD Kanji
 TYPE .
-PURPOSE bdfファイルを読み込む。
+PURPOSE Load bdf font file
 RVAL SDL::Kanji
 
 PROTO
 open(filename, size)
 
 DESC
-$[filename] で指定した bdf ファイルを読みこみ、@[Kanji] のインスタンス
-を返します。$[size] で文字のサイズを指定します。この値は
-文字の高さに相当します。またいわゆる半角文字2文字分の幅にもなります。
+Load bdf font data from $[filename] and 
+returns new @[Kanji] obejct.
+$[size] is the height of one character.
 
 SEEALSO
 Kanji#add
@@ -695,15 +700,14 @@ Kanji#add
 NAME add
 MOD Kanji
 TYPE #
-PURPOSE 既に読み込んでいるフォントに追加してフォントを読みこみます。
+PURPOSE Add font data into already loaded font
 
 PROTO
 add(filename)
 
 DESC
-$[filename] で指定した bdf ファイルを読みこみ、$[self] に無かった文字を
-新しいフォントで補完します。これを使って英語と日本語を別のフォント
-から読みこむ、といったことができます。
+Add font data fromt $[filename] into already loaded font $[self].
+This method combines two or more font files into one.
 
 SEEALSO
 Kanji#open
@@ -712,45 +716,44 @@ Kanji#open
 NAME set_coding_system
 MOD Kanji
 TYPE #
-PURPOSE 文字コードを指定します。
+PURPOSE Set character encoding
 
 PROTO
 set_coding_system(sys)
 setCodingSystem(sys)
 
 DESC
-文字コードを指定します。 $[sys] として以下のいずれかを指定できます。
+Set encoding. $[sys] is one of following:
 * SDL::Kanji::SJIS
 * SDL::Kanji::EUC
 * SDL::Kanji::JIS
-デフォルトでは SDL::Kanji::JIS が指定されています。
+Default is SDL::Kanji::JIS.
 
 %%
 NAME height
 MOD Kanji
 TYPE #
-PURPOSE 文字の高さを得ます。
+PURPOSE Get height of one character
 RVAL Integer
 
 PROTO
 height
 
 DESC
-フォントの高さをピクセル数で返します。これはいわゆる全角文字の幅であり、
-いわゆる半角文字の幅の2倍の値です。
+Returns the height of one character as piexel.
 
 %%
 NAME textwidth
 MOD Kanji
 TYPE #
-PURPOSE 文字列の幅を得ます。
+PURPOSE Get width of given string
 RVAL Integer
 
 PROTO
 textwidth(text)
 
 DESC
-$[text] で指定した文字列を描画するのに必要な幅をピクセル数で返します。
+Get width of given $[text] with $[self] font.
 
 SEEALSO
 Kanji#width
@@ -759,13 +762,13 @@ Kanji#width
 NAME width
 MOD Kanji
 TYPE #
-PURPOSE 文字の幅を得ます。
+PURPOSE Get the width of one character
 
 PROTO
 width
 
 DESC
-半角文字1文字の幅をピクセル数で得ます。
+Returns the width of one character.
 
 SEEALSO
 textwidth
@@ -774,14 +777,14 @@ textwidth
 NAME put
 MOD Kanji
 TYPE #
-PURPOSE 文字を描画します。
+PURPOSE Render text
 
 PROTO
 put(surface, text, x, y, r, g, b)
 
 DESC
-$[text] で指定した文字列を $[surface] の ($[x], $[y]) に ($[r], $[g], $[b])
-で指定した色で描画します。
+Renders $[text] at ($[x], $[y]) in $[surface]
+with ($[r], $[g], $[b]) color.
 
 SEEALSO
 Kanji#put_tate
@@ -790,17 +793,17 @@ Kanji#put_tate
 NAME put_tate
 MOD Kanji
 TYPE #
-PURPOSE 文字を縦書きで描画します。
+PURPOSE Render tategaki text
 
 PROTO
 put_tate(surface, x, y, r, g, b)
 putTate(surface, x, y, r, g, b)
 
 DESC
-$[text] で指定した文字列を $[surface] の ($[x], $[y]) に ($[r], $[g], $[b])
-で指定した色で縦書きで描画します。
+Renders $[text] as tagetaki at ($[x], $[y]) in $[surface]
+with ($[r], $[g], $[b]) color.
 
-ASCII文字は縦書きにできません。
+`Half-width' character is not rendered.
 
 SEEALSO
 Kanji#put

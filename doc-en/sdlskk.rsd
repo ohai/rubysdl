@@ -1,79 +1,80 @@
 = SDLSKK
-* ((<SDLSKKによる日本語入力について>))
+* ((<Japanese input system by SDLSKK>))
 * ((<SDL::SKK::Context>))
 * ((<SDL::SKK::Dictionary>))
 * ((<SDL::SKK::Keybind>))
 * ((<SDL::SKK::RomKanaRuleTable>))
-* ((<SDLSKK関連メソッド>))
+* SDLSKK methods
 TOC
 
-== SDLSKKによる日本語入力について
-Ruby/SDL には ((<SDLSKK|URL:http://www.kmc.gr.jp/~ohai/sdlskk.html>))
-を利用した ((<SKK|URL:http://openlab.jp/skk/index-j.html>))
-に似た日本語入力システムがあります。
+== Japanese input system by SDLSKK
+Ruby/SDL has 
+((<SKK|URL:http://openlab.jp/skk/index-j.html>))-like
+Japanese input system by 
+((<SDLSKK|URL:http://www.kmc.gr.jp/~ohai/sdlskk.html>)).
 
-これは日本語入力ができるだけでなく、
-カット&ペーストを含む簡単な行編集機能を持っています。
+This system enables you not only to input Japanse
+but also to handle line input including 
+cut and paste.
 
-sample/sdlskk.rb も参考にしてください。
+Please see sample/sdlskk.rb.
 
 == SDL::SKK
-SDLSKK関連のモジュール関数およびクラスを持つモジュールです。
+This module has some SDLSKK-related module functions
+and classes.
 
 METHODS(SKK)
 
 == SDL::SKK::Context
-入力の状態などを表わすクラスで、SDL::SKKの中心的なクラスです。
+This class represents input state.
 
 METHODS(SKK::Context)
 
 == SDL::SKK::Dictionary
-辞書を表わすクラスです。ファイルから SKK 形式の辞書を読み込むこと
-ができます。
+This class represents a Kana-Kanji dictionary.
+Load SKK dictionary from files.
 
 METHODS(SKK::Dictionary)
 
 == SDL::SKK::Keybind
-入力のキーバインドを表わすクラスです。
+This class represents keybind.
 
 METHODS(SKK::Keybind)
 
 == SDL::SKK::RomKanaRuleTable
-ローマ字 -> 仮名 の変換テーブルを表わすクラスです。
-この変換テーブルは、SDLSKK独自の形式のテキストファイルで、
-それを読み込んでインスタンスを生成します。
-
-変換テーブルファイルは SDLSKK に付属しています。
+This class represents the translation table
+from Romaji(Alphabet) to Kana.
+Load text data from a file and create new table object.
 
 METHODS(SKK::RomKanaRuleTable)
 
-== SDLSKK関連メソッド
+== SDLSKK methods
 %%%
 NAME encoding=
 MOD SKK
 TYPE .
 DEP SDLSKK
-PURPOSE SDLSKK内部のエンコーディングを指定します。
+PURPOSE Set SDLSKK internal encoding
 
 PROTO
 encoding=(encoding)
 
 DESC
-SDLSKK内部のエンコーディングを $[encoding] に指定します。
+Sets SDLSKKK internal encoding to $[encoding].
+Following constants are allowed:
 * SDL::SKK::EUCJP
 * SDL::SKK::UTF8
 * SDL::SKK::SJIS
-のいずれかを指定してください。SDL::SKK::EUCJP がデフォルトです。
-また、これはSDLSKK関連の他のメソッドを呼ぶ前に呼んでください。
+Default is SDL::SKK::EUCJP.
 
-これは、@[SKK::Dictionary#load]と@[SKK::RomKanaRuleTable.new]で
-読み込むファイルおよび @[SKK::Context#str] で得られる文字列、
-@[SKK::Dictionary#save] で書き出すファイルの
-エンコードを決定します。
+This encoding determines 
+the encoding of @[dictionary files|SKK::Dictionary#load],
+@[a romaji-kana translation table file|SKK::RomKanaRuleTable.new]
+and @[private dictionary|SKK::Dictionary#save].
 
 NOTES
-このモジュール関数は最初に1回だけ呼んでください。
-途中でエンコーディングを変更すると正しく動作しません。
+This function should call once before calling other
+SDLSKK methods.
 
 SEEALSO
 SKK.encoding
@@ -86,15 +87,15 @@ NAME encoding
 MOD SKK
 TYPE .
 DEP SDLSKK
-PURPOSE SDLSKKの内部エンコーディングを得ます。
+PURPOSE Get SDLSKK internal encoding
 RVAL UINT
 
 PROTO
 encoding
 
 DESC
-SDLSKKの内部エンコーディングを返します。詳しくは @[SKK.encoding=] を
-見てください。
+Returns the SDLSKK internal encoding. Please see
+@[SKK.encoding=] for more detail.
 
 SEEALSO
 SKK.encoding=
@@ -104,25 +105,22 @@ NAME new
 MOD SKK::RomKanaRuleTable
 TYPE .
 DEP SDLSKK
-PURPOSE アルファベットからかなへの変換テーブルを読み込みます。
+PURPOSE Load a Romaji-Kana trasnlation table
 RVAL SDL::SKK::RomKanaRuleTable
 
 PROTO
 new(filename)
 
 DESC
-$[filename]で指定したファイルをアルファベットからかなへの変換テーブル
-として読み込みます。
-ファイルの形式は以下の通りです。
-* 「;;」 で始まる行はコメント
-* 空行は無視される
-* それ以外の行は1行1エントリーで、以下のような形式
-    入力アルファベット<TAB>かな変換後に残るアルファベット<TAB>片仮名<TAB>平仮名
-
+Load a Romaji-Kana trasnlation table from $[filename].
+File format is:
+* a line beginnig with ;; is comment
+* empty line is ignored
+* one entry per one line: <input alphabets><TAB><Katakana><TAB><Hiragana>
   
 NOTES
-このファイルのエンコーディングは @[SKK.encoding=] であらかじめ指定しておいて
-ください。
+Encoding of this file is set by @[SKK.encoding=]
+before loading it.
 
 SEEALSO
 SKK::Context.new
@@ -132,15 +130,14 @@ NAME new
 MOD SKK::Dictionary
 TYPE .
 DEP SDLSKK
-PURPOSE 空の辞書を生成します。
+PURPOSE Create empty dictionary
 RVAL SDL::SKK::Dictionary
 
 PROTO
 new
 
 DESC
-空の辞書として @[SKK::Dictionary] のインスタンスを生成します。
-適当な辞書をこれに読み込んでください。
+Creates empty dictionary object and returns it.
 
 SEEALSO
 SKK::Dictionary#load
@@ -150,24 +147,22 @@ NAME load
 MOD SKK::Dictionary
 TYPE #
 DEP SDLSKK
-PURPOSE 辞書ファイルを読み込みます。
+PURPOSE Read a dictionary file
 
 PROTO
 load(filename, user)
 
 DESC
-$[filename] で指定した辞書を読み込みます。辞書の形式は SKK のものと
-同一です(ただしannotationを含むものは不可です)。
-$[user] を真にすると
-その辞書はユーザ辞書であると扱われ、そこに含まれる
-エントリーすべてにユーザ入力マークが付きます。
-
-ユーザ入力マークが付いたエントリーのみが @[SKK::Dictionary#save] で
-ユーザ辞書に出力されます。
+Read a dictionary data from $[filename]. 
+Format of dictionary is same as of SKK
+(Ruby/SDL cannot read data with annotations).
+If $[user] is true, loaded data is treated as
+user dictionary data. If $[user] is false,
+loaded data is treated as system dictionary data.
 
 NOTES
-このファイルのエンコーディングは @[SKK.encoding=] であらかじめ指定しておいて
-ください。
+Encoding of this file is set by @[SKK.encoding=]
+before loading it.
 
 EXCEPTION *
 
@@ -181,16 +176,13 @@ NAME save
 MOD SKK::Dictionary
 TYPE #
 DEP SDLSKK
-PURPOSE ユーザ辞書をファイルに出力します。
+PURPOSE Save user dictionary data
 
 PROTO
 save(filename)
 
 DESC
-$[filename] で指定したファイルにユーザ辞書を出力します。
-ユーザが利用した変換と、
-@[SKK::Dictionary#load] で「ユーザ辞書」として読み込まれた
-項とをあわせたものを、ユーザ辞書として扱います。
+Save user dictionary data into $[filename].
 
 SEEALSO
 SKK::Dictionary.new
@@ -201,16 +193,16 @@ NAME new
 MOD SKK::Keybind
 TYPE .
 DEP SDLSKK
-PURPOSE 空のキーバインドを作ります。
+PURPOSE Create empty keybind
 RVAL SDL::SKK::Keybind
 
 PROTO
 new
 
 DESC
-空のキーバインドに対応する @[SKK::Keybind] のインスタンスを返します。
-これに @[SKK::Keybind#set_key] や @[SKK::Keybind#set_default_key]
-などを使ってキーバインドを追加して使います。
+Creates empty keybind object and returns it.
+Add keybind to this object using
+@[SKK::Keybind#set_key] and @[SKK::Keybind#set_default_key].
 
 SEEALSO
 SKK::Keybind#set_key
@@ -222,23 +214,23 @@ NAME set_key
 MOD SKK::Keybind
 TYPE #
 DEP SDLSKK
-PURPOSE キーバインドを設定します。
+PURPOSE Set keybind
 
 PROTO
 set_key(key_str, cmd_str)
 
 DESC
-$[key_str] に設定したいキーを示す文字列を、$[cmd_str] に設定したい
-動作を示す文字列を与え、キーバインドを設定します。
+Sets keybind. $[key_str] is a key-symbol string.
+$[cmd_str] is command string.
 
-$[key_str] としては以下のような文字列を与えることができます。
-* アルファベット、"%" などのasciiの記号
+Following strings are allowed as $[key_str]:
+* Alphabet and ascii characters like "%"
 * "SPC" "TAB" "DEL" "RET" "UP" "DOWN" "RIGHT" "LEFT" "INSERT" "HOME" "END"
   "PAGEUP" "PAGEDOWN" "F1" "F2" "F3" "F4" "F5" "F6" "F7" "F8" "F9" "F10"
   "F11" "F12" "F13" "F14" "F15" "HELP"
-* "C-a" "M-C-a" などといった修飾キーの付いた文字列
-_
-また、$[cmd_str] には以下の文字列を与えることができます。
+* key with modifiers like "C-a" and "M-C-a"
+
+Following strings is allowed as $[cmd_str]:
 * "backward-char",
 * "forward-char",
 * "backward-delete-char",
@@ -263,12 +255,10 @@ _
 * "end-of-line"
 * "do-nothing"
 
-ただし、"a" や "/" といったアスキー文字1文字のキーにはデフォルト
-以外のキーバインドはしないようにしてください。
+You shouldn't change the keybind of only one ascii character key
+like "a" and "/".
 
-標準のキーバインドを少し変更したいという場合は、まず
-@[SKK::Keybind#set_default_key] を呼んで、デフォルトのキーバインドを
-設定してからこのメソッドを呼んでください
+@[SKK::Keybind#set_default_key] is useful.
 
 SEEALSO
 SKK::Keybind#set_default_key
@@ -279,13 +269,13 @@ NAME set_default_key
 MOD SKK::Keybind
 TYPE #
 DEP SDLSKK
-PURPOSE Emacsに似た標準的なキーバインドを設定します。
+PURPOSE Load default Emacs-like keybinds
 
 PROTO
 set_default_key
 
 DESC
-Emacsに似た標準的なキーバインドを設定します。
+Load default Emacs-like keybinds.
 
 SEEALSO
 SKK::Keybind#set_key
@@ -295,46 +285,48 @@ NAME unset_key
 MOD SKK::Keybind
 TYPE #
 DEP SDLSKK
-PURPOSE 指定したキーのキーバインドを無効にします。
+PURPOSE Unset keybind
 
 PROTO
 unset_key(key_str)
 
 DESC
-$[key_str] で指定したキーのキーバインドを無効にします。
-$[key_str] には @[SKK::Keybind#set_key] と同じ値を使います。
+Unset keybind of $[key_str].
+
+SEEALSO
+SKK::Keybind#set_key
 
 %%
 NAME new
 MOD SKK::Context
 TYPE .
 DEP SDLSKK
-PURPOSE 入力コンテキストを生成する。
+PURPOSE Create new input context
 RVAL SKK::Context
 
 PROTO
 new(dict, romkama_table, bind, use_minibuffer)
 
 DESC
-入力コンテキストを生成し、@[SKK::Context] のインスタンスを返します。
-$[dict] は利用する辞書として @[SKK::Dictionary] のインスタンスを、
-$[romkama_table] はローマ字かな変換規則として @[SKK::RomKanaRuleTable]
-のインスタンスを、$[bind] にはキーバインドとして @[SKK::Keybind] のインスタンス
-を与える。
-use_minibuffer に真値を与えるとミニバッファを利用するようになります。
-偽では利用しません。
+Creates input context and returns new @[SKK::Context] object.
+$[dict] is a @[dictionary|SKK::Dictionary],
+$[romkama_table] is a
+@[Ronaji-Kana translation table|SKK::RomKanaRuleTable]
+and $[bind] is @[keybind|SKK::Keybind].
+If $[use_minibuffer] is true, 
+SKK-like minibuffer is enabled.
 
 EXAMPLE
-# 辞書を生成し、ファイルから辞書データを読み込む
+# Create dictionary object and read data from 'jisyo'
 dict = SDL::SKK::Dictionary.new
 dict.load( 'jisyo', false )
-# ローマ字仮名変換テーブルを読み込む
+# Read Romaji-Kana translation table from 'rule_table'
 table = SDL::SKK::RomKanaRuleTable.new( 'rule_table' )
-# キーバインドを設定する
+# Set keybind
 bind = SDL::SKK::Keybind.new
 bind.set_default_key
 
-# コンテキストを生成
+# Create context
 context = SDL::SKK::Context.new( dict, table, bind, use_minibuffer )
 
 SEEALSO
@@ -346,23 +338,23 @@ NAME input
 MOD SKK::Context
 TYPE #
 DEP SDLSKK
-PURPOSE キーボードからの入力を受け付けます。
+PURPOSE Handle keyboard event
 
 PROTO
 input(event)
 
 DESC
-イベント経由でキーボードからの入力を受け付け、
-コンテキストの状態を変更します。
-$[event] には @[Event2] のインスタンスを与えます。
-@[Event2::KeyDown] 以外のイベントは無視します。
+Handles keyboard event. $[event] should be 
+@[Event] object.
+This method handles only @[keydown events|Event::KeyDown]
+and ignore other events.
 
 EXAMPLE
-while event = SDL::Event2.poll do
+while event = SDL::Event.poll do
   case event
-  when SDL::Event2::Quit
+  when SDL::Event::Quit
     exit
-  when SDL::Event2::KeyDown
+  when SDL::Event::KeyDown
     if event.sym == SDL::Key::ESCAPE then
       exit
     end
@@ -378,14 +370,14 @@ NAME str
 MOD SKK::Context
 TYPE #
 DEP SDLSKK
-PURPOSE 入力途中の文字列を得ます。
+PURPOSE Get input string
 RVAL String
 
 PROTO
 str
 
 DESC
-入力途中の文字列を返します。
+Returns input string.
 
 SEEALSO
 SKK::Context#render_str
@@ -397,17 +389,14 @@ NAME render_str
 MOD SKK::Context
 TYPE #
 DEP SDLSKK
-PURPOSE 入力文字列をレンダリングします。
+PURPOSE Render input string
 RVAL SDL::Surface
 
 PROTO
 render_str(font, r, g, b)
 
 DESC
-$[self] が持っている入力途中の文字列をレンダリングして
-@[Surface] のインスタンスを返します。
-$[font] はレンダリングに利用するフォントを @[TTF] のインスタンスで与え、
-その色を ($[r], $[g], $[b]) で指定します。
+Renders input string and returns @[Surface] object.
 
 SEEALSO
 SKK::Context#render_minibuffer_str
@@ -417,29 +406,26 @@ NAME render_minibuffer_str
 MOD SKK::Context
 TYPE #
 DEP SDLSKK
-PURPOSE ミニバッファの文字列をレンダリングします。
+PURPOSE Render minibuffer string
 
 PROTO
 render_minibuffer_str(font, r, g, b)
 
 DESC
-$[self] が持っている入力途中のミニバッファの状態をレンダリングして
-@[Surface] のインスタンスを返します。
-$[font] はレンダリングに利用するフォントを @[TTF] のインスタンスで与え、
-その色を ($[r], $[g], $[b]) で指定します。
+Renders minibuffer string and returns @[Surface] object.
 
 %%
 NAME clear
 MOD SKK::Context
 TYPE #
 DEP SDLSKK
-PURPOSE 入力状態をクリアします。
+PURPOSE Clear context
 
 PROTO
 clear
 
 DESC
-力文字列と入力状態をクリアして初期状態に戻します。
+Clears input context.
 
 SEEALSO
 SKK::Context#clear_text
@@ -449,21 +435,16 @@ NAME clear_text
 MOD SKK::Context
 TYPE #
 DEP SDLSKK
-PURPOSE 入力テキストをクリアします。
+PURPOSE Creat input text
 
 PROTO
 clear_text
 
 DESC
-$[self] の入力モードが、確定入力モード、アルファベット入力モード、
-JISX0208アルファベット入力モードのいずれかであればそのモードを
-維持したまま入力テキストを空にします。
+Clears input text, but input mode is held.
 
-複数行の入力を実現したい場合、@[SKK::Context] を呼ぶと
-モードが確定入力モードに戻ってしまうのが不自然である場合、
-この関数を呼ぶとよい。
-
-また、カットバッファの内容も保存されます。
+If you want multi-line input, this method is better
+than @[SKK::Context#clear]
 
 SEEALSO
 SKK::Context#get_basic_mode
@@ -473,24 +454,19 @@ NAME get_basic_mode
 MOD SKK::Context
 TYPE #
 DEP SDLSKK
-PURPOSE 状態が入力途中の状態でないかどうかを得る。
+PURPOSE Get whether input mode is basic mode
 RVAL true/false
 
 PROTO
 get_basic_mode
 
 DESC
-@[self] の入力モードが、確定入力モード、アルファベット入力モード、
-JISX0208アルファベット入力モードのいずれかであれば真を、それ
-以外では偽を返す。辞書登録モードのときなども偽を返します。
-
-これが真のときにリターンキーを押したら入力終了とみなす、
-などといった処理に利用します。
+Returns true if $[self]'s input mode is kakutei-mode,
+latin-mode or jisx0208-latim-mode, otherwise returns
+false.
 
 NOTES
-入力モードの名前やその内容については 
-((<SKK|URL:http://openlab.jp/skk/index-j.html>))
-のマニュアルなどを参考にしてください。
+Please see ((<SKK|URL:http://openlab.jp/skk/index.html>)).
 
 SEEALSO
 SKK::Context#clear_text
