@@ -589,6 +589,26 @@ Mixer.play_channel
 Mixer.pause
 
 %%
+NAME playing_channels
+MOD Mixer
+TYPE .
+PURPOSE 再生中のチャンネルの数を得ます
+RVAL Integer
+
+PROTO
+playingChannels
+playing_channels
+
+DESC
+再生中のチャンネルの数を返します。
+
+SEEALSO
+Mixer.pause?
+Mixer.fading
+Mixer.play_channel
+Mixer.pause
+
+%%
 NAME pause?
 MOD Mixer
 TYPE .
