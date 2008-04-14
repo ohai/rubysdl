@@ -379,6 +379,21 @@ static VALUE Surface_s_loadBMPFromIO(VALUE class, VALUE io)
   return Surface_create(image);
 }
 
+static VALUE Surface_s_loadBMPFromString(VALUE class, VALUE str)
+{
+  SDL_Surface* image;
+  rb_secure(4);
+  SafeStringValue(str);
+  
+  image = SDL_LoadBMP_RW(SDL_RWFromConstMem(RSTRING_PTR(str),
+                                            RSTRING_LEN(str)),
+                         1);
+  if(image == NULL)
+    rb_raise(eSDLError, "Couldn't Load BMP file from String : %s",
+             SDL_GetError());
+  return Surface_create(image);
+}
+
 static VALUE Surface_saveBMP(VALUE self,VALUE filename)
 {
   rb_secure(4);
@@ -797,6 +812,7 @@ VALUE rubysdl_init_video(VALUE mSDL)
   rb_define_singleton_method(cSurface,"new_from",Surface_s_createFrom,9);
   rb_define_singleton_method(cSurface,"loadBMP",Surface_s_loadBMP,1);
   rb_define_singleton_method(cSurface,"loadBMPFromIO",Surface_s_loadBMPFromIO,1);
+  rb_define_singleton_method(cSurface,"loadBMPFromString",Surface_s_loadBMPFromString,1);
   
   rb_define_method(cSurface,"saveBMP",Surface_saveBMP,1);
   rb_define_method(cSurface,"destroy",Surface_destroy,0);

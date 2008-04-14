@@ -232,7 +232,12 @@ static VALUE Mixer_s_play_p(VALUE mod, VALUE channel)
 {
   return INT2BOOL(Mix_Playing(NUM2INT(channel)));
 }
-  
+
+static VALUE Mixer_s_playing_channels(VALUE mod)
+{
+  return INT2NUM(Mix_Playing(-1));
+}
+
 static VALUE Wave_s_load(VALUE class, VALUE filename)
 {
   Mix_Chunk *chunk;
@@ -258,7 +263,24 @@ static VALUE Wave_s_loadFromIO(VALUE class, VALUE io)
   }
   return Wave_create(wave);
 }
- 
+
+static VALUE Wave_s_loadFromString(VALUE class, VALUE str)
+{
+  Mix_Chunk *wave;
+  rb_secure(4);
+  SafeStringValue(str);
+  
+  wave = Mix_LoadWAV_RW(SDL_RWFromConstMem(RSTRING_PTR(str),
+                                           RSTRING_LEN(str)),
+                        1);
+  if( wave == NULL ){
+    rb_raise(eSDLError, "Couldn't load wave file from String: %s",
+             Mix_GetError());
+  }
+  return Wave_create(wave);
+}
+
+
 /* Volume setting functions and methods : volume in 0..128 */
 static VALUE Mixer_s_setVolume(VALUE mod, VALUE channel, VALUE volume)
 {
@@ -444,6 +466,7 @@ void rubysdl_init_Mixer(VALUE mSDL)
   rb_define_module_function(mMixer, "fadeInChannelTimed", Mixer_s_fadeInChannelTimed, 5);
   
   rb_define_module_function(mMixer, "play?", Mixer_s_play_p, 1);
+  rb_define_module_function(mMixer, "playingChannels", Mixer_s_playing_channels, 0);
   rb_define_module_function(mMixer, "setVolume", Mixer_s_setVolume, 2);
   rb_define_module_function(mMixer, "allocateChannels", Mixer_s_allocateChannels, 1);
   
@@ -470,6 +493,7 @@ void rubysdl_init_Mixer(VALUE mSDL)
   cWave = rb_define_class_under(mMixer, "Wave", rb_cObject);
   rb_define_singleton_method(cWave, "load", Wave_s_load, 1);
   rb_define_singleton_method(cWave, "loadFromIO", Wave_s_loadFromIO,1);
+  rb_define_singleton_method(cWave, "loadFromString", Wave_s_loadFromString,1);
   rb_define_method(cWave, "setVolume", Wave_s_setVolume, 1);
   
   cMusic = rb_define_class_under(mMixer, "Music", rb_cObject);

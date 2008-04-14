@@ -24,6 +24,7 @@ module SDL
   class << Surface
     alias load_bmp loadBMP
     alias load_bmp_from_io loadBMPFromIO
+    alias load_bmp_from_string loadBMPFromString
   end
 
   class Surface
@@ -185,6 +186,7 @@ module SDL
       alias set_volume setVolume
       alias allocate_channels allocateChannels
       alias fade_out fadeOut
+      alias playing_channels playingChannels
       alias play_music playMusic
       alias fade_in_music fadeInMusic
       alias set_volume_music setVolumeMusic
@@ -202,6 +204,7 @@ module SDL
       class Wave
         class << self
           alias load_from_io loadFromIO
+          alias load_from_string loadFromString
         end
 	alias set_volume setVolume
       end
@@ -220,6 +223,7 @@ module SDL
   class Surface
     if method_defined?(:load)
       alias load_from_io loadFromIO
+      alias load_from_string loadFromString
     end
   end
 end

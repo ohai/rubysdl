@@ -47,11 +47,28 @@ static VALUE Surface_s_loadFromIO(VALUE class,VALUE io)
   }
   return Surface_create(surface);
 }
+static VALUE Surface_s_loadFromString(VALUE class,VALUE str)
+{
+  SDL_Surface *surface;
+  rb_secure(4);
+  SafeStringValue(str);
+  
+  surface = IMG_Load_RW(SDL_RWFromConstMem(RSTRING_PTR(str),
+                                           RSTRING_LEN(str)),
+                        1);
+  
+  if(surface==NULL){
+    rb_raise(eSDLError,"Couldn't load image from String: %s",
+	     SDL_GetError());
+  }
+  return Surface_create(surface);
+}
 
 void rubysdl_init_image(VALUE mSDL, VALUE cSurface)
 {
   rb_define_singleton_method(cSurface, "load", Surface_s_load, 1);
   rb_define_singleton_method(cSurface, "loadFromIO", Surface_s_loadFromIO, 1);
+  rb_define_singleton_method(cSurface, "loadFromString", Surface_s_loadFromString, 1);
 }
 #else /* HAVE_SDL_IMAGE */
 void rubysdl_init_image(VALUE mSDL, VALUE cSurface)
