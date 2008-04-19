@@ -1,5 +1,5 @@
 
-Ruby/SDL 2.0 alpha1
+Ruby/SDL 2.0
 Ohbayashi Ippei
 
 1 What's Ruby/SDL
@@ -106,6 +106,7 @@ install on Linux
   SDLdoc Japanese translation project : base of Ruby/SDL's reference manual
   Hara Yutaka: Sample TrueTypeFont
   Members of #sdl-fan-jp @ FriendChat: bug reports and advices
+  Cyross: Windows version maintainance
 
 9 OTHER
   Some functions, especially SDL::MPEG methods and pallete handling methods,

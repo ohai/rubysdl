@@ -1,3 +1,14 @@
+version 2.0
+some changes for ruby 1.9
+fix SDL_RWops code
+Fix/Improve documents
+Improve English documents
+Add following methods
+* SDL::Surface#load_bmp_from_string
+* SDL::Surface#load_from_string
+* SDL::Mixer::Wave#load_from_string
+* SDL::Mixer.playing_channels
+
 version 2.0 alpha 1
 Remove following methods
 * SDL::Surface#draw_ellispe

@@ -14,5 +14,5 @@ rubysdl_ref.en.rd: $(RDFILES)
 %.rd: %.rsd
 	$(RSD) < $< > $@
 
-install: rubysdl_ref.html
-	cp rubysdl_ref.html rubysdl_ref.rd ..
+install: rubysdl_ref.en.html
+	cp rubysdl_ref.en.html rubysdl_ref.en.rd ..

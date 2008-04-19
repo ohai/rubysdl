@@ -1,3 +1,13 @@
+version 2.0 
+ruby 1.9で使えるように変更
+SDL_RWops対応を修正し、SDL::Mixer::Wave.load_from_ioが使えるようにした。
+ドキュメントの改善(特に英語版)
+以下のメソッドを追加
+* SDL::Surface#load_bmp_from_string
+* SDL::Surface#load_from_string
+* SDL::Mixer::Wave#load_from_string
+* SDL::Mixer.playing_channels
+
 version 2.0 alpha 1
 内部構造を大幅に変更
 SDL::Event2をSDL::Eventに変更し、かつてのSDL::Eventは廃止
