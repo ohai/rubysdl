@@ -23,6 +23,7 @@ static VALUE cScreen = Qnil;
 static VALUE cPixelFormat = Qnil;
 static VALUE cVideoInfo = Qnil;
 static VALUE cSurface = Qnil;
+static VALUE eSurfaceLostMem = Qnil;
 
 typedef struct {
   SDL_Surface* surface;
@@ -497,9 +498,14 @@ static VALUE Surface_s_blit(VALUE klass,VALUE src,VALUE srcX,VALUE srcY,
   dr = (zero_rect_p(dst_rect))?NULL:&dst_rect;
   
   result = SDL_BlitSurface(src_surface, sr, dst_surface, dr);
-  
-  if( result == -1 ){
+
+  switch(result) {
+  case -1:
     rb_raise(eSDLError,"SDL::Surface.blit fail: %s",SDL_GetError());
+    break;
+  case -2:
+    rb_raise(eSurfaceLostMem, "SDL::Surface lost video memory");
+    break;
   }
   return INT2NUM(result);
 }
@@ -777,7 +783,8 @@ VALUE rubysdl_init_video(VALUE mSDL)
   cSurface = rb_define_class_under(mSDL,"Surface",rb_cObject);
   cScreen = rb_define_class_under(mSDL,"Screen",cSurface);
   cPixelFormat = rb_define_class_under(mSDL, "PixelFormat", rb_cObject);
-  
+  eSurfaceLostMem = rb_define_class_under(cSurface, "VideoMemoryLost",
+                                          rb_eStandardError);
   rb_define_alloc_func(cSurface, Surface_s_alloc);
   rb_undef_alloc_func(cPixelFormat);
   
