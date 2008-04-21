@@ -17,8 +17,8 @@
   License along with this library; if not, write to the Free Software
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
   */
-#ifdef ENABLE_OPENGL
 #include "rubysdl.h"
+#ifdef ENABLE_OPENGL
 static VALUE GL_getAttr(VALUE class, VALUE attr)
 {
   int val;

@@ -48,7 +48,11 @@
 	#define clip_ymin(pnt) pnt->clip_miny
 	#define clip_ymax(pnt) pnt->clip_maxy
 #endif
-     
+
+#ifdef HAVE_SGE
+#include <sge.h>
+#endif
+
 void rubysdl_putPixel(SDL_Surface *surface, Sint16 x, Sint16 y, Uint32 color)
 {
 #ifdef HAVE_SGE
