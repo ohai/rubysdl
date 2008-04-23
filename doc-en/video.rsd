@@ -1423,7 +1423,7 @@ NAME blit
 MOD Surface
 TYPE .
 PURPOSE This performs a fast blit from the source surface to the destination surface.
-RVAL 0/-2
+RVAL 0
 
 PROTO
 blit(src,srcX,srcY,srcW,srcH,dst,dstX,dstY)
@@ -1460,8 +1460,10 @@ interact with surface blitting, as the following pseudo-code should hopefully ex
 RET
 If the blit is successful, it returns 0.
 
+EXCEPTION
 If either of the surfaces were in video memory, 
-and the blit returns -2, the video memory was lost, so it
+and the blit raises SDL::Surface::VideoMemoryLost,
+the video memory was lost, so it
 should be reloaded with artwork and re-blitted.
 
 This happens under DirectX 5.0 when the system switches away from your fullscreen application. Locking

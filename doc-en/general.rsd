@@ -16,7 +16,7 @@
 
 = Ruby/SDL Outline
 Ruby/SDL is Ruby extension library for
- ((<SDL|URL:http://www.libsdl.org/>)).
+((<SDL|URL:http://www.libsdl.org/>)).
 This library enables you to create games, demo, or so on.
 
 Ruby/SDL has following functions.

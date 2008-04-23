@@ -1462,7 +1462,7 @@ Surface.blit
 NAME blit_surface
 TYPE .
 PURPOSE 転送元サーフェスから転送先サーフェスへ高速 blit 転送を行います。
-RVAL 0/-2
+RVAL 0
 OBSOLETE Surface.blit
 
 PROTO
@@ -1511,8 +1511,11 @@ Surface#set_alpha を見て下さい。
 
 RET
 成功時には0を返します。
+
+EXCEPTION
 どちらかのサーフェスがビデオメモリにあり、このメソッドが
--2 を返す場合は、ビデオメモリが失われたため、
+例外SDL::Surface::VideoMemoryLostを発生させる場合は、
+ビデオメモリが失われたため、
 画像込みでもう一度ロードして blit する必要があります。
 
 これは DirextX5.0 の下で、
