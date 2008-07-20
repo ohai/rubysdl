@@ -33,14 +33,10 @@ loop do
       mpeg.play
     when SDL::Key::R
       mpeg.rewind
+      mpeg.play
     when SDL::Key::ESCAPE
       exit      
     end
-  end
-
-  if mpeg.status != SDL::MPEG::PLAYING then
-    mpeg.stop
-    exit
   end
       
   sleep 0.1

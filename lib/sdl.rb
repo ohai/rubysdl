@@ -175,21 +175,6 @@ module SDL
   end
 
   if defined?(MPEG)
-    class MPEG
-      alias info_imp info
-      private :info_imp
-      def info(*arg)
-	case arg.size
-	when 0
-	  result = SDL::MPEG::Info.new
-	  info_imp(result)
-	  result
-	when 1
-	  info_imp(arg[0])
-	  arg[0]
-	end
-      end
-    end
   end
   if defined?(TTF)
     class TTF

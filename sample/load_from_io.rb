@@ -16,9 +16,9 @@ SDL::WM::setCaption('from_str.rb','from_str.rb')
 
 str = File.read("icon.bmp")
 img = SDL::Surface.loadBMPFromIO(StringIO.new(str))
-img2 = File.open("icon.bmp"){|f| SDL::Surface.loadBMPFromIO(f) }
+img2 = File.open("icon.bmp", "rb"){|f| SDL::Surface.loadBMPFromIO(f) }
 img3 = Zlib::GzipReader.open("icon.bmp.gz"){|f| SDL::Surface.loadBMPFromIO(f) }
-img4 = File.open("icon.png"){|f| SDL::Surface.loadFromIO(f) }
+img4 = File.open("icon.png", "rb"){|f| SDL::Surface.loadFromIO(f) }
 
 mus = SDL::Mixer::Music.loadFromString(File.read("track01.ogg"))
 wav = File.open('sample.wav'){|f| SDL::Mixer::Wave.loadFromIO(f) }
