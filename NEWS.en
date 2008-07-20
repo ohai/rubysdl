@@ -1,3 +1,7 @@
+version 2.0.1b
+fix sample bug
+fix SDL::MPEG.info
+
 version 2.0.1
 fix some compile errors/warnings
 raise SDL::Surface::VideoMemoryLost when video memory is lost when calling SDL::Surface.blit

@@ -1,3 +1,7 @@
+version 2.0.1b
+サンプルのバグを修正
+SDL::MPEG.infoを修正
+
 version 2.0.1
 コンパイルできない場合があるのを修正
 SDL::Surface.blitでビデオメモリがロストした場合に
