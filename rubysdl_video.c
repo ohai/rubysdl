@@ -237,7 +237,7 @@ static VALUE Screen_s_open(VALUE klass,VALUE w,VALUE h,VALUE bpp,
   screen=SDL_SetVideoMode(NUM2INT(w),NUM2INT(h),NUM2INT(bpp),
 			  NUM2UINT(flags));
   if( screen==NULL ){
-    rb_raise(eSDLError,"Cound't set %dx%d %d bpp video mode: %s",
+    rb_raise(eSDLError,"Couldn't set %dx%d %d bpp video mode: %s",
 	     NUM2INT(w),NUM2INT(h),NUM2INT(bpp),SDL_GetError());
   }  
   return Screen_create(screen);
