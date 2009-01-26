@@ -182,11 +182,25 @@ static VALUE Event_s_poll(VALUE class)
   else
     return Qnil;
 }
+#ifdef HAVE_RB_THREAD_BLOCKING_REGION
+static VALUE wait(void* ev)
+{
+  return SDL_WaitEvent((SDL_Event*)ev);
+}
+#endif
 static VALUE Event_s_wait(VALUE class)
 {
   SDL_Event event;
   rb_secure(4);
+#ifdef HAVE_RB_THREAD_BLOCKING_REGION
+  /* Ruby 1.9 and above: Release the global VM lock while calling
+   * SDL_WaitEvent, allowing other Ruby threads to execute. */
+  if( rb_thread_blocking_region(wait, &event, RUBY_UBF_IO, NULL) == 1)
+#else
+  /* Ruby 1.8 and below: Call SDL_WaitEvent directly.
+   * No other threads can execute during this call. */
   if( SDL_WaitEvent(&event) == 1)
+#endif
     return event_creators[event.type](&event);
   else
     rb_raise(eSDLError, "Event handling error");

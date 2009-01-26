@@ -65,6 +65,7 @@ have_func("TTF_FontFaceIsFixedWidth")
 have_func("TTF_FontFaceFamilyName")
 have_func("TTF_FontFaceStyleName")
 have_func("Mix_LoadMUS_RW")
+have_func("rb_thread_blocking_region")
 
 if have_library("SDLSKK","SDLSKK_Context_new") then
   $CFLAGS+= " -D HAVE_SDLSKK "

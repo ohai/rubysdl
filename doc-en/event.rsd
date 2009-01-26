@@ -451,8 +451,12 @@ Raise @[Error] if there was an error while waiting
 for events.
 
 NOTES
-All Ruby's threads stop while waiting next event because Ruby's thread 
-is not native thread.
+In Ruby 1.9 and above, this method releases the global VM lock (GVL) prior to
+calling the underlying SDL_WaitEvent function.  This allows other Ruby threads to
+continue executing while waiting for an event.
+
+In Ruby 1.8 and below, there is no way to release the GVL, so all Ruby threads
+suspend execution until this method finishes.
 
 SEEALSO
 Event.poll
