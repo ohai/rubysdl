@@ -106,6 +106,7 @@ module SDL
   if defined?(Kanji) then
     class Kanji
       alias set_coding_system setCodingSystem
+      alias get_coding_system getCodingSystem
       alias put_tate putTate
     end
   end

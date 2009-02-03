@@ -858,6 +858,24 @@ DESC
 デフォルトでは SDL::Kanji::JIS が指定されています。
 
 %%
+NAME get_coding_system
+MOD Kanji
+TYPE #
+PURPOSE 既定の文字コード返します。
+
+PROTO
+get_coding_system
+getCodingSystem
+
+DESC
+既定の文字コード返します。 返り値は以下のいずれかです。
+
+* SDL::Kanji::SJIS
+* SDL::Kanji::EUC
+* SDL::Kanji::JIS
+デフォルトでは SDL::Kanji::JIS が指定されています。
+
+%%
 NAME height
 MOD Kanji
 TYPE #

@@ -830,6 +830,29 @@ Set encoding. $[sys] is one of following:
 * SDL::Kanji::JIS
 Default is SDL::Kanji::JIS.
 
+SEEALSO
+Kanji#get_coding_system
+
+%%
+NAME get_coding_system
+MOD Kanji
+TYPE #
+PURPOSE Get character encoding
+
+PROTO
+get_coding_system
+getCodingSystem
+
+DESC
+Get encoding. A return value is one of following:
+* SDL::Kanji::SJIS
+* SDL::Kanji::EUC
+* SDL::Kanji::JIS
+Default is SDL::Kanji::JIS.
+
+SEEALSO
+Kanji#set_coding_system
+
 %%
 NAME height
 MOD Kanji

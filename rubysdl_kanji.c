@@ -88,7 +88,11 @@ static VALUE Font_setCodingSystem(VALUE self, VALUE sys)
   Kanji_SetCodingSystem(Get_Kanji_Font(self), NUM2INT(sys));
   return Qnil;
 }
-                        
+static VALUE Font_getCodingSystem(VALUE self)
+{
+  return INT2NUM(Get_Kanji_Font(self)->sys);
+}
+
 static VALUE Font_add(VALUE self, VALUE filename)
 {
   rb_secure(4);
@@ -155,6 +159,7 @@ void rubysdl_init_Kanji(VALUE mSDL)
   rb_define_method(cKanjiFont, "closed?", Font_closed, 0);
   rb_define_method(cKanjiFont, "add", Font_add, 1);
   rb_define_method(cKanjiFont, "setCodingSystem", Font_setCodingSystem, 1);
+  rb_define_method(cKanjiFont, "getCodingSystem", Font_getCodingSystem, 0);
   rb_define_method(cKanjiFont, "textwidth", Font_textwidth, 1);
   rb_define_method(cKanjiFont, "width", Font_width, 0);
   rb_define_method(cKanjiFont, "height", Font_height, 0);
