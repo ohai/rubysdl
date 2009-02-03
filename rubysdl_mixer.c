@@ -56,6 +56,7 @@ static void Wave_free(Wave* wave)
     Mix_FreeChunk(wave->chunk);
   free(wave);
 }
+
 static VALUE Wave_s_alloc(VALUE klass)
 {
   Wave* wave = ALLOC(Wave);
@@ -442,6 +443,11 @@ static VALUE Wave_destroy(VALUE self)
   }
   return Qnil;
 }
+static VALUE Wave_destroyed(VALUE self)
+{
+  Wave* wave = GetWave(self);
+  return INT2BOOL(wave->chunk == NULL);
+}
 
 static VALUE Music_destroy(VALUE self)
 {
@@ -451,6 +457,11 @@ static VALUE Music_destroy(VALUE self)
     mus->music = NULL;
   }
   return Qnil;
+}
+static VALUE Music_destroyed(VALUE self)
+{
+  Music* mus = GetMusic(self);
+  return INT2BOOL(mus->music == NULL);
 }
 
 void rubysdl_init_Mixer(VALUE mSDL)
@@ -462,7 +473,7 @@ void rubysdl_init_Mixer(VALUE mSDL)
   rb_define_module_function(mMixer, "driverName", Mixer_s_driverName, 0);
   rb_define_module_function(mMixer, "playChannel", Mixer_s_playChannel, 3);
   rb_define_module_function(mMixer, "playChannelTimed", Mixer_s_playChannelTimed, 4);
-  rb_define_module_function(mMixer, "fadeInChannel", Mixer_s_playChannel, 4);
+  rb_define_module_function(mMixer, "fadeInChannel", Mixer_s_fadeInChannel, 4);
   rb_define_module_function(mMixer, "fadeInChannelTimed", Mixer_s_fadeInChannelTimed, 5);
   
   rb_define_module_function(mMixer, "play?", Mixer_s_play_p, 1);
@@ -503,8 +514,10 @@ void rubysdl_init_Mixer(VALUE mSDL)
                              Mixer_s_loadMusFromString,1);
 #endif
   rb_define_method(cWave, "destroy", Wave_destroy, 0);
+  rb_define_method(cWave, "destroyed_", Wave_destroyed, 0);
   rb_define_method(cMusic, "destroy", Music_destroy, 0);
-
+  rb_define_method(cMusic, "destroyed?", Music_destroyed, 0);
+  
   /* to avoid to do garbage collect when playing */
   rb_global_variable( &playing_wave );
   rb_global_variable( &playing_music );

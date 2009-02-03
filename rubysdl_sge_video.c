@@ -25,8 +25,33 @@
 static VALUE cCollisionMap = Qnil;
 static VALUE cBMFont = Qnil;
 
-DEFINE_GET_STRUCT(sge_bmpFont, Get_sge_bmpFont, cBMFont, "SDL::BMFont");
+typedef struct {
+  sge_bmpFont* font;
+} BmpFont;
+
+DEFINE_GET_STRUCT(BmpFont, Get_BmpFont, cBMFont, "SDL::BMFont");
 DEFINE_GET_STRUCT(sge_cdata, Get_sge_cdata, cCollisionMap, "SDL::CollisionMap");
+
+static sge_bmpFont* Get_sge_bmpFont(VALUE obj)
+{
+  BmpFont* bfont = Get_BmpFont(obj);
+  if (bfont->font == NULL)
+    rb_raise(eSDLError, "Bitmap font is already closed");
+  return bfont->font;
+}
+static void BMFont_free(BmpFont* bfont)
+{
+  if (!rubysdl_is_quit() && bfont->font)
+    sge_BF_CloseFont(bfont->font);
+  free(bfont);
+}
+
+static VALUE BMFont_create(sge_bmpFont* font)
+{
+  BmpFont* bfont = ALLOC(BmpFont);
+  bfont->font = font;
+  return Data_Wrap_Struct(cBMFont, 0, BMFont_free, bfont);
+}
 
 static VALUE Surface_s_autoLock_p(VALUE klass)
 {
@@ -380,12 +405,6 @@ static VALUE CollisionMap_h(VALUE self)
 }
 
 /* bitmap font */
-static void bf_close(sge_bmpFont* font)
-{
-  if(!rubysdl_is_quit()){
-    sge_BF_CloseFont(font);
-  }
-}
 
 static VALUE BMFont_open(VALUE klass,  VALUE file,  VALUE flags)
 
@@ -398,7 +417,19 @@ static VALUE BMFont_open(VALUE klass,  VALUE file,  VALUE flags)
   if(font == NULL)
     rb_raise(eSDLError, "Couldn't open font: %s", RSTRING_PTR(file));
   
-  return Data_Wrap_Struct(cBMFont, 0, bf_close, font);
+  return BMFont_create(font);
+}
+static VALUE BMFont_close(VALUE self)
+{
+  BmpFont* bfont = Get_BmpFont(self);
+  if (!rubysdl_is_quit() && bfont->font)
+    sge_BF_CloseFont(bfont->font);
+  bfont->font = NULL;
+  return Qnil;
+}
+static VALUE BMFont_closed(VALUE self)
+{
+  return INT2BOOL(Get_BmpFont(self)->font == NULL);
 }
 
 static VALUE BMFont_setColor(VALUE self, VALUE r, VALUE g, VALUE b)
@@ -483,7 +514,8 @@ void rubysdl_init_sge(VALUE mSDL, VALUE cSurface)
   rb_undef_alloc_func(cBMFont);
     
   rb_define_singleton_method(cBMFont, "open", BMFont_open, 2);
-
+  rb_define_method(cBMFont, "close", BMFont_close, 0);
+  rb_define_method(cBMFont, "closed?", BMFont_closed, 0);
   rb_define_method(cBMFont, "setColor", BMFont_setColor, 3);
   rb_define_method(cBMFont, "height", BMFont_getHeight, 0);
   rb_define_method(cBMFont, "width", BMFont_getWidth, 0);

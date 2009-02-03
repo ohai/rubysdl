@@ -24,8 +24,37 @@
 static VALUE cKanjiFont;
 typedef int (*Drawer)(Kanji_Font*, int, int, SDL_Surface*, const char*, SDL_Color);
 
-DEFINE_GET_STRUCT(Kanji_Font, Get_Kanji_Font, cKanjiFont, "SDL::Kanji::Font");
-     
+typedef struct {
+  Kanji_Font* font;
+} KFont;
+
+DEFINE_GET_STRUCT(KFont, Get_KFont, cKanjiFont, "SDL::Kanji::Font");
+static Kanji_Font* Get_Kanji_Font(VALUE obj)
+{
+  KFont* kfont = Get_KFont(obj);
+  if (kfont->font == NULL)
+    rb_raise(eSDLError, "Kanji Font data is already disposed");
+  return kfont->font;
+}
+static void Font_free(KFont* kfont)
+{
+  if (kfont->font)
+    Kanji_CloseFont(kfont->font);
+  free(kfont);
+}
+static VALUE Font_s_alloc(VALUE klass)
+{
+  KFont* kfont = ALLOC(KFont);
+  kfont->font = NULL;
+  return Data_Wrap_Struct(klass, 0, Font_free, kfont);
+}
+static VALUE Font_create(Kanji_Font* font)
+{
+  VALUE newobj = Font_s_alloc(cKanjiFont);
+  Get_KFont(newobj)->font = font;
+  return newobj;
+}
+
 static VALUE Font_s_open(VALUE klass, VALUE filename, VALUE size)
 {
   Kanji_Font* font;
@@ -36,7 +65,22 @@ static VALUE Font_s_open(VALUE klass, VALUE filename, VALUE size)
   font = Kanji_OpenFont(RSTRING_PTR(filename), NUM2INT(size));
   if(font == NULL)
     rb_raise(eSDLError,"Couldn't open bdf font: %s", RSTRING_PTR(filename));
-  return Data_Wrap_Struct(cKanjiFont, 0, Kanji_CloseFont, font);
+  return Font_create(font);
+}
+static VALUE Font_close(VALUE self)
+{
+  KFont* kfont;
+  
+  rb_secure(4);
+  kfont = Get_KFont(self);
+  if (kfont->font)
+    Kanji_CloseFont(kfont->font);
+  kfont->font = NULL;
+  return Qnil;
+}
+static VALUE Font_closed(VALUE self)
+{
+  return INT2BOOL(Get_KFont(self)->font == NULL);
 }
 
 static VALUE Font_setCodingSystem(VALUE self, VALUE sys)
@@ -107,6 +151,8 @@ void rubysdl_init_Kanji(VALUE mSDL)
   rb_undef_alloc_func(cKanjiFont);
   
   rb_define_singleton_method(cKanjiFont, "open", Font_s_open, 2);
+  rb_define_method(cKanjiFont, "close", Font_close, 0);
+  rb_define_method(cKanjiFont, "closed?", Font_closed, 0);
   rb_define_method(cKanjiFont, "add", Font_add, 1);
   rb_define_method(cKanjiFont, "setCodingSystem", Font_setCodingSystem, 1);
   rb_define_method(cKanjiFont, "textwidth", Font_textwidth, 1);

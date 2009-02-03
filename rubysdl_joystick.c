@@ -144,7 +144,6 @@ static VALUE Joystick_close(VALUE self)
   joy->joystick = NULL;
   return Qnil;
 }
-  
 static VALUE Joystick_index(VALUE self)
 {
   SDL_Joystick* joystick;

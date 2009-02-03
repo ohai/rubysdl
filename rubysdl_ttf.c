@@ -21,18 +21,44 @@
 #include "rubysdl.h"
 #include <SDL_ttf.h>
 
+typedef struct {
+  TTF_Font* font;
+} TTFont;
+  
 typedef SDL_Surface* (*RenderFunc)(TTF_Font *,const char *,SDL_Color,SDL_Color);
 
 static int ttf_init = 0;
 static VALUE cTTFFont = Qnil;
 
-static void Font_free(TTF_Font *font)
+static void Font_free(TTFont *f)
 {
-  if(!rubysdl_is_quit())
-    TTF_CloseFont(font);
+  if(!rubysdl_is_quit() && f->font)
+    TTF_CloseFont(f->font);
+  free(f);
 }
 
-GLOBAL_DEFINE_GET_STRUCT(TTF_Font, Get_TTF_Font, cTTFFont, "SDL::TT::Font");
+DEFINE_GET_STRUCT(TTFont, Get_TTFont, cTTFFont, "SDL::TT::Font");
+
+TTF_Font* Get_TTF_Font(VALUE obj)
+{
+  TTFont* f = Get_TTFont(obj);
+  if (f->font == NULL)
+    rb_raise(eSDLError, "TTF is alreadly closed");
+  return f->font;
+}
+
+static VALUE TTF_s_alloc(VALUE klass)
+{
+  TTFont* f = ALLOC(TTFont);
+  f->font = NULL;
+  return Data_Wrap_Struct(klass, 0, Font_free, f);
+}
+static VALUE TTF_create(TTF_Font* font)
+{
+  VALUE newobj = TTF_s_alloc(cTTFFont);
+  Get_TTFont(newobj)->font = font;
+  return newobj;
+}
 
 static VALUE TTF_s_init(VALUE klass)
 {
@@ -67,7 +93,7 @@ static VALUE Font_s_open(int argc, VALUE *argv, VALUE class)
   if(font == NULL)
     rb_raise(eSDLError,"Couldn't open font %s: %s",
              RSTRING_PTR(filename), TTF_GetError());
-  return Data_Wrap_Struct(class, 0, Font_free, font);
+  return TTF_create(font);
 }
 
 static VALUE Font_style(VALUE self)
@@ -208,6 +234,20 @@ static VALUE Font_renderShadedUTF8(VALUE self, VALUE text,
   return render(self, text, fgr, fgg, fgb, bgr, bgg, bgb, TTF_RenderUTF8_Shaded);
 }
 
+static VALUE Font_close(VALUE self)
+{
+  TTFont* f = Get_TTFont(self);
+  if(!rubysdl_is_quit() && f->font)
+    TTF_CloseFont(f->font);
+  f->font = NULL;
+  
+  return Qnil;
+}
+static VALUE Font_closed(VALUE self)
+{
+  return INT2BOOL(Get_TTFont(self)->font == NULL);
+}
+                       
 void rubysdl_init_TTF(VALUE mSDL)
 {
   cTTFFont = rb_define_class_under(mSDL, "TTF", rb_cObject);
@@ -234,7 +274,9 @@ void rubysdl_init_TTF(VALUE mSDL)
   rb_define_method(cTTFFont,"renderSolidUTF8",Font_renderSolidUTF8,4);
   rb_define_method(cTTFFont,"renderBlendedUTF8",Font_renderBlendedUTF8,4);
   rb_define_method(cTTFFont,"renderShadedUTF8",Font_renderShadedUTF8,7);
-
+  rb_define_method(cTTFFont,"close", Font_close, 0);
+  rb_define_method(cTTFFont,"closed?", Font_closed, 0);
+  
   rb_define_const(cTTFFont,"STYLE_NORMAL",UINT2NUM(TTF_STYLE_NORMAL));
   rb_define_const(cTTFFont,"STYLE_BOLD",UINT2NUM(TTF_STYLE_BOLD));
   rb_define_const(cTTFFont,"STYLE_ITALIC",UINT2NUM(TTF_STYLE_ITALIC));

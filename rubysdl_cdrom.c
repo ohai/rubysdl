@@ -159,6 +159,18 @@ static VALUE CD_s_MSFToFrames(VALUE klass, VALUE m, VALUE s, VALUE f)
 {
   return INT2FIX(MSF_TO_FRAMES(NUM2INT(m),NUM2INT(s),NUM2INT(f)));
 }
+static VALUE CD_close(VALUE self)
+{
+  CD* cd = GetCD(self);
+  if( !rubysdl_is_quit() && cd->cd )
+    SDL_CDClose(cd->cd);
+  cd->cd = NULL;
+  return Qnil;
+}
+static VALUE CD_closed(VALUE self)
+{
+  return INT2BOOL(GetCD(self)->cd == NULL);
+}
 
 void rubysdl_init_CD(VALUE mSDL)
 {
@@ -185,7 +197,8 @@ void rubysdl_init_CD(VALUE mSDL)
   rb_define_method(cCD, "currentFrame", CD_currentFrame, 0);
   rb_define_method(cCD, "trackType", CD_trackType, 1);
   rb_define_method(cCD, "trackLength", CD_trackLength, 1);
-
+  rb_define_method(cCD, "close", CD_close, 0);
+  rb_define_method(cCD, "closed?", CD_closed, 0);
   
   rb_define_const(cCD, "TRAYEMPTY", INT2NUM(CD_TRAYEMPTY));
   rb_define_const(cCD, "STOPPED", INT2NUM(CD_STOPPED));

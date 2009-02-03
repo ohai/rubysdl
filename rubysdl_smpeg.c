@@ -81,10 +81,14 @@ static VALUE MPEG_delete(VALUE self)
   return Qnil;
 }
 
+static VALUE MPEG_deleted(VALUE self)
+{
+  return INT2BOOL(Get_MPEG(self)->smpeg == NULL);
+}
+
 static VALUE MPEG_s_load(VALUE klass, VALUE filename)
 {
   SMPEG *smpeg;
-  VALUE mpeg;
   char error_msg[2048];
   
   rb_secure(4);
@@ -307,6 +311,7 @@ void rubysdl_init_MPEG(VALUE mSDL)
 
   rb_define_method(cMPEG, "info", MPEG_info, 0);
   rb_define_method(cMPEG, "delete", MPEG_delete, 0);
+  rb_define_method(cMPEG, "deleted?", MPEG_deleted, 0);
   rb_define_method(cMPEG, "enableAudio", MPEG_enableAudio, 1);
   rb_define_method(cMPEG, "enableVideo", MPEG_enableVideo, 1);
   rb_define_method(cMPEG, "status", MPEG_status, 0);

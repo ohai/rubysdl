@@ -413,6 +413,11 @@ static VALUE Surface_destroy(VALUE self)
   sur->surface = NULL;
   return Qnil;
 }
+static VALUE Surface_destroyed(VALUE self)
+{
+  Surface* sur = GetSurface(self);
+  return INT2BOOL(sur->surface == NULL);
+}
 
 static VALUE Surface_format(VALUE self)
 {
@@ -823,6 +828,7 @@ VALUE rubysdl_init_video(VALUE mSDL)
   
   rb_define_method(cSurface,"saveBMP",Surface_saveBMP,1);
   rb_define_method(cSurface,"destroy",Surface_destroy,0);
+  rb_define_method(cSurface,"destroyed?",Surface_destroyed,0);
   rb_define_method(cSurface,"displayFormat",Surface_displayFormat,0);
   rb_define_method(cSurface,"displayFormatAlpha",Surface_displayFormatAlpha,0);
   rb_define_method(cSurface,"setColorKey",Surface_setColorKey,2);
