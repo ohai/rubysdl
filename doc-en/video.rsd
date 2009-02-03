@@ -1237,6 +1237,41 @@ SEEALSO
 Surface.load_bmp
 
 %%
+NAME destroy
+MOD Surface
+TYPE #
+PURPOSE Frees a Surface
+
+PROTO
+destroy
+
+DESC
+Frees the resource used by a Surface.
+If a surface is destroyed, all operations are forbidden.
+
+SEEALSO
+Surface.new
+Surface.new_from
+Surface#destroyed?
+
+%%
+NAME destroyed?
+MOD Surface
+TYPE #
+PURPOSE Returns whether surface is destoryed or not.
+RVAL true/false
+
+PROTO
+destroyed?
+
+DESC
+Returns whether the surface is destroyed by
+@[Surface#destroy].
+
+SEEALSO
+Surface#destroy
+
+%%
 NAME set_color_key
 MOD Surface
 TYPE #

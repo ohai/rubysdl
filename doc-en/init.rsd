@@ -21,11 +21,11 @@ Ruby/SDL methods. The $[flags] parameter specifies what
 :SDL::INIT_AUDIO
   Initialize autio subsystems.
 :SDL::INIT_VIDEO
-  Initialize @[Video] subsystem.
+  Initialize ((<Video>)) subsystem.
 :SDL::INIT_CDROM
-  Initialize @[CDROM] subsystem.
+  Initialize ((<CD-ROM>)) subsystem.
 :SDL::INIT_JOYSTICK
-  Initialize @[Joystick] subsystem.
+  Initialize ((<Joystick>)) subsystem.
 :SDL::INIT_EVERYTHING
   Initialize all of the avobe.
 

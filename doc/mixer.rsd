@@ -227,6 +227,39 @@ OGGをロードした場合、ロード時にすべてのデータがメモリ上にRAWデータとして
 EXCEPTION *
 
 %%
+NAME destroy
+MOD Mixer::Wave
+TYPE #
+PURPOSE オーディオデータを解放します
+
+PROTO
+destroy
+
+DESC
+オーディオデータが占めていたリソースを解放します。
+解放後は一切の操作ができなくなります。
+
+SEEALSO
+Mixer::Wave#destroyed?
+
+%%
+NAME destroyed?
+MOD Mixer::Wave
+TYPE #
+PURPOSE オーディオデータを解放したかどうかを返します。
+RVAL true/false
+
+PROTO
+destroyed?
+
+DESC
+@[Mixer::Wave#destroy]によって
+オーディオデータを解放したかどうかを真偽値で返します。
+
+SEEALSO
+Mixer::Wave#destroy
+
+%%
 NAME load
 MOD Mixer::Music
 TYPE .
@@ -268,6 +301,41 @@ NOTES
 Windowsではこのメソッドが使えない場合があります。
 
 EXCEPTION *
+
+%%
+NAME destroy
+MOD Mixer::Music
+TYPE #
+PURPOSE 音楽データを解放します
+
+PROTO
+destroy
+
+DESC
+音楽データが占めていたリソースを解放します。
+解放後は一切の操作ができなくなります。
+
+SEEALSO
+Mixer::Music#destroyed?
+Mixer::Wave#destroy
+
+%%
+NAME destroyed?
+MOD Mixer::Music
+TYPE #
+PURPOSE 音楽データを解放したかどうかを返します。
+RVAL true/false
+
+PROTO
+destroyed?
+
+DESC
+@[Mixer::Music#destroy]によって
+音楽データを解放したかどうかを真偽値で返します。
+
+SEEALSO
+Mixer::Music#destroy
+Mixer::Wave#destroyed?
 
 %%
 NAME set_volume

@@ -581,5 +581,29 @@ total_time
 DESC
 not documented yet
 
+%%
+NAME delete
+MDO MPEG
+TYPE #
+DEP SMPEG
+PURPOSE
 
+PROTO
+delete
+
+DESC
+not documented yet
+
+%%
+NAME deleted?
+MDO MPEG
+TYPE #
+DEP SMPEG
+PURPOSE
+
+PROTO
+deleted?
+
+DESC
+not documented yet
 

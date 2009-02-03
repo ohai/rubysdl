@@ -413,5 +413,36 @@ Convert minitus/seconds/frames into frames and returns frames.
 SEEALSO
 CD.frames_to_msf
 
+%%
+NAME close
+MOD CD
+TYPE #
+PURPOSE Closes a CD handle
+
+PROTO
+close
+
+DESC 
+Closes $[self].
+
+SEEALSO
+CD.open
+CD#closed?
+
+%%
+NAME closed?
+MOD CD
+TYPE #
+PURPOSE Returns whether CD is closed
+
+PROTO
+closed?
+
+DESC 
+Returns whether CD handle is closed by
+@[CD#close]
+
+SEEALSO
+CD#close
 
 

@@ -216,6 +216,39 @@ this conversion at load time. Therefore you should pay attention to memory consu
 EXCEPTION *
 
 %%
+NAME destroy
+MOD Mixer::Wave
+TYPE #
+PURPOSE Frees an audio chunk.
+
+PROTO
+destroy
+
+DESC
+Frees an audio chunk previously loaded.
+If this method is called, all operations are forbidden.
+
+SEEALSO
+Mixer::Wave#destroyed?
+
+%%
+NAME destroyed?
+MOD Mixer::Wave
+TYPE #
+PURPOSE Returns whether an audio chunk is destroyed.
+RVAL true/false
+
+PROTO
+destroyed?
+
+DESC
+Returns whether au audio chunk is destroyed by
+@[Mixer::Wave#destroy]
+
+SEEALSO
+Mixer::Wave#destroy
+
+%%
 NAME load
 MOD Mixer::Music
 TYPE .
@@ -258,6 +291,41 @@ Therefore this method may cause the large memory consumption.
 On Windows, it may be impossible to use this method.
 
 EXCEPTION *
+
+%%
+NAME destroy
+MOD Mixer::Music
+TYPE #
+PURPOSE Frees an music data.
+
+PROTO
+destroy
+
+DESC
+Frees an music data previously loaded.
+If this method is called, all operations are forbidden.
+
+SEEALSO
+Mixer::Music#destroyed?
+Mixer::Wave#destroy
+
+%%
+NAME destroyed?
+MOD Mixer::Music
+TYPE #
+PURPOSE Returns whether an music data is destroyed.
+RVAL true/false
+
+PROTO
+destroyed?
+
+DESC
+Returns whether a music data is destroyed by
+@[Mixer::Music#destroy]
+
+SEEALSO
+Mixer::Music#destroy
+Mixer::Wave#destroyed?
 
 %%
 NAME set_volume

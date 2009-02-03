@@ -121,6 +121,40 @@ SDL::TTF.init
 font = SDL::TTF.open("font.ttf", 32, 0)
 
 %%
+NAME close
+MOD TTF
+TYPE #
+DEP SDL_ttf
+PURPOSE Closes a font
+
+PROTO
+close
+
+DESC
+Closes a font and free related resources.
+
+SEEALSO
+TTF#closed?
+
+%%
+NAME closed?
+MOD TTF
+TYPE #
+DEP SDL_ttf
+PURPOSE Returns whether a font is closed or not
+RVAL true/false
+
+PROTO
+closed?
+
+DESC
+Returns whether a font is closed by @[TTF#close]
+
+SEEALSO
+TTF#close
+
+
+%%
 NAME style
 MOD TTF
 TYPE #
@@ -588,6 +622,40 @@ $[flags] is OR'd combination of following values:
   will be faster (O(1) instead of O(n^2)).
 
 %%
+NAME close
+MOD BMFont
+TYPE #
+DEP SGE
+PURPOSE Closes a font.
+
+PROTO
+close
+
+DESC
+Closes a font and release the resources.
+
+SEEALSO
+BMFont.open
+BMFont#closed?
+
+%%
+NAME closed?
+MOD BMFont
+TYPE #
+DEP SGE
+PURPOSE Returns whether a font is closed.
+RVAL true/false
+
+PROTO
+closed?
+
+DESC
+Returns whether a font is closed by @[BMFont#close].
+
+SEEALSO
+BMFont#close
+
+%%
 NAME set_color
 MOD BMFont
 TYPE #
@@ -697,6 +765,39 @@ SEEALSO
 Kanji#add
 
 %%
+NAME close
+MOD Kanji
+TYPE #
+PURPOSE Closes bdf font data
+
+PROTO
+close
+
+DESC
+Closes bdf font data and release
+the resouces and memories.
+
+SEEALSO
+Kanji.open
+Kanji#closed?
+
+%%
+NAME closed?
+MOD Kanji
+TYPE #
+PURPOSE Returns whether bdf font is closed
+
+PROTO
+closed?
+
+DESC
+Returns whether bdf font is closed by @[Kanji#close]
+
+SEEALSO
+Kanji#close
+
+
+%%
 NAME add
 MOD Kanji
 TYPE #
@@ -710,7 +811,7 @@ Add font data fromt $[filename] into already loaded font $[self].
 This method combines two or more font files into one.
 
 SEEALSO
-Kanji#open
+Kanji.open
 
 %%
 NAME set_coding_system
@@ -771,7 +872,7 @@ DESC
 Returns the width of one character.
 
 SEEALSO
-textwidth
+Kanji#textwidth
 
 %%
 NAME put

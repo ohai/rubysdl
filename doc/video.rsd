@@ -1278,6 +1278,41 @@ SEEALSO
 Surface.load_bmp
 
 %%
+NAME destroy
+MOD Surface
+TYPE #
+PURPOSE サーフェスを解放します。
+
+PROTO
+destroy
+
+DESC
+そのSurfaceが占めているリソースを解放します。解放した後には
+そのオブジェクトに対する操作は一切不可能になります。
+
+SEEALSO
+Surface.new
+Surface.new_from
+Surface#destroyed?
+
+%%
+NAME destroyed?
+MOD Surface
+TYPE #
+PURPOSE サーフェスが解放されているかどうかを返します。
+RVAL true/false
+
+PROTO
+destroyed?
+
+DESC
+そのサーフェスが @[Surface#destroy] によって解放されているか
+どうかを真偽値で返します。
+
+SEEALSO
+Surface#destroy
+
+%%
 NAME set_color_key
 MOD Surface
 TYPE #

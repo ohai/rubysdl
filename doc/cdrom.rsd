@@ -427,5 +427,34 @@ DESC
 SEEALSO
 CD.frames_to_msf
 
+%%
+NAME close
+MOD CD
+TYPE #
+PURPOSE CDデバイスをクローズします。
 
+PROTO
+close
 
+DESC 
+$[self]をクローズします。
+
+SEEALSO
+CD.open
+CD#closed?
+
+%%
+NAME closed?
+MOD CD
+TYPE #
+PURPOSE CDデバイスがクローズされたかどうかを返します。
+
+PROTO
+closed?
+
+DESC 
+@[CD#close]によってデバイスがクローズされたかどうかを
+返します。
+
+SEEALSO
+CD#close

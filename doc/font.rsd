@@ -136,6 +136,40 @@ SDL::TTF.init
 font = SDL::TTF.open("font.ttf", 32, 0)
 
 %%
+NAME close
+TYPE #
+MOD TTF
+DEP SDL_ttf
+PURPOSE フォントをクローズします。
+
+PROTO
+close
+
+DESC
+フォントをクローズし、関連するリソースを解放します。
+
+SEEALSO
+TTF#closed?
+
+%%
+NAME closed?
+TYPE #
+MOD TTF
+DEP SDL_ttf
+PURPOSE フォントがクローズされたかどうかを返します。
+RVAL true/false
+
+PROTO
+closed?
+
+DESC
+フォントが@[TTF#close]でクローズされたかどうかを
+返します。
+
+SEEALSO
+TTF#close
+
+%%
 NAME style
 MOD TTF
 TYPE #
@@ -616,6 +650,41 @@ $[flags] としては以下の値を与えることができます。
   これをすると描画が少し遅くなりますが @[BMFont#set_color] は速くなります。
 
 %%
+NAME close
+MOD BMFont
+TYPE #
+DEP SGE
+PURPOSE フォントを閉じます。
+
+PROTO
+close
+
+DESC
+ビットマップフォントを閉じ、確保しているリソースを解放します。
+
+SEEALSO
+BMFont.open
+BMFont#closed?
+
+%%
+NAME closed?
+MOD BMFont
+TYPE #
+DEP SGE
+PURPOSE フォントが閉じられているかどうかを返します。
+RVAL true/false
+
+PROTO
+closed?
+
+DESC
+ビットマップフォントが@[BMFont#close]によって閉じられたか
+どうかを返します。
+
+SEEALSO
+BMFont#close
+
+%%
 NAME set_color
 MOD BMFont
 TYPE #
@@ -723,6 +792,38 @@ SEEALSO
 Kanji#add
 
 %%
+NAME close
+MOD Kanji
+TYPE #
+PURPOSE 読みこんだフォントを閉じます。
+
+PROTO
+close
+
+DESC
+読みこんだフォントを閉じ、それが占めていた
+メモリを解放します。
+
+SEEALSO
+Kanji.open
+Kanji#closed?
+
+%%
+NAME closed?
+MOD Kanji
+TYPE #
+PURPOSE フォントを閉じたかどうかを返します。
+
+PROTO
+closed?
+
+DESC
+@[Kanji#close]でフォントを閉じたかどうかを返します。
+
+SEEALSO
+Kanji#close
+
+%%
 NAME add
 MOD Kanji
 TYPE #
@@ -737,7 +838,7 @@ $[filename] で指定した bdf ファイルを読みこみ、$[self] に無かった文字を
 から読みこむ、といったことができます。
 
 SEEALSO
-Kanji#open
+Kanji.open
 
 %%
 NAME set_coding_system
@@ -799,7 +900,7 @@ DESC
 半角文字1文字の幅をピクセル数で得ます。
 
 SEEALSO
-textwidth
+Kanji#textwidth
 
 %%
 NAME put
