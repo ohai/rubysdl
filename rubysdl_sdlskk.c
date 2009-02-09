@@ -100,7 +100,7 @@ static VALUE Context_input(VALUE self, VALUE event)
 static VALUE Context_str(VALUE self)
 {
   char cstr[10000];
-#ifdef HAVE_RB_ENC_STR_NEW
+#ifdef ENABLE_M17N
   rb_encoding* enc;
   switch (SDLSKK_get_encoding()) {
   case SDLSKK_UTF8:
@@ -116,7 +116,7 @@ static VALUE Context_str(VALUE self)
   }
 #endif
   SDLSKK_Context_get_str(Get_SDLSKK_Context(self), cstr, sizeof(cstr));
-#ifdef HAVE_RB_ENC_STR_NEW
+#ifdef ENABLE_M17N
   return ENC_STR_NEW2(cstr, enc);
 #else
   return rb_str_new2(cstr);

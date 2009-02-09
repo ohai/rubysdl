@@ -57,7 +57,7 @@ do{ \
 #define eSDLError rubysdl_eSDLError
 GLOBAL(VALUE, eSDLError, Qnil);
 
-#ifdef HAVE_RB_ENC_STR_NEW
+#ifdef ENABLE_M17N
 #define ENC_STR_NEW2(str, enc) rb_enc_str_new((str), strlen((str)), (enc))
 #include "ruby/encoding.h"
 #define utf8_encoding rubysdl_utf8_encoding

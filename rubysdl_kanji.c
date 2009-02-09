@@ -124,13 +124,13 @@ static void Font_put(VALUE self, VALUE surface, VALUE text,
 {
   SDL_Color color;
   Kanji_Font* font;
-#ifdef HAVE_RB_ENC_STR_NEW
+#ifdef ENABLE_M17N
   VALUE enc;
 #endif
   rb_secure(4);
   font = Get_Kanji_Font(self);
   SafeStringValue(text);
-#ifdef HAVE_RB_ENC_STR_NEW
+#ifdef ENABLE_M17N
   switch (font->sys) {
   case KANJI_JIS:
     enc = iso2022jp_enc;

@@ -89,7 +89,7 @@ void Init_sdl()
   VALUE mSDL = rb_define_module("SDL");
   VALUE cSurface;
 
-#ifdef HAVE_RB_ENC_STR_NEW
+#ifdef ENABLE_M17N
   utf8_encoding = rb_utf8_encoding();
   utf8_enc = rb_enc_from_encoding(utf8_encoding);
   rb_global_variable(&utf8_enc);

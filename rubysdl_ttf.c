@@ -184,7 +184,7 @@ static VALUE render(VALUE self, VALUE text,
   
   rb_secure(4);
   StringValue(text);
-#ifdef HAVE_RB_ENC_STR_NEW
+#ifdef ENABLE_M17N
   if (convert_enc)
     text = rb_str_encode(text, utf8_enc, 0, Qnil);
 #endif

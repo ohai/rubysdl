@@ -67,7 +67,9 @@ have_func("TTF_FontFaceStyleName")
 have_func("Mix_LoadMUS_RW")
 have_func("rb_thread_blocking_region")
 if enable_config("m17n", true)
-  have_func("rb_enc_str_new")
+  if have_func("rb_enc_str_new") && have_func("rb_str_encode")
+    $CFLAGS += " -D ENABLE_M17N "
+  end
 end
 
 if have_library("SDLSKK","SDLSKK_Context_new") then
