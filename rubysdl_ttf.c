@@ -138,8 +138,11 @@ static VALUE Font_styleName(VALUE self)
 static VALUE Font_textSize(VALUE self, VALUE text)
 {
   int w,h;
-  
+
   StringValue(text);
+#ifdef ENABLE_M17N
+  text = rb_str_encode(text, utf8_enc, 0, Qnil);
+#endif
   TTF_SizeUTF8(Get_TTF_Font(self), RSTRING_PTR(text), &w, &h);
   return rb_ary_new3(2, INT2FIX(w), INT2FIX(h));
 }
