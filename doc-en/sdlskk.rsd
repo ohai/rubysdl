@@ -379,10 +379,15 @@ str
 DESC
 Returns input string.
 
+NOTES
+If Ruby/SDL m17n support is enabled,
+the string with proper encoding will be returned.
+
 SEEALSO
 SKK::Context#render_str
 SKK::Context#clear
 SKK::Context#clear_text
+SKK.encoding
 
 %%
 NAME render_str

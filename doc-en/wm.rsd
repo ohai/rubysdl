@@ -38,6 +38,12 @@ setCaption(title, icon)
 DESC
 Sets the title-bar and icon name of the display window.
 
+NOTES
+$[title] and $[icon] must be UTF8 or ASCII string.
+
+If Ruby/SDL m17n support is enabled, 
+$[title] and $[icon] are converted to UTF8 automatically.
+
 SEEALSO
 WM.caption
 WM.icon=

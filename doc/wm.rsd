@@ -24,6 +24,9 @@ caption
 DESC
 ウィンドウのタイトルとアイコン名を文字列2個の配列で返します。
 
+NOTES
+返り値のエンコーディングはUTF8です。
+
 SEEALSO
 WM.set_caption
 
@@ -39,6 +42,13 @@ setCaption(title, icon)
 
 DESC
 表示ウィンドウのタイトルバーとアイコン名をセットします。
+
+NOTES
+Ruby 1.8では文字列としてUTF8を与えることでマルチバイト文字列が
+利用できる環境もあります。
+
+Ruby 1.9ではRuby/SDLのm17n機能を有効にしている限り
+Rubyのm17nの機能を用いUTF8への変換を自動的に行います。
 
 SEEALSO
 WM.caption

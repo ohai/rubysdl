@@ -33,6 +33,20 @@ Ruby/SDL has following functions.
 * ((<MPEG playback>)) with ((<SMPGE|URL:http://www.icculus.org/smpeg/>))
 * ((<Window Management>)) and ((<Collision Detection>))
 
+= m17n on Ruby 1.9
+On ruby 1.9, strings have encoding information
+but many methods of Ruby/SDL ignore this information
+since SDL doesn't define the treatment of multibyte 
+encodings. 
+Only some methods use encoding information such as
+@[WM.set_caption] and @[Kanji#put].
+
+Please see items in this reference for more details.
+
+You can enable/disable Ruby/SDL m17n support 
+to use --enable-m17n/--disable-m17n when you
+run extconf.rb.
+
 == SDL::Error
 A Exception class for SDL specific errors.
 This class is subclass of StandardError.

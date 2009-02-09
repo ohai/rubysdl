@@ -388,7 +388,7 @@ NAME text_size
 MOD TTF
 TYPE #
 DEP SDL_ttf
-PURPOSE Get size of UTF8 text string as would be rendered
+PURPOSE Get size of text string as would be rendered
 RVAL [Integer, Integer]
 
 PROTO
@@ -399,6 +399,10 @@ DESC
 Calculate the resulting surface size of the UTF8 encoded text rendered using font.
 No actual rendering is done, however correct kerning is done to get the actual
 width. The height returned in h is the same as you can get using @[TTF#height].
+
+NOTES
+If Ruby/SDL m17n support is enabled, 
+$[text] will be converted to suitable encoding.
 
 RET
 Returns a 2 element array as [w, h].
@@ -910,8 +914,13 @@ DESC
 Renders $[text] at ($[x], $[y]) in $[surface]
 with ($[r], $[g], $[b]) color.
 
+NOTES
+If Ruby/SDL m17n support is enabled, $[text] 
+will be converted to suitable encoding.
+
 SEEALSO
 Kanji#put_tate
+Kanji#set_coding_system
 
 %%
 NAME put_tate
@@ -929,7 +938,11 @@ with ($[r], $[g], $[b]) color.
 
 `Half-width' character is not rendered.
 
+NOTES
+If Ruby/SDL m17n support is enabled, $[text] 
+will be converted to suitable encoding.
+
 SEEALSO
 Kanji#put
-
+Kanji#set_coding_system
 

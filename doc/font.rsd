@@ -604,7 +604,7 @@ NAME draw_blended_utf8
 MOD TTF
 TYPE #
 DEP SDL_ttf
-PURPOSE 文字列をアルファでアンチエイリアスして描画します。
+PURPOSE 文字列をアルファブレンディングでアンチエイリアスして描画します。
 
 PROTO
 draw_blended_utf8(dest, text, x, y, r, g, b)
@@ -620,6 +620,126 @@ SEEALSO
 TTF#draw_solid_utf8
 TTF#draw_shaded_utf8
 TTF#render_blended_utf8
+
+%%
+NAME render_solid
+MOD TTF
+TYPE #
+DEP SDL_ttf
+PURPOSE 文字列をレンダリングしたサーフェスを返します。
+RVAL SDL::Surface/nil
+
+PROTO
+render_solid(text, r, g, b)
+renderSolid(text, r, g, b)
+
+DESC
+$[text]がUTF8でなくても良いこと以外、
+@[TTF#render_solid_utf8]と同じです。
+$[text]のエンコードは適切に変換されます。
+
+このメソッドはRuby 1.9でRuby/SDLのm17n機能を有効にしている
+場合にのみ利用できます。
+
+%%
+NAME render_shaded
+MOD TTF
+TYPE #
+DEP SDL_ttf
+PURPOSE 文字列をアンチエイリアシングしてレンダリングしたサーフェスを返します。
+RVAL SDL::Surface/nil
+
+PROTO
+render_shaded(text, r, g, b)
+renderShaded(text, r, g, b)
+
+DESC
+$[text]がUTF8でなくても良いこと以外、
+@[TTF#render_shaded_utf8]と同じです。
+$[text]のエンコードは適切に変換されます。
+
+このメソッドはRuby 1.9でRuby/SDLのm17n機能を有効にしている
+場合にのみ利用できます。
+
+%%
+NAME render_blended
+MOD TTF
+TYPE #
+DEP SDL_ttf
+PURPOSE 文字列をアルファを使ってアンチエイリアスしたサーフェスを返します。
+RVAL SDL::Surface/nil
+
+PROTO
+render_blended(text, r, g, b)
+renderBlended(text, r, g, b)
+
+DESC
+$[text]がUTF8でなくても良いこと以外、
+@[TTF#render_blended_utf8]と同じです。
+$[text]のエンコードは適切に変換されます。
+
+このメソッドはRuby 1.9でRuby/SDLのm17n機能を有効にしている
+場合にのみ利用できます。
+
+%%
+NAME draw_solid
+MOD TTF
+TYPE #
+DEP SDL_ttf
+PURPOSE 文字列を描画します。
+
+
+PROTO
+draw_solid(dest, text, r, g, b)
+drawSolid(dest, text, r, g, b)
+
+DESC
+$[text]がUTF8でなくても良いこと以外、
+@[TTF#draw_solid_utf8]と同じです。
+$[text]のエンコードは適切に変換されます。
+
+このメソッドはRuby 1.9でRuby/SDLのm17n機能を有効にしている
+場合にのみ利用できます。
+
+%%
+NAME draw_shaded
+MOD TTF
+TYPE #
+DEP SDL_ttf
+PURPOSE 文字列をアンチエイリアス描画します。
+
+
+PROTO
+draw_shaded(dest, text, r, g, b)
+drawShaded(dest, text, r, g, b)
+
+DESC
+$[text]がUTF8でなくても良いこと以外、
+@[TTF#draw_shaded_utf8]と同じです。
+$[text]のエンコードは適切に変換されます。
+
+このメソッドはRuby 1.9でRuby/SDLのm17n機能を有効にしている
+場合にのみ利用できます。
+
+%%
+NAME draw_blended
+MOD TTF
+TYPE #
+DEP SDL_ttf
+PURPOSE 文字列をアルファブレンディングでアンチエイリアスして描画します。
+
+
+PROTO
+draw_blended(dest, text, r, g, b)
+drawBlended(dest, text, r, g, b)
+
+DESC
+$[text]がUTF8でなくても良いこと以外、
+@[TTF#draw_blended_utf8]と同じです。
+$[text]のエンコードは適切に変換されます。
+
+このメソッドはRuby 1.9でRuby/SDLのm17n機能を有効にしている
+場合にのみ利用できます。
 
 %%
 NAME open
@@ -933,6 +1053,10 @@ DESC
 $[text] で指定した文字列を $[surface] の ($[x], $[y]) に ($[r], $[g], $[b])
 で指定した色で描画します。
 
+NOTES
+Ruby 1.9ではRuby/SDLのm17n機能を有効にしている限り
+必要に応じてエンコーディングの自動変換を行います。
+
 SEEALSO
 Kanji#put_tate
 
@@ -952,7 +1076,10 @@ $[text] で指定した文字列を $[surface] の ($[x], $[y]) に ($[r], $[g], $[b])
 
 ASCII文字は縦書きにできません。
 
+NOTES
+Ruby 1.9ではRuby/SDLのm17n機能を有効にしている限り
+必要に応じてエンコーディングの自動変換を行います。
+
 SEEALSO
 Kanji#put
-
 
