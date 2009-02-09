@@ -123,10 +123,30 @@ static void Font_put(VALUE self, VALUE surface, VALUE text,
                      VALUE r, VALUE g, VALUE b, Drawer draw)
 {
   SDL_Color color;
-
+  Kanji_Font* font;
+#ifdef HAVE_RB_ENC_STR_NEW
+  VALUE enc;
+#endif
   rb_secure(4);
+  font = Get_Kanji_Font(self);
   SafeStringValue(text);
-  
+#ifdef HAVE_RB_ENC_STR_NEW
+  switch (font->sys) {
+  case KANJI_JIS:
+    enc = iso2022jp_enc;
+    break;
+  case KANJI_EUC:
+    enc = eucjp_enc;
+    break;
+  case KANJI_SJIS:
+    enc = sjis_enc;
+    break;
+  default:
+    rb_raise(eSDLError, "Unsupported Kanji encoding");
+    break;
+  }
+  text = rb_str_encode(text, enc, 0, Qnil);
+#endif
   color.r = NUM2INT(r);color.g = NUM2INT(g); color.b = NUM2INT(b);
   
   draw(Get_Kanji_Font(self), NUM2INT(x), NUM2INT(y),

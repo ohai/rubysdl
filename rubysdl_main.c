@@ -88,7 +88,22 @@ void Init_sdl()
 {
   VALUE mSDL = rb_define_module("SDL");
   VALUE cSurface;
-  
+
+#ifdef HAVE_RB_ENC_STR_NEW
+  utf8_encoding = rb_utf8_encoding();
+  utf8_enc = rb_enc_from_encoding(utf8_encoding);
+  rb_global_variable(&utf8_enc);
+  eucjp_encoding = rb_enc_find("EUC-JP");
+  eucjp_enc = rb_enc_from_encoding(eucjp_encoding);
+  rb_global_variable(&eucjp_enc);
+  iso2022jp_encoding = rb_enc_find("ISO-2022-JP");
+  iso2022jp_enc = rb_enc_from_encoding(iso2022jp_encoding);
+  rb_global_variable(&iso2022jp_enc);
+  sjis_encoding = rb_enc_find("SJIS");
+  sjis_enc = rb_enc_from_encoding(sjis_encoding);
+  rb_global_variable(&sjis_enc);
+#endif
+
   eSDLError = rb_define_class_under(mSDL, "Error", rb_eStandardError);
   rb_define_module_function(mSDL, "init", sdl_s_init, 1);
   rb_define_module_function(mSDL, "initedSystem", sdl_s_inited_system, 1);

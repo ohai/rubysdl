@@ -25,14 +25,23 @@ static VALUE WM_s_caption(VALUE mod)
   
   rb_secure(4);
   SDL_WM_GetCaption(&title, &icon);
+#ifdef HAVE_RB_ENC_STR_NEW
+  return rb_ary_new3(2,
+                     ENC_STR_NEW2(title, utf8_encoding),
+                     ENC_STR_NEW2(icon, utf8_encoding));
+#else
   return rb_ary_new3(2, rb_str_new2(title), rb_str_new2(icon));
+#endif
 }
 static VALUE WM_s_setCaption(VALUE mod, VALUE title, VALUE icon)
 {
   rb_secure(4);
   SafeStringValue(title);
   SafeStringValue(icon);
-  
+#ifdef HAVE_RB_ENC_STR_NEW
+  title = rb_str_encode(title, utf8_enc, 0, Qnil);
+  icon = rb_str_encode(icon, utf8_enc, 0, Qnil);
+#endif  
   SDL_WM_SetCaption(RSTRING_PTR(title), RSTRING_PTR(icon));
   return Qnil;
 }
@@ -68,4 +77,5 @@ void rubysdl_init_WM(VALUE mSDL)
   rb_define_const(mWM, "GRAB_QUERY", INT2NUM(SDL_GRAB_QUERY));
   rb_define_const(mWM, "GRAB_OFF", INT2NUM(SDL_GRAB_OFF));
   rb_define_const(mWM, "GRAB_ON", INT2NUM(SDL_GRAB_ON));
+
 }

@@ -100,8 +100,27 @@ static VALUE Context_input(VALUE self, VALUE event)
 static VALUE Context_str(VALUE self)
 {
   char cstr[10000];
+#ifdef HAVE_RB_ENC_STR_NEW
+  rb_encoding* enc;
+  switch (SDLSKK_get_encoding()) {
+  case SDLSKK_UTF8:
+    enc = utf8_encoding;
+  case SDLSKK_EUCJP:
+    enc = eucjp_encoding;
+    break;
+  case SDLSKK_SJIS:
+    enc = sjis_encoding;
+    break;
+  default:
+    rb_raise(eSDLError, "SDLSKK encoding error");
+  }
+#endif
   SDLSKK_Context_get_str(Get_SDLSKK_Context(self), cstr, sizeof(cstr));
+#ifdef HAVE_RB_ENC_STR_NEW
+  return ENC_STR_NEW2(cstr, enc);
+#else
   return rb_str_new2(cstr);
+#endif
 }
 
 static VALUE render_str(VALUE self, VALUE font, VALUE r, VALUE g, VALUE b,

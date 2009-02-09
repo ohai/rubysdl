@@ -177,13 +177,17 @@ static SDL_Color rgb_to_SDL_Color(VALUE r, VALUE g, VALUE b)
 static VALUE render(VALUE self, VALUE text,
                     VALUE fgr,VALUE fgg,VALUE fgb,
                     VALUE bgr,VALUE bgg,VALUE bgb,
+                    int convert_enc,
                     RenderFunc renderer)
 {
   SDL_Surface *surface;
   
   rb_secure(4);
   StringValue(text);
-
+#ifdef HAVE_RB_ENC_STR_NEW
+  if (convert_enc)
+    text = rb_str_encode(text, utf8_enc, 0, Qnil);
+#endif
   surface = renderer(Get_TTF_Font(self),
                      RSTRING_PTR(text),
                      rgb_to_SDL_Color(fgr, fgg, fgb),
@@ -217,21 +221,48 @@ static VALUE Font_renderSolidUTF8(VALUE self, VALUE text,
                                   VALUE r, VALUE g, VALUE b)
 				     
 {
-  return render(self, text, r, g, b, 1, 1, 1,wrap_RenderUTF8_Solid);
+  return render(self, text, r, g, b, 1, 1, 1, 0,
+                wrap_RenderUTF8_Solid);
 }
 
 static VALUE Font_renderBlendedUTF8(VALUE self, VALUE text,
                                     VALUE r, VALUE g, VALUE b)
 				     
 {
-  return render(self, text, r, g, b, 1, 1, 1, wrap_RenderUTF8_Blended);
+  return render(self, text, r, g, b, 1, 1, 1, 0,
+                wrap_RenderUTF8_Blended);
 }
 
 static VALUE Font_renderShadedUTF8(VALUE self, VALUE text,
-				      VALUE fgr,VALUE fgg,VALUE fgb,
-				      VALUE bgr,VALUE bgg,VALUE bgb)
+                                   VALUE fgr,VALUE fgg,VALUE fgb,
+                                   VALUE bgr,VALUE bgg,VALUE bgb)
 {
-  return render(self, text, fgr, fgg, fgb, bgr, bgg, bgb, TTF_RenderUTF8_Shaded);
+  return render(self, text, fgr, fgg, fgb, bgr, bgg, bgb, 0,
+                TTF_RenderUTF8_Shaded);
+}
+
+static VALUE Font_renderSolid(VALUE self, VALUE text,
+                              VALUE r, VALUE g, VALUE b)
+				     
+{
+  return render(self, text, r, g, b, 1, 1, 1, 1,
+                wrap_RenderUTF8_Solid);
+}
+
+static VALUE Font_renderBlended(VALUE self, VALUE text,
+                                VALUE r, VALUE g, VALUE b)
+				     
+{
+  return render(self, text, r, g, b, 1, 1, 1, 1,
+                wrap_RenderUTF8_Blended);
+}
+
+static VALUE Font_renderShaded(VALUE self, VALUE text,
+                               VALUE fgr,VALUE fgg,VALUE fgb,
+                               VALUE bgr,VALUE bgg,VALUE bgb)
+{
+  return render(self, text, fgr, fgg, fgb, bgr, bgg, bgb, 1,
+                TTF_RenderUTF8_Shaded);
 }
 
 static VALUE Font_close(VALUE self)
@@ -274,6 +305,9 @@ void rubysdl_init_TTF(VALUE mSDL)
   rb_define_method(cTTFFont,"renderSolidUTF8",Font_renderSolidUTF8,4);
   rb_define_method(cTTFFont,"renderBlendedUTF8",Font_renderBlendedUTF8,4);
   rb_define_method(cTTFFont,"renderShadedUTF8",Font_renderShadedUTF8,7);
+  rb_define_method(cTTFFont,"renderSolid",Font_renderSolid,4);
+  rb_define_method(cTTFFont,"renderBlended",Font_renderBlended,4);
+  rb_define_method(cTTFFont,"renderShaded",Font_renderShaded,7);
   rb_define_method(cTTFFont,"close", Font_close, 0);
   rb_define_method(cTTFFont,"closed?", Font_closed, 0);
   

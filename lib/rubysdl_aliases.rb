@@ -244,6 +244,14 @@ module SDL
       alias render_solid_utf8 renderSolidUTF8
       alias render_blended_utf8 renderBlendedUTF8
       alias render_shaded_utf8 renderShadedUTF8
+      if method_defined?(:drawSolid)
+        alias draw_solid drawSolid
+        alias draw_blended drawBlended
+        alias draw_shaded drawShaded
+        alias render_solid renderSolid
+        alias render_blended renderBlended
+        alias render_shaded renderShaded
+      end
     end
   end
 end

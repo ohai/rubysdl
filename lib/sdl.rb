@@ -178,22 +178,24 @@ module SDL
   end
   if defined?(TTF)
     class TTF
-      def drawSolidUTF8(dst, text, x, y, r, g, b)
-        image = renderSolidUTF8(text, r, g, b)
-        dst.put(image, x, y)
-        image.destroy
-      end
-      
-      def drawBlendedUTF8(dst, text, x, y, r, g, b)
-        image = renderBlendedUTF8(text, r, g, b)
-        dst.put(image, x, y)
-        image.destroy
-      end
-      
-      def drawShadedUTF8(dst, text, fg_r, fg_g, fg_b, bg_r, bg_g, bg_b)
-        image = renderSolidUTF8(text, fg_r, fg_g, fg_b, bg_r, bg_g, bg_b)
-        dst.put(image, x, y)
-        image.destroy
+      define_draw = proc{|t, n|
+        args = (1..n).map{|k| "arg#{k}"}.join(",")
+        module_eval(<<-EOS)
+          def draw#{t}(dst, text, x, y, #{args})
+            image = render#{t}(text, #{args})
+            dst.put(image, x, y)
+            image.destroy
+          end
+        EOS
+      }
+
+      define_draw["SolidUTF8", 3]
+      define_draw["BlendedUTF8", 3]
+      define_draw["ShadedUTF8",6]
+      if method_defined?(:drawSolid)
+        define_draw["Solid",3]
+        define_draw["Blended", 3]
+        define_draw["Shaded", 6]
       end
     end
   end
