@@ -1,3 +1,33 @@
+version 2.1.0
+add following methods
+* SDL::TTF#close
+* SDL::TTF#closed?
+* SDL::BMFont#close
+* SDL::BMFont#closed?
+* SDL::Kanji#close
+* SDL::Kanji#closed?
+* SDL::Surface#destroyed?
+* SDL::Joystick#closed?
+* SDL::Mixer::Wave#destroyed?
+* SDL::Mixer::Music#destroyed?
+* SDL::Kanji#get_coding_system
+modify documents
+Async following methods on Ruby 1.9
+* SDL::Event#wait
+* SDL.delay
+Ruby m17n support on Ruby 1.9
+* SDL::WM.set_caption
+* SDL::WM.caption
+* SDL::TTF#draw_solid 
+* SDL::TTF#draw_blended 
+* SDL::TTF#draw_shaded
+* SDL::TTF#render_solid
+* SDL::TTF#render_blended
+* SDL::TTF#render_shaded
+* SDL::Kanji#put
+* SDL::Kanji#putTate
+* SDL::SDLSKK#str
+
 version 2.0.1b
 fix sample bug
 fix SDL::MPEG.info

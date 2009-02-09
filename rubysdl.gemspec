@@ -1,7 +1,7 @@
 
 Gem::Specification.new do |spec|
   spec.name = "rubysdl"
-  spec.version = "2.0.1b"
+  spec.version = "2.1.0"
   spec.summary = "The simple ruby extension library to use SDL"
   spec.author = "Ohbayashi Ippei"
   spec.email = "ohai@kmc.gr.jp"
