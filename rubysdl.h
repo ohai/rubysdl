@@ -60,22 +60,14 @@ GLOBAL(VALUE, eSDLError, Qnil);
 #ifdef ENABLE_M17N
 #define ENC_STR_NEW2(str, enc) rb_enc_str_new((str), strlen((str)), (enc))
 #include "ruby/encoding.h"
-#define utf8_encoding rubysdl_utf8_encoding
 #define utf8_enc rubysdl_utf8_enc
-#define eucjp_encoding rubysdl_eucjp_encoding
 #define eucjp_enc rubysdl_eucjp_enc
-#define iso2022jp_encoding rubysdl_iso2022jp_encoding
 #define iso2022jp_enc rubysdl_iso2022jp_enc
-#define sjis_encoding rubysdl_sjis_encoding
 #define sjis_enc rubysdl_sjis_enc
-GLOBAL(rb_encoding*, utf8_encoding, NULL);
-GLOBAL(rb_encoding*, eucjp_encoding, NULL);
-GLOBAL(rb_encoding*, iso2022jp_encoding, NULL);
-GLOBAL(rb_encoding*, sjis_encoding, NULL);
-GLOBAL(VALUE, utf8_enc, Qnil);
-GLOBAL(VALUE, eucjp_enc, Qnil);
-GLOBAL(VALUE, iso2022jp_enc, Qnil);
-GLOBAL(VALUE, sjis_enc, Qnil);
+GLOBAL(rb_encoding*, utf8_enc, NULL);
+GLOBAL(rb_encoding*, eucjp_enc, NULL);
+GLOBAL(rb_encoding*, iso2022jp_enc, NULL);
+GLOBAL(rb_encoding*, sjis_enc, NULL);
 #endif
 
 /* Global functions */

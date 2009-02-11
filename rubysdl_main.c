@@ -90,18 +90,10 @@ void Init_sdl()
   VALUE cSurface;
 
 #ifdef ENABLE_M17N
-  utf8_encoding = rb_utf8_encoding();
-  utf8_enc = rb_enc_from_encoding(utf8_encoding);
-  rb_global_variable(&utf8_enc);
-  eucjp_encoding = rb_enc_find("EUC-JP");
-  eucjp_enc = rb_enc_from_encoding(eucjp_encoding);
-  rb_global_variable(&eucjp_enc);
-  iso2022jp_encoding = rb_enc_find("ISO-2022-JP");
-  iso2022jp_enc = rb_enc_from_encoding(iso2022jp_encoding);
-  rb_global_variable(&iso2022jp_enc);
-  sjis_encoding = rb_enc_find("SJIS");
-  sjis_enc = rb_enc_from_encoding(sjis_encoding);
-  rb_global_variable(&sjis_enc);
+  utf8_enc = rb_utf8_encoding();
+  eucjp_enc = rb_enc_find("EUC-JP");
+  iso2022jp_enc = rb_enc_find("ISO-2022-JP");
+  sjis_enc = rb_enc_find("SJIS");
 #endif
 
   eSDLError = rb_define_class_under(mSDL, "Error", rb_eStandardError);

@@ -125,7 +125,7 @@ static void Font_put(VALUE self, VALUE surface, VALUE text,
   SDL_Color color;
   Kanji_Font* font;
 #ifdef ENABLE_M17N
-  VALUE enc;
+  rb_encoding* enc;
 #endif
   rb_secure(4);
   font = Get_Kanji_Font(self);
@@ -145,7 +145,7 @@ static void Font_put(VALUE self, VALUE surface, VALUE text,
     rb_raise(eSDLError, "Unsupported Kanji encoding");
     break;
   }
-  text = rb_str_encode(text, enc, 0, Qnil);
+  text = rb_str_export_to_enc(text, enc);
 #endif
   color.r = NUM2INT(r);color.g = NUM2INT(g); color.b = NUM2INT(b);
   

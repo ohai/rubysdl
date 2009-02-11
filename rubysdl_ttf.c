@@ -141,7 +141,7 @@ static VALUE Font_textSize(VALUE self, VALUE text)
 
   StringValue(text);
 #ifdef ENABLE_M17N
-  text = rb_str_encode(text, utf8_enc, 0, Qnil);
+  text = rb_str_export_to_enc(text, utf8_enc);
 #endif
   TTF_SizeUTF8(Get_TTF_Font(self), RSTRING_PTR(text), &w, &h);
   return rb_ary_new3(2, INT2FIX(w), INT2FIX(h));
@@ -189,7 +189,7 @@ static VALUE render(VALUE self, VALUE text,
   StringValue(text);
 #ifdef ENABLE_M17N
   if (convert_enc)
-    text = rb_str_encode(text, utf8_enc, 0, Qnil);
+    text = rb_str_export_to_enc(text, utf8_enc);
 #endif
   surface = renderer(Get_TTF_Font(self),
                      RSTRING_PTR(text),

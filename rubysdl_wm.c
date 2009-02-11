@@ -27,8 +27,8 @@ static VALUE WM_s_caption(VALUE mod)
   SDL_WM_GetCaption(&title, &icon);
 #ifdef ENABLE_M17N
   return rb_ary_new3(2,
-                     ENC_STR_NEW2(title, utf8_encoding),
-                     ENC_STR_NEW2(icon, utf8_encoding));
+                     ENC_STR_NEW2(title, utf8_enc),
+                     ENC_STR_NEW2(icon, utf8_enc));
 #else
   return rb_ary_new3(2, rb_str_new2(title), rb_str_new2(icon));
 #endif
@@ -39,8 +39,8 @@ static VALUE WM_s_setCaption(VALUE mod, VALUE title, VALUE icon)
   SafeStringValue(title);
   SafeStringValue(icon);
 #ifdef ENABLE_M17N
-  title = rb_str_encode(title, utf8_enc, 0, Qnil);
-  icon = rb_str_encode(icon, utf8_enc, 0, Qnil);
+  title = rb_str_export_to_enc(title, utf8_enc);
+  icon = rb_str_export_to_enc(icon, utf8_enc);
 #endif  
   SDL_WM_SetCaption(RSTRING_PTR(title), RSTRING_PTR(icon));
   return Qnil;

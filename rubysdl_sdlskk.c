@@ -104,12 +104,12 @@ static VALUE Context_str(VALUE self)
   rb_encoding* enc;
   switch (SDLSKK_get_encoding()) {
   case SDLSKK_UTF8:
-    enc = utf8_encoding;
+    enc = utf8_enc;
   case SDLSKK_EUCJP:
-    enc = eucjp_encoding;
+    enc = eucjp_enc;
     break;
   case SDLSKK_SJIS:
-    enc = sjis_encoding;
+    enc = sjis_enc;
     break;
   default:
     rb_raise(eSDLError, "SDLSKK encoding error");
