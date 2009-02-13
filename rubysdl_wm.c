@@ -36,12 +36,8 @@ static VALUE WM_s_caption(VALUE mod)
 static VALUE WM_s_setCaption(VALUE mod, VALUE title, VALUE icon)
 {
   rb_secure(4);
-  SafeStringValue(title);
-  SafeStringValue(icon);
-#ifdef ENABLE_M17N
-  title = rb_str_export_to_enc(title, utf8_enc);
-  icon = rb_str_export_to_enc(icon, utf8_enc);
-#endif  
+  ExportStringValueToEnc(title, utf8_enc);
+  ExportStringValueToEnc(icon, utf8_enc);
   SDL_WM_SetCaption(RSTRING_PTR(title), RSTRING_PTR(icon));
   return Qnil;
 }

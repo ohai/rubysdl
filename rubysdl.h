@@ -46,6 +46,25 @@ do{ \
   Rect.h=NUM2INT(H); \
 }while(0) \
 
+#ifdef ENABLE_M17N
+#define ExportStringValueToEnc(v,enc)              \
+  do {                                             \
+    SafeStringValue(v);                            \
+    (v) = rb_str_export_to_enc((v),(enc));         \
+  } while (0)
+#else
+#define ExportStringValueToEnc(v,enc)           \
+  SafeStringValue(v)
+#endif
+
+#ifdef ENABLE_M17N_FILESYSTEM
+#define ExportFilenameStringValue(v)                    \
+  ExportStringValueToEnc(v,rb_filesystem_encoding())
+#else
+#define ExportFilenameStringValue(v)            \
+  SafeStringValue(v)
+#endif
+
 #define INT2BOOL(x) ((x)?Qtrue:Qfalse)
 
 #ifdef DEF_GLOBAL

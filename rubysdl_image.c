@@ -26,7 +26,7 @@ static VALUE Surface_s_load(VALUE klass, VALUE filename)
   SDL_Surface *surface;
   
   rb_secure(4);
-  SafeStringValue(filename);
+  ExportFilenameStringValue(filename);
 
   surface = IMG_Load(RSTRING_PTR(filename));
   if(surface == NULL)

@@ -244,7 +244,7 @@ static VALUE Wave_s_load(VALUE class, VALUE filename)
   Mix_Chunk *chunk;
   
   rb_secure(4);
-  SafeStringValue(filename);
+  ExportFilenameStringValue(filename);
   
   chunk = Mix_LoadWAV(RSTRING_PTR(filename));
   if( chunk == NULL ){
@@ -401,7 +401,7 @@ static VALUE Music_s_load(VALUE class, VALUE filename)
   Mix_Music* music;
   
   rb_secure(4);
-  SafeStringValue(filename);
+  ExportFilenameStringValue(filename);
   
   music = Mix_LoadMUS(RSTRING_PTR(filename));
   if( music == NULL )

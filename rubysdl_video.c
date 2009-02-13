@@ -340,7 +340,7 @@ static VALUE Surface_s_createFrom(VALUE klass,VALUE pixels,VALUE w,
   SDL_Surface *surface;
   void* pixel_data;
   
-  StringValue(pixels);
+  SafeStringValue(pixels);
   pixel_data = ALLOC_N(char, RSTRING_LEN(pixels));
   memcpy(pixel_data,RSTRING_PTR(pixels),RSTRING_LEN(pixels));
   
@@ -359,7 +359,7 @@ static VALUE Surface_s_loadBMP(VALUE klass,VALUE filename)
 {
   SDL_Surface *image;
   rb_secure(4);
-  SafeStringValue(filename);
+  ExportFilenameStringValue(filename);
   
   image = SDL_LoadBMP(RSTRING_PTR(filename));
   if(image == NULL){
@@ -398,7 +398,7 @@ static VALUE Surface_s_loadBMPFromString(VALUE class, VALUE str)
 static VALUE Surface_saveBMP(VALUE self,VALUE filename)
 {
   rb_secure(4);
-  SafeStringValue(filename);
+  ExportFilenameStringValue(filename);
   if( SDL_SaveBMP(Get_SDL_Surface(self), RSTRING_PTR(filename))==-1 ){
     rb_raise(eSDLError,"cannot save %s: %s",RSTRING_PTR(filename),SDL_GetError());
   }

@@ -55,12 +55,33 @@ static VALUE Font_create(Kanji_Font* font)
   return newobj;
 }
 
+#ifdef ENABLE_M17N
+static rb_encoding* get_enc(Kanji_Font* font)
+{
+  switch (font->sys) {
+  case KANJI_JIS:
+    return iso2022jp_enc;
+    break;
+  case KANJI_EUC:
+    return eucjp_enc;
+    break;
+  case KANJI_SJIS:
+    return sjis_enc;
+    break;
+  default:
+    rb_raise(eSDLError, "Unsupported Kanji encoding");
+    return NULL;
+    break;
+  }
+}
+#endif
+
 static VALUE Font_s_open(VALUE klass, VALUE filename, VALUE size)
 {
   Kanji_Font* font;
 
   rb_secure(4);
-  SafeStringValue(filename);
+  ExportFilenameStringValue(filename);
   
   font = Kanji_OpenFont(RSTRING_PTR(filename), NUM2INT(size));
   if(font == NULL)
@@ -96,7 +117,7 @@ static VALUE Font_getCodingSystem(VALUE self)
 static VALUE Font_add(VALUE self, VALUE filename)
 {
   rb_secure(4);
-  SafeStringValue(filename);
+  ExportFilenameStringValue(filename);
   if(Kanji_AddFont(Get_Kanji_Font(self), RSTRING_PTR(filename)) == -1)
     rb_raise(eSDLError, "Couldn't use font: %s", RSTRING_PTR(filename));
   return Qnil;
@@ -104,8 +125,11 @@ static VALUE Font_add(VALUE self, VALUE filename)
 
 static VALUE Font_textwidth(VALUE self, VALUE text)
 {
-  StringValue(text);
-  return INT2FIX(Kanji_FontWidth(Get_Kanji_Font(self), RSTRING_PTR(text)));
+  Kanji_Font* font;
+  rb_secure(4);
+  font = Get_Kanji_Font(self);
+  ExportStringValueToEnc(text, get_enc(font));
+  return INT2FIX(Kanji_FontWidth(font, RSTRING_PTR(text)));
 }
 
 static VALUE Font_width(VALUE self)
@@ -124,29 +148,9 @@ static void Font_put(VALUE self, VALUE surface, VALUE text,
 {
   SDL_Color color;
   Kanji_Font* font;
-#ifdef ENABLE_M17N
-  rb_encoding* enc;
-#endif
   rb_secure(4);
   font = Get_Kanji_Font(self);
-  SafeStringValue(text);
-#ifdef ENABLE_M17N
-  switch (font->sys) {
-  case KANJI_JIS:
-    enc = iso2022jp_enc;
-    break;
-  case KANJI_EUC:
-    enc = eucjp_enc;
-    break;
-  case KANJI_SJIS:
-    enc = sjis_enc;
-    break;
-  default:
-    rb_raise(eSDLError, "Unsupported Kanji encoding");
-    break;
-  }
-  text = rb_str_export_to_enc(text, enc);
-#endif
+  ExportStringValueToEnc(text, get_enc(font));
   color.r = NUM2INT(r);color.g = NUM2INT(g); color.b = NUM2INT(b);
   
   draw(Get_Kanji_Font(self), NUM2INT(x), NUM2INT(y),

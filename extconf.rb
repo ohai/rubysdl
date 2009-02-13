@@ -67,8 +67,11 @@ have_func("TTF_FontFaceStyleName")
 have_func("Mix_LoadMUS_RW")
 have_func("rb_thread_blocking_region")
 if enable_config("m17n", true)
-  if have_func("rb_enc_str_new") && have_func("rb_str_encode")
+  if have_func("rb_enc_str_new") && have_func("rb_str_export_to_enc")
     $CFLAGS += " -D ENABLE_M17N "
+    if enable_config("m17n-filesystem", false)
+      $CFLAGS += " -D ENABLE_M17N_FILESYSTEM "
+    end
   end
 end
 
