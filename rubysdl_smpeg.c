@@ -320,7 +320,7 @@ void rubysdl_init_MPEG(VALUE mSDL)
   rb_define_method(cMPEG, "setLoop", MPEG_setLoop, 1);
   rb_define_method(cMPEG, "scaleXY", MPEG_scaleXY, 2);
   rb_define_method(cMPEG, "scale", MPEG_scale, 1);
-  rb_define_method(cMPEG, "move", MPEG_move, 1);
+  rb_define_method(cMPEG, "move", MPEG_move, 2);
   rb_define_method(cMPEG, "setDisplayRegion", MPEG_setDisplayRegion, 4);
   rb_define_method(cMPEG, "play", MPEG_play, 0);
   rb_define_method(cMPEG, "pause", MPEG_pause, 0);
