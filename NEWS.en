@@ -27,6 +27,8 @@ Ruby m17n support on Ruby 1.9
 * SDL::Kanji#put
 * SDL::Kanji#putTate
 * SDL::SDLSKK#str
+Fix the bug of following methods
+* SDL::MPEG#move
 
 version 2.0.1b
 fix sample bug
