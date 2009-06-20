@@ -79,6 +79,31 @@ CollisionMap#bounding_box_check
 %%
 NAME bounding_box_check
 MOD CollisionMap
+TYPE .
+DEP SGE
+PURPOSE Checks if two shapes overlap.
+RVAL true/false
+
+PROTO
+bounding_box_check(x1,y1,w1,h1,x2,y2,w2,h2)
+boundingBoxCheck(x1,y1,w1,h1,x2,y2,w2,h2)
+
+DESC
+
+Checks if two rectangles 
+($[x1], $[$y1], $[w1], $[h1]) and
+($[x2], $[$y2], $[w2], $[h2]) overlap.
+
+RET
+Returns true if two rectangles overlap, otherwise
+returns false.
+
+SEEALSO
+CollisionMap#bounding_box_check
+
+%%
+NAME bounding_box_check
+MOD CollisionMap
 TYPE #
 DEP SGE
 PURPOSE Checks if two shapes overlap.
@@ -101,6 +126,7 @@ Returns true if two rectangles overlap, otherwise
 returns false.
 
 SEEALSO
+CollisionMap.bounding_box_check
 CollisionMap#collision_check
 CollisionMap#w
 CollisionMap#h

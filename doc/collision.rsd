@@ -72,6 +72,29 @@ CollisionMap#bounding_box_check
 %%
 NAME bounding_box_check
 MOD CollisionMap
+TYPE .
+DEP SGE
+PURPOSE 2つの長方形が重なっているかどうかを判定します。
+RVAL true/false
+
+PROTO
+bounding_box_check(x1,y1,w1,h1,x2,y2,w2,h2)
+boundingBoxCheck(x1,y1,w1,h1,x2,y2,w2,h2)
+
+DESC
+左上が($[x1],$[y1])、幅$[w1]高さ$[h1]の長方形と
+左上が($[x2],$[y2])、幅$[w2]高さ$[h2]の長方形が
+重なっているかどうかを判定します。
+
+RET
+長方形が重なっていれば true を、いなければ false を返します。
+
+SEEALSO
+CollisionMap#bounding_box_check
+
+%%
+NAME bounding_box_check
+MOD CollisionMap
 TYPE #
 DEP SGE
 PURPOSE 2つの長方形が重なっているかどうかを判定します。
@@ -90,6 +113,7 @@ RET
 長方形が重なっていれば true を、いなければ false を返します。
 
 SEEALSO
+CollisionMap.bounding_box_check
 CollisionMap#collision_check
 CollisionMap#w
 CollisionMap#h
