@@ -541,6 +541,9 @@ void rubysdl_init_Mixer(VALUE mSDL)
   rb_define_const(mMixer, "DEFAULT_CHANNELS", UINT2NUM(MIX_DEFAULT_CHANNELS));
   rb_define_const(mMixer, "MAX_VOLUME", INT2NUM(MIX_MAX_VOLUME));
 
+  rb_define_const(mMixer, "NO_FADING", INT2NUM(MIX_NO_FADING));
+  rb_define_const(mMixer, "FADING_OUT", INT2NUM(MIX_FADING_OUT));
+  rb_define_const(mMixer, "FADING_IN", INT2NUM(MIX_FADING_IN));
   return;
 }
 
