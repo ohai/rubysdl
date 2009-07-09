@@ -583,7 +583,7 @@ not documented yet
 
 %%
 NAME delete
-MDO MPEG
+MOD MPEG
 TYPE #
 DEP SMPEG
 PURPOSE
@@ -596,7 +596,7 @@ not documented yet
 
 %%
 NAME deleted?
-MDO MPEG
+MOD MPEG
 TYPE #
 DEP SMPEG
 PURPOSE

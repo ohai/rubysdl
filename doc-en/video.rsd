@@ -2243,15 +2243,15 @@ $[flags] is OR'd combination of follwing values:
 
 :0
   Default
-:SDL::TRANSFORM_SAFE
+:SDL::Surface::TRANSFORM_SAFE
   Don't asume that the $[src] and $[dst] surfaces has
   the same pixel format. This is the default when the two
   surfaces don't have the same BPP. This is slower but will
   render wierd pixel formats right.
-:SDL::TRANSFORM_AA
+:SDL::Surface::TRANSFORM_AA
   Use the interpolating renderer. Much slower but
   can look better.
-:SDL::TRANSFORM_TMAP
+:SDL::Surface::TRANSFORM_TMAP
   Use texture mapping. This is a bit faster but
   the result isn't as nice as in the normal mode. This mode
   will also ignore the px/py coordinates and the other flags.
@@ -2306,11 +2306,11 @@ transformBlit(src,dst,angle,xscale,yscale,px,py,qx,qy,flags)
 
 DESC
 Draw a rotated and scaled image. 
-This method is same as @[Surface.transform] except
+This method is same as @[Surface.transform_draw] except
 colorkey and blending are enabled. 
 
 SEEALSO
-Surface.transform
+Surface.transform_draw
 Surface#transform_surface
 Surface#set_color_key
 Surface#set_alpha
@@ -2829,7 +2829,7 @@ transformSurface(bgcolor,angle,xscale,yscale,flags)
 
 DESC
 Returns a rotated and scaled version of $[self].
-See $[Surface.transform] for more information.
+See $[Surface.transform_draw] for more information.
 $[bgcolor] is background color that new surface have.
 
 The new surface object will have the same depth 
@@ -2838,6 +2838,6 @@ and pixel format as $[self].
 EXCEPTION *
 
 SEEALSO
-Surface.transform
+Surface.transform_draw
 Surface.transform_blit
 

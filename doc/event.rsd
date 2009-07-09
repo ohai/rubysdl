@@ -1147,7 +1147,7 @@ Joystick#button
 %%
 NAME which
 MOD Event::JoyButtonUp
-TYPE 
+TYPE #
 PURPOSE ジョイスティックデバイスの番号を返します。
 RVAL Integer
 

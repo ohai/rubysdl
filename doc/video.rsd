@@ -2318,13 +2318,13 @@ $[angle]は回転角度(単位はラジアンではなく度)、$[xscale]、$[yscale]は
 
 :0
   普通
-:SDL::TRANSFORM_SAFE
+:SDL::Surface::TRANSFORM_SAFE
   $[src] と $[dst] のピクセルフォーマットが異なっていても正しく描画します。
   $[src].bpp と $[dst].bpp が異なる場合は自動的に有効になります。
   ただしれを有効にすると遅くなります。
-:SDL::TRANSFORM_AA
+:SDL::Surface::TRANSFORM_AA
   補完描画をします。遅いがみためが良くなります。
-:SDL::TRANSFORM_TMAP
+:SDL::Surface::TRANSFORM_TMAP
   テクスチャマッピングを使います。すこし速くなるが見た目は悪くなります。
   このフラグを有効にした場合 $[px] 、$[py] や上で挙げたフラグを無視します。
 
@@ -2335,10 +2335,10 @@ NOTES
 @[Surface#set_clip_rect] で設定したクリッピング矩形は $[src]
 および $[dst] で有効です。
 
-SDL::TRANSFORM_AA を使う場合は、高さ方向および幅方向にそれぞれ
+SDL::Surface::TRANSFORM_AA を使う場合は、高さ方向および幅方向にそれぞれ
 1ピクセルづつ間引かれます(パフォーマンスを良くするためです)。
 
-$[src]が32bpp RGBA フォーマットの場合には、SDL::TRANSFORM_SAFEを使うべきです。
+$[src]が32bpp RGBA フォーマットの場合には、SDL::Surface::TRANSFORM_SAFEを使うべきです。
 
 このメソッドはアルファブレンディングは一切しませんが、アルファチャンネルの
 値は保ちます。もし、アルファブレンディング、カラーキーの効果のある
@@ -2373,12 +2373,12 @@ transformBlit(src,dst,angle,xscale,yscale,px,py,qx,qy,flags)
 
 DESC
 回転縮小拡大描画をします。引数の意味などは 
-@[Surface.transform] と同様です。
-@[Surface.transform] との違いは $[src] に設定されたカラーキー(抜き色)
+@[Surface.transform_draw] と同様です。
+@[Surface.transform_draw] との違いは $[src] に設定されたカラーキー(抜き色)
 およびアルファブレンディングが有効になることです。
 
 SEEALSO
-Surface.transform
+Surface.transform_draw
 Surface#transform_surface
 Surface#set_color_key
 Surface#set_alpha
@@ -2929,7 +2929,7 @@ DESC
 $[self] を拡大縮小変形したサーフェスを生成し返す。
 回転によって生じた隙間は $[bgcolor] で指定した色で埋められる。
 引数 $[angle]、$[xscale]、$[yscale]、$[flags] は 
-@[Surface.transform] と同じ意味である。
+@[Surface.transform_draw] と同じ意味である。
 
 新しいサーフェスは $[self] と同じ bpp およびピクセルフォーマットを
 持つ。
@@ -2937,6 +2937,6 @@ $[self] を拡大縮小変形したサーフェスを生成し返す。
 EXCEPTION *
 
 SEEALSO
-Surface.transform
+Surface.transform_draw
 Surface.transform_blit
 
