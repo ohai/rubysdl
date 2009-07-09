@@ -527,6 +527,10 @@ void rubysdl_init_sge(VALUE mSDL, VALUE cSurface)
   rb_define_const(cSurface, "TRANSFORM_SAFE", UINT2NUM(SGE_TSAFE));
   rb_define_const(cSurface, "TRANSFORM_TMAP", UINT2NUM(SGE_TTMAP));
 
+  rb_define_const(mSDL, "TRANSFORM_AA", UINT2NUM(SGE_TAA));
+  rb_define_const(mSDL, "TRANSFORM_SAFE", UINT2NUM(SGE_TSAFE));
+  rb_define_const(mSDL, "TRANSFORM_TMAP", UINT2NUM(SGE_TTMAP));
+
   rb_define_const(cBMFont, "TRANSPARENT", UINT2NUM(SGE_BFTRANSP));
   rb_define_const(cBMFont, "NOCONVERT", UINT2NUM(SGE_BFNOCONVERT));
   rb_define_const(cBMFont, "SFONT", UINT2NUM(SGE_BFSFONT));
