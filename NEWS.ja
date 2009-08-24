@@ -1,3 +1,15 @@
+version 2.1.1
+Ruby 1.9とMacOS Xでコンパイルできない問題を修正
+sdl.so を sdl_ext という名前に変更
+以下の定数を追加
+* SDL::Mixer::NO_FADING
+* SDL::Mixer::FADING_OUT
+* SDL::Mixer::FADING_IN
+* SDL::TRANSFORM_AA(for compatible with 1.x)
+* SDL::TRANSFORM_TMAP(for compatible with 1.x)
+* SDL::TRANSFORM_SAFE(for compatible with 1.x)
+ドキュメントの修正
+
 version 2.1.0
 以下のメソッドを追加
 * SDL::TTF#close

@@ -1,3 +1,15 @@
+version 2.1.1
+Fix a compile problem on MacOS X
+Rename sdl.so to sdl_ext
+Add following constants
+* SDL::Mixer::NO_FADING
+* SDL::Mixer::FADING_OUT
+* SDL::Mixer::FADING_IN
+* SDL::TRANSFORM_AA(for compatible with 1.x)
+* SDL::TRANSFORM_TMAP(for compatible with 1.x)
+* SDL::TRANSFORM_SAFE(for compatible with 1.x)
+Fix documents
+
 version 2.1.0
 add following methods
 * SDL::TTF#close
