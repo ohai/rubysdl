@@ -84,7 +84,7 @@ static VALUE sdl_s_quit(VALUE obj)
   return Qnil;
 }
 
-void Init_sdl()
+void Init_sdl_ext()
 {
   VALUE mSDL = rb_define_module("SDL");
   VALUE cSurface;

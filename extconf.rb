@@ -90,5 +90,5 @@ if enable_config("opengl",true) then
     have_library("glu32","gluGetString")
   end
 end
-create_makefile("sdl")
+create_makefile("sdl_ext")
 
