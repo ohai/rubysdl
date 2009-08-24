@@ -85,6 +85,10 @@ module SDL
   Event2 = Event
 
   if defined?(CollisionMap)
+    TRANSFORM_AA = Surface::TRANSFORM_AA
+    TRANSFORM_SAFE = Surface::TRANSFORM_SAFE
+    TRANSFORM_TMAP = Surface::TRANSFORM_TMAP
+    
     class Surface
       def drawAALine(x1, y1, x2, y2, col)
         drawLine(x1, y1, x2, y2, col, true)
