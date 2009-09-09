@@ -10,13 +10,10 @@ lib/rubysdl_aliases.rb
 lib/sdl.rb
 lib/rubysdl_compatible_ver1.rb
 rubysdl.h
-rubysdl_const_list.txt
-rubysdl_doc_old.rd
 rubysdl_ref.rd
 rubysdl_ref.html
 rubysdl_ref.en.rd
 rubysdl_ref.en.html
-rubysdl_doc_old.en.rd
 rubysdl_event.c
 rubysdl_event_key.c
 rubysdl_main.c
