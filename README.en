@@ -72,19 +72,12 @@ install on Linux
   You can use OpenGL with this library.
 
   (1) Setup OpenGL and SDL.
-  (2) Get OpenGL Interface (http://raa.ruby-lang.org/project/opengl/)
-  (3) Install OpenGL Interface
-  (4) Run "ruby extconf.rb" with "--enable-opengl".
-  (5) Run "make" and "make install"
-  (6) Write "require 'sdl'; require 'opengl'"  in your script.
+  (2) Install ruby-opengl (http://ruby-opengl.rubyforge.org/)
+  (3) Run "ruby extconf.rb", "make", and "make install"
+  (4) Write "require 'sdl'; require 'opengl'"  in your script.
 
-  The interface of OpenGL is same as "OpenGL Interface".
+  We use OpenGL through ruby-opengl.
   Please see SDL's document,OpenGL document and sample/testgl.rb .
-
-  Each OpenGL implementation are a little different in API, so
-  you may fail to compile Ruby's OpenGL Interface. If you can't
-  compile, but if you want to complile it, you should modify
-  sources.
 
 7 LICENSE
   This library is distributed under GNU LGPL version 2.1 or later,

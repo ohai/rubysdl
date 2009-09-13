@@ -109,24 +109,17 @@ FreeBSDにはPortがあるのでそれを利用してください。
       リファレンスマニュアルの元データです。
 
 6 OpenGLについて
-  このライフラリによってOpenGLへのアクセスが可能になります。
+  このライブラリによってOpenGLへのアクセスが可能になります。
 
   (1) SDLからOpenGLを使えるように設定する。
-  (2) http://raa.ruby-lang.org/project/opengl/ からRuby用の
-      OpenGL Interface を取ってきてインストールする。
+  (2) http://ruby-opengl.rubyforge.org/ をインストールする。 
   (3) ruby extconf.rb をするときに、--enable-opengl を指定する。
   (4) make ; make install する。
   この場合はRubyのスクリプト内でrequire 'opengl'をする必要があります。
 
-  インターフェースは OpenGL Interface のものをそのまま使っています。
+  インターフェースは ruby-opengl そのものなので、
   これの使いかたは、SDLのドキュメント、OpenGLのドキュメント、
   および sample/testgl.rb を見て調べてください。
-
-  注意
-    OpenGLのインターフェースは実装によって少しずつ異なります。そのため
-    そのままだととコンパイルできない、うまく動かないなどの現象が起きる
-    ことがあります。その場合 OpenGL Interface のソースに手を入れる必要
-    があります。
 
 7 ライセンス
   GNU LGPL(GNU Lesser General Public License) version 2.1 以降に従います。
