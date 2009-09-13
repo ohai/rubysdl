@@ -12,7 +12,7 @@ This allows you to use SDL's audio, event handling and times in your
 OpenGL applications (a function often performed by GLUT).
 
 Ruby/SDL has no OpenGL methods, please use
-((<OpenGL Interface|URL:http://www2.giganet.net/~yoshi/>)) or
+((<ruby-opengl|http://ruby-opengl.rubyforge.org/>)) or
 ((<riko|URL:http://www.kumaryu.net/?(Ruby)+Riko>))
 with Ruby/SDL.
 
