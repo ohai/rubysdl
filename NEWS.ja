@@ -9,6 +9,7 @@ sdl.so を sdl_ext という名前に変更
 * SDL::TRANSFORM_TMAP(for compatible with 1.x)
 * SDL::TRANSFORM_SAFE(for compatible with 1.x)
 ドキュメントの修正
+古いドキュメントを削除
 
 version 2.1.0
 以下のメソッドを追加

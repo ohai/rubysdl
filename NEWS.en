@@ -9,6 +9,7 @@ Add following constants
 * SDL::TRANSFORM_TMAP(for compatible with 1.x)
 * SDL::TRANSFORM_SAFE(for compatible with 1.x)
 Fix documents
+Remove obsolete documents
 
 version 2.1.0
 add following methods
