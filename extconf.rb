@@ -45,6 +45,11 @@ end
 
 if have_library("smpeg","SMPEG_new") then
   $CFLAGS+= " -D HAVE_SMPEG "
+  smpeg_config = with_config('smpeg-config', 'smpeg-config')
+  if system(smpeg_config, "--version")
+    $CFLAGS += ' ' + `#{smpeg_config} --cflags`.chomp
+    $LOCAL_LIBS += ' ' + `#{smpeg_config} --libs`.chomp
+  end
 end
 if have_library("SDL_mixer","Mix_OpenAudio") then
   $CFLAGS+= " -D HAVE_SDL_MIXER "

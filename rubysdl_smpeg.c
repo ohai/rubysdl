@@ -19,7 +19,7 @@
   */
 #ifdef HAVE_SMPEG
 #include "rubysdl.h"
-#include "smpeg/smpeg.h"
+#include <smpeg.h>
 
 #ifdef HAVE_SDL_MIXER
 #include "SDL_mixer.h"
