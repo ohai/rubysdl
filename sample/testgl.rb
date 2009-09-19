@@ -1,5 +1,7 @@
 require 'sdl'
-require 'opengl'
+require 'gl'
+
+include Gl
 
 # initialize SDL and opengl
 SDL.init SDL::INIT_VIDEO
@@ -10,18 +12,18 @@ SDL::GL.set_attr SDL::GL_DEPTH_SIZE,16
 SDL::GL.set_attr SDL::GL_DOUBLEBUFFER,1
 SDL::Screen.open 640,400,16,SDL::OPENGL
 
-GL::Viewport( 0, 0, 640, 400 );
-GL::MatrixMode( GL::PROJECTION );
-GL::LoadIdentity( );
+glViewport( 0, 0, 640, 400 );
+glMatrixMode( GL_PROJECTION );
+glLoadIdentity( );
 
-GL::MatrixMode( GL::MODELVIEW );
-GL::LoadIdentity( );
+glMatrixMode( GL_MODELVIEW );
+glLoadIdentity( );
 
-GL::Enable(GL::DEPTH_TEST);
+glEnable(GL_DEPTH_TEST);
 
-GL::DepthFunc(GL::LESS);
+glDepthFunc(GL_LESS);
 
-GL::ShadeModel(GL::SMOOTH);
+glShadeModel(GL_SMOOTH);
 
 shadedCube=true
 
@@ -55,110 +57,110 @@ loop do
     end
   end
 
-  GL.ClearColor(0.0, 0.0, 0.0, 1.0);
-  GL.Clear(GL::COLOR_BUFFER_BIT|GL::DEPTH_BUFFER_BIT);
+  glClearColor(0.0, 0.0, 0.0, 1.0);
+  glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 
 
-  GL::Begin(GL::QUADS) 
+  glBegin(GL_QUADS) 
 
   if shadedCube then
-    GL::Color(color[0]);
-    GL::Vertex(cube[0]);
-    GL::Color(color[1]);
-    GL::Vertex(cube[1]);
-    GL::Color(color[2]);
-    GL::Vertex(cube[2]);
-    GL::Color(color[3]);
-    GL::Vertex(cube[3]);
+    glColor(color[0]);
+    glVertex(cube[0]);
+    glColor(color[1]);
+    glVertex(cube[1]);
+    glColor(color[2]);
+    glVertex(cube[2]);
+    glColor(color[3]);
+    glVertex(cube[3]);
     
-    GL::Color(color[3]);
-    GL::Vertex(cube[3]);
-    GL::Color(color[4]);
-    GL::Vertex(cube[4]);
-    GL::Color(color[7]);
-    GL::Vertex(cube[7]);
-    GL::Color(color[2]);
-    GL::Vertex(cube[2]);
+    glColor(color[3]);
+    glVertex(cube[3]);
+    glColor(color[4]);
+    glVertex(cube[4]);
+    glColor(color[7]);
+    glVertex(cube[7]);
+    glColor(color[2]);
+    glVertex(cube[2]);
     
-    GL::Color(color[0]);
-    GL::Vertex(cube[0]);
-    GL::Color(color[5]);
-    GL::Vertex(cube[5]);
-    GL::Color(color[6]);
-    GL::Vertex(cube[6]);
-    GL::Color(color[1]);
-    GL::Vertex(cube[1]);
+    glColor(color[0]);
+    glVertex(cube[0]);
+    glColor(color[5]);
+    glVertex(cube[5]);
+    glColor(color[6]);
+    glVertex(cube[6]);
+    glColor(color[1]);
+    glVertex(cube[1]);
     
-    GL::Color(color[5]);
-    GL::Vertex(cube[5]);
-    GL::Color(color[4]);
-    GL::Vertex(cube[4]);
-    GL::Color(color[7]);
-    GL::Vertex(cube[7]);
-    GL::Color(color[6]);
-    GL::Vertex(cube[6]);
+    glColor(color[5]);
+    glVertex(cube[5]);
+    glColor(color[4]);
+    glVertex(cube[4]);
+    glColor(color[7]);
+    glVertex(cube[7]);
+    glColor(color[6]);
+    glVertex(cube[6]);
     
-    GL::Color(color[5]);
-    GL::Vertex(cube[5]);
-    GL::Color(color[0]);
-    GL::Vertex(cube[0]);
-    GL::Color(color[3]);
-    GL::Vertex(cube[3]);
-    GL::Color(color[4]);
-    GL::Vertex(cube[4]);
+    glColor(color[5]);
+    glVertex(cube[5]);
+    glColor(color[0]);
+    glVertex(cube[0]);
+    glColor(color[3]);
+    glVertex(cube[3]);
+    glColor(color[4]);
+    glVertex(cube[4]);
     
-    GL::Color(color[6]);
-    GL::Vertex(cube[6]);
-    GL::Color(color[1]);
-    GL::Vertex(cube[1]);
-    GL::Color(color[2]);
-    GL::Vertex(cube[2]);
-    GL::Color(color[7]);
-    GL::Vertex(cube[7]);
+    glColor(color[6]);
+    glVertex(cube[6]);
+    glColor(color[1]);
+    glVertex(cube[1]);
+    glColor(color[2]);
+    glVertex(cube[2]);
+    glColor(color[7]);
+    glVertex(cube[7]);
     
   else
-    GL::Color(1.0, 0.0, 0.0);
-    GL::Vertex(cube[0]);
-    GL::Vertex(cube[1]);
-    GL::Vertex(cube[2]);
-    GL::Vertex(cube[3]);
+    glColor(1.0, 0.0, 0.0);
+    glVertex(cube[0]);
+    glVertex(cube[1]);
+    glVertex(cube[2]);
+    glVertex(cube[3]);
     
-    GL::Color(0.0, 1.0, 0.0);
-    GL::Vertex(cube[3]);
-    GL::Vertex(cube[4]);
-    GL::Vertex(cube[7]);
-    GL::Vertex(cube[2]);
+    glColor(0.0, 1.0, 0.0);
+    glVertex(cube[3]);
+    glVertex(cube[4]);
+    glVertex(cube[7]);
+    glVertex(cube[2]);
     
-    GL::Color(0.0, 0.0, 1.0);
-    GL::Vertex(cube[0]);
-    GL::Vertex(cube[5]);
-    GL::Vertex(cube[6]);
-    GL::Vertex(cube[1]);
+    glColor(0.0, 0.0, 1.0);
+    glVertex(cube[0]);
+    glVertex(cube[5]);
+    glVertex(cube[6]);
+    glVertex(cube[1]);
     
-    GL::Color(0.0, 1.0, 1.0);
-    GL::Vertex(cube[5]);
-    GL::Vertex(cube[4]);
-    GL::Vertex(cube[7]);
-    GL::Vertex(cube[6]);
+    glColor(0.0, 1.0, 1.0);
+    glVertex(cube[5]);
+    glVertex(cube[4]);
+    glVertex(cube[7]);
+    glVertex(cube[6]);
     
-    GL::Color(1.0, 1.0, 0.0);
-    GL::Vertex(cube[5]);
-    GL::Vertex(cube[0]);
-    GL::Vertex(cube[3]);
-    GL::Vertex(cube[4]);
+    glColor(1.0, 1.0, 0.0);
+    glVertex(cube[5]);
+    glVertex(cube[0]);
+    glVertex(cube[3]);
+    glVertex(cube[4]);
     
-    GL::Color(1.0, 0.0, 1.0);
-    GL::Vertex(cube[6]);
-    GL::Vertex(cube[1]);
-    GL::Vertex(cube[2]);
-    GL::Vertex(cube[7]);
+    glColor(1.0, 0.0, 1.0);
+    glVertex(cube[6]);
+    glVertex(cube[1]);
+    glVertex(cube[2]);
+    glVertex(cube[7]);
     
   end
 
-  GL::End()
+  glEnd()
   
-  GL::MatrixMode(GL::MODELVIEW);
-  GL::Rotate(5.0, 1.0, 1.0, 1.0);
+  glMatrixMode(GL_MODELVIEW);
+  glRotate(5.0, 1.0, 1.0, 1.0);
   
   SDL::GL.swap_buffers
 
