@@ -13,7 +13,7 @@ Ruby/SDLのオーディオ・イベント処理・
 タイマーを使うことができます。
 
 Ruby/SDL そのものは OpenGL 用のメソッドを持っていません。
-((<ruby-opengl|http://ruby-opengl.rubyforge.org/>)), 
+((<ruby-opengl|URL:http://ruby-opengl.rubyforge.org/>)), 
 ((<riko|URL:http://www.kumaryu.net/?(Ruby)+Riko>))
 などを利用してください。
 
