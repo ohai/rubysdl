@@ -44,6 +44,7 @@ sample/font.rb
 sample/cdrom.rb
 sample/playmod.rb
 sample/testgl.rb
+sample/testgl_old.rb
 sample/icon.bmp
 sample/cursor.rb
 sample/event2.rb
