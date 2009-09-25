@@ -1,3 +1,4 @@
+# a sample with ruby-opengl and Ruby/SDL
 require 'sdl'
 require 'gl'
 

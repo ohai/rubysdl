@@ -1,3 +1,4 @@
+# a sample for old OpenGL Interface for Ruby
 require 'sdl'
 require 'opengl'
 
