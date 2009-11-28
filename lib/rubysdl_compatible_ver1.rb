@@ -106,9 +106,7 @@ module SDL
       def drawAAFilledCircle(x, y, r, color)
         drawCircle(x, y, r, color, true, true)
       end
-      def drawAACircleAlpha(x, y, r, color, alpha)
-        drawCircle(x, y, r, color, false, true, alpha)
-      end
+      
       def drawCircleAlpha(x, y, r, color, alpha)
         drawCircle(x, y, r, color, false, false, alpha)
       end
