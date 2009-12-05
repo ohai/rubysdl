@@ -68,10 +68,16 @@ FreeBSDにはPortがあるのでそれを利用してください。
   make install
   としてください。
 
+(6) (MacOS Xのみ) rsdl のインストール
+  gem install rsdl で rsdl をインストールしてください。
+  
 5 使い方
   require 'sdl'で使えます。
-  詳しくは、以下のファイルやドキュメントを見てください。
+  MacOS Xの場合のみ、 ruby コマンドでなく rsdl コマンドで
+  インタプリタを起動してください。
 
+  詳しくは、以下のファイルやドキュメントを見てください。
+  
   sample/*.rb サンプル
     以下のサンプルがあります。
         testsprite.rb   画像表示のサンプル

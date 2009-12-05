@@ -54,8 +54,16 @@ install on Linux
 (5)install this extension library,Ruby/SDL
   Run 'ruby extconf.rb','make' and 'make install'.
 
+(6) (Mac OS X user only) install rsdl
+  Run 'gem install rsdl'.
+  rsdl is a wrapper of Ruby interpreter. This wrapper
+  prepares Cocoa framework before running the interpreter.
+
 5 USE Ruby/SDL
   Write "require 'sdl'" in your Ruby script.
+  If your system is OS X, you must use rsdl command 
+  as an interpreter instead of ruby command.
+
   See following documents and samples if you want to know the detail.
 
   sample/*.rb
