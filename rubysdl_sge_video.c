@@ -232,9 +232,14 @@ static VALUE Surface_drawBezier(int argc, VALUE* argv, VALUE self)
   int i;
   
   rb_secure(4);
-  /* WARNING:  ':' == '9' + 1
+  /* WARNING:  third argument of rb_scan_args
+     should be 10-2, but rb_scan_args cannot accept such
+     an argument.
   */
-  rb_scan_args(argc, argv, ":2",
+  if (argc < 10)
+    rb_raise(rb_eArgError, "wrong number of arguments (%d for 10)", argc);
+  
+  rb_scan_args(argc, argv, "93",
                &coords_[0], &coords_[1],
                &coords_[2], &coords_[3],
                &coords_[4], &coords_[5],
