@@ -81,8 +81,8 @@ static VALUE Font_s_open(int argc, VALUE *argv, VALUE class)
   
   rb_secure(4);
   rb_scan_args( argc, argv, "21", &filename, &size, &index );
-  
-  SafeStringValue(filename);
+
+  ExportFilenameStringValue(filename);
   
   if(NIL_P(index))
     font = TTF_OpenFont(RSTRING_PTR(filename), NUM2INT(size));
@@ -143,7 +143,7 @@ static VALUE Font_textSize(VALUE self, VALUE text)
 #ifdef ENABLE_M17N
   text = rb_str_export_to_enc(text, utf8_enc);
 #endif
-  TTF_SizeUTF8(Get_TTF_Font(self), RSTRING_PTR(text), &w, &h);
+  TTF_SizeUTF8(Get_TTF_Font(self), StringValueCStr(text), &w, &h);
   return rb_ary_new3(2, INT2FIX(w), INT2FIX(h));
 }
 
@@ -192,7 +192,7 @@ static VALUE render(VALUE self, VALUE text,
     text = rb_str_export_to_enc(text, utf8_enc);
 #endif
   surface = renderer(Get_TTF_Font(self),
-                     RSTRING_PTR(text),
+                     StringValueCStr(text),
                      rgb_to_SDL_Color(fgr, fgg, fgb),
                      rgb_to_SDL_Color(bgr, bgg, bgb));
   

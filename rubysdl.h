@@ -51,10 +51,14 @@ do{ \
   do {                                             \
     SafeStringValue(v);                            \
     (v) = rb_str_export_to_enc((v),(enc));         \
+    StringValueCStr(v);                            \
   } while (0)
 #else
 #define ExportStringValueToEnc(v,enc)           \
-  SafeStringValue(v)
+  do {                                          \
+    SafeStringValue(v);                         \
+    StringValueCStr(v);                         \
+  } while (0)
 #endif
 
 #ifdef ENABLE_M17N_FILESYSTEM
@@ -62,7 +66,10 @@ do{ \
   ExportStringValueToEnc(v,rb_filesystem_encoding())
 #else
 #define ExportFilenameStringValue(v)            \
-  SafeStringValue(v)
+  do {                                          \
+    SafeStringValue(v);                         \
+    StringValueCStr(v);                         \
+  } while(0)
 #endif
 
 #define INT2BOOL(x) ((x)?Qtrue:Qfalse)

@@ -48,6 +48,13 @@ static VALUE Mouse_s_setCursor_imp(VALUE mod,VALUE data,VALUE mask,VALUE w,
   rb_secure(4);
   SafeStringValue(data);
   SafeStringValue(mask);
+
+  if(RSTRING_LEN(data) != NUM2INT(w)*NUM2INT(h)/8) {
+    rb_raise(rb_eArgError, "the size of data string is incorrect");
+  }
+  if(RSTRING_LEN(mask) != NUM2INT(w)*NUM2INT(h)/8) {
+    rb_raise(rb_eArgError, "the size of mask string is incorrect");
+  }
   
   new_cursor = SDL_CreateCursor((Uint8 *)RSTRING_PTR(data),
                                 (Uint8 *)RSTRING_PTR(mask),

@@ -459,7 +459,7 @@ static VALUE BMFont_textSize(VALUE self, VALUE text)
   SDL_Rect rect;
   SafeStringValue(text);
   rect = sge_BF_TextSize(Get_sge_bmpFont(self),
-                         RSTRING_PTR(text));
+                         StringValueCStr(text));
   return rb_ary_new3(2, INT2FIX(rect.w), INT2FIX(rect.h));
 }
 
@@ -472,7 +472,7 @@ static VALUE BMFont_textout(VALUE self,
   SafeStringValue(string);
   
   sge_BF_textout(Get_SDL_Surface(surface), Get_sge_bmpFont(self),
-                 RSTRING_PTR(string), NUM2INT(x), NUM2INT(y));
+                 StringValueCStr(string), NUM2INT(x), NUM2INT(y));
   return Qnil;
 }
 

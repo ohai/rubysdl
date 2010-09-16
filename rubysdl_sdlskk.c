@@ -186,7 +186,7 @@ static VALUE Dictionary_load(VALUE self, VALUE filename, VALUE users)
 {
   SDLSKK_Dictionary* dict = Get_SDLSKK_Dictionary(self);
   rb_secure(4);
-  SafeStringValue(filename);
+  ExportFilenameStringValue(filename);
   
   if(!SDLSKK_Dict_load(dict, RSTRING_PTR(filename), RTEST(users)))
     rb_raise(eSDLError, "Couldn't load %s", RSTRING_PTR(filename));
@@ -198,7 +198,7 @@ static VALUE Dictionary_save(VALUE self, VALUE filename)
 {
   SDLSKK_Dictionary* dict = Get_SDLSKK_Dictionary(self);
   rb_secure(4);
-  SafeStringValue(self);
+  ExportFilenameStringValue(filename);
   
   if(!SDLSKK_Dict_save_user_dict(dict, RSTRING_PTR(filename)))
     rb_raise(eSDLError, "Couldn't save %s", RSTRING_PTR(filename));
@@ -209,7 +209,7 @@ static VALUE RomKanaRuleTable_s_new(VALUE klass, VALUE table_file)
 {
   SDLSKK_RomKanaRuleTable* rule_table;
   rb_secure(4);
-  SafeStringValue(table_file);
+  ExportFilenameStringValue(table_file);
   
   rule_table = SDLSKK_RomKanaRuleTable_new(RSTRING_PTR(table_file));
 
@@ -227,8 +227,8 @@ static VALUE Keybind_s_new(VALUE klass)
 static VALUE Keybind_set_key(VALUE self, VALUE key_str, VALUE cmd_str)
 {
   SDLSKK_Keybind_set_key(Get_SDLSKK_Keybind(self),
-                         StringValuePtr(key_str),
-                         StringValuePtr(cmd_str));
+                         StringValueCStr(key_str),
+                         StringValueCStr(cmd_str));
   return Qnil;
 }
 
@@ -240,7 +240,7 @@ static VALUE Keybind_set_default_key(VALUE self)
 
 static VALUE Keybind_unset_key(VALUE self, VALUE key_str)
 {
-  SDLSKK_Keybind_unset_key(Get_SDLSKK_Keybind(self), StringValuePtr(key_str));
+  SDLSKK_Keybind_unset_key(Get_SDLSKK_Keybind(self), StringValueCStr(key_str));
   return Qnil;
 }
 
