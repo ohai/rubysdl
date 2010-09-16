@@ -19,6 +19,7 @@ screen.draw_circle(100,100,50,[87,87,87])
 screen.draw_circle(300,300,30,Red, true)
 screen.draw_circle(230, 300, 30, Red, true, true)
 
+screen.draw_bezier(100, 100, 150, 200, 300, 150, 400, 200, 7, [255, 255,255], true, 128)
 screen.flip
 
 while true
