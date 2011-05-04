@@ -1966,6 +1966,24 @@ Returns the number of bits used to represent each pixel in a surface.
 Usually 8, 16, 24 or 32.
 
 %%
+NAME pitch
+MOD Surface
+TYPE #
+PURPOSE The number of bytes used for one scanline in a surface
+RVAL UINT
+
+PROTO
+pitch
+
+DESC
+Returns the number of bytes used for each scanline in a surface.
+
+@[Surface#pixels] returns pitch*@[Surface#h] bytes string.
+Normally, this values is equal to @[Surface#bpp]*@[Surface#w]/8, but
+in some case the value is more than bpp*w/8 because
+some pudding bytes are used.
+
+%%
 NAME load
 MOD Surface
 TYPE .

@@ -37,6 +37,9 @@ Ruby/SDL supports playing music and sound samples from the following formats:
 - OggVorbis (.ogg) requiring ogg/vorbis libraries on system
 - MP3 (.mp3) requiring SMPEG library on system
 
+Some reports from Windows users say that programs playing
+MP3 sometimes hung up, so please don't play MP3 on Ruby/SDL.
+
 == SDL::Mixer
 Module for audio playback subsystem.
 

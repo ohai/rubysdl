@@ -2070,6 +2070,25 @@ DESC
 通常8、16、24、32のいずれかです。
 
 %%
+NAME pitch
+MOD Surface
+TYPE #
+PURPOSE サーフェスの各スキャンラインのバイト数
+RVAL UINT 
+
+PROTO
+pitch
+
+DESC
+サーフェスの各スキャンラインに使われるバイト数を返します。
+@[Surface#pixels] で得られる画像データの解釈に必要となります。
+おおよそ @[Surface#bpp] * @[Surface#w] / 8 の値となりますが、
+パディングのため少しこれより大きくなる場合があります。
+
+@[Surface#pixels] で得られるデータのバイト数は @[Surface#h] * pitch と
+なります。
+
+%%
 NAME load
 MOD Surface
 TYPE .
