@@ -18,7 +18,7 @@ require 'sdl_ext'
 require 'forwardable'
 
 module SDL
-  VERSION = "2.1.1"
+  VERSION = "2.1.2"
 
   class Surface
     def put(surface,x,y)

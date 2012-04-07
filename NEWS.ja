@@ -1,3 +1,9 @@
+version 2.1.2
+Rubyの文字列とCの文字列の変換を厳密にするようにした
+以下のメソッドのバグを修正
+* SDL::Surface#draw_bezier
+ドキュメントの修正
+
 version 2.1.1
 Ruby 1.9とMacOS Xでコンパイルできない問題を修正
 sdl.so を sdl_ext という名前に変更

@@ -1,5 +1,5 @@
 
-Ruby/SDL 2.1.1
+Ruby/SDL 2.1.2
 Ohbayashi Ippei
 
 1 What's Ruby/SDL
@@ -7,15 +7,17 @@ Ohbayashi Ippei
 Ruby/SDL is the ruby extension library to use SDL.
 SDL(Simple DirectMedia Layer) is a cross-platform multimedia library      
 designed to provide fast access to the graphics framebuffer and audio    
-device. See http://www.libsdl.org/ if you want to know SDL in detail.
+devices. See http://www.libsdl.org/ if you want to know SDL in detail.
 
 2 Platform
-This library supports 
-Linux on X,Win32,FreeBSD and BeOS.
+This library supports Linux, Win32, MacOS X.
+
+This library perhaps works on FreeBSD and other standard
+Unix-like systems.
 
 3 Library Needed
 
-Ruby/SDL needs Ruby and SDL and optionally uses SDL_image,SDL_mixer,
+Ruby/SDL needs Ruby and SDL and optionally uses SDL_image, SDL_mixer,
 SDL_ttf, SGE, OpenGL  and SMPEG.
 
 Indispensable
@@ -32,16 +34,21 @@ SDLSKK http://www.kmc.gr.jp/~ohai/sdlskk.en.html
 
 4 INSTALL
 
-install on FreeBSD
-Use Port.
+Some packages are available: Debian's .deb, FreeBSD's ports,
+or Windows' zipfile.
 
-install on Linux
+RubyGems are also available. You can install Ruby/SDL:
+  gem install rubysdl
+
+
+You can install from source code as follows:
 (1)install Ruby
   See Ruby's document and install.
+
 (2)install SDL
   Extract SDL's source and run './configure' with '--disable-pthreads'
   option.
-  On Linux using pthread with Ruby/SDL makes problem.
+  On Linux using pthread with Ruby/SDL makes a problem.
   You can avoid this problem by other way (Please see rubysdl_doc.en.rd).
   And run 'make','make install'.
 
@@ -56,7 +63,7 @@ install on Linux
 
 (6) (Mac OS X user only) install rsdl
   Run 'gem install rsdl'.
-  rsdl is a wrapper of Ruby interpreter. This wrapper
+  rsdl is a wrapper of the Ruby interpreter. This wrapper
   prepares Cocoa framework before running the interpreter.
 
 5 USE Ruby/SDL
@@ -67,11 +74,13 @@ install on Linux
   See following documents and samples if you want to know the detail.
 
   sample/*.rb
-    Ruby/SDL samples.In some script, you have to prepare data such as
+    Ruby/SDL samples. In some scripts, you have to prepare data such as
     "sample.wav" and "sample.mpg".
-  rubysdl_doc.en.rd
-    Simple reference manual
-  document of SDL
+  rubysdl_ref.en.html
+    The reference manual
+  rubysdl_ref.en.rd
+    RD style reference manual(the contents is same as rubysdl_ref.en.html)
+  documents of SDL
     This is in SDL archive.
     Please read this when you want to know what does't describe
     these documents.
@@ -105,13 +114,18 @@ install on Linux
   Rorien Dunn, Dennis Ranke, Keita Urashima : bug reports and useful information
   Yusuke TABATA : introduce me into SDL world
   SDLdoc Japanese translation project : base of Ruby/SDL's reference manual
-  Hara Yutaka: Sample TrueTypeFont
+  Hara Yutaka: Sample TrueTypeFont, MacOS X support
   Members of #sdl-fan-jp @ FriendChat: bug reports and advices
-  Cyross: Windows version maintainance
+  Cyross Makoto: Windows support
 
 9 OTHER
   Some functions, especially SDL::MPEG methods and pallete handling methods,
   are not tested.
+
+10 AUTHORS
+  Ippei Obayashi: main developer
+  Cyross Makoto: Windows suppport
+  yhara: MacOS X support
 
   Please send comments and bug reports to the author.
   Author's mail address: ohai@kmc.gr.jp

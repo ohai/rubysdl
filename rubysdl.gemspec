@@ -1,7 +1,7 @@
 
 Gem::Specification.new do |spec|
   spec.name = "rubysdl"
-  spec.version = "2.1.1"
+  spec.version = "2.1.2"
   spec.summary = "The simple ruby extension library to use SDL"
   spec.description = <<-EOS
     Ruby/SDL is an extension library to use SDL(Simple DirectMedia
