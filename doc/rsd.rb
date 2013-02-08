@@ -37,7 +37,7 @@ def rsd2rd(input)
   part = Hash.new{""}
   mode = nil
   
-  input.each do |line|
+  input.each_line do |line|
     case line
     when /^(MOD|DEP|NAME|PURPOSE|TYPE|RVAL|OBSOLETE)\s+/
       part[$1] = $'.chomp
@@ -69,7 +69,7 @@ def rsd2rd(input)
   output = ""
   ns = if part.key?("MOD") then "SDL::#{part["MOD"]}" else "SDL" end
 
-  part["PROTO"].each{|proto| output << "--- #{ns}#{part["TYPE"]}#{proto}"}
+  part["PROTO"].each_line{|proto| output << "--- #{ns}#{part["TYPE"]}#{proto}"}
   output << "\n"
   if part.key?("OBSOLETE")
     if $english
