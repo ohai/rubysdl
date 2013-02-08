@@ -2445,8 +2445,8 @@ LOCK
 PURPOSE 直線を描画します。
 
 PROTO
-draw_line(x1,x2,y1,y2,color, aa=false, alpha=nil)
-drawLine(x1,x2,y1,y2,color, aa=false, alpha=nil)
+draw_line(x1,y1,x2,y2,color, aa=false, alpha=nil)
+drawLine(x1,y1,x2,y2,color, aa=false, alpha=nil)
 
 DESC
 ($[x1], $[y1])から($[x2], $[y2])までの直線を $[color]
@@ -2467,8 +2467,8 @@ LOCK
 PURPOSE アンチエイリアシングされた直線を描画します。
 
 PROTO
-draw_aa_line(x1,x2,y1,y2,color)
-drawAALine(x1,x2,y1,y2,color)
+draw_aa_line(x1,y1,x2,y2,color)
+drawAALine(x1,y1,x2,y2,color)
 
 OBSOLETE Surface#draw_line
 DESC
@@ -2488,8 +2488,8 @@ PURPOSE アルファブレンディングした直線を描画します。
 OBSOLETE Surface#draw_line
 
 PROTO
-draw_line_alpha(x1,x2,y1,y2,color,alpha)
-drawLineAlpha(x1,x2,y1,y2,color,alpha)
+draw_line_alpha(x1,y1,x2,y2,color,alpha)
+drawLineAlpha(x1,y1,x2,y2,color,alpha)
 
 DESC
 ($[x1], $[y1])から($[x2], $[y2])までの直線を $[color] で指定した色、
@@ -2508,8 +2508,8 @@ PURPOSE アルファブレンディングした直線を描画します。
 OBSOLETE Surface#draw_line
 
 PROTO
-draw_aa_line_alpha(x1,x2,y1,y2,color,alpha)
-drawAALineAlpha(x1,x2,y1,y2,color,alpha)
+draw_aa_line_alpha(x1,y1,x2,y2,color,alpha)
+drawAALineAlpha(x1,y1,x2,y2,color,alpha)
 
 DESC
 ($[x1], $[y1])から($[x2], $[y2])までの直線を $[color] で指定した色、

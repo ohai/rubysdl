@@ -2342,8 +2342,8 @@ LOCK
 PURPOSE Draw a line
 
 PROTO
-draw_line(x1,x2,y1,y2,color, aa=false, alpha=nil)
-drawLine(x1,x2,y1,y2,color, aa=false, alpha=nil)
+draw_line(x1,y1,x2,y2,color, aa=false, alpha=nil)
+drawLine(x1,y1,x2,y2,color, aa=false, alpha=nil)
 
 DESC
 Draws a $[color] line from ($[x1], $[y1]) to ($[x2], $[y2]).
@@ -2364,8 +2364,8 @@ LOCK
 PURPOSE Draw an antialiased line
 
 PROTO
-draw_aa_line(x1,x2,y1,y2,color)
-drawAALine(x1,x2,y1,y2,color)
+draw_aa_line(x1,y1,x2,y2,color)
+drawAALine(x1,y1,x2,y2,color)
 
 OBSOLETE Surface#draw_line
 DESC
@@ -2384,8 +2384,8 @@ PURPOSE Draw a blended line
 OBSOLETE Surface#draw_line
 
 PROTO
-draw_line_alpha(x1,x2,y1,y2,color,alpha)
-drawLineAlpha(x1,x2,y1,y2,color,alpha)
+draw_line_alpha(x1,y1,x2,y2,color,alpha)
+drawLineAlpha(x1,y1,x2,y2,color,alpha)
 
 DESC
 Draws a $[color] line from ($[x1], $[y1]) to ($[x2], $[y2])
@@ -2404,8 +2404,8 @@ PURPOSE Draw an antialiased line with blending.
 OBSOLETE Surface#draw_line
 
 PROTO
-draw_aa_line_alpha(x1,x2,y1,y2,color,alpha)
-drawAALineAlpha(x1,x2,y1,y2,color,alpha)
+draw_aa_line_alpha(x1,y1,x2,y2,color,alpha)
+drawAALineAlpha(x1,y1,x2,y2,color,alpha)
 
 DESC
 Draws a antialiased $[color] line from 
