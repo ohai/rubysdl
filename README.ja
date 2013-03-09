@@ -146,7 +146,7 @@ FreeBSDにはPortがあるのでそれを利用してください。
     Keffin Barnabyさん。
   * サンプルを提供してくださった Simon Strandgaard さん。
   * 有用な情報、バグレポートをくださった Rorien Dunnさん、Dennis Rankeさん、
-    Keita Urashimaさん。
+    Keita Urashima, Dwayne C. Litzenberger さん。
   * SDLの存在を教えてくれ、Ruby/SDLを作るきっかけを与えてくれた田畑さん。
   * SDLdoc 日本語翻訳プロジェクトにかかわったみなさま
   * サンプル用のフォントを提供してくれた原さん。

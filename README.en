@@ -117,6 +117,7 @@ You can install from source code as follows:
   Hara Yutaka: Sample TrueTypeFont, MacOS X support
   Members of #sdl-fan-jp @ FriendChat: bug reports and advices
   Cyross Makoto: Windows support
+  Dwayne C. Litzenberger: Some patches
 
 9 OTHER
   Some functions, especially SDL::MPEG methods and pallete handling methods,
