@@ -19,6 +19,7 @@
   */
 
 #include <SDL.h>
+#define RUBY_DONT_SUBST
 #include <ruby.h>
 #include <stdio.h>
 
