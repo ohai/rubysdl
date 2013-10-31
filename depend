@@ -16,3 +16,5 @@ rubysdl_smpeg.o: rubysdl_smpeg.c rubysdl.h
 rubysdl_sdlskk.o: rubysdl_sdlskk.c rubysdl.h
 rubysdl_kanji.o: rubysdl_kanji.c rubysdl.h SDL_kanji.h
 SDL_kanji.o: SDL_kanji.c SDL_kanji.h
+
+CLEANOBJS += sge/*.o

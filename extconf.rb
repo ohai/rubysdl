@@ -5,11 +5,10 @@ if /mswin32/ =~ CONFIG["arch"]
   have_library("SDL")
 else
   sdl_config = with_config('sdl-config', 'sdl-config')
-  
-  $CFLAGS += ' ' + `#{sdl_config} --cflags`.chomp
+  $CPPFLAGS += " " + `#{sdl_config} --cflags`.chomp
   $LOCAL_LIBS += ' ' + `#{sdl_config} --libs`.chomp
   
-  if /-Dmain=SDL_main/ =~ $CFLAGS then
+  if /-Dmain=SDL_main/ =~ $CPPFLAGS then
     def try_func(func, libs, headers = nil, &b)
       headers = cpp_include(headers)
       try_link(<<"SRC", libs, &b) or try_link(<<"SRC", libs, &b)
@@ -45,28 +44,28 @@ if enable_config("static-libs",false) then
 end
 
 if have_library("smpeg","SMPEG_new") then
-  $CFLAGS+= " -D HAVE_SMPEG "
+  $CPPFLAGS+= " -D HAVE_SMPEG "
   smpeg_config = with_config('smpeg-config', 'smpeg-config')
   if system(smpeg_config, "--version")
-    $CFLAGS += ' ' + `#{smpeg_config} --cflags`.chomp
+    $CPPFLAGS += ' ' + `#{smpeg_config} --cflags`.chomp
     $LOCAL_LIBS += ' ' + `#{smpeg_config} --libs`.chomp
   end
 end
 if have_library("SDL_mixer","Mix_OpenAudio") then
-  $CFLAGS+= " -D HAVE_SDL_MIXER "
+  $CPPFLAGS+= " -D HAVE_SDL_MIXER "
 end
 if have_library("SDL_image","IMG_Load") then
-  $CFLAGS+= " -D HAVE_SDL_IMAGE "
+  $CPPFLAGS+= " -D HAVE_SDL_IMAGE "
 end
 if have_library("SDL_ttf","TTF_Init") then
-  $CFLAGS+= " -D HAVE_SDL_TTF "
+  $CPPFLAGS+= " -D HAVE_SDL_TTF "
 end
-if enable_config("imported-sge", false)
-  $CFLAGS+= " -Isge -D HAVE_SGE "
-  $srcs += Dir.glob(File.join($srcdir, "sge/*.cpp"))
+use_imported_sge = enable_config("imported-sge", false)
+if use_imported_sge
+  $CPPFLAGS+= " -Isge -D HAVE_SGE "
 else
   if have_library("SGE","sge_Line") then
-    $CFLAGS+= " -D HAVE_SGE "
+    $CPPFLAGS+= " -D HAVE_SGE "
   end
 end
 
@@ -79,20 +78,20 @@ have_func("Mix_LoadMUS_RW")
 have_func("rb_thread_blocking_region")
 if enable_config("m17n", true)
   if have_func("rb_enc_str_new") && have_func("rb_str_export_to_enc")
-    $CFLAGS += " -D ENABLE_M17N "
+    $CPPFLAGS += " -D ENABLE_M17N "
     if enable_config("m17n-filesystem", false)
-      $CFLAGS += " -D ENABLE_M17N_FILESYSTEM "
+      $CPPFLAGS += " -D ENABLE_M17N_FILESYSTEM "
     end
   end
 end
 
 if have_library("SDLSKK","SDLSKK_Context_new") then
-  $CFLAGS+= " -D HAVE_SDLSKK "
+  $CPPFLAGS+= " -D HAVE_SDLSKK "
 end
 if enable_config("opengl",true) then
   dir_config('x11','/usr/X11R6')
   
-  $CFLAGS+= " -D ENABLE_OPENGL "
+  $CPPFLAGS+= " -D ENABLE_OPENGL "
 
   if /linux/ =~ CONFIG["arch"] then
     have_library("GL","glVertex3d")
@@ -102,6 +101,10 @@ if enable_config("opengl",true) then
   end
 end
 
-$objs = $srcs.map{|fname| fname.sub(/\.(c|cpp)\Z/, ".o") }
+if use_imported_sge
+  $srcs += Dir.glob(File.join($srcdir, "sge/*.cpp"))
+  $objs = $srcs.map{|fname| fname.sub(/\.(c|cpp)\Z/, ".o") }
+end
+
 create_makefile("sdl_ext")
 
