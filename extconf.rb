@@ -1,5 +1,6 @@
 require 'mkmf'
 
+$srcs = Dir.glob(File.join($srcdir, "*.c"))
 if /mswin32/ =~ CONFIG["arch"]
   have_library("SDL")
 else
@@ -54,14 +55,19 @@ end
 if have_library("SDL_mixer","Mix_OpenAudio") then
   $CFLAGS+= " -D HAVE_SDL_MIXER "
 end
-if have_library("SGE","sge_Line") then
-  $CFLAGS+= " -D HAVE_SGE "
-end
 if have_library("SDL_image","IMG_Load") then
   $CFLAGS+= " -D HAVE_SDL_IMAGE "
 end
 if have_library("SDL_ttf","TTF_Init") then
   $CFLAGS+= " -D HAVE_SDL_TTF "
+end
+if enable_config("imported-sge", false)
+  $CFLAGS+= " -Isge -D HAVE_SGE "
+  $srcs += Dir.glob(File.join($srcdir, "sge/*.cpp"))
+else
+  if have_library("SGE","sge_Line") then
+    $CFLAGS+= " -D HAVE_SGE "
+  end
 end
 
 have_func("TTF_OpenFontIndex")
@@ -95,5 +101,7 @@ if enable_config("opengl",true) then
     have_library("glu32","gluGetString")
   end
 end
+
+$objs = $srcs.map{|fname| fname.sub(/\.(c|cpp)\Z/, ".o") }
 create_makefile("sdl_ext")
 
