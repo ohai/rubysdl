@@ -183,6 +183,7 @@ module SDL
         module_eval(<<-EOS)
           def draw#{t}(dst, text, x, y, #{args})
             image = render#{t}(text, #{args})
+            return if image.nil?
             dst.put(image, x, y)
             image.destroy
           end
