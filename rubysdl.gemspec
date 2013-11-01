@@ -1,7 +1,8 @@
+# -*- Ruby -*-
 
 Gem::Specification.new do |spec|
   spec.name = "rubysdl"
-  spec.version = "2.1.2"
+  spec.version = "2.1.3"
   spec.summary = "The simple ruby extension library to use SDL"
   spec.description = <<-EOS
     Ruby/SDL is an extension library to use SDL(Simple DirectMedia
@@ -13,7 +14,7 @@ Gem::Specification.new do |spec|
   spec.author = "Ohbayashi Ippei"
   spec.email = "ohai@kmc.gr.jp"
   spec.homepage = "http://www.kmc.gr.jp/~ohai/"
-  spec.files = File.read("MANIFEST").split(/\n/)
+  spec.files = `git ls-files`.split(/\n/)
   spec.test_files = []
   spec.extensions = ["extconf.rb"]
   spec.has_rdoc = false

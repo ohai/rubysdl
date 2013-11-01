@@ -1,3 +1,9 @@
+version 2.1.3
+Fix following methods
+* SDL::TTF#draw*
+Update documents
+Fix compilation problem on FreeBSD(Thanks Rusmir Dusko)
+
 version 2.1.2
 Improbe the handling of strings
 Fix following methods

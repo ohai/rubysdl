@@ -1,3 +1,9 @@
+version 2.1.3
+以下のメソッドのバグを修正
+* SDL::TTF#draw*
+ドキュメントの修正
+FreeBSDでコンパイル時にエラーが生じる問題を修正(Thanks Rusmir Dusko)
+
 version 2.1.2
 Rubyの文字列とCの文字列の変換を厳密にするようにした
 以下のメソッドのバグを修正
