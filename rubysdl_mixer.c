@@ -429,7 +429,8 @@ static VALUE Mixer_s_loadMusFromString(VALUE class, VALUE str)
   
   result = Music_create(music);
   rb_iv_set(result, "buf", buf);
-  
+
+  RB_GC_GUARD(result); RB_GC_GUARD(buf);
   return result;
 }
 #endif

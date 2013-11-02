@@ -377,6 +377,8 @@ static VALUE Surface_s_loadBMPFromIO(VALUE class, VALUE io)
   if(image == NULL)
     rb_raise(eSDLError, "Couldn't Load BMP file from IO : %s",
              SDL_GetError());
+  
+  RB_GC_GUARD(guard);
   return Surface_create(image);
 }
 

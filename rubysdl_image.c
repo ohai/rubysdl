@@ -45,6 +45,8 @@ static VALUE Surface_s_loadFromIO(VALUE class,VALUE io)
     rb_raise(eSDLError,"Couldn't load image from IO: %s",
 	     SDL_GetError());
   }
+
+  RB_GC_GUARD(guard);
   return Surface_create(surface);
 }
 static VALUE Surface_s_loadFromString(VALUE class,VALUE str)

@@ -27,6 +27,8 @@ static int rubyio_read(SDL_RWops* context, void* ptr, int size, int maxnum)
   StringValue(str);
   
   memcpy(ptr, RSTRING_PTR(str), RSTRING_LEN(str));
+
+  RB_GC_GUARD(io); RB_GC_GUARD(str);
   return RSTRING_LEN(str)/size;
 }
 
@@ -60,6 +62,8 @@ static int rubyio_pseudo_seek(SDL_RWops* context, int offset, int whence)
     SDL_SetError("Unknown value for 'whence'");
     return(-1);
   }
+
+  RB_GC_GUARD(io); RB_GC_GUARD(str);
   return NUM2INT(rb_funcall(io, rb_intern("tell"), 0));
 }
 
