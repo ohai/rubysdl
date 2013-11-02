@@ -43,4 +43,4 @@ platforms have shorter clock ticks but this is the most
 common.
 
 Ruby's threads cannot preempt while waiting with this method.
-You can use Kernel#sleep instead.
+You should use Kernel#sleep instead.

@@ -458,6 +458,9 @@ continue executing while waiting for an event.
 In Ruby 1.8 and below, there is no way to release the GVL, so all Ruby threads
 suspend execution until this method finishes.
 
+This method may return nil when Ruby/SDL encounters an unknown type of event.
+You should treat this case.
+
 SEEALSO
 Event.poll
 
