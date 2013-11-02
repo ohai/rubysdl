@@ -1,28 +1,28 @@
 #!/bin/sh
 
 if [ "$1" = "" ];then
-    echo "Usage: $0 VERSION"
+    echo "Usage: $0 VERSION [TAG]"
     exit 1
 fi
 VERSION=$1
+
+if [ "$2" = "" ];then
+    TAG=$VERSION
+else
+    TAG=$2
+fi
+
 PACKAGE=rubysdl-$VERSION.tar.gz
 DIRNAME=rubysdl-$VERSION
 
-mkdir $DIRNAME
-mkdir ${DIRNAME}/lib
-mkdir ${DIRNAME}/sample
-mkdir ${DIRNAME}/doc
-mkdir ${DIRNAME}/doc-en
+git archive --format=tar --prefix=$DIRNAME/ $TAG | tar xf -
 
-make -C doc
-make install -C doc 
-make -C doc-en
-make install -C doc-en
+export RBENV_VERSION=system 
+LANG=ja_JP.eucJP make -C $DIRNAME/doc
+make install -C $DIRNAME/doc 
+make -C $DIRNAME/doc-en
+make install -C $DIRNAME/doc-en
 
-for file in `cat MANIFEST`
-do
-  cp $file ${DIRNAME}/$file
-done
 
 tar czf $PACKAGE $DIRNAME/*
 rm -r $DIRNAME
