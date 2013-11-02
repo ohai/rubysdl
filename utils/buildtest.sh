@@ -1,11 +1,11 @@
 #!/bin/sh
 
 RBENV_VERSION=trunk-modified ruby extconf.rb
-mkae clean; make
+make clean; make
 RBENV_VERSION=trunk-modified ruby -I lib -I. sample/sgetest.rb
 
 RBENV_VERSION=trunk-modified ruby extconf.rb --enable-imported-sge
-mkae clean; make
+make clean; make
 RBENV_VERSION=trunk-modified ruby -I lib -I. sample/sgetest.rb
 
 ruby extconf.rb
