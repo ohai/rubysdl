@@ -19,6 +19,9 @@
   */
 
 #include "rubysdl.h"
+#ifdef HAVE_RUBY_THREAD_H
+#include <ruby/thread.h>
+#endif
 
 static VALUE cEvent;
 static VALUE cActiveEvent;
@@ -182,23 +185,44 @@ static VALUE Event_s_poll(VALUE class)
   else
     return Qnil;
 }
-#ifdef HAVE_RB_THREAD_BLOCKING_REGION
+
+#if defined(HAVE_RB_THREAD_CALL_WITHOUT_GVL)
+static void* wait_event(void* ev)
+{
+  return (void*)(intptr_t)SDL_WaitEvent((SDL_Event*)ev);
+}
+#elif defined(HAVE_RB_THREAD_BLOCKING_REGION)
 static VALUE wait_event(void* ev)
 {
   return SDL_WaitEvent((SDL_Event*)ev);
 }
 #endif
+
+#if defined(HAVE_RB_THREAD_CALL_WITHOUT_GVL) || defined(HAVE_RB_THREAD_BLOCKING_REGION)
+static void ubf_SDL_WaitEvent(void* unused)
+{
+  SDL_Event ev;
+  ev.type = SDL_USEREVENT;
+  ev.user.code = 19002; /* Code for interrupt */
+  ev.user.data1 = ev.user.data2 = NULL;
+  
+  SDL_PushEvent(&ev);
+}
+#endif
+
 static VALUE Event_s_wait(VALUE class)
 {
   SDL_Event event;
   rb_secure(4);
-#ifdef HAVE_RB_THREAD_BLOCKING_REGION
   /* Ruby 1.9 and above: Release the global VM lock while calling
-   * SDL_WaitEvent, allowing other Ruby threads to execute. */
-  if( rb_thread_blocking_region(wait_event, &event, RUBY_UBF_IO, NULL) == 1)
-#else
-  /* Ruby 1.8 and below: Call SDL_WaitEvent directly.
+   * SDL_WaitEvent, allowing other Ruby threads to execute. 
+   * Ruby 1.8 and below: Call SDL_WaitEvent directly.
    * No other threads can execute during this call. */
+#if defined(HAVE_RB_THREAD_CALL_WITHOUT_GVL)
+  if ((intptr_t)rb_thread_call_without_gvl(wait_event, &event, ubf_SDL_WaitEvent, NULL) == 1)
+#elif defined(HAVE_RB_THREAD_BLOCKING_REGION)
+  if( rb_thread_blocking_region(wait_event, &event, ubf_SDL_WaitEvent, NULL) == 1)
+#else
   if( SDL_WaitEvent(&event) == 1)
 #endif
     return event_creators[event.type](&event);

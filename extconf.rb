@@ -76,6 +76,10 @@ have_func("TTF_FontFaceFamilyName")
 have_func("TTF_FontFaceStyleName")
 have_func("Mix_LoadMUS_RW")
 have_func("rb_thread_blocking_region")
+if have_header("ruby/thread.h")
+  have_func("rb_thread_call_without_gvl")
+end
+
 if enable_config("m17n", true)
   if have_func("rb_enc_str_new") && have_func("rb_str_export_to_enc")
     $CPPFLAGS += " -D ENABLE_M17N "
