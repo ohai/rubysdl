@@ -3,6 +3,7 @@ Fix following methods
 * SDL::TTF#draw*
 Update documents
 Fix compilation problem on FreeBSD(Thanks Rusmir Dusko)
+Fix codes about multi-thread
 
 version 2.1.2
 Improbe the handling of strings
