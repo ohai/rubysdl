@@ -63,6 +63,15 @@ You can install from source code as follows:
   rsdl is a wrapper of the Ruby interpreter. This wrapper
   prepares Cocoa framework before running the interpreter.
 
+= Use SGE without installing the library
+You can use SGE without intalling:
+  gem install rubysdl -- --enable-imported-sge
+or
+  ruby extconf.rb --enable-imported-sge
+
+However, please do not use this option if you have
+other way. Please install SGE separately if possible.
+
 = USE Ruby/SDL
   Write "require 'sdl'" in your Ruby script.
   If your system is OS X, you must use rsdl command 
