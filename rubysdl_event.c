@@ -179,7 +179,6 @@ static VALUE createVideoResizeEvent(SDL_Event *event)
 static VALUE Event_s_poll(VALUE class)
 {
   SDL_Event event;
-  rb_secure(4);
   if( SDL_PollEvent(&event) == 1)
     return event_creators[event.type](&event);
   else
@@ -213,7 +212,6 @@ static void ubf_SDL_WaitEvent(void* unused)
 static VALUE Event_s_wait(VALUE class)
 {
   SDL_Event event;
-  rb_secure(4);
   /* Ruby 1.9 and above: Release the global VM lock while calling
    * SDL_WaitEvent, allowing other Ruby threads to execute. 
    * Ruby 1.8 and below: Call SDL_WaitEvent directly.
@@ -245,7 +243,6 @@ static VALUE Event_s_push(VALUE class, VALUE event)
 {
   SDL_Event e;
   VALUE eventClass;
-  rb_secure(4);
   eventClass = CLASS_OF(event);
   if(eventClass == cActiveEvent){
     e.type = SDL_ACTIVEEVENT;
@@ -330,13 +327,11 @@ static VALUE Event_s_getAppState(VALUE class)
 
 static VALUE Event_s_enableUNICODE(VALUE class)
 {
-  rb_secure(4);
   SDL_EnableUNICODE(1);
   return Qnil;
 }
 static VALUE Event_s_disableUNICODE(VALUE class)
 {
-  rb_secure(4);
   SDL_EnableUNICODE(0);
   return Qnil;
 }

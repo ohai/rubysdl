@@ -23,7 +23,6 @@
 
 static VALUE sdl_s_init(VALUE mod, VALUE flags)
 {
-  rb_secure(4);
   if( SDL_Init(NUM2UINT(flags)) < 0 )
     rb_raise(eSDLError, "Couldn't initialize SDL: %s", SDL_GetError());
   return Qnil;
@@ -43,7 +42,6 @@ static VALUE sdl_s_inited_system(VALUE mod, VALUE flags)
 
 static VALUE sdl_s_putenv(VALUE mod, VALUE var)
 {
-  rb_secure(4);
   SafeStringValue(var);
   
   if( putenv(StringValueCStr(var)) < 0 ){

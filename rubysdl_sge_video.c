@@ -55,20 +55,17 @@ static VALUE BMFont_create(sge_bmpFont* font)
 
 static VALUE Surface_s_autoLock_p(VALUE klass)
 {
-  rb_secure(4);
   return INT2BOOL(sge_getLock());
 }
 
 static VALUE Surface_s_autoLockON(VALUE klass)
 {
-  rb_secure(4);
   sge_Lock_ON();
   return Qnil;
 }
 
 static VALUE Surface_s_autoLockOFF(VALUE klass)
 {
-  rb_secure(4);
   sge_Lock_OFF();
   return Qnil;
 }
@@ -80,7 +77,6 @@ static VALUE Surface_drawLine(int argc, VALUE* argv, VALUE self)
   Uint32 color;
   SDL_Surface* surface;
   
-  rb_secure(4);
   rb_scan_args(argc, argv, "52", &x1_, &y1_, &x2_, &y2_, &color_, &aa_, &alpha_);
   surface = Get_SDL_Surface(self);
   
@@ -139,7 +135,6 @@ static VALUE Surface_drawCircle(int argc, VALUE* argv, VALUE self)
   Sint16 x, y, r;
   Uint32 color;
 
-  rb_secure(4);
   rb_scan_args(argc, argv, "43", &x_, &y_, &r_, &color_, &fill_, &aa_, &alpha_);
 
   surface = Get_SDL_Surface(self);
@@ -183,7 +178,6 @@ static VALUE Surface_drawEllipse(int argc, VALUE* argv, VALUE self)
   Sint16 x, y, rx, ry;
   Uint32 color;
 
-  rb_secure(4);
   rb_scan_args(argc, argv, "53", &x_, &y_, &rx_, &ry_, &color_,
                &fill_, &aa_, &alpha_);
 
@@ -231,7 +225,6 @@ static VALUE Surface_drawBezier(int argc, VALUE* argv, VALUE self)
   int level;
   int i;
   
-  rb_secure(4);
   /* WARNING:  third argument of rb_scan_args
      should be 10-2, but rb_scan_args cannot accept such
      an argument.
@@ -290,7 +283,6 @@ static VALUE Surface_s_transformDraw(VALUE klass, VALUE src, VALUE dst,
                                      VALUE qx, VALUE qy,
                                      VALUE flags)
 {
-  rb_secure(4);
   sge_transform(Get_SDL_Surface(src), Get_SDL_Surface(dst),
                 NUM2DBL(angle), NUM2DBL(xscale), NUM2DBL(yscale),
 		NUM2INT(px), NUM2INT(py), NUM2INT(qx), NUM2INT(qy),
@@ -303,7 +295,6 @@ static VALUE Surface_transform(VALUE self, VALUE bgcolor, VALUE angle,
 {
   SDL_Surface *surface, *result;
   
-  rb_secure(4);
   surface = Get_SDL_Surface(self);
   result = sge_transform_surface(surface, VALUE2COLOR(bgcolor, surface->format), 
 				 NUM2DBL(angle), NUM2DBL(xscale), 
@@ -316,7 +307,6 @@ static VALUE Surface_transform(VALUE self, VALUE bgcolor, VALUE angle,
 static VALUE Surface_makeCollisionMap(VALUE self)
 {
   sge_cdata * cdata;
-  rb_secure(4);
   cdata = sge_make_cmap(Get_SDL_Surface(self));
   if(cdata == NULL)
     rb_raise(eSDLError, "Couldn't Create CollisionMap: %s", SDL_GetError());
@@ -370,7 +360,6 @@ static VALUE CollisionMap_set(VALUE self, VALUE vx, VALUE vy, VALUE vw, VALUE vh
   sge_cdata * cdata = Get_sge_cdata(self);
   Sint16 x,  y,  w,  h;
 
-  rb_secure(4);
   x = NUM2INT(vx);
   y = NUM2INT(vy);
   w = NUM2INT(vw);
@@ -387,7 +376,6 @@ static VALUE CollisionMap_clear(VALUE self, VALUE vx, VALUE vy, VALUE vw, VALUE 
   sge_cdata * cdata = Get_sge_cdata(self);
   Sint16 x,  y,  w,  h;
 
-  rb_secure(4);
   x = NUM2INT(vx);
   y = NUM2INT(vy);
   w = NUM2INT(vw);
@@ -415,7 +403,6 @@ static VALUE BMFont_open(VALUE klass,  VALUE file,  VALUE flags)
 
 {
   sge_bmpFont* font;
-  rb_secure(4);
   ExportFilenameStringValue(file);
   
   font = sge_BF_OpenFont(RSTRING_PTR(file), NUM2UINT(flags));
@@ -468,7 +455,6 @@ static VALUE BMFont_textout(VALUE self,
                             VALUE x,  VALUE y)
 
 {
-  rb_secure(4);
   SafeStringValue(string);
   
   sge_BF_textout(Get_SDL_Surface(surface), Get_sge_bmpFont(self),

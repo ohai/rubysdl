@@ -108,7 +108,6 @@ static VALUE Mixer_s_driverName(VALUE mod)
 static VALUE Mixer_s_open(VALUE mod, VALUE frequency, VALUE format,
 			   VALUE channels, VALUE chunksize)
 {
-  rb_secure(4);
   
   if(Mix_opened()){
     rb_raise(eSDLError, "already initialize SDL::Mixer");
@@ -123,7 +122,6 @@ static VALUE Mixer_s_open(VALUE mod, VALUE frequency, VALUE format,
 
 static VALUE Mixer_s_close(VALUE mod)
 {
-  rb_secure(4);
   Mix_CloseAudio();
   return Qnil;
 }
@@ -143,7 +141,6 @@ static VALUE Mixer_s_spec(VALUE mod)
 
 static VALUE Mixer_s_allocateChannels(VALUE mod, VALUE numchannels)
 {
-  rb_secure(4);
   return INT2FIX( Mix_AllocateChannels(NUM2INT(numchannels)) );  
 }
 
@@ -151,7 +148,6 @@ static VALUE Mixer_s_allocateChannels(VALUE mod, VALUE numchannels)
 static VALUE Mixer_s_playChannel(VALUE mod, VALUE channel, VALUE wave, VALUE loops)
 {
   int play_channel;
-  rb_secure(4);
 
   play_channel = Mix_PlayChannel(NUM2INT(channel),
                                  Get_Mix_Chunk(wave),
@@ -243,7 +239,6 @@ static VALUE Wave_s_load(VALUE class, VALUE filename)
 {
   Mix_Chunk *chunk;
   
-  rb_secure(4);
   ExportFilenameStringValue(filename);
   
   chunk = Mix_LoadWAV(RSTRING_PTR(filename));
@@ -268,7 +263,6 @@ static VALUE Wave_s_loadFromIO(VALUE class, VALUE io)
 static VALUE Wave_s_loadFromString(VALUE class, VALUE str)
 {
   Mix_Chunk *wave;
-  rb_secure(4);
   SafeStringValue(str);
   
   wave = Mix_LoadWAV_RW(SDL_RWFromConstMem(RSTRING_PTR(str),
@@ -285,7 +279,6 @@ static VALUE Wave_s_loadFromString(VALUE class, VALUE str)
 /* Volume setting functions and methods : volume in 0..128 */
 static VALUE Mixer_s_setVolume(VALUE mod, VALUE channel, VALUE volume)
 {
-  rb_secure(4);
   return INT2FIX(Mix_Volume(NUM2INT(channel), NUM2INT(volume)));
 }
 
@@ -297,28 +290,24 @@ static VALUE Wave_s_setVolume(VALUE self, VALUE volume)
 /* Halt,Pause function */
 static VALUE Mixer_s_halt(VALUE mod, VALUE channel)
 {
-  rb_secure(4);
   Mix_HaltChannel(NUM2INT(channel));
   return Qnil;
 }
 
 static VALUE Mixer_s_pause(VALUE mod, VALUE channel)
 {
-  rb_secure(4);
   Mix_Pause(NUM2INT(channel));
   return Qnil;
 }
 
 static VALUE Mixer_s_resume(VALUE mod, VALUE channel)
 {
-  rb_secure(4);
   Mix_Resume(NUM2INT(channel));
   return Qnil;
 }
 
 static VALUE Mixer_s_pause_p(VALUE mod, VALUE channel)
 {
-  rb_secure(4);
   return INT2FIX(Mix_Paused(NUM2INT(channel)));
 }
 static VALUE Mixer_s_fadeOut(VALUE mod, VALUE channel, VALUE ms)
@@ -340,14 +329,12 @@ static VALUE Mixer_s_fading(VALUE mod, VALUE which)
 #define MakeSimpleRubyFunc(rubyFunc, sdlFunc) \
 static VALUE rubyFunc(VALUE mod) \
 { \
-  rb_secure(4); \
   sdlFunc(); \
   return Qnil; \
 } \
 
 static VALUE Mixer_s_playMusic(VALUE mod, VALUE music, VALUE loops)
 {
-  rb_secure(4);
 
   Mix_PlayMusic(Get_Mix_Music(music), NUM2INT(loops));
   playing_music = music; /* to avoid gc problem */
@@ -356,7 +343,6 @@ static VALUE Mixer_s_playMusic(VALUE mod, VALUE music, VALUE loops)
 
 static VALUE Mixer_s_fadeInMusic(VALUE mod, VALUE music, VALUE loops, VALUE ms)
 {
-  rb_secure(4);
   Mix_FadeInMusic(Get_Mix_Music(music), NUM2INT(loops), NUM2INT(ms));
   playing_music = music; /* to avoid gc problem */
   return Qnil;
@@ -364,14 +350,12 @@ static VALUE Mixer_s_fadeInMusic(VALUE mod, VALUE music, VALUE loops, VALUE ms)
 
 static VALUE Mixer_s_setVolumeMusic(VALUE mod, VALUE volume)
 {
-  rb_secure(4);
   Mix_VolumeMusic( NUM2INT(volume) );
   return Qnil;
 }
 
 static VALUE Mixer_s_fadeOutMusic(VALUE mod, VALUE ms)
 {
-  rb_secure(4);
   Mix_FadeOutMusic(NUM2INT(ms));
   return Qnil;
 }
@@ -400,7 +384,6 @@ static VALUE Music_s_load(VALUE class, VALUE filename)
 {
   Mix_Music* music;
   
-  rb_secure(4);
   ExportFilenameStringValue(filename);
   
   music = Mix_LoadMUS(RSTRING_PTR(filename));

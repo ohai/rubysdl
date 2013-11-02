@@ -52,7 +52,6 @@ static VALUE CD_s_alloc(VALUE klass)
 static VALUE CD_initialize(VALUE self, VALUE drive)
 {
   CD* cd = GetCD(self);
-  rb_secure(4);
   
   cd->cd = SDL_CDOpen(NUM2INT(drive));
   if(cd->cd == NULL)
@@ -63,12 +62,10 @@ static VALUE CD_initialize(VALUE self, VALUE drive)
 
 static VALUE CD_s_numDrive(VALUE klass)
 {
-  rb_secure(4);
   return INT2FIX(SDL_CDNumDrives());
 }
 static VALUE CD_s_name(VALUE klass, VALUE drive)
 {
-  rb_secure(4);
   return rb_str_new2(SDL_CDName(NUM2INT(drive)));
 }
 static VALUE CD_s_open(VALUE klass, VALUE drive)
@@ -79,12 +76,10 @@ static VALUE CD_s_open(VALUE klass, VALUE drive)
 }
 static VALUE CD_status(VALUE self)
 {
-  rb_secure(4);
   return INT2FIX(SDL_CDStatus(Get_SDL_CD(self)));
 }
 static VALUE CD_play(VALUE self, VALUE start, VALUE length)
 {
-  rb_secure(4);
   if( SDL_CDPlay(Get_SDL_CD(self), NUM2INT(start), NUM2INT(length))==-1 )
     rb_raise(eSDLError, "Couldn't play cd :%s", SDL_GetError() );
   return Qnil;
@@ -92,7 +87,6 @@ static VALUE CD_play(VALUE self, VALUE start, VALUE length)
 static VALUE CD_playTracks(VALUE self, VALUE start_track, VALUE start_frame, 
 			       VALUE ntracks, VALUE nframes)
 {
-  rb_secure(4);
   if( SDL_CDPlayTracks(Get_SDL_CD(self), NUM2INT(start_track),
                        NUM2INT(start_frame), NUM2INT(ntracks),
 		       NUM2INT(nframes))==-1 )
@@ -101,28 +95,24 @@ static VALUE CD_playTracks(VALUE self, VALUE start_track, VALUE start_frame,
 }
 static VALUE CD_pause(VALUE self)
 {
-  rb_secure(4);
   if( SDL_CDPause(Get_SDL_CD(self))==-1 )
     rb_raise(eSDLError, "cd pause failed :%s", SDL_GetError());
   return Qnil;
 }
 static VALUE CD_resume(VALUE self)
 {
-  rb_secure(4);
   if( SDL_CDResume(Get_SDL_CD(self))==-1 )
     rb_raise(eSDLError, "cd resume failed :%s", SDL_GetError());
   return Qnil;
 }
 static VALUE CD_stop(VALUE self)
 {
-  rb_secure(4);
   if( SDL_CDStop(Get_SDL_CD(self))==-1 )
     rb_raise(eSDLError, "cd pause failed :%s", SDL_GetError());
   return Qnil;
 }
 static VALUE CD_eject(VALUE self)
 {
-  rb_secure(4);
   if( SDL_CDEject(Get_SDL_CD(self))==-1 )
     rb_raise(eSDLError, "cd eject failed :%s", SDL_GetError());
   return Qnil;

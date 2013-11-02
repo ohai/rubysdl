@@ -62,7 +62,6 @@ static VALUE TTF_create(TTF_Font* font)
 
 static VALUE TTF_s_init(VALUE klass)
 {
-  rb_secure(4);
   if(TTF_Init() == -1)
     rb_raise(eSDLError,"Couldn't initialize TTF engine: %s",TTF_GetError());
   ttf_init = 1;
@@ -79,7 +78,6 @@ static VALUE Font_s_open(int argc, VALUE *argv, VALUE class)
   TTF_Font *font;
   VALUE filename, size, index;
   
-  rb_secure(4);
   rb_scan_args( argc, argv, "21", &filename, &size, &index );
 
   ExportFilenameStringValue(filename);
@@ -185,7 +183,6 @@ static VALUE render(VALUE self, VALUE text,
 {
   SDL_Surface *surface;
   
-  rb_secure(4);
   StringValue(text);
 #ifdef ENABLE_M17N
   if (convert_enc)

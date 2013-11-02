@@ -112,7 +112,6 @@ Uint32 VALUE2COLOR(VALUE color,SDL_PixelFormat *format)
 static VALUE Screen_s_get(VALUE klass)
 {
   SDL_Surface *surface;
-  rb_secure(4);
   surface = SDL_GetVideoSurface();
   if(surface==NULL)
     rb_raise(eSDLError,"Couldn't get video surface: %s",SDL_GetError());
@@ -122,7 +121,6 @@ static VALUE Screen_s_get(VALUE klass)
 static VALUE Screen_s_driverName(VALUE klass)
 {
   char namebuf[256];
-  rb_secure(4);
   if(SDL_VideoDriverName(namebuf, sizeof(namebuf)) == NULL) {
     rb_raise(eSDLError, "SDL is not initialized yet: %s", SDL_GetError());
   }
@@ -135,7 +133,6 @@ static VALUE Screen_s_listModes(VALUE klass,VALUE flags)
   int i;
   VALUE array;
 
-  rb_secure(4);
   modes = SDL_ListModes(NULL,NUM2UINT(flags));
 
   if( modes == NULL )
@@ -156,7 +153,6 @@ static VALUE Screen_s_listModes(VALUE klass,VALUE flags)
 static VALUE Screen_s_checkMode(VALUE klass,VALUE w,VALUE h,VALUE bpp,
                                 VALUE flags)
 {
-  rb_secure(4);
   return INT2FIX(SDL_VideoModeOK(NUM2INT(w),NUM2INT(h),NUM2INT(bpp),
                                  NUM2UINT(flags)));
 }
@@ -165,7 +161,6 @@ static VALUE Screen_s_info(VALUE klass)
 {
   const SDL_VideoInfo *info;
   VALUE obj;
-  rb_secure(4);
   
   info = SDL_GetVideoInfo();
   if(info==NULL)
@@ -188,7 +183,6 @@ static VALUE Screen_s_info(VALUE klass)
 
 static VALUE Screen_updateRect(VALUE self,VALUE x,VALUE y,VALUE w,VALUE h)
 {
-  rb_secure(4);
   SDL_UpdateRect(Get_SDL_Surface(self),
                  NUM2INT(x),NUM2INT(y),NUM2INT(w),NUM2INT(h));
   return Qnil;
@@ -213,7 +207,6 @@ static VALUE Screen_updateRects(int argc, VALUE *argv, VALUE self)
 
 static VALUE Screen_flip(VALUE self)
 {
-  rb_secure(4);
   if( SDL_Flip(Get_SDL_Surface(self)) < 0 ){
     rb_raise(eSDLError,"flip fail : %s",SDL_GetError());
   }
@@ -222,7 +215,6 @@ static VALUE Screen_flip(VALUE self)
 
 static VALUE Screen_toggleFullScreen(VALUE self)
 {
-  rb_secure(4);
   if( SDL_WM_ToggleFullScreen(Get_SDL_Surface(self)) == 0 ){
     rb_raise( eSDLError,"toggle full screen fail : %s", SDL_GetError() );
   }
@@ -233,7 +225,6 @@ static VALUE Screen_s_open(VALUE klass,VALUE w,VALUE h,VALUE bpp,
                            VALUE flags)
 {
   SDL_Surface *screen;
-  rb_secure(4);
   screen=SDL_SetVideoMode(NUM2INT(w),NUM2INT(h),NUM2INT(bpp),
 			  NUM2UINT(flags));
   if( screen==NULL ){
@@ -245,7 +236,6 @@ static VALUE Screen_s_open(VALUE klass,VALUE w,VALUE h,VALUE bpp,
 
 static VALUE Screen_s_setGamma(VALUE klass,VALUE rgamma,VALUE ggamma,VALUE bgamma)
 {
-  rb_secure(4);
   if(SDL_SetGamma(NUM2DBL(rgamma),NUM2DBL(ggamma),NUM2DBL(bgamma))==-1)
     rb_raise(eSDLError,"set gamma failed: %s",SDL_GetError());
   return Qnil;
@@ -256,7 +246,6 @@ static VALUE Screen_s_getGammaRamp(VALUE klass)
   Uint16 table[3][256];
   VALUE ary_table, ary_subtable;
   int i,j;
-  rb_secure(4);
   
   if( SDL_GetGammaRamp( table[0], table[1], table[2] ) == -1 ){
     rb_raise(eSDLError,"cannot get gamma lookup table: %s",SDL_GetError());
@@ -279,7 +268,6 @@ static VALUE Screen_s_setGammaRamp(VALUE klass, VALUE ary_table)
   VALUE subtable;
   int i,j;
   
-  rb_secure(4);
   Check_Type(ary_table, T_ARRAY);
   
   for( i=0; i<3; ++i ){
@@ -301,7 +289,6 @@ static VALUE Surface_s_create(VALUE klass,VALUE flags,VALUE w,VALUE h,
   SDL_Surface* surface;
   SDL_PixelFormat* format;
 
-  rb_secure(4);
   format = Get_SDL_PixelFormat(pixel_format);
   surface = SDL_CreateRGBSurface(NUM2UINT(flags),NUM2INT(w),NUM2INT(h),
                                  format->BitsPerPixel,
@@ -320,7 +307,6 @@ static VALUE Surface_s_createWithFormat(VALUE klass,VALUE flags,VALUE w,
 {
   SDL_Surface *surface;
 
-  rb_secure(4);
   surface = SDL_CreateRGBSurface(NUM2UINT(flags),NUM2INT(w),NUM2INT(h),
                                  NUM2UINT(depth),NUM2UINT(Rmask),
                                  NUM2UINT(Gmask),NUM2UINT(Bmask),
@@ -358,7 +344,6 @@ static VALUE Surface_s_createFrom(VALUE klass,VALUE pixels,VALUE w,
 static VALUE Surface_s_loadBMP(VALUE klass,VALUE filename)
 {
   SDL_Surface *image;
-  rb_secure(4);
   ExportFilenameStringValue(filename);
   
   image = SDL_LoadBMP(RSTRING_PTR(filename));
@@ -385,7 +370,6 @@ static VALUE Surface_s_loadBMPFromIO(VALUE class, VALUE io)
 static VALUE Surface_s_loadBMPFromString(VALUE class, VALUE str)
 {
   SDL_Surface* image;
-  rb_secure(4);
   SafeStringValue(str);
   
   image = SDL_LoadBMP_RW(SDL_RWFromConstMem(RSTRING_PTR(str),
@@ -399,7 +383,6 @@ static VALUE Surface_s_loadBMPFromString(VALUE class, VALUE str)
 
 static VALUE Surface_saveBMP(VALUE self,VALUE filename)
 {
-  rb_secure(4);
   ExportFilenameStringValue(filename);
   if( SDL_SaveBMP(Get_SDL_Surface(self), RSTRING_PTR(filename))==-1 ){
     rb_raise(eSDLError,"cannot save %s: %s",RSTRING_PTR(filename),SDL_GetError());
@@ -447,7 +430,6 @@ static VALUE Surface_displayFormat(VALUE self)
 {
   SDL_Surface *result;
 
-  rb_secure(4);
   result = SDL_DisplayFormat(Get_SDL_Surface(self));
   if(result==NULL){
     rb_raise(eSDLError,"Couldn't convert surface format: %s",SDL_GetError());
@@ -459,7 +441,6 @@ static VALUE Surface_displayFormatAlpha(VALUE self)
 {
   SDL_Surface *result;
 
-  rb_secure(4);
   result = SDL_DisplayFormatAlpha(Get_SDL_Surface(self));
   if(result==NULL){
     rb_raise(eSDLError,"Couldn't convert surface format: %s",SDL_GetError());
@@ -470,7 +451,6 @@ static VALUE Surface_displayFormatAlpha(VALUE self)
 static VALUE Surface_setColorKey(VALUE self,VALUE flag,VALUE key)
 {
   SDL_Surface *surface = Get_SDL_Surface(self);
-  rb_secure(4);
   
   if( SDL_SetColorKey(surface,NUM2UINT(flag),VALUE2COLOR(key,surface->format))
       < 0 ){
@@ -494,7 +474,6 @@ static VALUE Surface_s_blit(VALUE klass,VALUE src,VALUE srcX,VALUE srcY,
   SDL_Rect *sr, *dr;
   int result;
 
-  rb_secure(4);
   SetRect(dst_rect,destX,destY,srcW,srcH);
   SetRect(src_rect,srcX,srcY,srcW,srcH);
 
@@ -519,7 +498,6 @@ static VALUE Surface_s_blit(VALUE klass,VALUE src,VALUE srcX,VALUE srcY,
 
 static VALUE Surface_setAlpha(VALUE self,VALUE flag,VALUE alpha)
 {
-  rb_secure(4);
   SDL_SetAlpha(Get_SDL_Surface(self),NUM2UINT(flag),NUM2INT(alpha));
   return Qnil;
 }
@@ -528,7 +506,6 @@ static VALUE Surface_setClipRect(VALUE self,VALUE x,VALUE y,VALUE w,VALUE h)
 {
   SDL_Rect rect;
 
-  rb_secure(4);
   SetRect(rect,x,y,w,h);
   SDL_SetClipRect(Get_SDL_Surface(self),&rect);
   return Qnil;
@@ -538,7 +515,6 @@ static VALUE Surface_getClipRect(VALUE self)
 {
   SDL_Rect rect;
 
-  rb_secure(4);
   SDL_GetClipRect( Get_SDL_Surface(self), &rect );
   return rb_ary_new3(INT2FIX(rect.x),INT2FIX(rect.y),
                      INT2FIX(rect.w),INT2FIX(rect.h));
@@ -550,7 +526,6 @@ static VALUE Surface_fillRect(VALUE self,VALUE x,VALUE y,VALUE w,VALUE h,
   SDL_Surface *surface = Get_SDL_Surface(self);
   SDL_Rect rect;
 
-  rb_secure(4);
   SetRect(rect,x,y,w,h);
   if( SDL_FillRect(surface,&rect,VALUE2COLOR(color,surface->format)) < 0 ){
     rb_raise(eSDLError,"fillRect fail: %s",SDL_GetError());
@@ -617,7 +592,6 @@ static VALUE Surface_setPalette(VALUE self,VALUE flags,
   check_colors(colors,firstcolor);
   set_colors_to_array(colors,palette);
 
-  rb_secure(4);
   return INT2BOOL(SDL_SetPalette(Get_SDL_Surface(self), NUM2UINT(flags), palette,
                                  NUM2INT(firstcolor), RARRAY_LEN(colors)));
 }
@@ -626,7 +600,6 @@ static VALUE Surface_setColors(VALUE self,VALUE colors,VALUE firstcolor)
 {
   SDL_Color palette[256];
 
-  rb_secure(4);
   check_colors(colors,firstcolor);
   set_colors_to_array(colors,palette);
   return INT2BOOL(SDL_SetColors(Get_SDL_Surface(self), palette,
@@ -657,17 +630,14 @@ static VALUE PixelFormat_pallete(VALUE self)
 /* surface lock methods */
 static VALUE Surface_mustlock_p(VALUE self)
 {
-  rb_secure(4);
   return INT2BOOL(SDL_MUSTLOCK(Get_SDL_Surface(self)));
 }
 static VALUE Surface_lock(VALUE self)
 {
-  rb_secure(4);
   return INT2FIX(SDL_LockSurface(Get_SDL_Surface(self)));
 }
 static VALUE Surface_unlock(VALUE self)
 {
-  rb_secure(4);
   SDL_UnlockSurface(Get_SDL_Surface(self));
   return Qnil;
 }

@@ -307,7 +307,6 @@ static void define_const(void)
 
 static VALUE Key_s_scan(VALUE mod)
 {
-  rb_secure(4);
   key_state=SDL_GetKeyState(NULL);
   mod_state=SDL_GetModState();
   return Qnil;
@@ -316,7 +315,6 @@ static VALUE Key_s_scan(VALUE mod)
 static VALUE Key_s_press_p(VALUE mod, VALUE keysym)
 {
   int sym = NUM2INT(keysym);
-  rb_secure(4);
   if(sym < SDLK_FIRST || SDLK_LAST < sym )
     rb_raise(eSDLError, "%d is out of key", sym);
   if(key_state == NULL)
@@ -327,13 +325,11 @@ static VALUE Key_s_press_p(VALUE mod, VALUE keysym)
 
 static VALUE Key_s_modState(VALUE mod)
 {
-  rb_secure(4);
   return UINT2NUM(mod_state);
 }
 
 static VALUE Key_s_enableKeyRepeat(VALUE mod, VALUE delay, VALUE interval)
 {
-  rb_secure(4);
   if( SDL_EnableKeyRepeat(NUM2INT(delay), NUM2INT(interval))==-1 ){
     rb_raise(eSDLError, "enable key repeat fail: %s", SDL_GetError());
   }
@@ -342,7 +338,6 @@ static VALUE Key_s_enableKeyRepeat(VALUE mod, VALUE delay, VALUE interval)
 
 static VALUE Key_s_disableKeyRepeat(VALUE mod)
 {
-  rb_secure(4);
   if( SDL_EnableKeyRepeat(0, 0)==-1 ){
     rb_raise(eSDLError, "disable key repeat fail: %s", SDL_GetError());
   }

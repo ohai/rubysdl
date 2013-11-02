@@ -25,7 +25,6 @@ static VALUE Mouse_s_state(VALUE mod)
 {
   int x,y;
   Uint8 result;
-  rb_secure(4);
   result = SDL_GetMouseState(&x, &y);
   return rb_ary_new3(5,INT2FIX(x), INT2FIX(y),
                      INT2BOOL(result&SDL_BUTTON_LMASK),
@@ -35,7 +34,6 @@ static VALUE Mouse_s_state(VALUE mod)
 
 static VALUE Mouse_s_warp(VALUE mod, VALUE x, VALUE y)
 {
-  rb_secure(4);
   SDL_WarpMouse(NUM2UINT(x), NUM2UINT(y));
   return Qnil;
 }
@@ -45,7 +43,6 @@ static VALUE Mouse_s_setCursor_imp(VALUE mod,VALUE data,VALUE mask,VALUE w,
 {
   SDL_Cursor *new_cursor;
 
-  rb_secure(4);
   SafeStringValue(data);
   SafeStringValue(mask);
 
@@ -76,7 +73,6 @@ static VALUE Mouse_s_setCursor_imp(VALUE mod,VALUE data,VALUE mask,VALUE w,
   
 static VALUE Mouse_s_show(VALUE mod)
 {
-  rb_secure(4);
   SDL_ShowCursor(1);
   return Qnil;
 }

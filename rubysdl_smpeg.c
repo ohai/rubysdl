@@ -91,7 +91,6 @@ static VALUE MPEG_s_load(VALUE klass, VALUE filename)
   SMPEG *smpeg;
   char error_msg[2048];
   
-  rb_secure(4);
   ExportFilenameStringValue(filename);
   
   smpeg = SMPEG_new(RSTRING_PTR(filename), NULL, 0);

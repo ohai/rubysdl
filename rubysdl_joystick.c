@@ -70,7 +70,6 @@ static VALUE Joystick_s_alloc(VALUE klass)
 static VALUE Joystick_initialize(VALUE self, VALUE index)
 {
   Joystick* joy = GetJoystick(self);
-  rb_secure(4);
   
   joy->joystick = SDL_JoystickOpen(NUM2INT(index));
   if( joy->joystick == NULL ){
@@ -83,13 +82,11 @@ static VALUE Joystick_initialize(VALUE self, VALUE index)
 /* class methods */
 static VALUE Joystick_s_poll(VALUE klass)
 {
-  rb_secure(4);
   return INT2BOOL(SDL_JoystickEventState(SDL_QUERY) == SDL_ENABLE);
 }
 
 static VALUE Joystick_s_set_poll(VALUE klass, VALUE poll)
 {
-  rb_secure(4);
   
   if(RTEST(poll))
     SDL_JoystickEventState(SDL_ENABLE);
@@ -100,26 +97,22 @@ static VALUE Joystick_s_set_poll(VALUE klass, VALUE poll)
 
 static VALUE Joystick_s_num(VALUE klass)
 {
-  rb_secure(4);
   return INT2FIX(SDL_NumJoysticks());
 }
 
 static VALUE Joystick_s_indexName(VALUE klass, VALUE index)
 {
-  rb_secure(4);
   return rb_str_new2(SDL_JoystickName(NUM2INT(index)));
 }
 
 static VALUE Joystick_s_open_p(VALUE klass, VALUE index)
 {
-  rb_secure(4);
   return INT2BOOL(SDL_JoystickOpened(NUM2INT(index)));
 }
 
 static VALUE Joystick_s_open(VALUE klass, VALUE index)
 {
   VALUE newobj;
-  rb_secure(4);
   
   newobj = Joystick_s_alloc(klass);
   Joystick_initialize(newobj, index);
@@ -128,7 +121,6 @@ static VALUE Joystick_s_open(VALUE klass, VALUE index)
 
 static VALUE Joystick_s_update(VALUE klass)
 {
-  rb_secure(4);
   SDL_JoystickUpdate();
   return Qnil;
 }
@@ -137,7 +129,6 @@ static VALUE Joystick_s_update(VALUE klass)
 static VALUE Joystick_close(VALUE self)
 {
   Joystick* joy;
-  rb_secure(4);
   
   joy = GetJoystick(self);
   SDL_JoystickClose(joy->joystick);
@@ -147,7 +138,6 @@ static VALUE Joystick_close(VALUE self)
 static VALUE Joystick_index(VALUE self)
 {
   SDL_Joystick* joystick;
-  rb_secure(4);
   
   joystick = Get_SDL_Joystick(self);
   return INT2FIX(SDL_JoystickIndex(joystick));
@@ -156,7 +146,6 @@ static VALUE Joystick_index(VALUE self)
 static VALUE Joystick_numAxes(VALUE self)
 {
   SDL_Joystick* joystick;
-  rb_secure(4);
   
   joystick = Get_SDL_Joystick(self);
   return INT2FIX(SDL_JoystickNumAxes(joystick));
@@ -165,7 +154,6 @@ static VALUE Joystick_numAxes(VALUE self)
 static VALUE Joystick_numBalls(VALUE self)
 {
   SDL_Joystick *joystick;
-  rb_secure(4);
   
   joystick = Get_SDL_Joystick(self);
   return INT2FIX(SDL_JoystickNumBalls(joystick));
@@ -174,7 +162,6 @@ static VALUE Joystick_numBalls(VALUE self)
 static VALUE Joystick_numHats(VALUE self)
 {
   SDL_Joystick *joystick;
-  rb_secure(4);
   joystick = Get_SDL_Joystick(self);
   return INT2FIX(SDL_JoystickNumHats(joystick));
 }
@@ -182,7 +169,6 @@ static VALUE Joystick_numHats(VALUE self)
 static VALUE Joystick_numButtons(VALUE self)
 {
   SDL_Joystick *joystick;
-  rb_secure(4);
   
   joystick = Get_SDL_Joystick(self);
   return INT2FIX(SDL_JoystickNumButtons(joystick));
@@ -191,7 +177,6 @@ static VALUE Joystick_numButtons(VALUE self)
 static VALUE Joystick_getAxis(VALUE self, VALUE axis)
 {
   SDL_Joystick *joystick;
-  rb_secure(4);
   
   joystick = Get_SDL_Joystick(self);
   return INT2NUM(SDL_JoystickGetAxis(joystick, NUM2INT(axis)));
@@ -200,7 +185,6 @@ static VALUE Joystick_getAxis(VALUE self, VALUE axis)
 static VALUE Joystick_getHat(VALUE self, VALUE hat)
 {
   SDL_Joystick *joystick;
-  rb_secure(4);
   
   joystick = Get_SDL_Joystick(self);
   return UINT2NUM(SDL_JoystickGetHat(joystick, NUM2INT(hat)));
@@ -209,7 +193,6 @@ static VALUE Joystick_getHat(VALUE self, VALUE hat)
 static VALUE Joystick_getButton(VALUE self, VALUE button)
 {
   SDL_Joystick *joystick;
-  rb_secure(4);
   
   joystick = Get_SDL_Joystick(self);
   return INT2BOOL(SDL_JoystickGetButton(joystick, NUM2INT(button)));
@@ -220,7 +203,6 @@ static VALUE Joystick_getBall(VALUE self, VALUE ball)
   SDL_Joystick *joystick;
   int dx,dy;
 
-  rb_secure(4);
   
   joystick = Get_SDL_Joystick(self);
   if( SDL_JoystickGetBall(joystick, NUM2INT(ball), &dx, &dy) == -1 )

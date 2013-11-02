@@ -25,7 +25,6 @@ static VALUE Surface_s_load(VALUE klass, VALUE filename)
 {
   SDL_Surface *surface;
   
-  rb_secure(4);
   ExportFilenameStringValue(filename);
 
   surface = IMG_Load(RSTRING_PTR(filename));
@@ -52,7 +51,6 @@ static VALUE Surface_s_loadFromIO(VALUE class,VALUE io)
 static VALUE Surface_s_loadFromString(VALUE class,VALUE str)
 {
   SDL_Surface *surface;
-  rb_secure(4);
   SafeStringValue(str);
   
   surface = IMG_Load_RW(SDL_RWFromConstMem(RSTRING_PTR(str),

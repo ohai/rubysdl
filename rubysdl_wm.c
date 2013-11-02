@@ -23,7 +23,6 @@ static VALUE WM_s_caption(VALUE mod)
 {
   char *title, *icon;
   
-  rb_secure(4);
   SDL_WM_GetCaption(&title, &icon);
 #ifdef ENABLE_M17N
   return rb_ary_new3(2,
@@ -35,7 +34,6 @@ static VALUE WM_s_caption(VALUE mod)
 }
 static VALUE WM_s_setCaption(VALUE mod, VALUE title, VALUE icon)
 {
-  rb_secure(4);
   ExportStringValueToEnc(title, utf8_enc);
   ExportStringValueToEnc(icon, utf8_enc);
   SDL_WM_SetCaption(RSTRING_PTR(title), RSTRING_PTR(icon));
@@ -43,13 +41,11 @@ static VALUE WM_s_setCaption(VALUE mod, VALUE title, VALUE icon)
 }
 static VALUE WM_s_set_icon(VALUE mod, VALUE icon)
 {
-  rb_secure(4);
   SDL_WM_SetIcon(Get_SDL_Surface(icon), NULL);
   return Qnil;
 }
 static VALUE WM_s_iconify(VALUE mod)
 {
-  rb_secure(4);
   if( ! SDL_WM_IconifyWindow() )
     rb_raise( eSDLError,"iconify failed: %s",SDL_GetError() );
   return Qnil;
@@ -57,7 +53,6 @@ static VALUE WM_s_iconify(VALUE mod)
 
 static VALUE WM_s_grabInput(VALUE mod, VALUE flag)
 {
-  rb_secure(4);
   return INT2FIX(SDL_WM_GrabInput(flag));
 }
 

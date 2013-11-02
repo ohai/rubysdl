@@ -80,7 +80,6 @@ static VALUE Font_s_open(VALUE klass, VALUE filename, VALUE size)
 {
   Kanji_Font* font;
 
-  rb_secure(4);
   ExportFilenameStringValue(filename);
   
   font = Kanji_OpenFont(RSTRING_PTR(filename), NUM2INT(size));
@@ -92,7 +91,6 @@ static VALUE Font_close(VALUE self)
 {
   KFont* kfont;
   
-  rb_secure(4);
   kfont = Get_KFont(self);
   if (kfont->font)
     Kanji_CloseFont(kfont->font);
@@ -116,7 +114,6 @@ static VALUE Font_getCodingSystem(VALUE self)
 
 static VALUE Font_add(VALUE self, VALUE filename)
 {
-  rb_secure(4);
   ExportFilenameStringValue(filename);
   if(Kanji_AddFont(Get_Kanji_Font(self), RSTRING_PTR(filename)) == -1)
     rb_raise(eSDLError, "Couldn't use font: %s", RSTRING_PTR(filename));
@@ -126,7 +123,6 @@ static VALUE Font_add(VALUE self, VALUE filename)
 static VALUE Font_textwidth(VALUE self, VALUE text)
 {
   Kanji_Font* font;
-  rb_secure(4);
   font = Get_Kanji_Font(self);
   ExportStringValueToEnc(text, get_enc(font));
   return INT2FIX(Kanji_FontWidth(font, RSTRING_PTR(text)));
@@ -148,7 +144,6 @@ static void Font_put(VALUE self, VALUE surface, VALUE text,
 {
   SDL_Color color;
   Kanji_Font* font;
-  rb_secure(4);
   font = Get_Kanji_Font(self);
   ExportStringValueToEnc(text, get_enc(font));
   color.r = NUM2INT(r);color.g = NUM2INT(g); color.b = NUM2INT(b);

@@ -185,7 +185,6 @@ static VALUE Dictionary_s_new(VALUE klass)
 static VALUE Dictionary_load(VALUE self, VALUE filename, VALUE users)
 {
   SDLSKK_Dictionary* dict = Get_SDLSKK_Dictionary(self);
-  rb_secure(4);
   ExportFilenameStringValue(filename);
   
   if(!SDLSKK_Dict_load(dict, RSTRING_PTR(filename), RTEST(users)))
@@ -197,7 +196,6 @@ static VALUE Dictionary_load(VALUE self, VALUE filename, VALUE users)
 static VALUE Dictionary_save(VALUE self, VALUE filename)
 {
   SDLSKK_Dictionary* dict = Get_SDLSKK_Dictionary(self);
-  rb_secure(4);
   ExportFilenameStringValue(filename);
   
   if(!SDLSKK_Dict_save_user_dict(dict, RSTRING_PTR(filename)))
@@ -208,7 +206,6 @@ static VALUE Dictionary_save(VALUE self, VALUE filename)
 static VALUE RomKanaRuleTable_s_new(VALUE klass, VALUE table_file)
 {
   SDLSKK_RomKanaRuleTable* rule_table;
-  rb_secure(4);
   ExportFilenameStringValue(table_file);
   
   rule_table = SDLSKK_RomKanaRuleTable_new(RSTRING_PTR(table_file));
