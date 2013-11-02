@@ -1,4 +1,5 @@
-#!/usr/local/bin/ruby -Ke
+#!ruby
+# -*- coding: euc-jp -*-
 
 class Hash
   def hash_map
