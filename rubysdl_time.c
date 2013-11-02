@@ -24,20 +24,10 @@ static VALUE sdl_getTicks(VALUE mod)
   return UINT2NUM(SDL_GetTicks());
 }
 
-static VALUE delay(void* t)
-{
-  SDL_Delay(*((Uint32*)t));
-  return Qnil;
-}
-
 static VALUE sdl_delay(VALUE mod,VALUE ms)
 {
   Uint32 t = NUM2UINT(ms);
-#ifdef HAVE_RB_THREAD_BLOCKING_REGION
-  rb_thread_blocking_region(delay, &t, RUBY_UBF_IO, NULL);
-#else
   SDL_Delay(t);
-#endif
   return Qnil;
 }
 
