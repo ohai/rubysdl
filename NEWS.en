@@ -4,6 +4,7 @@ Fix following methods
 Update documents
 Fix compilation problem on FreeBSD(Thanks Rusmir Dusko)
 Fix codes about multi-thread
+Bundle SGE(Please do not use this bundled SGE if you have other way to use SGE)
 
 version 2.1.2
 Improbe the handling of strings
