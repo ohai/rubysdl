@@ -7,24 +7,8 @@ else
   sdl_config = with_config('sdl-config', 'sdl-config')
   $CPPFLAGS += " " + `#{sdl_config} --cflags`.chomp
   $LOCAL_LIBS += ' ' + `#{sdl_config} --libs`.chomp
-  
-  if /-Dmain=SDL_main/ =~ $CPPFLAGS then
-    def try_func(func, libs, headers = nil, &b)
-      headers = cpp_include(headers)
-      try_link(<<"SRC", libs, &b) or try_link(<<"SRC", libs, &b)
-#{headers}
-/*top*/
-int main(int argc,char** argv) { return 0; }
-int t() { #{func}(); return 0; }
-SRC
-#{COMMON_HEADERS}
-#{headers}
-/*top*/
-int main(int argc,char** argv) { return 0; }
-int t() { void ((*volatile p)()); p = (void ((*)()))#{func}; return 0; }
-SRC
-    end
-  end
+
+  $CPPFLAGS.gsub!(/-Dmain=SDL_main/, "")
 end
 
 if enable_config("static-libs",false) then
@@ -60,8 +44,8 @@ end
 if have_library("SDL_ttf","TTF_Init") then
   $CPPFLAGS+= " -D HAVE_SDL_TTF "
 end
-use_imported_sge = enable_config("imported-sge", false)
-if use_imported_sge
+use_bundled_sge = enable_config("bundled-sge", false)
+if use_bundled_sge
   $CPPFLAGS+= " -Isge -D HAVE_SGE "
 else
   if have_library("SGE","sge_Line") then
@@ -105,7 +89,7 @@ if enable_config("opengl",true) then
   end
 end
 
-if use_imported_sge
+if use_bundled_sge
   $srcs += Dir.glob(File.join($srcdir, "sge/*.cpp"))
   $objs = $srcs.map{|fname| fname.sub(/\.(c|cpp)\Z/, ".o") }
 end

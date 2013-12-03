@@ -73,9 +73,9 @@ gem でもインストールできます。
 
 = SGEをインストールせずに使う
 Ruby/SDLが内部で SGE を持っています。
-  gem install rubysdl -- --enable-imported-sge
+  gem install rubysdl -- --enable-bundled-sge
 もしくは
-  ruby extconf.rb --enable-imported-sge
+  ruby extconf.rb --enable-bundled-sge
 で使えます。
 
 ただし、この仕組みはできれば使わないでください。

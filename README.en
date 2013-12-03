@@ -65,9 +65,9 @@ You can install from source code as follows:
 
 = Use SGE without installing the library
 You can use SGE without intalling:
-  gem install rubysdl -- --enable-imported-sge
+  gem install rubysdl -- --enable-bundled-sge
 or
-  ruby extconf.rb --enable-imported-sge
+  ruby extconf.rb --enable-bundled-sge
 
 However, please do not use this option if you have
 other way. Please install SGE separately if possible.
