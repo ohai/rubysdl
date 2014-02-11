@@ -38,6 +38,11 @@ a {
   text-decoration:none;
 }
 
+header h1 a {
+  color:black;
+  font-weight:800;
+}
+
 a small {
   font-size:11px;
   color:#777;
