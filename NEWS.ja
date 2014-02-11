@@ -1,36 +1,36 @@
 version 2.1.3.1
-$B%P%s%I%k$7$?(BSGE$B$r;H$&$?$a$N%*%W%7%g%sL>$rJQ99(B
-Windows $B$,(B CFLAGS $B$K(B -Dmain=SDL_main $B$H$$$&$N$r4^$s$G$$$k$3$H$X$NBP=hK!$rJQ99(B
+バンドルしたSGEを使うためのオプション名を変更
+Windows が CFLAGS に -Dmain=SDL_main というのを含んでいることへの対処法を変更
 
 version 2.1.3
-$B0J2<$N%a%=%C%I$N%P%0$r=$@5(B
+以下のメソッドのバグを修正
 * SDL::TTF#draw*
-$B%I%-%e%a%s%H$N=$@5(B
-FreeBSD$B$G%3%s%Q%$%k;~$K%(%i!<$,@8$8$kLdBj$r=$@5(B(Thanks Rusmir Dusko)
-$B%9%l%C%I$^$o$j$N5sF0$r=$@5(B
-SGE $B$r%P%s%I%k(B($B$G$-$k8B$j;H$o$J$$$G$/$@$5$$(B)
+ドキュメントの修正
+FreeBSDでコンパイル時にエラーが生じる問題を修正(Thanks Rusmir Dusko)
+スレッドまわりの挙動を修正
+SGE をバンドル(できる限り使わないでください)
 
 version 2.1.2
-Ruby$B$NJ8;zNs$H(BC$B$NJ8;zNs$NJQ49$r87L)$K$9$k$h$&$K$7$?(B
-$B0J2<$N%a%=%C%I$N%P%0$r=$@5(B
+Rubyの文字列とCの文字列の変換を厳密にするようにした
+以下のメソッドのバグを修正
 * SDL::Surface#draw_bezier
-$B%I%-%e%a%s%H$N=$@5(B
+ドキュメントの修正
 
 version 2.1.1
-Ruby 1.9$B$H(BMacOS X$B$G%3%s%Q%$%k$G$-$J$$LdBj$r=$@5(B
-sdl.so $B$r(B sdl_ext $B$H$$$&L>A0$KJQ99(B
-$B0J2<$NDj?t$rDI2C(B
+Ruby 1.9とMacOS Xでコンパイルできない問題を修正
+sdl.so を sdl_ext という名前に変更
+以下の定数を追加
 * SDL::Mixer::NO_FADING
 * SDL::Mixer::FADING_OUT
 * SDL::Mixer::FADING_IN
 * SDL::TRANSFORM_AA(for compatible with 1.x)
 * SDL::TRANSFORM_TMAP(for compatible with 1.x)
 * SDL::TRANSFORM_SAFE(for compatible with 1.x)
-$B%I%-%e%a%s%H$N=$@5(B
-$B8E$$%I%-%e%a%s%H$r:o=|(B
+ドキュメントの修正
+古いドキュメントを削除
 
 version 2.1.0
-$B0J2<$N%a%=%C%I$rDI2C(B
+以下のメソッドを追加
 * SDL::TTF#close
 * SDL::TTF#closed?
 * SDL::BMFont#close
@@ -42,11 +42,11 @@ version 2.1.0
 * SDL::Mixer::Wave#destroyed?
 * SDL::Mixer::Music#destroyed?
 * SDL::Kanji#get_coding_system
-$B%I%-%e%a%s%H$N=$@5(B
-$B0J2<$N%a%=%C%I$N8F$S$@$7Cf$K(B1.9$B$G%9%l%C%I@Z$jBX$(2DG=$KJQ99(B
+ドキュメントの修正
+以下のメソッドの呼びだし中に1.9でスレッド切り替え可能に変更
 * SDL::Event#wait
 * SDL.delay
-$B0J2<$N%a%=%C%I$G(BRuby$B$N(Bm17n$B5!G=$rMxMQ$9$k$h$&$KJQ99(B
+以下のメソッドでRubyのm17n機能を利用するように変更
 * SDL::WM.set_caption
 * SDL::WM.caption
 * SDL::TTF#draw_solid 
@@ -58,32 +58,32 @@ version 2.1.0
 * SDL::Kanji#put
 * SDL::Kanji#putTate
 * SDL::SDLSKK#str
-$B0J2<$N%a%=%C%I$N%P%0$r=$@5(B
+以下のメソッドのバグを修正
 * SDL::MPEG#move
 
 version 2.0.1b
-$B%5%s%W%k$N%P%0$r=$@5(B
-SDL::MPEG.info$B$r=$@5(B
+サンプルのバグを修正
+SDL::MPEG.infoを修正
 
 version 2.0.1
-$B%3%s%Q%$%k$G$-$J$$>l9g$,$"$k$N$r=$@5(B
-SDL::Surface.blit$B$G%S%G%*%a%b%j$,%m%9%H$7$?>l9g$K(B
-$BNc30(BSDL::Surface::VideoMemoryLost$B$rH/@8$5$;$k$h$&$K$7$?!#(B
+コンパイルできない場合があるのを修正
+SDL::Surface.blitでビデオメモリがロストした場合に
+例外SDL::Surface::VideoMemoryLostを発生させるようにした。
 
 version 2.0 
-ruby 1.9$B$G;H$($k$h$&$KJQ99(B
-SDL_RWops$BBP1~$r=$@5$7!"(BSDL::Mixer::Wave.load_from_io$B$,;H$($k$h$&$K$7$?!#(B
-$B%I%-%e%a%s%H$N2~A1(B($BFC$K1Q8lHG(B)
-$B0J2<$N%a%=%C%I$rDI2C(B
+ruby 1.9で使えるように変更
+SDL_RWops対応を修正し、SDL::Mixer::Wave.load_from_ioが使えるようにした。
+ドキュメントの改善(特に英語版)
+以下のメソッドを追加
 * SDL::Surface#load_bmp_from_string
 * SDL::Surface#load_from_string
 * SDL::Mixer::Wave#load_from_string
 * SDL::Mixer.playing_channels
 
 version 2.0 alpha 1
-$BFbIt9=B$$rBgI}$KJQ99(B
-SDL::Event2$B$r(BSDL::Event$B$KJQ99$7!"$+$D$F$N(BSDL::Event$B$OGQ;_(B
-$B0J2<$N%a%=%C%I$rGQ;_(B
+内部構造を大幅に変更
+SDL::Event2をSDL::Eventに変更し、かつてのSDL::Eventは廃止
+以下のメソッドを廃止
 * SDL::Surface#draw_ellispe
 * SDL::Surface#draw_filled_ellispe
 * SDL::Surface#rotate_surface
@@ -92,22 +92,22 @@ SDL::Event2$B$r(BSDL::Event$B$KJQ99$7!"$+$D$F$N(BSDL::Event$B$OGQ;_(B
 * SDL.rotate_blit
 * SDL.rotate_scaled_blit
 * SDL.rotate_xy_scaled
-$B0J2<$N%a%=%C%I$rDI2C(B
+以下のメソッドを追加
 * SDL::Surface#destroy
 * SDL::Joystick#close
 * SDL::Mixer#close
 * SDL::Mixer::Wave#destroy
 * SDL::Mixer::Music#destroy
-SDL::GL$B%b%8%e!<%k$rDI2C(B
-SDL::PixelFormat(SDL::Surface::Format$B$N$[$&$,NI$$!)(B)$B$N<BAu$rJQ99(B
-Surface$B$N%U%)!<%^%C%H$r;XDj$9$k$N$K(BSDL::PixelFormat$B$,;H$($k$h$&$KJQ99(B
-$B0J2<$NIA2h%a%=%C%I$N(B(antialias, fill, alpha$B$r$"$i$o$9(B)$B0z?t$rDI2C(B
+SDL::GLモジュールを追加
+SDL::PixelFormat(SDL::Surface::Formatのほうが良い？)の実装を変更
+Surfaceのフォーマットを指定するのにSDL::PixelFormatが使えるように変更
+以下の描画メソッドの(antialias, fill, alphaをあらわす)引数を追加
 * SDL::Surface#draw_line
 * SDL::Surface#draw_circle
 * SDL::Surface#draw_rect
 * SDL::Surface#draw_ellipse
 * SDL::Surface#draw_bezier
-$B0J2<$N$h$&$K%a%=%C%I$r0\F0!"5lMh$N$b$N$bMxMQ$O$G$-$^$9(B
+以下のようにメソッドを移動、旧来のものも利用はできます
 * SDL.auto_lock? -> SDL::Surface.auto_lock?
 * SDL.auto_lock_on -> SDL::Surface.auto_lock_on
 * SDL.auto_lock_off -> SDL::Surface.auto_lock_off
@@ -137,7 +137,7 @@ Surface$B$N%U%)!<%^%C%H$r;XDj$9$k$N$K(BSDL::PixelFormat$B$,;H$($k$h$&$KJQ99(
 * SDL.get_GL_attr -> SDL::GL.get_attr
 * SDL.set_GL_attr -> SDL::GL.set_attr
 * SDL.GL_swap_buffers -> SDL::GL.swap_buffers
-$B0J2<$N$h$&$KDj?t$r0\F0!#5lMh$N$b$N$bMxMQ$O$G$-$^$9!#(B
+以下のように定数を移動。旧来のものも利用はできます。
 * GL_RED_SIZE -> GL::RED_SIZE
 * GL_GREEN_SIZE -> GL::GREEN_SIZE
 * GL_BLUE_SIZE -> GL::BLUE_SIZE
@@ -150,12 +150,12 @@ Surface$B$N%U%)!<%^%C%H$r;XDj$9$k$N$K(BSDL::PixelFormat$B$,;H$($k$h$&$KJQ99(
 * GL_ACCUM_GREEN_SIZE -> GL::ACCUM_GREEN_SIZE
 * GL_ACCUM_BLUE_SIZE -> GL::ACCUM_BLUE_SIZE
 * GL_ACCUM_ALPHA_SIZE -> GL::ACCUM_ALPHA_SIZE
-OpenGL$B4XO"$N%I%-%e%a%s%H$rDI2C(B
+OpenGL関連のドキュメントを追加
 
 
 version 1.3.1
-SMPEG$BM-!"(BSDL_mixer$BL5$N>l9g$NLdBj$r=$@5(B
-$B0J2<$N%a%=%C%I$rDI2C(B
+SMPEG有、SDL_mixer無の場合の問題を修正
+以下のメソッドを追加
   SDL::Surface#Rloss
   SDL::Surface#Gloss
   SDL::Surface#Bloss
@@ -166,35 +166,35 @@ SMPEG$BM-!"(BSDL_mixer$BL5$N>l9g$NLdBj$r=$@5(B
   SDL::Surface#Ashift
   SDL::Surface#pitch
   SDL::Surface#bytes_per_pixel
-$B0J2<$N%a%=%C%I$r=$@5(B
+以下のメソッドを修正
   SDL::Surface.pixels
 
 version 1.3.0
-$B%I%-%e%a%s%H$r=$@5(B/$B2~A1(B
-$BDj?t(BSDL::NOFRAME$B$,Dj5A$5$l$F$$$J$+$C$?$N$r=$@5(B
-$B0J2<$N%a%=%C%I$rDI2C(B
+ドキュメントを修正/改善
+定数SDL::NOFRAMEが定義されていなかったのを修正
+以下のメソッドを追加
   SDL::Screen#update_rects
   SDL::Event2.pump
   SDL::Screen.open
   SDL::Surface.blit
   SDL::Mixer.driver_name
-$B0J2<$N%a%=%C%I$r=$@5(B
+以下のメソッドを修正
   SDL.video_driver_name
 
 
 version 1.2.0
-$BF|K\8l$N%j%U%!%l%s%9$N(BMPEG$B$N9`L\$r2CI.(B
-$B0J2<$N%a%=%C%I$rDI2C(B
+日本語のリファレンスのMPEGの項目を加筆
+以下のメソッドを追加
   SDL::MPEG#render_final
   SDL::Surface.load_bmp_from_io
   SDL::Surface.load_from_io
   SDL::Mixer::Wave.load_from_io
   SDL::Mixer::Music.load_from_string
-SMPEG$BM-!"(BSDL_mixer$BL5$N>l9g$K%3%s%Q%$%k$G$-$J$$%P%0$r=$@5(B
+SMPEG有、SDL_mixer無の場合にコンパイルできないバグを修正
 
 version 1.1.0
-$BF|K\8l$N%j%U%!%l%s%9$rA4LL2~D{(B
-$B0J2<$N%a%=%C%I$rDI2C(B
+日本語のリファレンスを全面改訂
+以下のメソッドを追加
   SDL::CD.framesToMSF
   SDL::CD.MSFToFrames
   SDL::CD#in_drive?
@@ -210,97 +210,97 @@ version 1.1.0
   SDL::CollisionMap#h
   SDL::BMFont#textSize
   SDL::TTF#init?
-$B0J2<$N%/%i%9$rDI2C(B
+以下のクラスを追加
   SDL::Event2::VideoExpose
-$B0J2<$N%a%=%C%I$N%P%0$r=$@5(B
+以下のメソッドのバグを修正
   SDL::Key.press?
   SDL::TTF#familyName
   SDL::TTF#styleName
-$B0J2<$N%/%i%9$N=*N;;~%P%0$r=$@5(B
+以下のクラスの終了時バグを修正
   SDL::BMFont
-$B%-!<%j%T!<%H4XO"$NDj?t$rDI2C(B
+キーリピート関連の定数を追加
 
 version 1.0.0
-$B0J2<$N%a%=%C%I$rDI2C(B
+以下のメソッドを追加
   SDL::Surface#drawBezier
   SDL::Surface#drawAABezier
   SDL::Surface#drawBezierAlpha
   SDL::Surface#drawAABezierAlpha
-$B0J2<$N%a%=%C%I$N%P%0$r=$@5(B
+以下のメソッドのバグを修正
   SDL::MPEG#setDisplay
 
 version 0.9.5
-$B0J2<$N%a%=%C%I$N%P%0$r=$@5(B
+以下のメソッドのバグを修正
   SDL::Surface#getPalette
   SDL::Surface#copyRect
-$B0J2<$N%a%=%C%I$rDI2C(B
+以下のメソッドを追加
   SDL::WM.grubInput
   SDL.quit
   SDL.putenv
   SDL.getenv
-$B$5$5$$$J(Btypo$B$r=$@5(B
-$B%I%-%e%a%s%H$r0lIt=$@5(B(SDL::TTF#textSize)
+ささいなtypoを修正
+ドキュメントを一部修正(SDL::TTF#textSize)
 
 version 0.9.4
-SDL::Surface#pixels, SDL::Surface#[RGBA]mask, SDL::Surface.new_from$B$rDI2C(B
-SDL::Surface.new$B$r3HD%(B
-OpenGL$B4XO"$N%I%-%e%a%s%H$r:GDc8B$NJ,DI2C(B
+SDL::Surface#pixels, SDL::Surface#[RGBA]mask, SDL::Surface.new_fromを追加
+SDL::Surface.newを拡張
+OpenGL関連のドキュメントを最低限の分追加
 
 version 0.9.3
-sge$B$N(Bbitmap font$BIA2h5!G=$rDI2C(B
-SDL_kanji$B$K$h$k(Bbdf font$BIA2h5!G=$rDI2C(B
-SDL::TTF#height, #ascent, #descent, #lineSkip$B$rDI2C(B
-SDL::Surface#copyRect$B$rDI2C(B
-warning$B$,$G$kE@$r=$@5(B
-SDLSKK$B%$%s%?!<%U%'!<%9$NCWL?E*$J%P%0$r=$@5(B
-OpenGL$B$r%G%U%)%k%H$GM-8z$K$7$?(B
+sgeのbitmap font描画機能を追加
+SDL_kanjiによるbdf font描画機能を追加
+SDL::TTF#height, #ascent, #descent, #lineSkipを追加
+SDL::Surface#copyRectを追加
+warningがでる点を修正
+SDLSKKインターフェースの致命的なバグを修正
+OpenGLをデフォルトで有効にした
 
 version 0.9.2
-sge$B$N%"%k%U%!IU$-?^7AIA2h!"%"%s%A%(%$%j%"%:IU$-?^7AIA2h$r%5%]!<%H(B
-SDL.transformBlit$B$r(BsetAlpha$B$G$N(Balpha$B$N@_Dj$rM-8z$K$9$k(B
+sgeのアルファ付き図形描画、アンチエイリアズ付き図形描画をサポート
+SDL.transformBlitをsetAlphaでのalphaの設定を有効にする
 
 version 0.9.1
 
-SDL::Event$B$H(BSDL::Event2$B$NCWL?E*$J%P%0$r=$@5(B
+SDL::EventとSDL::Event2の致命的なバグを修正
 
 version 0.9
 
-SDLSKK 0.4$B$r%5%]!<%H!"(B0.3$B$N%5%]!<%H$rDd;_(B
-$B>WFMH=Dj5!G=$rDI2C(B ( thanks to Wayne Conrad )
-MPEG$B:F@85!G=$r6/2=!#J#?t$N(BMPEG$B%U%!%$%k$rFI$_$3$a$k$h$&$K$9$k!"(BSDL_Mixer$B$K$h$k(B
-$B2;@<:F@85!G=$H$N6&B8$r2DG=$K$9$k$J$I$NJQ99$r$7$?!#(B
-$B%5%s%W%k$rDI2C!#(B( thanks to Simon Strandgaard )
+SDLSKK 0.4をサポート、0.3のサポートを停止
+衝突判定機能を追加 ( thanks to Wayne Conrad )
+MPEG再生機能を強化。複数のMPEGファイルを読みこめるようにする、SDL_Mixerによる
+音声再生機能との共存を可能にするなどの変更をした。
+サンプルを追加。( thanks to Simon Strandgaard )
 
 version 0.8.3
 
-$B0J2<$N%a%=%C%I$rDI2C(B(typo$B$N$?$a(B) ( thanks to Wayne Conrad )
+以下のメソッドを追加(typoのため) ( thanks to Wayne Conrad )
   SDL::Surface#drawEllipse
   SDL::Surface#drawFilledEllipse
-$B0J2<$N%a%=%C%I$r=$@5(B( thanks to moumar )
+以下のメソッドを修正( thanks to moumar )
   SDL.videoInfo
 
 version 0.8.2
 
-SDLSKK 0.3$B$r%5%]!<%H!"(B0.2$B0JA0$O%5%]!<%H$7$J$$$3$H$K$7$?(B
-Joystick$B5!G=$N%P%0$r=$@5(B
-$B0J2<$N%a%=%C%I$rDI2C(B
+SDLSKK 0.3をサポート、0.2以前はサポートしないことにした
+Joystick機能のバグを修正
+以下のメソッドを追加
   SDL::Screen#toggleFullScreen
   SDL::Key.getKeyName
-$B%I%-%e%a%s%H$K(Balias$B$r5-=R(B
+ドキュメントにaliasを記述
 
 version 0.8.1
 
-$B%P%0=$@5(B
+バグ修正
 
 version 0.8
 
-SDLSKK$B$N%5%]!<%H$r2C$($k!#(B
-$B=*N;=hM}$NJQ99(B($B$?$`$i$5$s$N%Q%C%A$J$I$K$h$k(B)
-$B%"%s%@!<%P!<6h@Z$j$N%a%=%C%IL>$rMxMQ$G$-$k$h$&$K$7$?(B( blit_surface $B$J$I(B )
-$B%a%=%C%IL>$rJQ99(B
+SDLSKKのサポートを加える。
+終了処理の変更(たむらさんのパッチなどによる)
+アンダーバー区切りのメソッド名を利用できるようにした( blit_surface など )
+メソッド名を変更
   SDL::CD.name -> SDL::CD.indexName
   SDL::Joystick.name -> SDL::Joystick.indexName
-$B0J2<$N%a%=%C%I$NDI2C(B
+以下のメソッドの追加
   SDL::Mixer.allocateChannels
   SDL::TTF#renderSolidUTF8
   SDL::TTF#renderBlendedUTF8
@@ -318,5 +318,5 @@ SDLSKK$B$N%5%]!<%H$r2C$($k!#(B
   SDL.autoLock?
   SDL.autoLockON
   SDL.autoLockOFF
-$B0J2<$N%a%=%C%I$r3HD%(B
+以下のメソッドを拡張
   SDL.blitSurface2
