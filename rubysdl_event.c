@@ -439,4 +439,9 @@ void rubysdl_init_Event(VALUE mSDL)
   event_creators[SDL_QUIT] = createQuitEvent;
   event_creators[SDL_SYSWMEVENT] = createSysWMEvent;
   event_creators[SDL_VIDEORESIZE] = createVideoResizeEvent;
-}
+
+  rb_define_const(cEvent, "APPMOUSEFOCUS", UINT2NUM(SDL_APPMOUSEFOCUS));
+  rb_define_const(cEvent, "APPINPUTFOCUS", UINT2NUM(SDL_APPINPUTFOCUS));
+  rb_define_const(cEvent, "APPACTIVE", UINT2NUM(SDL_APPACTIVE));
+}  
+
