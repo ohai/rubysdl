@@ -26,6 +26,8 @@ develop a game in Ruby.
 - bdf font drawing with [SDL\_kanji](http://shinh.skr.jp/sdlkanji/)
 
 ## Development
-Ruby/SDL is developed in [Github](https://github.com/ohai/rubysdl/).
+Ruby/SDL is developed on [Github](https://github.com/ohai/rubysdl/).
 
+## License
+This library is distributed under LGPL 2.1.
 
