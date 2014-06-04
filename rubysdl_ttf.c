@@ -278,7 +278,18 @@ static VALUE Font_closed(VALUE self)
 {
   return INT2BOOL(Get_TTFont(self)->font == NULL);
 }
-                       
+
+static VALUE Font_hinting(VALUE self)
+{
+  return INT2FIX(TTF_GetFontHinting(Get_TTF_Font(self)));
+}
+
+static VALUE Font_set_hinting(VALUE self, VALUE hinting)
+{
+  TTF_SetFontHinting(Get_TTF_Font(self), NUM2INT(hinting));
+  return Qnil;
+}
+
 void rubysdl_init_TTF(VALUE mSDL)
 {
   cTTFFont = rb_define_class_under(mSDL, "TTF", rb_cObject);
@@ -296,6 +307,8 @@ void rubysdl_init_TTF(VALUE mSDL)
   rb_define_method(cTTFFont,"fixedWidth?",Font_fixedWidth_p,0);
   rb_define_method(cTTFFont,"familyName",Font_familyName,0);
   rb_define_method(cTTFFont,"styleName",Font_styleName,0);
+  rb_define_method(cTTFFont,"hinting",Font_hinting,0);
+  rb_define_method(cTTFFont,"hinting=",Font_set_hinting,1);
 
   rb_define_method(cTTFFont,"height",Font_height,0);
   rb_define_method(cTTFFont,"ascent",Font_ascent,0);
@@ -310,11 +323,15 @@ void rubysdl_init_TTF(VALUE mSDL)
   rb_define_method(cTTFFont,"renderShaded",Font_renderShaded,7);
   rb_define_method(cTTFFont,"close", Font_close, 0);
   rb_define_method(cTTFFont,"closed?", Font_closed, 0);
-  
+
   rb_define_const(cTTFFont,"STYLE_NORMAL",UINT2NUM(TTF_STYLE_NORMAL));
   rb_define_const(cTTFFont,"STYLE_BOLD",UINT2NUM(TTF_STYLE_BOLD));
   rb_define_const(cTTFFont,"STYLE_ITALIC",UINT2NUM(TTF_STYLE_ITALIC));
   rb_define_const(cTTFFont,"STYLE_UNDERLINE",UINT2NUM(TTF_STYLE_UNDERLINE));
+  rb_define_const(cTTFFont,"HINTING_NORMAL",INT2NUM(TTF_HINTING_NORMAL));
+  rb_define_const(cTTFFont,"HINTING_LIGHT",INT2NUM(TTF_HINTING_LIGHT));
+  rb_define_const(cTTFFont,"HINTING_MONO",INT2NUM(TTF_HINTING_MONO));
+  rb_define_const(cTTFFont,"HINTING_NONE",INT2NUM(TTF_HINTING_NONE));
 }
 
 void rubysdl_quit_TTF(void)
