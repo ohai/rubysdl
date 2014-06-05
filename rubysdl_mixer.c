@@ -498,7 +498,7 @@ void rubysdl_init_Mixer(VALUE mSDL)
                              Mixer_s_loadMusFromString,1);
 #endif
   rb_define_method(cWave, "destroy", Wave_destroy, 0);
-  rb_define_method(cWave, "destroyed_", Wave_destroyed, 0);
+  rb_define_method(cWave, "destroyed?", Wave_destroyed, 0);
   rb_define_method(cMusic, "destroy", Music_destroy, 0);
   rb_define_method(cMusic, "destroyed?", Music_destroyed, 0);
   
