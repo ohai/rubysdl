@@ -9,7 +9,8 @@ SDL::TTF.init
 
 font = SDL::TTF.open('sample.ttf',24)
 font.style = SDL::TTF::STYLE_NORMAL
-
+font.hinting = SDL::TTF::HINTING_NORMAL
+  
 font.draw_solid_utf8(screen,'test SDL_ttf',300,150,255,255,255)
 
 screen.flip

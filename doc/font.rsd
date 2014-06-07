@@ -402,6 +402,45 @@ TTF#fixed_width?
 TTF#family_name
 
 %%
+NAME hinting
+MOD TTF
+TYPE #
+DEP SDL_ttf
+PURPOSE Not doucmented
+RVAL Integer
+
+PROTO
+hinting
+
+DESC
+Not doucmented
+
+* SDL::TTF::HINTING_NORMAL
+* SDL::TTF::HINTING_LIGHT
+* SDL::TTF::HINTING_MONO
+* SDL::TTF::HINTING_NONE
+
+SEEALSO
+TTF#hinting=
+
+%%
+NAME hinting=
+MOD TTF
+TYPE #
+DEP SDL_ttf
+PURPOSE Not doucmented
+RVAL Integer
+
+PROTO
+hinting=
+
+DESC
+Not doucmented
+
+SEEALSO
+TTF#hinting
+
+%%
 NAME text_size
 MOD TTF
 TYPE #
