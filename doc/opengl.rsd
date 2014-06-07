@@ -81,6 +81,12 @@ EXAMPLE
 * SDL::GL::ACCUM_GREEN_SIZE アキュムレーションバッファの緑チャンネルのサイズ(ビット数) 
 * SDL::GL::ACCUM_BLUE_SIZE アキュムレーションバッファの青チャンネルのサイズ(ビット数)
 * SDL::GL::ACCUM_ALPHA_SIZE アキュムレーションバッファのαチャンネルのサイズ(ビット数)
+* SDL::GL::STEREO 3D立体視出力するかどうか(0 or 1)
+* SDL::GL::MULTISAMPLEBUFFERS multisample anti-aliasing のバッファ数(デフォルトは0で無効を意味する)
+* SDL::GL::MULTISAMPLESAMPLES multisample anti-aliasing で使うサンプル数(デフォルトは0で無効、有効にするなら 2 か 4 を指定するのが普通)
+* SDL::GL::ACCELERATED_VISUAL 1を指定するとハードウェアアクセレーションを強制し、0だとソフトウェアレンダリングを強制する。デフォルトだとどちらか利用可能なほうを利用する
+* SDL::GL::SWAP_CONTROL Deprecated
+
 
 === 描画
 描画は基本的に OpenGL のAPIがそのまま使えます。
