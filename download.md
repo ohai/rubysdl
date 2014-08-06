@@ -22,7 +22,7 @@ from the following README files.
 - [NEWS.ja](https://raw2.github.com/ohai/rubysdl/master/NEWS.ja)
 
 ### Latest version
-[rubysdl-2.1.3.1.tar.gz](archives/rubysdl-2.1.3.1.tar.gz)
+[rubysdl-2.2.0.tar.gz](archives/rubysdl-2.2.0.tar.gz)
 
 ### Packages
 You can install Ruby/SDL using the folloing package systems.
@@ -32,5 +32,6 @@ You can install Ruby/SDL using the folloing package systems.
 
 ### Old versions
 
+- [rubysdl-2.1.3.1.tar.gz](archives/rubysdl-2.1.3.1.tar.gz)
 - [rubysdl-2.1.3.tar.gz](archives/rubysdl-2.1.3.tar.gz)
 - [rubysdl-1.3.1.tar.gz](archives/rubysdl-1.3.1.tar.gz)
