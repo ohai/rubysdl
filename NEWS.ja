@@ -1,5 +1,18 @@
 in HEAD
-SDL::Event.app_state 関連の定数を追加
+以下の定数を追加(thanks to oscdir for SDL::GL::*, thanks to Rafael Sevilla for SDL::Event::*)
+* SDL::Event::APPMOUSEFOCUS
+* SDL::Event::APPINPUTFOCUS
+* SDL::Event::APPACTIVE
+* SDL::GL::STEREO
+* SDL::GL::MULTISAMPLEBUFFERS
+* SDL::GL::MULTISAMPLESAMPLES
+* SDL::GL::ACCELERATED_VISUAL
+* SDL::GL::SWAP_CONTROL
+以下のメソッドを追加(thanks to soutaro)
+* SDL::TTF#hinting
+* SDL::TTF#hinting= 
+SDL::Mixer::Wave.destroyed_ を SDL::Mixer::Wave.destroyed? に rename (thanks to akicho8)
+
 
 version 2.1.3.1
 バンドルしたSGEを使うためのオプション名を変更
