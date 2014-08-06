@@ -2,7 +2,7 @@
 
 Gem::Specification.new do |spec|
   spec.name = "rubysdl"
-  spec.version = "2.1.3.1"
+  spec.version = "2.2.0"
   spec.summary = "The simple ruby extension library to use SDL"
   spec.description = <<-EOS
     Ruby/SDL is an extension library to use SDL(Simple DirectMedia
@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
     mouse, joystick, 3D hardware via OpenGL, and 2D video 
     framebuffer. Ruby/SDL is used by games and visual demos.
   EOS
-  spec.rubyforge_project = "rubysdl"
+  spec.license = "LGPL"
   spec.author = "Ohbayashi Ippei"
   spec.email = "ohai@kmc.gr.jp"
   spec.homepage = "http://www.kmc.gr.jp/~ohai/rubysdl.en.html"

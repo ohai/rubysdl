@@ -1,4 +1,4 @@
-in HEAD
+version 2.2.0
 Add following constants
   (thanks to oscdir for SDL::GL::*, thanks to Rafael Sevilla for SDL::Event::*)
 * SDL::Event::APPMOUSEFOCUS
