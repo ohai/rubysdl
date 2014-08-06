@@ -1,4 +1,6 @@
-safe: true
+safe: false
 lsi: false
 pygments: true
 source: .
+exclude: ["vendor"]
+gems: ["jekyll-sass"]
