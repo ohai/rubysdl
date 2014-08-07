@@ -26,7 +26,7 @@ from the following README files.
 {:.table .table-striped}
 |File|Date| |
 |:---|:---|:---:|
-||[rubysdl-2.2.0.tar.gz](archives/rubysdl-2.2.0.tar.gz)|Aug 06 2014|(latest)|
+|[rubysdl-2.2.0.tar.gz](archives/rubysdl-2.2.0.tar.gz)|Aug 06 2014|(latest)|
 |[rubysdl-2.1.3.1.tar.gz](archives/rubysdl-2.1.3.1.tar.gz)|Dec 26 2013|-|
 |[rubysdl-2.1.3.tar.gz](archives/rubysdl-2.1.3.tar.gz)|Nov 16 2013|-|
 |[rubysdl-1.3.1.tar.gz](archives/rubysdl-1.3.1.tar.gz)|Sep 19 2007|-|
