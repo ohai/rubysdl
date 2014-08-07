@@ -2,5 +2,5 @@ safe: false
 lsi: false
 pygments: true
 source: .
-exclude: ["vendor"]
+exclude: ["vendor", "scripts"]
 gems: ["jekyll-sass"]
