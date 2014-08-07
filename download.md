@@ -21,8 +21,16 @@ from the following README files.
 - [NEWS.en](https://raw2.github.com/ohai/rubysdl/master/NEWS.en)
 - [NEWS.ja](https://raw2.github.com/ohai/rubysdl/master/NEWS.ja)
 
-### Latest version
-[rubysdl-2.2.0.tar.gz](archives/rubysdl-2.2.0.tar.gz)
+### Download archives
+
+{:.table .table-striped}
+|File|Date| |
+|:---|:---|:---:|
+||[rubysdl-2.2.0.tar.gz](archives/rubysdl-2.2.0.tar.gz)|Aug 06 2014|(latest)|
+|[rubysdl-2.1.3.1.tar.gz](archives/rubysdl-2.1.3.1.tar.gz)|Dec 26 2013|-|
+|[rubysdl-2.1.3.tar.gz](archives/rubysdl-2.1.3.tar.gz)|Nov 16 2013|-|
+|[rubysdl-1.3.1.tar.gz](archives/rubysdl-1.3.1.tar.gz)|Sep 19 2007|-|
+
 
 ### Packages
 You can install Ruby/SDL using the folloing package systems.
@@ -30,8 +38,3 @@ You can install Ruby/SDL using the folloing package systems.
 - [Debian](http://packages.debian.org/source/sid/ruby-sdl) 
 - [FreeBSD](http://www.freshports.org/devel/ruby-sdl/)
 
-### Old versions
-
-- [rubysdl-2.1.3.1.tar.gz](archives/rubysdl-2.1.3.1.tar.gz)
-- [rubysdl-2.1.3.tar.gz](archives/rubysdl-2.1.3.tar.gz)
-- [rubysdl-1.3.1.tar.gz](archives/rubysdl-1.3.1.tar.gz)
