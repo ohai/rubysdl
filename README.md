@@ -42,24 +42,24 @@ RubyGems are also available. You can install Ruby/SDL:
 
 You can install from source code as follows:
 
-1. install Ruby
+1. install Ruby :
   See Ruby's document and install.
 
-2. install SDL
-  Extract SDL's source and run './configure'.
-  And run 'make','make install'.
+2. install SDL :
+  Extract SDL's source and run `./configure`.
+  And run `make`, `make install`.
 
-3. install SGE
-  Run 'make' and 'make install'.
+3. install SGE :
+  Run `make` and `make install`.
   
-4. install SDL_mixer, SDL_ttf, SDL_image, SMPEG and SDLSKK
+4. install SDL_mixer, SDL_ttf, SDL_image, SMPEG and SDLSKK :
   See documents of these libraries and install them .
 
-5. install this extension library,Ruby/SDL
-  Run 'ruby extconf.rb','make' and 'make install'.
+5. install this extension library,Ruby/SDL :
+  Run `ruby extconf.rb`, `make` and `make install`.
 
-6. (Mac OS X user only) install rsdl
-  Run 'gem install rsdl'.
+6. (Mac OS X user only) install rsdl :
+  Run `gem install rsdl`.
   rsdl is a wrapper of the Ruby interpreter. This wrapper
   prepares Cocoa framework before running the interpreter.
 
@@ -78,7 +78,7 @@ other way. Please install SGE separately if possible.
 
 # USE Ruby/SDL
 
-Write "require 'sdl'" in your Ruby script.
+Write `require 'sdl'` in your Ruby script.
 If your system is OS X, you must use rsdl command 
 as an interpreter instead of ruby command.
 
@@ -106,10 +106,10 @@ You can use OpenGL with this library.
 4. Write `require 'sdl'; require 'opengl'`  in your script.
 
 We use OpenGL through ruby-opengl.
-Please see SDL's document,OpenGL document and sample/testgl.rb .
+Please see SDL's document, OpenGL document and sample/testgl.rb .
 
 # LICENSE
-#
+
 This library is distributed under GNU LGPL version 2.1 or later,
 which can be found in the file `LICENSE`.
 But samples, the Ruby scripts `sample/*.rb`, are not under LGPL, and
