@@ -38,6 +38,12 @@ setCaption(title, icon)
 DESC
 Sets the title-bar and icon name of the display window.
 
+$[title] is a string which will serve as the window title
+(the text at the top of the window).
+$[icon] is a string which will serve as iconified window title
+(the text which is displayed in the menu bar or desktop when the window
+is minimized).
+
 NOTES
 $[title] and $[icon] must be UTF8 or ASCII string.
 
