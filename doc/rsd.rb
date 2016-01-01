@@ -149,6 +149,9 @@ else
   $english = false
 end
 
+ARGF.set_encoding("EUC-JP")
+STDOUT.set_encoding("UTF-8")
+
 synop, descs = ARGF.read.split(/^%%%$/)
 methods = if descs then descs.split(/^%%$/).map{|m| rsd2rd(m)} else [] end
 
